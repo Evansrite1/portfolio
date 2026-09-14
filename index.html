@@ -82,7 +82,7 @@
     gap: 10px;
   }
   .mark { display: flex; align-items: baseline; gap: 10px; }
-  .mark .name { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; }
+  .mark .name { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; }
   .mark .agency { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-faint); }
   nav.site { display: flex; gap: 26px; font-family: var(--font-mono); font-size: 0.8rem; }
   nav.site a { color: var(--ink-soft); text-decoration: none; }
@@ -97,6 +97,21 @@
     align-items: center;
     text-align: center;
     gap: 4px;
+  }
+
+  .hero-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .hero-role {
+    font-family: var(--font-mono);
+    font-size: clamp(0.9rem, 1.6vw, 1.05rem);
+    letter-spacing: 0.02em;
+    color: var(--accent2);
+    margin-bottom: 10px;
   }
 
   .avatar {
@@ -280,7 +295,8 @@
   <section class="hero" style="padding-top:60px;">
     <div class="avatar">EA</div>
     <div>
-      <div class="label">Evans Ademilua, Lagos, Nigeria</div>
+      <div class="hero-name">Evans Ademilua</div>
+      <div class="hero-role">CEO, Large Technologies — Lagos, Nigeria</div>
       <h1>I build whatever you can <em>imagine.</em></h1>
       <p class="dek">I write custom code to turn a slow, manual business process into working software. Booking systems, lead trackers, client portals, internal tools, AI features. If you can describe it, I can build it, usually in two to three weeks.</p>
       <div class="cta-row">
