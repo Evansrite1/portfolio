@@ -206,9 +206,26 @@
   .work-note { font-size: 0.88rem; color: var(--ink-faint); margin: -18px 0 30px; max-width: 62ch; line-height: 1.5; }
   .work-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
   @media (max-width: 760px) { .work-grid { grid-template-columns: 1fr; } }
-  .work-card { border: 1px solid var(--line-strong); background: var(--paper-raised); border-radius: 4px; overflow: hidden; display: flex; flex-direction: column; }
-  .work-card .shot { aspect-ratio: 4 / 3; background: var(--paper); position: relative; border-bottom: 1px solid var(--line); }
+  .work-card {
+    border: 1px solid var(--line-strong);
+    background: var(--paper-raised);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .work-card:hover, .work-card:focus-visible {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: 0 10px 24px -12px rgba(0,0,0,0.25);
+  }
+  .work-card .shot { aspect-ratio: 4 / 3; background: var(--paper); position: relative; border-bottom: 1px solid var(--line); overflow: hidden; }
   .work-card .shot svg { width: 100%; height: 100%; display: block; }
+  .work-card .shot img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: top; transition: transform 0.4s ease; }
+  .work-card:hover .shot img { transform: scale(1.05); }
   .work-card .body { padding: 18px 20px 22px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
   .work-card .kicker { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent2); }
   .work-card h3 { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; margin: 0; }
@@ -371,88 +388,40 @@
 
   <section id="work">
     <div class="section-head">
-      <h2>Example builds</h2>
-      <span class="label">Representative scope</span>
+      <h2>Recent builds</h2>
+      <span class="label">Live projects</span>
     </div>
-    <p class="work-note">Illustrative examples of the kind of system I build at each tier. Real project screenshots and outcomes will replace these as they ship.</p>
+    <p class="work-note">Systems shipped and running today. Click through to see any of them live.</p>
     <div class="work-grid">
-      <div class="work-card">
-        <div class="shot">
-          <svg viewBox="0 0 300 225" role="img" aria-label="Booking calendar interface mockup">
-            <rect width="300" height="225" fill="var(--paper-raised)"></rect>
-            <rect x="20" y="20" width="260" height="28" rx="2" fill="var(--paper)" stroke="var(--line-strong)"></rect>
-            <text x="32" y="38" font-family="IBM Plex Mono" font-size="10" fill="var(--ink-soft)">Bookings, this week</text>
-            <g fill="none" stroke="var(--line)">
-              <line x1="20" y1="60" x2="280" y2="60"></line>
-              <line x1="20" y1="90" x2="280" y2="90"></line>
-              <line x1="20" y1="120" x2="280" y2="120"></line>
-              <line x1="20" y1="150" x2="280" y2="150"></line>
-            </g>
-            <rect x="30" y="65" width="90" height="18" rx="2" fill="var(--accent)" opacity="0.85"></rect>
-            <rect x="150" y="95" width="70" height="18" rx="2" fill="var(--accent2)" opacity="0.8"></rect>
-            <rect x="60" y="125" width="110" height="18" rx="2" fill="var(--accent)" opacity="0.5"></rect>
-          </svg>
-        </div>
+      <a class="work-card" href="https://billionaireclub.vercel.app" target="_blank" rel="noopener">
+        <div class="shot"><img src="images/billionaire-club.jpg" alt="Billionaire Club homepage screenshot" loading="lazy"></div>
         <div class="body">
-          <span class="kicker">Booking system</span>
-          <h3>Service business scheduler</h3>
-          <p>Clients pick a slot, get an automatic confirmation, and staff see one shared calendar instead of three WhatsApp groups.</p>
-          <div class="meta"><span class="tag">2 weeks</span><span class="tag">from $1,200</span></div>
+          <span class="kicker">Client portal / community platform</span>
+          <h3>Billionaire Club</h3>
+          <p>A digital business ecosystem where members learn real skills, earn from what they learn, and grow into leaders who train the next member.</p>
+          <div class="meta"><span class="tag">Next.js</span><span class="tag">Live ↗</span></div>
         </div>
-      </div>
+      </a>
 
-      <div class="work-card">
-        <div class="shot">
-          <svg viewBox="0 0 300 225" role="img" aria-label="Lead tracker table mockup">
-            <rect width="300" height="225" fill="var(--paper-raised)"></rect>
-            <g font-family="IBM Plex Mono" font-size="9" fill="var(--ink-faint)">
-              <text x="24" y="36">LEAD</text><text x="120" y="36">STAGE</text><text x="210" y="36">VALUE</text>
-            </g>
-            <line x1="20" y1="44" x2="280" y2="44" stroke="var(--line-strong)"></line>
-            <g fill="var(--ink-soft)" font-family="IBM Plex Sans" font-size="10">
-              <text x="24" y="64">Amaka O.</text><text x="24" y="88">Femi A.</text><text x="24" y="112">Chidi K.</text><text x="24" y="136">Grace N.</text>
-            </g>
-            <rect x="120" y="55" width="52" height="14" rx="7" fill="var(--accent2)" opacity="0.7"></rect>
-            <rect x="120" y="79" width="52" height="14" rx="7" fill="var(--accent)" opacity="0.6"></rect>
-            <rect x="120" y="103" width="52" height="14" rx="7" fill="var(--line-strong)" opacity="0.7"></rect>
-            <rect x="120" y="127" width="52" height="14" rx="7" fill="var(--accent2)" opacity="0.7"></rect>
-          </svg>
-        </div>
+      <a class="work-card" href="https://sky-team-ife.vercel.app" target="_blank" rel="noopener">
+        <div class="shot"><img src="images/sky-team-ife.jpg" alt="Sky Team Ife sign-in screen screenshot" loading="lazy"></div>
         <div class="body">
-          <span class="kicker">Lead tracker</span>
-          <h3>Real estate deal pipeline</h3>
-          <p>Every enquiry, viewing and follow up in one board the whole team can see and update from their phone.</p>
-          <div class="meta"><span class="tag">2 to 3 weeks</span><span class="tag">from $1,800</span></div>
+          <span class="kicker">Internal dashboard</span>
+          <h3>Sky Team Ife</h3>
+          <p>Attendance, weekly reports, office rankings and center analytics for a multi-location team, backed by Supabase with full row-level security.</p>
+          <div class="meta"><span class="tag">Vercel + Supabase</span><span class="tag">Live ↗</span></div>
         </div>
-      </div>
+      </a>
 
-      <div class="work-card">
-        <div class="shot">
-          <svg viewBox="0 0 300 225" role="img" aria-label="Workflow automation diagram mockup">
-            <rect width="300" height="225" fill="var(--paper-raised)"></rect>
-            <circle cx="60" cy="112" r="20" fill="var(--paper)" stroke="var(--line-strong)"></circle>
-            <circle cx="150" cy="70" r="20" fill="var(--paper)" stroke="var(--line-strong)"></circle>
-            <circle cx="150" cy="154" r="20" fill="var(--paper)" stroke="var(--line-strong)"></circle>
-            <circle cx="240" cy="112" r="22" fill="var(--accent)" opacity="0.18" stroke="var(--accent)"></circle>
-            <g stroke="var(--line-strong)" fill="none">
-              <line x1="78" y1="102" x2="132" y2="78"></line>
-              <line x1="78" y1="122" x2="132" y2="146"></line>
-              <line x1="168" y1="74" x2="220" y2="106"></line>
-              <line x1="168" y1="150" x2="220" y2="118"></line>
-            </g>
-            <text x="60" y="116" font-family="IBM Plex Mono" font-size="8" text-anchor="middle" fill="var(--ink-soft)">FORM</text>
-            <text x="150" y="74" font-family="IBM Plex Mono" font-size="8" text-anchor="middle" fill="var(--ink-soft)">SHEET</text>
-            <text x="150" y="158" font-family="IBM Plex Mono" font-size="8" text-anchor="middle" fill="var(--ink-soft)">CHAT</text>
-            <text x="240" y="116" font-family="IBM Plex Mono" font-size="8" text-anchor="middle" fill="var(--ink)">CRM</text>
-          </svg>
-        </div>
+      <a class="work-card" href="https://cge-site.vercel.app" target="_blank" rel="noopener">
+        <div class="shot"><img src="images/cge-site.jpg" alt="Common Ground Engineering site screenshot" loading="lazy"></div>
         <div class="body">
-          <span class="kicker">Automation</span>
-          <h3>Intake to CRM pipeline</h3>
-          <p>Form submissions and WhatsApp enquiries land in one system automatically, so nobody retypes a lead by hand again.</p>
-          <div class="meta"><span class="tag">1 week</span><span class="tag">from $800</span></div>
+          <span class="kicker">Booking / lead capture</span>
+          <h3>Common Ground Engineering</h3>
+          <p>A one-page site for an electrical consulting firm with Telegram and Cal.com wired straight into the booking flow, no manual back-and-forth.</p>
+          <div class="meta"><span class="tag">Static + API</span><span class="tag">Live ↗</span></div>
         </div>
-      </div>
+      </a>
     </div>
   </section>
 
