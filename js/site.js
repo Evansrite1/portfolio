@@ -68,19 +68,21 @@
   }
 
   function calculate() {
-    var score =
-      selectedScore('pf-screens') * 1400 +
-      selectedScore('pf-integrations') * 1000 +
-      selectedScore('pf-complexity') * 1300 +
-      selectedScore('pf-timeline') * 900 +
-      selectedScore('pf-engagement') * 1200;
+    // Each factor contributes 0..1 (its score / its own max), scaled to a
+    // budget so the full combination spans roughly $500 to $10,000.
+    var contribution =
+      (selectedScore('pf-screens') / 3) * 2400 +
+      (selectedScore('pf-integrations') / 3) * 2000 +
+      (selectedScore('pf-complexity') / 3) * 2400 +
+      (selectedScore('pf-timeline') / 2) * 1400 +
+      (selectedScore('pf-engagement') / 1) * 1300;
 
     var base = 500;
-    var mid = base + score;
-    var low = Math.round((mid * 0.75) / 50) * 50;
-    var high = Math.round((mid * 1.2) / 50) * 50;
+    var mid = base + contribution;
+    var low = Math.round((mid * 0.82) / 50) * 50;
+    var high = Math.round((mid * 1.22) / 50) * 50;
     low = Math.max(500, Math.min(low, 9500));
-    high = Math.max(low + 500, Math.min(high, 10000));
+    high = Math.max(low + 400, Math.min(high, 10000));
 
     prLow.textContent = low.toLocaleString();
     prHigh.textContent = high.toLocaleString();
