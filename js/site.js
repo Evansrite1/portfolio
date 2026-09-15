@@ -29,4 +29,102 @@
   );
 
   revealTargets.forEach(function (el) { io.observe(el); });
+
+  // ---- Price estimate modal ----
+  var modal = document.getElementById('price-modal');
+  var openBtn = document.getElementById('open-price-modal');
+  if (!modal || !openBtn) return;
+
+  var closeEls = modal.querySelectorAll('[data-close]');
+  var form = document.getElementById('price-form');
+  var calcBtn = document.getElementById('calc-btn');
+  var resultBox = document.getElementById('price-result');
+  var prLow = document.getElementById('pr-low');
+  var prHigh = document.getElementById('pr-high');
+  var rangeField = document.getElementById('pf-range');
+  var autoField = document.getElementById('pf-autoresponse');
+  var statusEl = document.getElementById('pf-status');
+  var sendBtn = document.getElementById('send-btn');
+
+  function openModal() {
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  openBtn.addEventListener('click', openModal);
+  closeEls.forEach(function (el) { el.addEventListener('click', closeModal); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+
+  function selectedScore(id) {
+    var el = document.getElementById(id);
+    return Number(el.options[el.selectedIndex].dataset.score || 0);
+  }
+
+  function calculate() {
+    var score =
+      selectedScore('pf-screens') * 1400 +
+      selectedScore('pf-integrations') * 1000 +
+      selectedScore('pf-complexity') * 1300 +
+      selectedScore('pf-timeline') * 900 +
+      selectedScore('pf-engagement') * 1200;
+
+    var base = 500;
+    var mid = base + score;
+    var low = Math.round((mid * 0.75) / 50) * 50;
+    var high = Math.round((mid * 1.2) / 50) * 50;
+    low = Math.max(500, Math.min(low, 9500));
+    high = Math.max(low + 500, Math.min(high, 10000));
+
+    prLow.textContent = low.toLocaleString();
+    prHigh.textContent = high.toLocaleString();
+    rangeField.value = '$' + low.toLocaleString() + ' to $' + high.toLocaleString();
+    autoField.value =
+      "Thanks for checking! Based on what you told us, your project's estimated range is $" +
+      low.toLocaleString() + ' to $' + high.toLocaleString() +
+      ". This is a starting point, not a final quote, Evans will follow up to scope it properly.";
+
+    resultBox.hidden = false;
+    resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  calcBtn.addEventListener('click', calculate);
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!rangeField.value) { calculate(); }
+
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Sending...';
+    statusEl.hidden = true;
+
+    var data = new FormData(form);
+    fetch('https://formsubmit.co/ajax/ademiluaolufemi@gmail.com', {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' },
+      body: data
+    })
+      .then(function (res) { if (!res.ok) throw new Error('bad response'); return res.json(); })
+      .then(function () {
+        statusEl.hidden = false;
+        statusEl.textContent = 'Sent — check your inbox for the estimate.';
+        statusEl.classList.remove('pf-error');
+        sendBtn.textContent = 'Sent ✓';
+      })
+      .catch(function () {
+        statusEl.hidden = false;
+        statusEl.classList.add('pf-error');
+        var email = encodeURIComponent(document.getElementById('pf-email').value || '');
+        var body = encodeURIComponent('My estimated range: ' + rangeField.value);
+        statusEl.innerHTML = 'Could not send automatically. <a href="mailto:ademiluaolufemi@gmail.com?subject=Price%20estimate%20request&body=' + body + '">Email it directly instead</a>.';
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Email me this estimate';
+      });
+  });
 })();
