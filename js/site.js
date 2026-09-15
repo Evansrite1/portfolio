@@ -2,9 +2,9 @@
   var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var revealTargets = document.querySelectorAll(
-    '.section-head, .about-photo, .about-grid > div, .facts, .service, ' +
+    '.section-head, .about-photo, .about-text, .fact-card, .service, ' +
     '.process-list li, .work-card, .rate-banner, .case-shot, .case-meta > div, ' +
-    '.case-body h2, .case-body p, .case-body ul, .banner-shot'
+    '.case-body h2, .case-body p, .case-body ul, .banner-shot, .review-card'
   );
 
   revealTargets.forEach(function (el) { el.classList.add('reveal'); });
@@ -37,14 +37,26 @@
 
   var closeEls = modal.querySelectorAll('[data-close]');
   var form = document.getElementById('price-form');
+  var fieldsBox = document.getElementById('pf-fields');
   var calcBtn = document.getElementById('calc-btn');
   var resultBox = document.getElementById('price-result');
-  var prLow = document.getElementById('pr-low');
-  var prHigh = document.getElementById('pr-high');
   var rangeField = document.getElementById('pf-range');
   var autoField = document.getElementById('pf-autoresponse');
   var statusEl = document.getElementById('pf-status');
   var sendBtn = document.getElementById('send-btn');
+  var emailInput = document.getElementById('pf-email');
+
+  function resetModal() {
+    fieldsBox.hidden = false;
+    resultBox.hidden = true;
+    statusEl.hidden = true;
+    statusEl.classList.remove('pf-error');
+    sendBtn.disabled = false;
+    sendBtn.textContent = 'Send me my estimate';
+    emailInput.disabled = false;
+    rangeField.value = '';
+    autoField.value = '';
+  }
 
   function openModal() {
     modal.classList.add('open');
@@ -56,7 +68,7 @@
     modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
   }
-  openBtn.addEventListener('click', openModal);
+  openBtn.addEventListener('click', function () { resetModal(); openModal(); });
   closeEls.forEach(function (el) { el.addEventListener('click', closeModal); });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
@@ -67,9 +79,11 @@
     return Number(el.options[el.selectedIndex].dataset.score || 0);
   }
 
+  // Computes the estimate silently and stores it in the hidden form fields.
+  // The number itself is never shown on screen, it only ever reaches the
+  // visitor through the email so the whole thing reads as a proper quote,
+  // not a toy calculator.
   function calculate() {
-    // Each factor contributes 0..1 (its score / its own max), scaled to a
-    // budget so the full combination spans roughly $500 to $10,000.
     var contribution =
       (selectedScore('pf-screens') / 3) * 2400 +
       (selectedScore('pf-integrations') / 3) * 2000 +
@@ -84,19 +98,20 @@
     low = Math.max(500, Math.min(low, 9500));
     high = Math.max(low + 400, Math.min(high, 10000));
 
-    prLow.textContent = low.toLocaleString();
-    prHigh.textContent = high.toLocaleString();
     rangeField.value = '$' + low.toLocaleString() + ' to $' + high.toLocaleString();
     autoField.value =
       "Thanks for checking! Based on what you told us, your project's estimated range is $" +
       low.toLocaleString() + ' to $' + high.toLocaleString() +
       ". This is a starting point, not a final quote, Evans will follow up to scope it properly.";
-
-    resultBox.hidden = false;
-    resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
-  calcBtn.addEventListener('click', calculate);
+  calcBtn.addEventListener('click', function () {
+    calculate();
+    fieldsBox.hidden = true;
+    resultBox.hidden = false;
+    resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    emailInput.focus();
+  });
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -115,18 +130,18 @@
       .then(function (res) { if (!res.ok) throw new Error('bad response'); return res.json(); })
       .then(function () {
         statusEl.hidden = false;
-        statusEl.textContent = 'Sent — check your inbox for the estimate.';
+        statusEl.textContent = 'Sent. Check your inbox, your estimate is on its way.';
         statusEl.classList.remove('pf-error');
-        sendBtn.textContent = 'Sent ✓';
+        sendBtn.textContent = 'Sent';
+        emailInput.disabled = true;
       })
       .catch(function () {
         statusEl.hidden = false;
         statusEl.classList.add('pf-error');
-        var email = encodeURIComponent(document.getElementById('pf-email').value || '');
         var body = encodeURIComponent('My estimated range: ' + rangeField.value);
         statusEl.innerHTML = 'Could not send automatically. <a href="mailto:ademiluaolufemi@gmail.com?subject=Price%20estimate%20request&body=' + body + '">Email it directly instead</a>.';
         sendBtn.disabled = false;
-        sendBtn.textContent = 'Email me this estimate';
+        sendBtn.textContent = 'Send me my estimate';
       });
   });
 })();
