@@ -105,6 +105,36 @@
     .bg-anim span { animation: none; }
   }
 
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* Depth — cards get real elevation instead of a flat border */
+  .work-card, .service, .rate-banner, .case-shot, .about-photo, .facts, .rate-factors > div, .case-meta > div {
+    box-shadow: 0 10px 30px -20px rgba(0,0,0,0.5), 0 2px 8px -4px rgba(0,0,0,0.25);
+  }
+  :root:not([data-theme="light"]) .work-card,
+  :root:not([data-theme="light"]) .service,
+  :root:not([data-theme="light"]) .rate-banner,
+  :root:not([data-theme="light"]) .case-shot,
+  :root:not([data-theme="light"]) .about-photo,
+  :root:not([data-theme="light"]) .facts,
+  :root:not([data-theme="light"]) .rate-factors > div,
+  :root:not([data-theme="light"]) .case-meta > div {
+    box-shadow: 0 12px 32px -18px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.02) inset;
+  }
+  .btn.primary {
+    box-shadow: 0 8px 20px -10px var(--accent);
+    transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn.primary:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -8px var(--accent); }
+  .btn { transition: transform 0.2s ease, background 0.2s ease; }
+  .btn:hover { transform: translateY(-2px); }
+
   a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
   a:focus-visible, button:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
@@ -189,6 +219,20 @@
     object-fit: cover;
     object-position: center 18%;
     filter: grayscale(1) contrast(1.15) brightness(1.02);
+  }
+
+  @keyframes heroIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .hero .avatar { animation: heroIn 0.7s ease both; }
+  .hero-name { animation: heroIn 0.7s ease 0.08s both; }
+  .hero-role { animation: heroIn 0.7s ease 0.16s both; }
+  .hero h1 { animation: heroIn 0.7s ease 0.24s both; }
+  .hero p.dek { animation: heroIn 0.7s ease 0.32s both; }
+  .hero .cta-row { animation: heroIn 0.7s ease 0.4s both; }
+  @media (prefers-reduced-motion: reduce) {
+    .hero .avatar, .hero-name, .hero-role, .hero h1, .hero p.dek, .hero .cta-row { animation: none; }
   }
 
   .hero h1 {
