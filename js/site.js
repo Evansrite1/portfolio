@@ -122,7 +122,7 @@
     statusEl.hidden = true;
 
     var data = new FormData(form);
-    fetch('https://formsubmit.co/ajax/ademiluaolufemi@gmail.com', {
+    fetch('https://formsubmit.co/ajax/ademiluaolufemi2@gmail.com', {
       method: 'POST',
       headers: { 'Accept': 'application/json' },
       body: data
@@ -139,7 +139,7 @@
         statusEl.hidden = false;
         statusEl.classList.add('pf-error');
         var body = encodeURIComponent('My estimated range: ' + rangeField.value);
-        statusEl.innerHTML = 'Could not send automatically. <a href="mailto:ademiluaolufemi@gmail.com?subject=Price%20estimate%20request&body=' + body + '">Email it directly instead</a>.';
+        statusEl.innerHTML = 'Could not send automatically. <a href="mailto:ademiluaolufemi2@gmail.com?subject=Price%20estimate%20request&body=' + body + '">Email it directly instead</a>.';
         sendBtn.disabled = false;
         sendBtn.textContent = 'Send me my estimate';
       });
