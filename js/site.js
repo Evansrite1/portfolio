@@ -3,7 +3,7 @@
 
   var revealTargets = document.querySelectorAll(
     '.section-head, .about-photo, .about-text, .fact-card, .service, ' +
-    '.process-list li, .work-card, .rate-banner, .case-shot, .case-meta > div, ' +
+    '.process-list li, .work-card, .work-feature, .rate-banner, .case-shot, .case-meta > div, ' +
     '.case-body h2, .case-body p, .case-body ul, .banner-shot, .review-card'
   );
 

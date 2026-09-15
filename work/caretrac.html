@@ -24,39 +24,41 @@
 
   <section class="case-hero">
     <a class="back-link" href="../index.html#work">&larr; Back to work</a>
-    <span class="kicker">Care coordination platform</span>
+    <span class="kicker">Field and client coordination platform</span>
     <h1>CareTRAC</h1>
-    <p>A daily task and care coordination platform built for caregiving teams, so every shift, task and daily log lives in one system instead of scattered notebooks and group chats.</p>
+    <p>Built for Erik at Care General Construction: a portal that keeps site updates, communication and approvals organized so contractors and homeowners stay aligned from kickoff to handover.</p>
     <div class="cta-row" style="display:flex;gap:14px;flex-wrap:wrap;">
+      <a class="btn primary" href="https://portal.caregencon.com" target="_blank" rel="noopener">View live site &#8599;</a>
       <a class="btn" href="../index.html#contact">Start something similar</a>
     </div>
   </section>
 
   <section class="case-body" style="border-bottom:none;">
-    <div class="case-shot shot-placeholder" style="--sc:#EF6B37; aspect-ratio: 16/8;"><span>CareTRAC</span></div>
+    <div class="case-shot"><img src="../images/caretrac-live.png" alt="CareTRAC sign-in screen"></div>
 
     <div class="case-meta">
-      <div><span class="fk">Role</span><span class="fv">Full build, design to deploy</span></div>
+      <div><span class="fk">Client</span><span class="fv">Erik, Care General Construction</span></div>
       <div><span class="fk">Stack</span><span class="fv">FastAPI backend, React frontend</span></div>
-      <div><span class="fk">Type</span><span class="fv">Care coordination platform</span></div>
-      <div><span class="fk">Status</span><span class="fv">In development</span></div>
+      <div><span class="fk">Type</span><span class="fv">Field and client coordination portal</span></div>
+      <div><span class="fk">Status</span><span class="fv">Live</span></div>
     </div>
 
     <h2>The problem</h2>
-    <p>Caregiving teams coordinate a lot of moving parts: who is on shift, what tasks need doing, and a daily log of what actually happened. Without a shared system, that information lives in scattered notebooks, memory and group chats, which makes handoffs between shifts risky and hard to audit.</p>
+    <p>A construction company coordinating multiple job sites had no shared system between the field and the client. Site progress, photos, approvals and updates all lived in separate text threads and phone calls, which made it easy for a homeowner to feel out of the loop and easy for a detail to get lost between the crew and the office.</p>
 
     <h2>What I built</h2>
     <ul>
-      <li>A FastAPI backend with a dedicated scheduler service, so recurring tasks and shift logic run reliably in the background.</li>
-      <li>A React frontend for the day to day work: task names, daily log entries, and status at a glance.</li>
-      <li>A clean design system, dedicated typography and color rules, built for a caregiving team's real workflow rather than a generic admin panel.</li>
-      <li>A Railway plus Vercel deployment split, backend and scheduler on Railway, frontend on Vercel, kept independent of any third-party no-code platform.</li>
+      <li>A secure portal with two distinct experiences: contractors log site progress and photos, homeowners track milestones and review documents, both from the same shared record.</li>
+      <li>Direct messaging between homeowner and contractor inside the portal, so status questions don't need a separate phone call.</li>
+      <li>A FastAPI backend with a dedicated scheduler service for recurring tasks, plus role-based access so each side only sees what's relevant to them.</li>
+      <li>A React frontend with its own design system, built around this team's actual day to day workflow rather than a generic admin template.</li>
     </ul>
 
     <h2>Why it matters</h2>
-    <p>Shift handoffs stop depending on memory. Every task and daily log entry lives in one system the whole team can see, so nothing gets lost between shifts.</p>
+    <p>Every project now has one record both sides trust: what was done, what's next, and who to ask. Nothing depends on remembering a phone call from three days ago.</p>
 
     <div class="case-cta">
+      <a class="btn primary" href="https://portal.caregencon.com" target="_blank" rel="noopener">View live site &#8599;</a>
       <a class="btn" href="../index.html#work">See other work</a>
     </div>
   </section>
