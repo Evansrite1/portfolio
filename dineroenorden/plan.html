@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dinero en Orden · El próximo nivel · Propuesta de Evans Ademilua</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#17131f;--cream:#f7f3ec;--paper:#fffdf8;--muted:#6f687c;--line:#e6dfd3;--violet:#6a4ee8;--violet-l:#e9e3ff;--lime:#d9f55a;--pink:#ff8fb1;--serif:"Fraunces",Georgia,serif;--sans:"Manrope",system-ui,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;background:#2a2535;font-family:var(--sans);color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.slide{width:1600px;height:900px;margin:30px auto;background:var(--paper);position:relative;overflow:hidden;padding:80px 96px;display:flex;flex-direction:column;page-break-after:always;break-after:page}
+h1,h2,h3{font-family:var(--serif);font-weight:500;letter-spacing:-.02em;line-height:1.02;margin:0}
+h1{font-size:92px}h2{font-size:64px}h3{font-size:28px}
+p{margin:0}
+.eyebrow{display:inline-flex;align-items:center;gap:12px;font-size:14px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:var(--violet)}
+.eyebrow::before{content:"";width:34px;height:3px;background:var(--lime);border-radius:3px}
+.num{position:absolute;right:96px;top:72px;font-family:var(--serif);font-size:20px;color:var(--muted)}
+.foot{position:absolute;left:96px;right:96px;bottom:40px;display:flex;justify-content:space-between;font-size:13px;color:var(--muted);letter-spacing:.06em}
+.foot b{color:var(--ink)}
+em{font-style:italic;color:var(--violet)}
+mark{background:linear-gradient(transparent 55%,var(--lime) 55%);color:inherit;padding:0 .1em}
+.grid{display:grid;gap:28px}
+.cols2{grid-template-columns:1fr 1fr}.cols3{grid-template-columns:1fr 1fr 1fr}.cols4{grid-template-columns:repeat(4,1fr)}
+.card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:22px 26px}
+.card.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
+.card.dark .m{color:#bfb8cf}
+.card .k{font-family:var(--serif);font-size:46px;font-weight:700;line-height:1;color:var(--violet)}
+.card.dark .k{color:var(--lime)}
+.card .t{font-size:18px;font-weight:800;margin-top:10px}
+.card .m{font-size:14.5px;color:var(--muted);line-height:1.5;margin-top:6px}
+.bad{display:grid;grid-template-columns:52px 1fr;gap:18px;align-items:start;padding:14px 0;border-bottom:1px solid var(--line)}
+.bad:last-child{border-bottom:0}
+.bad i{width:52px;height:52px;border-radius:14px;background:#ffe3ea;color:#c0264b;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:22px}
+.bad b{display:block;font-size:19px}
+.bad span{font-size:15.5px;color:var(--muted);line-height:1.45}
+.big{font-family:var(--serif);font-size:120px;font-weight:700;line-height:.95;color:var(--violet)}
+.big small{display:block;font-family:var(--sans);font-size:15px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:14px}
+.shot{border-radius:22px;overflow:hidden;box-shadow:0 40px 90px -40px rgba(23,19,31,.55);border:1px solid var(--line)}
+.shot img{display:block;width:100%}
+.chk{display:grid;gap:12px}
+.chk div{display:flex;gap:12px;align-items:flex-start;font-size:16.5px;line-height:1.4}
+.chk div::before{content:"✓";flex:none;width:26px;height:26px;border-radius:50%;background:var(--lime);display:grid;place-items:center;font-weight:800;font-size:14px;margin-top:2px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.step{background:var(--violet-l);border-radius:20px;padding:16px 18px}
+.step b{font-family:var(--serif);font-size:34px;color:var(--violet);display:block;line-height:1;font-weight:700}
+.step strong{display:block;margin:10px 0 6px;font-size:17px}
+.step span{font-size:13.5px;color:#4a4560;line-height:1.45}
+.cta{background:var(--ink);color:#fff;border-radius:26px;padding:22px 32px;display:flex;align-items:center;justify-content:space-between;gap:30px}
+.cta h3{color:#fff;font-size:34px}
+.cta p{color:#bfb8cf;font-size:16px;margin-top:6px}
+.pill{display:inline-block;background:var(--lime);border-radius:999px;padding:12px 22px;font-weight:800;color:var(--ink);font-size:17px;white-space:nowrap}
+.cover{background:var(--ink);color:#fff;justify-content:center}
+.cover h1{color:#fff;font-size:118px}
+.cover .eyebrow{color:var(--lime)}
+.cover .meta{display:flex;gap:40px;margin-top:50px;color:#bfb8cf;font-size:16px}
+.cover .meta b{display:block;color:#fff;font-family:var(--serif);font-size:34px;font-weight:700}
+.coin{position:absolute;right:-120px;top:-120px;width:620px;height:620px;border-radius:50%;background:var(--violet);opacity:.9}
+.coin2{position:absolute;right:120px;bottom:-200px;width:420px;height:420px;border-radius:50%;background:var(--lime);opacity:.9}
+@media print{html,body{background:#fff}.slide{margin:0;page-break-after:always}@page{size:1600px 900px;margin:0}}
+</style>
+</head>
+<body>
+
+<!-- 1 COVER -->
+<section class="slide cover">
+  <div class="coin"></div><div class="coin2"></div>
+  <span class="eyebrow">Propuesta para Celeste Sánchez · Dinero en Orden</span>
+  <h1 style="margin-top:28px">Dinero en Orden,<br>al <em style="color:var(--lime)">próximo nivel.</em></h1>
+  <p style="font-size:22px;color:#bfb8cf;margin-top:26px;max-width:760px">Cinco minutos de lectura: dónde estás hoy, qué te está costando, tu nuevo sitio, cómo hace más plata y los próximos 30 días.</p>
+  <div class="meta"><div><b>111K</b>seguidoras en Instagram</div><div><b>9</b>medios que te entrevistaron</div><div><b>65</b>episodios del podcast</div><div><b>Desde 2017</b>enseñando finanzas familiares</div></div>
+  <div class="foot" style="color:#bfb8cf"><span>Preparado por <b style="color:#fff">Evans Ademilua · Large Technologies</b></span><span>Octubre 2026 · evansademilua.vercel.app</span></div>
+</section>
+
+<!-- 2 WHERE YOU ARE -->
+<section class="slide">
+  <div class="num">2 / 5</div>
+  <span class="eyebrow">Dónde estás hoy</span>
+  <h2 style="margin-top:18px">Tenés la audiencia y la autoridad.<br>Tu web no las convierte en ventas.</h2>
+  <div class="grid cols2" style="margin-top:40px;flex:1;align-items:start">
+    <div>
+      <div class="bad"><i>404</i><div><b>VER SERVICIOS y ASESORÍAS llevan a una página de error</b><span>Verificado el 7 de octubre: los dos botones que venden tus asesorías terminan en /servicios/ con error 404.</span></div></div>
+      <div class="bad"><i>⛔</i><div><b>Hoy dineroenorden.com bloquea visitantes</b><span>El 13 de octubre entré desde un navegador normal y vi "Sorry, you have been blocked" (Cloudflare). A cada persona que le pasa, no compra.</span></div></div>
+      <div class="bad"><i>0</i><div><b>Tu producto más caro no tiene página</b><span>Las charlas para empresas se venden comentando CHARLA en un post. Una empresa que te vio en TN no tiene dónde pedir una propuesta.</span></div></div>
+      <div class="bad"><i>10</i><div><b>10 likes en tu post de servicios, con 111K seguidoras</b><span>El algoritmo muestra tus ventas a muy pocas. La web tiene que vender sola, sin depender del feed.</span></div></div>
+    </div>
+    <div class="grid" style="gap:18px">
+      <div class="card dark"><div class="k">10 ítems</div><div class="t">Un menú de 2020 con dos monedas, "Mi cuenta" y "Acceso escuela"</div><div class="m">Una mamá que llega desde Instagram con 20 segundos no sabe por dónde empezar. Tiene que elegir entre 10 opciones.</div></div>
+      <div class="card"><div class="k">🔒</div><div class="t">Los recursos gratuitos están detrás de una contraseña</div><div class="m">Suscribirse, esperar el email, buscar la clave, ingresarla. Cada paso pierde gente que ya quería tu material.</div></div>
+      <div class="card"><div class="k">0</div><div class="t">Ningún camino automático del gratis al pago</div><div class="m">Quien baja un imprimible no recibe una secuencia que la lleve al programa de USD 36 ni al pack de USD 125.</div></div>
+    </div>
+  </div>
+  <div class="foot"><span><b>Dinero en Orden</b> · El próximo nivel</span><span>Evans Ademilua · Large Technologies</span></div>
+</section>
+
+<!-- 3 WHAT IT COSTS -->
+<section class="slide" style="background:var(--cream)">
+  <div class="num">3 / 5</div>
+  <span class="eyebrow">Lo que te está costando</span>
+  <h2 style="margin-top:18px">Hagamos cuentas, como hacés vos.</h2>
+  <div class="grid cols2" style="margin-top:36px;flex:1;align-items:center">
+    <div>
+      <div class="big">USD 1.200<small>por mes que hoy se pierde en el 404 (estimación conservadora)</small></div>
+      <p style="font-size:17px;color:var(--muted);margin-top:26px;line-height:1.5;max-width:600px">Si solo el <b>1%</b> de tus 111K seguidoras entra a tu web cada mes (1.110 personas) y <b>3 de cada 100</b> comprarían el programa de USD 36, son <b>USD 1.200 por mes</b>. Hoy ese botón termina en un error. Y no cuenta a las que el sitio directamente bloquea.</p>
+    </div>
+    <div class="grid" style="gap:18px">
+      <div class="card"><div class="k">x20</div><div class="t">Una charla corporativa vale más que 20 programas</div><div class="m">Es tu producto de mayor valor y "el espacio que más disfrutás". Hoy no tiene página, ni temario, ni formulario. Ninguna empresa te puede encontrar en Google buscando "charla finanzas personales para empleados".</div></div>
+      <div class="card"><div class="k">0 de 111K</div><div class="t">Seguidoras que son tuyas de verdad</div><div class="m">Instagram decide quién ve tus posts (10 likes lo prueban). Sin un primer paso gratis que capture emails, cada cambio del algoritmo te cuesta ventas.</div></div>
+      <div class="card dark"><div class="k">9 medios</div><div class="t">CNN, Infobae, TN, A24, La Nación… y nadie lo ve</div><div class="m">Esa autoridad hoy es una fila de logos. Debería ser una página "En los medios" que te traiga más notas, más charlas y mejores precios.</div></div>
+    </div>
+  </div>
+  <div class="foot"><span><b>Dinero en Orden</b> · El próximo nivel</span><span>Evans Ademilua · Large Technologies</span></div>
+</section>
+
+<!-- 4 YOUR NEW SITE -->
+<section class="slide">
+  <div class="num">4 / 5</div>
+  <span class="eyebrow">Tu nuevo sitio · ya está hecho</span>
+  <h2 style="margin-top:18px">evansademilua.vercel.app/dineroenorden</h2>
+  <div class="grid" style="grid-template-columns:1.25fr .75fr;margin-top:30px;flex:1;align-items:center">
+    <div class="shot"><img src="/dineroenorden/img/shot-hero.jpg" alt="Captura del nuevo sitio"></div>
+    <div class="chk">
+      <div><span><b>Un solo mensaje arriba:</b> "Hablo claro sobre plata", con vos en la foto y los medios que te entrevistaron.</span></div>
+      <div><span><b>"¿Por dónde empiezo?":</b> 3 botones (deudas, ahorro, emprendedora) y el sitio recomienda tu producto correcto.</span></div>
+      <div><span><b>Charlas para empresas:</b> temario, formato y formulario de propuesta. Por fin tu producto más caro tiene dónde pedirse.</span></div>
+      <div><span><b>Programa, asesorías y tienda</b> con precios claros y botones que van a tus páginas de pago reales.</span></div>
+      <div><span><b>Calculadora de gastos invisibles:</b> mueve una barra, ve cuánto pierde por año, y el botón la lleva al programa.</span></div>
+      <div><span><b>Primer paso gratis sin contraseña:</b> nombre y email, y ya está en tu lista.</span></div>
+      <div><span><b>Animaciones, celular perfecto, carga en 1 segundo.</b> Sin WordPress que se rompa ni Cloudflare que bloquee.</span></div>
+    </div>
+  </div>
+  <div class="foot"><span><b>Dinero en Orden</b> · El próximo nivel</span><span>Es un concepto: fotos y textos salen de tu sitio e Instagram actuales. Todo se ajusta con vos.</span></div>
+</section>
+
+<!-- 5 HOW IT MAKES MONEY + 30 DAYS -->
+<section class="slide" style="background:var(--cream)">
+  <div class="num">5 / 5</div>
+  <span class="eyebrow">Cómo hace más plata · y más visibilidad que termina en ventas</span>
+  <h2 style="margin-top:18px">Tres motores, un panel para verlos.</h2>
+  <div class="grid cols3" style="margin-top:30px">
+    <div class="card dark"><div class="k">1</div><div class="t">Charlas para empresas</div><div class="m">Página propia + kit de prensa con tus logos de medios + formulario. Posicionada en Google para "charla finanzas personales empresas Argentina". Cada pedido te llega por email y al panel. Una charla cerrada paga el proyecto entero.</div></div>
+    <div class="card"><div class="k">2</div><div class="t">Embudo gratis → USD 36 → USD 125</div><div class="m">"Tu primer paso" sin contraseña captura el email. 4 emails automáticos en 10 días llevan al programa $Í HAY PLATA, y a quien compra, al Pack Transformación. Vende todos los días, aunque Instagram no muestre tu post.</div></div>
+    <div class="card"><div class="k">3</div><div class="t">Visibilidad que vende</div><div class="m">Tus 100+ artículos del blog, reordenados para que Google y ChatGPT te citen cuando alguien pregunta cómo ahorrar en Argentina. Página "En los medios" para que los productores te encuentren. Más notas, más charlas.</div></div>
+  </div>
+  <h3 style="margin:22px 0 12px">Próximos 30 días</h3>
+  <div class="steps">
+    <div class="step"><b>Sem. 1</b><strong>Sitio online</strong><span>En tu dominio, sin bloqueos. Botones de asesorías funcionando. Redirecciones de las URLs viejas para no perder Google.</span></div>
+    <div class="step"><b>Sem. 2</b><strong>Embudo automático</strong><span>Primer paso gratis + 4 emails + conexión a tu tienda. Primeras suscriptoras el mismo día.</span></div>
+    <div class="step"><b>Sem. 3</b><strong>Charlas y prensa</strong><span>Página de charlas con temario y propuesta, kit de prensa descargable, página "En los medios".</span></div>
+    <div class="step"><b>Sem. 4</b><strong>Panel y primer reporte</strong><span>Cada lead, cada venta y de qué post vino. Te muestro los números en una llamada de 15 minutos.</span></div>
+  </div>
+  <div class="cta" style="margin-top:20px"><div><h3>¿Te interesa?</h3><p>Respondé este email con un "sí" y coordinamos 15 minutos esta semana. Sin compromiso, sin letra chica.</p></div><span class="pill">Evans Ademilua · Large Technologies</span></div>
+  
+</section>
+
+</body>
+</html>

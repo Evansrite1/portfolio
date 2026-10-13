@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dinero en Orden | Celeste Sánchez | Educación financiera para familias</title>
+<meta name="description" content="Celeste Sánchez, periodista. Hablo claro sobre plata. Charlas para empresas, el programa $Í HAY PLATA, asesorías 1 a 1, planner y podcast para que tu familia llegue cómoda a fin de mes, salga de deudas y ahorre.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#17131f;--ink-2:#241d30;--cream:#f7f3ec;--paper:#fffdf8;--muted:#6f687c;--line:#e6dfd3;
+  --violet:#6a4ee8;--violet-d:#4a33b8;--violet-l:#e9e3ff;--lime:#d9f55a;--lime-d:#b9d82e;--pink:#ff8fb1;
+  --serif:"Fraunces",Georgia,serif;--sans:"Manrope",system-ui,sans-serif;
+  --ease:cubic-bezier(.22,.8,.2,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;overflow-x:hidden;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body.loading{overflow:hidden}
+img{display:block;max-width:100%}
+a{color:inherit}
+::selection{background:var(--lime);color:var(--ink)}
+h1,h2,h3{font-family:var(--serif);font-weight:500;letter-spacing:-.02em;line-height:1.05;margin:0}
+h2{font-size:clamp(34px,5vw,60px)}
+h3{font-size:clamp(22px,2.6vw,30px)}
+p{margin:0 0 1em}
+.wrap{width:min(1180px,calc(100% - 40px));margin:0 auto}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--violet)}
+.eyebrow::before{content:"";width:28px;height:2px;background:var(--lime);border-radius:2px}
+.lead{font-size:clamp(18px,1.6vw,21px);color:var(--muted);max-width:60ch}
+mark{background:linear-gradient(transparent 55%,var(--lime) 55%);color:inherit;padding:0 .1em}
+
+/* LOADER */
+.loader{position:fixed;inset:0;z-index:100;background:var(--ink);display:grid;place-items:center;transition:transform 1s var(--ease);color:#fff}
+.loader.done{transform:translateY(-100%)}
+.loader .w{display:flex;flex-direction:column;align-items:center;gap:14px}
+.loader .coin{width:72px;height:72px;border-radius:50%;background:var(--lime);display:grid;place-items:center;color:var(--ink);font-family:var(--serif);font-size:38px;font-weight:700;animation:spin 1.4s var(--ease) infinite}
+@keyframes spin{0%{transform:rotateY(0)}50%{transform:rotateY(180deg)}100%{transform:rotateY(360deg)}}
+.loader .t{font-family:var(--serif);font-size:20px;letter-spacing:.02em;opacity:0;animation:fade .7s ease .3s forwards}
+.loader .bar{width:140px;height:2px;background:rgba(255,255,255,.15);overflow:hidden;border-radius:2px}
+.loader .bar i{display:block;height:100%;width:100%;background:var(--lime);transform:translateX(-100%);animation:load 1.2s var(--ease) .2s forwards}
+@keyframes fade{to{opacity:1}}
+@keyframes load{to{transform:none}}
+
+.concept{background:var(--ink);color:#d9d3e6;font-size:12.5px;letter-spacing:.04em;text-align:center;padding:8px 16px;position:relative;z-index:30}
+.concept b{color:var(--lime);font-weight:700}
+
+/* NAV */
+header.nav{position:fixed;top:34px;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:18px clamp(16px,4vw,56px);transition:transform .5s var(--ease),background .4s,padding .4s,top .4s,box-shadow .4s}
+header.nav.scrolled{top:0;background:rgba(255,253,248,.9);backdrop-filter:blur(12px);padding-top:10px;padding-bottom:10px;box-shadow:0 1px 0 var(--line)}
+header.nav.hide{transform:translateY(-110%)}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.brand img{width:46px;height:46px;transition:transform .6s var(--ease)}
+.brand:hover img{transform:rotate(-12deg) scale(1.05)}
+.brand span{font-family:var(--serif);font-size:21px;font-weight:700;letter-spacing:-.01em}
+.brand small{display:block;font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--violet)}
+nav.links{display:flex;gap:26px;font-size:13.5px;font-weight:600}
+nav.links a{text-decoration:none;position:relative;padding:4px 0}
+nav.links a::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;background:var(--lime);transform:scaleX(0);transform-origin:right;transition:transform .45s var(--ease)}
+nav.links a:hover::after,nav.links a.active::after{transform:scaleX(1);transform-origin:left}
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:10px;border:2px solid var(--ink);border-radius:999px;padding:13px 24px;font-size:14px;font-weight:800;letter-spacing:.02em;text-decoration:none;background:var(--ink);color:#fff;cursor:pointer;font-family:var(--sans);transition:transform .3s var(--ease),color .4s var(--ease),border-color .4s;z-index:0}
+.btn::before{content:"";position:absolute;inset:0;background:var(--lime);transform:translateY(101%);transition:transform .45s var(--ease);z-index:-1}
+.btn:hover::before{transform:none}
+.btn:hover{color:var(--ink);transform:translateY(-2px);border-color:var(--lime)}
+.btn.lime{background:var(--lime);color:var(--ink);border-color:var(--lime)}
+.btn.lime::before{background:var(--ink)}
+.btn.lime:hover{color:#fff;border-color:var(--ink)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost::before{background:var(--ink)}
+.btn.ghost:hover{color:#fff}
+.btn .arr{transition:transform .35s var(--ease)}
+.btn:hover .arr{transform:translateX(4px)}
+.burger{display:none;background:none;border:0;cursor:pointer;padding:8px}
+.burger i{display:block;width:26px;height:2px;background:var(--ink);margin:6px 0;transition:.3s}
+.mobile{position:fixed;inset:0;z-index:39;background:var(--ink);color:#fff;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:40px;transform:translateY(-100%);transition:transform .6s var(--ease)}
+.mobile.open{transform:none}
+.mobile a{font-family:var(--serif);font-size:34px;text-decoration:none;opacity:0;transform:translateY(20px);transition:.5s var(--ease)}
+.mobile.open a{opacity:1;transform:none}
+.mobile.open a:nth-child(2){transition-delay:.05s}.mobile.open a:nth-child(3){transition-delay:.1s}.mobile.open a:nth-child(4){transition-delay:.15s}.mobile.open a:nth-child(5){transition-delay:.2s}.mobile.open a:nth-child(6){transition-delay:.25s}.mobile.open a:nth-child(7){transition-delay:.3s}
+
+/* HERO */
+.hero{position:relative;min-height:100svh;padding:150px 0 70px;background:var(--cream);overflow:hidden}
+.hero .blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;pointer-events:none;animation:drift 14s ease-in-out infinite alternate}
+.hero .b1{width:520px;height:520px;background:var(--violet-l);top:-120px;right:-80px}
+.hero .b2{width:420px;height:420px;background:#f1ffb0;bottom:-140px;left:-100px;animation-delay:-6s}
+@keyframes drift{to{transform:translate(40px,30px) scale(1.08)}}
+.hero .wrap{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:50px;align-items:center}
+.hero h1{font-size:clamp(46px,7.2vw,96px);font-weight:500}
+.hero h1 .line{display:block;overflow:hidden}
+.hero h1 .line>span{display:block;transform:translateY(110%);transition:transform 1s var(--ease)}
+body.ready .hero h1 .line>span{transform:none}
+.hero h1 .line:nth-child(2)>span{transition-delay:.1s}.hero h1 .line:nth-child(3)>span{transition-delay:.2s}
+.hero h1 em{font-style:italic;color:var(--violet)}
+.rotator{display:inline-grid;vertical-align:bottom;text-align:left}
+.rotator>span{grid-area:1/1;opacity:0;transform:translateY(16px);transition:.6s var(--ease);white-space:nowrap}
+.rotator>span.on{opacity:1;transform:none}
+.hero .sub{margin:26px 0 34px;max-width:54ch;font-size:clamp(17px,1.5vw,20px);color:var(--muted);opacity:0;transform:translateY(14px);transition:.9s var(--ease) .35s}
+body.ready .hero .sub{opacity:1;transform:none}
+.hero .cta{display:flex;gap:14px;flex-wrap:wrap;opacity:0;transform:translateY(14px);transition:.9s var(--ease) .5s}
+body.ready .hero .cta{opacity:1;transform:none}
+.hero .visual{position:relative;aspect-ratio:4/4.6;opacity:0;transform:translateY(30px) rotate(2deg);transition:1.2s var(--ease) .4s}
+body.ready .hero .visual{opacity:1;transform:none}
+.hero .visual .ph{position:absolute;inset:0;border-radius:28px;overflow:hidden;box-shadow:0 40px 80px -30px rgba(23,19,31,.45)}
+.hero .visual .ph img{width:100%;height:100%;object-fit:cover;transform:scale(1.06);transition:transform 1.4s var(--ease)}
+.hero .visual:hover .ph img{transform:scale(1)}
+.chip{position:absolute;background:#fff;border-radius:16px;padding:12px 16px;box-shadow:0 20px 40px -20px rgba(23,19,31,.4);font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:10px;animation:float 5s ease-in-out infinite}
+.chip b{font-family:var(--serif);font-size:22px;color:var(--violet);font-weight:700}
+.chip.c1{top:8%;left:-14%}.chip.c2{bottom:18%;right:-10%;animation-delay:-2s}.chip.c3{bottom:-4%;left:8%;animation-delay:-3.5s;background:var(--lime)}
+@keyframes float{50%{transform:translateY(-10px)}}
+.stats{display:flex;gap:clamp(20px,4vw,56px);margin-top:56px;padding-top:28px;border-top:1px solid var(--line);flex-wrap:wrap;opacity:0;transition:.9s var(--ease) .7s}
+body.ready .stats{opacity:1}
+.stat b{display:block;font-family:var(--serif);font-size:clamp(30px,3.4vw,44px);font-weight:700;color:var(--ink);line-height:1}
+.stat span{font-size:12.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* MARQUEE */
+.press{background:var(--ink);color:#fff;padding:22px 0;overflow:hidden}
+.press .lbl{text-align:center;font-size:11.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--lime);margin-bottom:10px;font-weight:700}
+.marquee{display:flex;gap:0;width:max-content;animation:mq 28s linear infinite}
+.press:hover .marquee{animation-play-state:paused}
+.marquee span{font-family:var(--serif);font-size:30px;font-weight:700;padding:0 38px;white-space:nowrap;opacity:.9;display:flex;align-items:center;gap:38px}
+.marquee span::after{content:"✦";color:var(--lime);font-size:16px}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* SECTIONS */
+section{padding:clamp(70px,9vw,120px) 0}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.head{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin-bottom:clamp(36px,5vw,64px)}
+.head .lead{margin:0}
+
+/* QUIZ */
+.quiz{background:var(--ink);color:#fff;border-radius:32px;padding:clamp(34px,5vw,64px);position:relative;overflow:hidden}
+.quiz::after{content:"$";position:absolute;right:-20px;bottom:-80px;font-family:var(--serif);font-size:420px;font-weight:700;color:rgba(217,245,90,.06);line-height:1;pointer-events:none}
+.quiz h2{color:#fff}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0}
+.opt{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:22px;cursor:pointer;text-align:left;color:#fff;font-family:var(--sans);font-size:16px;font-weight:600;transition:.35s var(--ease);position:relative}
+.opt small{display:block;font-weight:400;color:#bfb8cf;margin-top:6px;font-size:14px}
+.opt:hover{transform:translateY(-4px);border-color:var(--lime)}
+.opt.sel{background:var(--lime);color:var(--ink);border-color:var(--lime)}
+.opt.sel small{color:#4b5a12}
+.ans{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;background:rgba(255,255,255,.07);border-radius:22px;padding:24px 28px;min-height:120px;transition:.4s}
+.ans.flash{animation:pop .6s var(--ease)}
+@keyframes pop{0%{transform:scale(.98);opacity:.4}100%{transform:none;opacity:1}}
+.ans h3{color:var(--lime);margin-bottom:6px}
+.ans p{color:#d9d3e6;margin:0}
+
+/* CHARLAS */
+.charlas{background:var(--violet);color:#fff;position:relative;overflow:hidden}
+.charlas::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(217,245,90,.25),transparent 40%),radial-gradient(circle at 10% 90%,rgba(255,143,177,.25),transparent 40%)}
+.charlas .wrap{position:relative}
+.charlas h2,.charlas h3{color:#fff}
+.charlas .eyebrow{color:var(--lime)}
+.charlas .lead{color:#e9e3ff}
+.topics{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:40px 0}
+.topic{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:22px;padding:26px;backdrop-filter:blur(6px);transition:.4s var(--ease)}
+.topic:hover{background:rgba(255,255,255,.16);transform:translateY(-6px)}
+.topic .n{font-family:var(--serif);font-size:40px;font-weight:700;color:var(--lime);line-height:1}
+.topic h3{font-size:21px;margin:12px 0 8px}
+.topic p{color:#e3ddff;font-size:15px;margin:0}
+.charla-form{display:grid;grid-template-columns:1fr 1fr;gap:16px;background:#fff;color:var(--ink);border-radius:26px;padding:28px}
+.charla-form h3{grid-column:1/-1;margin-bottom:4px}
+.field{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input,.field select,.field textarea{font:500 16px var(--sans);padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);outline:0;transition:.3s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--violet);box-shadow:0 0 0 4px var(--violet-l)}
+.field.full{grid-column:1/-1}
+.form-foot{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.form-foot small{color:var(--muted);font-size:13px}
+.ok{grid-column:1/-1;display:none;background:var(--lime);border-radius:16px;padding:18px 20px;font-weight:600}
+.ok.show{display:block;animation:pop .5s var(--ease)}
+
+/* PROGRAMA */
+.programa .grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,5vw,70px);align-items:center}
+.weeks{display:grid;gap:12px;margin:28px 0}
+.week{display:grid;grid-template-columns:54px 1fr;gap:16px;align-items:start;padding:16px 18px;border:1px solid var(--line);border-radius:18px;background:#fff;transition:.35s var(--ease)}
+.week:hover{transform:translateX(6px);border-color:var(--violet)}
+.week b{font-family:var(--serif);font-size:30px;color:var(--violet);line-height:1;font-weight:700}
+.week strong{display:block;font-size:16px}
+.week span{color:var(--muted);font-size:14.5px}
+.price{display:flex;align-items:baseline;gap:12px;margin:10px 0 22px}
+.price b{font-family:var(--serif);font-size:48px;font-weight:700}
+.price s{color:var(--muted);font-size:20px}
+.price em{font-style:normal;background:var(--lime);padding:4px 10px;border-radius:999px;font-size:12px;font-weight:800;letter-spacing:.08em}
+.tilt{position:relative;border-radius:28px;overflow:hidden;box-shadow:0 40px 80px -36px rgba(23,19,31,.5);transform-style:preserve-3d;transition:transform .6s var(--ease)}
+.tilt img{width:100%;height:100%;object-fit:cover;aspect-ratio:1}
+.tilt .tag{position:absolute;left:20px;bottom:20px;background:#fff;border-radius:14px;padding:10px 14px;font-size:13px;font-weight:700}
+
+/* ASESORIAS */
+.asesorias{background:var(--cream)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:#fff;border-radius:26px;padding:30px;border:1px solid var(--line);display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden;transition:.45s var(--ease)}
+.card::before{content:"";position:absolute;left:0;top:0;width:100%;height:6px;background:var(--lime);transform:scaleX(0);transform-origin:left;transition:.5s var(--ease)}
+.card:hover{transform:translateY(-8px);box-shadow:0 30px 60px -30px rgba(23,19,31,.35)}
+.card:hover::before{transform:none}
+.card.hot{background:var(--ink);color:#fff;border-color:var(--ink)}
+.card.hot h3{color:#fff}
+.card.hot .muted{color:#bfb8cf}
+.card .muted{color:var(--muted);font-size:15px;flex:1}
+.card .p{font-family:var(--serif);font-size:38px;font-weight:700}
+.card .p small{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--muted);margin-left:6px}
+.card.hot .p small{color:#bfb8cf}
+.card ul{margin:0;padding-left:18px;font-size:14.5px;color:var(--muted)}
+.card.hot ul{color:#d9d3e6}
+.pill{position:absolute;top:18px;right:18px;background:var(--lime);color:var(--ink);font-size:11px;font-weight:800;letter-spacing:.14em;padding:6px 10px;border-radius:999px}
+
+/* TIENDA */
+.shop{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.item{border-radius:22px;overflow:hidden;background:#fff;border:1px solid var(--line);text-decoration:none;transition:.4s var(--ease)}
+.item:hover{transform:translateY(-6px);box-shadow:0 24px 50px -28px rgba(23,19,31,.35)}
+.item .im{aspect-ratio:1;overflow:hidden;background:var(--violet-l);display:grid;place-items:center}
+.item .im img{width:100%;height:100%;object-fit:cover;transition:transform 1s var(--ease)}
+.item:hover .im img{transform:scale(1.06)}
+.item .im .emoji{font-size:64px}
+.item .b{padding:16px 18px}
+.item .b strong{display:block;font-size:15.5px;line-height:1.3}
+.item .b span{display:block;color:var(--violet);font-weight:800;margin-top:6px}
+
+/* PODCAST */
+.podcast{background:var(--ink);color:#fff}
+.podcast h2,.podcast h3{color:#fff}
+.podcast .grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(30px,5vw,70px);align-items:center}
+.podcast .cover{border-radius:28px;overflow:hidden;position:relative}
+.podcast .cover img{width:100%;aspect-ratio:1;object-fit:cover}
+.eq{position:absolute;left:22px;bottom:22px;display:flex;gap:4px;align-items:flex-end;height:28px}
+.eq i{width:5px;background:var(--lime);border-radius:3px;animation:eq 1s ease-in-out infinite}
+.eq i:nth-child(2){animation-delay:.15s}.eq i:nth-child(3){animation-delay:.3s}.eq i:nth-child(4){animation-delay:.45s}.eq i:nth-child(5){animation-delay:.6s}
+@keyframes eq{0%,100%{height:8px}50%{height:28px}}
+.eps{display:grid;gap:10px;margin:26px 0}
+.ep{display:flex;align-items:center;gap:16px;padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);text-decoration:none;transition:.35s var(--ease)}
+.ep:hover{background:rgba(255,255,255,.12);transform:translateX(6px)}
+.ep .play{width:40px;height:40px;border-radius:50%;background:var(--lime);display:grid;place-items:center;color:var(--ink);flex:none}
+.ep strong{font-size:15.5px;font-weight:600}
+.ep small{color:#bfb8cf;display:block;font-size:13px}
+
+/* CALC */
+.calc{background:var(--cream)}
+.calc .box{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;background:#fff;border-radius:30px;padding:clamp(28px,4vw,50px);border:1px solid var(--line)}
+.range{width:100%;accent-color:var(--violet);margin:16px 0}
+.big{font-family:var(--serif);font-size:clamp(50px,6vw,80px);font-weight:700;color:var(--violet);line-height:1}
+.big small{font-family:var(--sans);font-size:14px;color:var(--muted);display:block;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-top:10px}
+
+/* GRATIS */
+.gratis .box{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;background:var(--violet-l);border-radius:30px;padding:clamp(28px,4vw,56px);overflow:hidden;position:relative}
+.gratis .box::after{content:"";position:absolute;right:-80px;top:-80px;width:280px;height:280px;border-radius:50%;background:var(--lime);opacity:.6}
+.gratis form{position:relative;display:grid;gap:12px}
+.gratis .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.checks{display:grid;gap:10px;margin:20px 0}
+.checks div{display:flex;gap:12px;align-items:center;font-weight:600}
+.checks div::before{content:"✓";width:26px;height:26px;border-radius:50%;background:var(--lime);display:grid;place-items:center;font-weight:800;flex:none}
+
+/* TESTIMONIOS */
+.testi{position:relative}
+.slides{position:relative;min-height:260px}
+.slide{position:absolute;inset:0;opacity:0;transform:translateX(30px);transition:.7s var(--ease);display:grid;grid-template-columns:1fr;gap:16px;align-content:center;text-align:center;max-width:820px;margin:0 auto;pointer-events:none}
+.slide.on{opacity:1;transform:none;pointer-events:auto}
+.slide q{font-family:var(--serif);font-size:clamp(22px,2.6vw,34px);line-height:1.3;font-style:italic;quotes:"“" "”"}
+.slide cite{font-style:normal;font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:12.5px;color:var(--violet)}
+.stars{color:#f5b301;letter-spacing:4px}
+.dots{display:flex;gap:8px;justify-content:center;margin-top:20px}
+.dots button{width:10px;height:10px;border-radius:50%;border:0;background:var(--line);cursor:pointer;transition:.3s}
+.dots button.on{background:var(--violet);transform:scale(1.3)}
+
+/* SOBRE */
+.sobre .grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(30px,5vw,80px);align-items:center}
+.sobre .ph{border-radius:28px;overflow:hidden;aspect-ratio:4/5}
+.sobre .ph img{width:100%;height:100%;object-fit:cover}
+.vals{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.vals span{border:1.5px solid var(--ink);border-radius:999px;padding:8px 14px;font-size:13.5px;font-weight:700}
+
+/* FOOTER */
+footer{background:var(--ink);color:#bfb8cf;padding:70px 0 30px}
+footer .top{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:30px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,.1)}
+footer h4{color:#fff;font-size:13px;letter-spacing:.2em;text-transform:uppercase;margin:0 0 14px}
+footer a{display:block;text-decoration:none;margin:6px 0;transition:.3s}
+footer a:hover{color:var(--lime)}
+footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:24px;font-size:13px;flex-wrap:wrap}
+
+@media (max-width:980px){
+  .hero .wrap,.programa .grid,.podcast .grid,.sobre .grid,.calc .box,.gratis .box,.head{grid-template-columns:1fr}
+  .cards,.topics,.opts{grid-template-columns:1fr}
+  .shop{grid-template-columns:1fr 1fr}
+  .charla-form{grid-template-columns:1fr}
+  footer .top{grid-template-columns:1fr 1fr}
+  nav.links,.nav .btn{display:none}
+  .burger{display:block}
+  .chip.c1{left:0}.chip.c2{right:0}
+  .hero{padding-top:120px}
+  .ans{grid-template-columns:1fr}
+}
+@media (max-width:560px){.shop{grid-template-columns:1fr}.gratis .row{grid-template-columns:1fr}footer .top{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body class="loading">
+
+<div class="loader" id="loader"><div class="w"><div class="coin">$</div><div class="t">Dinero en Orden</div><div class="bar"><i></i></div></div></div>
+
+<div class="concept"><b>Concepto</b> · Propuesta de sitio nuevo para Dinero en Orden, preparada por Evans Ademilua · Large Technologies</div>
+
+<header class="nav" id="nav">
+  <a class="brand" href="#inicio"><img src="/dineroenorden/img/logo.svg" alt="Dinero en Orden"><span>Dinero en Orden<small>Celeste Sánchez</small></span></a>
+  <nav class="links">
+    <a href="#charlas">Charlas</a><a href="#programa">Programa</a><a href="#asesorias">Asesorías</a><a href="#tienda">Tienda</a><a href="#podcast">Podcast</a><a href="#sobre">Celeste</a>
+  </nav>
+  <a class="btn lime" href="#gratis">Empezá gratis <span class="arr">→</span></a>
+  <button class="burger" id="burger" aria-label="Menú"><i></i><i></i><i></i></button>
+</header>
+<div class="mobile" id="mobile">
+  <a href="#charlas">Charlas para empresas</a><a href="#programa">Programa $Í HAY PLATA</a><a href="#asesorias">Asesorías</a><a href="#tienda">Tienda</a><a href="#podcast">Podcast</a><a href="#sobre">Sobre Celeste</a><a href="#gratis">Empezá gratis</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="blob b1"></div><div class="blob b2"></div>
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Periodista · Economía familiar y consumo</span>
+      <h1 style="margin-top:18px">
+        <span class="line"><span>Hablo <em>claro</em></span></span>
+        <span class="line"><span>sobre plata para</span></span>
+        <span class="line"><span><span class="rotator" id="rot"><span class="on">tu familia.</span><span>tu empresa.</span><span>tu emprendimiento.</span><span>tu fin de mes.</span></span></span></span>
+      </h1>
+      <p class="sub">Desde 2017 ayudo a familias a llegar cómodas a fin de mes, salir de deudas y ahorrar, sin palabras difíciles y presupuestando la inflación. Yo ya estuve donde estás vos.</p>
+      <div class="cta">
+        <a class="btn" href="#gratis">Quiero mi primer paso gratis <span class="arr">→</span></a>
+        <a class="btn ghost" href="#charlas">Llevá una charla a tu empresa</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b data-count="111" data-suffix="K">0</b><span>Seguidores en Instagram</span></div>
+        <div class="stat"><b data-count="65">0</b><span>Episodios del podcast</span></div>
+        <div class="stat"><b data-count="9">0</b><span>Medios que me entrevistaron</span></div>
+        <div class="stat"><b data-count="8">0</b><span>Años enseñando</span></div>
+      </div>
+    </div>
+    <div class="visual">
+      <div class="ph"><img src="/dineroenorden/img/podcast.jpg" alt="Celeste Sánchez"></div>
+      <div class="chip c1"><b>$</b> Presupuestamos la inflación</div>
+      <div class="chip c2"><b>5/5</b> Cientos de mujeres y familias</div>
+      <div class="chip c3">🎙️ Speaker para empresas y eventos</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRESS -->
+<div class="press">
+  <div class="lbl">Me viste en</div>
+  <div class="marquee" id="mq">
+    <span>CNN en Español</span><span>Infobae</span><span>TN</span><span>A24</span><span>Ámbito</span><span>El Cronista</span><span>La Nación</span><span>Para Ti</span><span>Ohlalá</span>
+    <span>CNN en Español</span><span>Infobae</span><span>TN</span><span>A24</span><span>Ámbito</span><span>El Cronista</span><span>La Nación</span><span>Para Ti</span><span>Ohlalá</span>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<section id="empezar">
+  <div class="wrap">
+    <div class="quiz reveal">
+      <span class="eyebrow" style="color:var(--lime)">¿Por dónde empiezo?</span>
+      <h2 style="margin-top:14px">Contame tu situación y te digo <br>exactamente por dónde arrancar.</h2>
+      <div class="opts" id="opts">
+        <button class="opt" data-k="deudas">Tengo deudas y no llego a fin de mes<small>Tarjetas, préstamos, intereses que no paran.</small></button>
+        <button class="opt" data-k="ahorro">Llego, pero no logro ahorrar<small>La plata se va y no sé en qué.</small></button>
+        <button class="opt" data-k="emprendo">Soy emprendedora y no tengo sueldo<small>Mi negocio y mi casa se mezclan.</small></button>
+      </div>
+      <div class="ans" id="ans">
+        <div><h3>Elegí una opción arriba 👆</h3><p>En 10 segundos sabés cuál es tu próximo paso, y cuánto cuesta (spoiler: el primero es gratis).</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHARLAS -->
+<section class="charlas" id="charlas">
+  <div class="wrap">
+    <div class="head reveal">
+      <div><span class="eyebrow">Charlas para empresas, marcas y eventos</span><h2 style="margin-top:14px">Tu equipo rinde más cuando su plata está en orden.</h2></div>
+      <p class="lead">El estrés financiero es la primera causa de distracción en el trabajo. Una charla de 60 a 90 minutos, con ejemplos reales de la economía argentina, le da a tu equipo herramientas que aplica esa misma semana. Es el espacio que más disfruto.</p>
+    </div>
+    <div class="topics reveal">
+      <div class="topic"><div class="n">01</div><h3>Llegar a fin de mes (en serio)</h3><p>Presupuesto que resiste la inflación, gastos invisibles y el método de sobres que funciona en 2026.</p></div>
+      <div class="topic"><div class="n">02</div><h3>Tarjetas y deudas: salir y no volver</h3><p>Cómo funcionan realmente los intereses, qué pagar primero y cómo negociar.</p></div>
+      <div class="topic"><div class="n">03</div><h3>Ahorrar e invertir desde cero</h3><p>Dólares, plazo fijo, fondos y billeteras virtuales explicados sin palabras difíciles.</p></div>
+    </div>
+    <form class="charla-form reveal" id="fCharla" novalidate>
+      <h3>Pedí una propuesta para tu empresa</h3>
+      <label class="field">Tu nombre<input name="nombre" required placeholder="Nombre y apellido"></label>
+      <label class="field">Empresa u organización<input name="empresa" required placeholder="Ej. Banco, PyME, colegio, municipio"></label>
+      <label class="field">Email<input type="email" name="email" required placeholder="tu@empresa.com"></label>
+      <label class="field">Formato<select name="formato"><option>Presencial (AMBA)</option><option>Presencial (resto del país)</option><option>Virtual</option><option>Serie de talleres</option></select></label>
+      <label class="field full">Contame del equipo<textarea name="msg" rows="3" placeholder="Cuántas personas, para cuándo y qué les preocupa"></textarea></label>
+      <div class="form-foot"><small>Respondo en menos de 24 horas hábiles con propuesta y fechas.</small><button class="btn" type="submit">Enviar pedido <span class="arr">→</span></button></div>
+      <div class="ok" id="okCharla">¡Listo! Te escribo en menos de 24 horas hábiles con la propuesta. Mientras tanto, mirá cómo fueron las últimas charlas en Instagram.</div>
+    </form>
+  </div>
+</section>
+
+<!-- PROGRAMA -->
+<section class="programa" id="programa">
+  <div class="wrap grid">
+    <div class="reveal">
+      <span class="eyebrow">Programa online · 4 semanas</span>
+      <h2 style="margin-top:14px">$Í HAY PLATA</h2>
+      <p class="lead" style="margin-top:16px">El paso a paso exacto para que en 4 semanas tengas presupuesto detallado, gastos controlados, más ingresos y un plan para salir de deudas. A tu ritmo, con mi seguimiento y acceso de por vida.</p>
+      <div class="weeks">
+        <div class="week"><b>1</b><div><strong>Tus números reales</strong><span>Ingresos, gastos y deudas en una sola hoja. Sin culpa.</span></div></div>
+        <div class="week"><b>2</b><div><strong>El presupuesto que resiste la inflación</strong><span>Sobres, reservas y vencimientos bajo control.</span></div></div>
+        <div class="week"><b>3</b><div><strong>Menos gastos, más ingresos</strong><span>Gastos invisibles que cortás hoy y 3 formas de ingreso extra.</span></div></div>
+        <div class="week"><b>4</b><div><strong>Deudas y ahorro en piloto automático</strong><span>Tu plan de pagos y tu primer fondo de emergencia.</span></div></div>
+      </div>
+      <div class="price"><b>USD 36</b><s>USD 45</s><em>ACCESO DE POR VIDA</em></div>
+      <a class="btn" href="https://dineroenorden.com/producto/sihayplata/" target="_blank" rel="noopener">Me sumo al programa <span class="arr">→</span></a>
+    </div>
+    <div class="tilt reveal" id="tilt"><img src="/dineroenorden/img/hero-desk.jpg" alt="Las excusas no pagan las cuentas"><div class="tag">★★★★★ "Fue la luz al final de mi camino" · Natalia</div></div>
+  </div>
+</section>
+
+<!-- CALC -->
+<section class="calc">
+  <div class="wrap">
+    <div class="box reveal">
+      <div>
+        <span class="eyebrow">Hagamos cuentas</span>
+        <h2 style="margin-top:14px;font-size:clamp(28px,3.6vw,44px)">¿Cuánto te cuestan los gastos invisibles?</h2>
+        <p class="lead" style="margin-top:12px">Suscripciones que no usás, delivery "de vez en cuando", el café de todos los días. Movelo y mirá cuánto es por año.</p>
+        <label class="field" style="margin-top:10px">Gastos invisibles por mes: <b id="mes" style="color:var(--violet)">$ 60.000</b>
+          <input class="range" type="range" id="rng" min="10000" max="400000" step="5000" value="60000" aria-label="Gastos invisibles por mes"></label>
+      </div>
+      <div style="text-align:center">
+        <div class="big" id="anio">$ 720.000<small>por año que podrías tener ahorrado</small></div>
+        <p style="color:var(--muted);font-size:14.5px;margin-top:14px">En el programa cortamos estos gastos en la semana 3. El programa cuesta menos que un mes de esto.</p>
+        <a class="btn lime" href="#programa">Quiero recuperar esa plata</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ASESORIAS -->
+<section class="asesorias" id="asesorias">
+  <div class="wrap">
+    <div class="head reveal">
+      <div><span class="eyebrow">Asesorías 1 a 1 por videollamada</span><h2 style="margin-top:14px">Trabajemos juntas en tus números.</h2></div>
+      <p class="lead">Los reales, los de todos los días. No hay fórmulas mágicas: hay educación para que entiendas cómo funciona tu dinero y rinda más todos los meses.</p>
+    </div>
+    <div class="cards reveal">
+      <div class="card"><h3>Power Hour</h3><p class="muted">Una hora súper específica para resolver lo pendiente. Elegís el horario, recibís la grabación y material de apoyo.</p><div class="p">USD 35<small>1 encuentro</small></div><a class="btn ghost" href="https://dineroenorden.com/producto/asesoria-power-hour/" target="_blank" rel="noopener">Reservar</a></div>
+      <div class="card hot"><span class="pill">MÁS ELEGIDA</span><h3>Pack Transformación</h3><p class="muted">Cuatro encuentros individuales: tarjetas y deudas, presupuesto a tu medida, menos gastos y más ingresos.</p><ul><li>4 videollamadas</li><li>Presupuesto hecho con vos</li><li>Seguimiento por Telegram</li></ul><div class="p">USD 125<small>4 encuentros</small></div><a class="btn lime" href="https://dineroenorden.com/producto/pack-asesorias-individuales/" target="_blank" rel="noopener">Quiero el pack</a></div>
+      <div class="card"><h3>Sueldo Emprendedor</h3><p class="muted">Dos encuentros para que por fin te pagues un sueldo todos los meses, sin quitarle plata a tu emprendimiento ni a tu familia.</p><div class="p">USD 75<small>2 encuentros</small></div><a class="btn ghost" href="https://dineroenorden.com/producto/asesoria-emprendimiento/" target="_blank" rel="noopener">Quiero mi sueldo</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- TIENDA -->
+<section id="tienda">
+  <div class="wrap">
+    <div class="head reveal">
+      <div><span class="eyebrow">Tienda</span><h2 style="margin-top:14px">Herramientas para aprender a tu ritmo.</h2></div>
+      <p class="lead">Con cada producto, al aplicar lo que aprendés recuperás lo que pagaste y ahorrás mucho más. Es la garantía de Dinero en Orden.</p>
+    </div>
+    <div class="shop reveal">
+      <a class="item" href="https://dineroenorden.com/producto/planner-semestral/" target="_blank" rel="noopener"><div class="im"><img src="/dineroenorden/img/planner-3.jpg" alt="Planner de finanzas"></div><div class="b"><strong>Planner de Finanzas, Ahorros y Gastos</strong><span>USD 8 · digital</span></div></a>
+      <a class="item" href="https://dineroenorden.com/producto/clase-destruyendo-deudas/" target="_blank" rel="noopener"><div class="im"><span class="emoji">💳</span></div><div class="b"><strong>Mini curso «Destruyendo deudas»</strong><span>USD 15</span></div></a>
+      <a class="item" href="https://dineroenorden.com/producto/clase-como-crear-varias-fuentes-de-ingresos/" target="_blank" rel="noopener"><div class="im"><span class="emoji">💸</span></div><div class="b"><strong>Mini curso «Varias fuentes de ingresos»</strong><span>USD 15</span></div></a>
+      <a class="item" href="https://dineroenorden.com/producto/masterclass-sobres/" target="_blank" rel="noopener"><div class="im"><img src="/dineroenorden/img/planner-2.jpg" alt="Sobres con efectivo"></div><div class="b"><strong>Masterclass «Sobres + reservas en billetera virtual»</strong><span>USD 15</span></div></a>
+    </div>
+    <p style="text-align:center;margin-top:28px"><a class="btn ghost" href="https://dineroenorden.com/tienda/" target="_blank" rel="noopener">Ver toda la tienda <span class="arr">→</span></a></p>
+  </div>
+</section>
+
+<!-- PODCAST -->
+<section class="podcast" id="podcast">
+  <div class="wrap grid">
+    <div class="cover reveal"><img src="/dineroenorden/img/podcast-tall.jpg" alt="Reseteá tu dinero, el podcast"><div class="eq"><i></i><i></i><i></i><i></i><i></i></div></div>
+    <div class="reveal">
+      <span class="eyebrow" style="color:var(--lime)">Podcast · 65 episodios</span>
+      <h2 style="margin-top:14px">Reseteá tu dinero</h2>
+      <p class="lead" style="color:#bfb8cf;margin-top:14px">¿Tenés 20 minutos? Tenés tiempo para aprender sobre tu dinero. Sin palabras difíciles, todo en la realidad argentina.</p>
+      <div class="eps">
+        <a class="ep" href="https://podcasts.apple.com/ni/podcast/resete%C3%A1-tu-dinero-el-podcast-de-dinero-en-orden/id1509774746" target="_blank" rel="noopener"><div class="play">▶</div><div><strong>¿Se te pasó el año sin ahorrar? 3 formas de empezar a guardar plata</strong><small>Episodio 64 · 20 min</small></div></a>
+        <a class="ep" href="https://podcasts.apple.com/ni/podcast/resete%C3%A1-tu-dinero-el-podcast-de-dinero-en-orden/id1509774746" target="_blank" rel="noopener"><div class="play">▶</div><div><strong>¿Mitad de mes y sin plata? Cómo aumentar tu ingreso disponible</strong><small>Episodio 63 · 20 min</small></div></a>
+        <a class="ep" href="https://podcasts.apple.com/ni/podcast/resete%C3%A1-tu-dinero-el-podcast-de-dinero-en-orden/id1509774746" target="_blank" rel="noopener"><div class="play">▶</div><div><strong>Dejá de perder plata: 5 gastos invisibles que podés cortar hoy</strong><small>Episodio 60 · 20 min</small></div></a>
+      </div>
+      <a class="btn lime" href="https://podcasts.apple.com/ni/podcast/resete%C3%A1-tu-dinero-el-podcast-de-dinero-en-orden/id1509774746" target="_blank" rel="noopener">Escuchar todos los episodios <span class="arr">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- GRATIS -->
+<section class="gratis" id="gratis">
+  <div class="wrap">
+    <div class="box reveal">
+      <div style="position:relative">
+        <span class="eyebrow">Gratis · sin contraseñas ni vueltas</span>
+        <h2 style="margin-top:14px">Tu primer paso para ordenar la plata, hoy.</h2>
+        <div class="checks">
+          <div>La hoja «Mis números reales» para completar en 15 minutos</div>
+          <div>Checklist de gastos invisibles con los 12 más comunes</div>
+          <div>Acceso a la Escuela Dinero en Orden, con todo el material educativo</div>
+          <div>Un email por semana con una acción concreta (podés irte cuando quieras)</div>
+        </div>
+      </div>
+      <form id="fGratis" novalidate>
+        <h3>Decime a dónde te lo mando</h3>
+        <div class="row">
+          <label class="field">Nombre<input name="nombre" required placeholder="Tu nombre"></label>
+          <label class="field">País<select name="pais"><option>Argentina</option><option>Uruguay</option><option>Chile</option><option>México</option><option>España</option><option>Otro</option></select></label>
+        </div>
+        <label class="field">Email<input type="email" name="email" required placeholder="tu@email.com"></label>
+        <button class="btn" type="submit">Quiero mi primer paso gratis <span class="arr">→</span></button>
+        <small style="color:var(--muted)">Cero spam. Te llega al instante, sin contraseña.</small>
+        <div class="ok" id="okGratis">¡Revisá tu email! Ya te mandé la hoja «Mis números reales». Si no llegó, mirá en promociones.</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIOS -->
+<section class="testi">
+  <div class="wrap reveal">
+    <div style="text-align:center;margin-bottom:30px"><span class="eyebrow">Lo que dicen</span></div>
+    <div class="slides" id="slides">
+      <div class="slide on"><div class="stars">★★★★★</div><q>Tengo mi planner anual de finanzas del hogar y debo decir que fue la mejor inversión que hice. En casa logramos planificar y poder ahorrar.</q><cite>Cliente del planner</cite></div>
+      <div class="slide"><div class="stars">★★★★★</div><q>Lo que más me gusta es que también lo pasaste, no lo decís desde el librito de economía. Sabés de la angustia y la desesperación, y eso hace la diferencia.</q><cite>María Luz</cite></div>
+      <div class="slide"><div class="stars">★★★★★</div><q>Logré poner al día las cuotas del auto, di de baja cosas que eran innecesarias y empecé a dar clases para generar más ingresos. Gracias por estas 5 semanas.</q><cite>Albana · Pack de asesorías</cite></div>
+      <div class="slide"><div class="stars">★★★★★</div><q>Trabajé con el planner, los retos de ahorro y obtuve los resultados esperados. La asesoría para mi emprendimiento me facilitó incrementar mis ventas.</q><cite>Rosario · Sueldo Emprendedor</cite></div>
+    </div>
+    <div class="dots" id="dots"></div>
+  </div>
+</section>
+
+<!-- SOBRE -->
+<section class="sobre" id="sobre" style="background:var(--cream)">
+  <div class="wrap grid">
+    <div class="ph reveal"><img src="/dineroenorden/img/planner-excusas.jpg" alt="Escritorio de Celeste"></div>
+    <div class="reveal">
+      <span class="eyebrow">Hola, soy Celeste</span>
+      <h2 style="margin-top:14px">Soy periodista, no contadora. Y en 2014 todo explotó.</h2>
+      <p class="lead" style="margin-top:16px">Las deudas triplicaban nuestros ingresos, gastábamos sin control y nunca sabía en qué se iba la plata. Aprendí a ordenar nuestros números y de ahí nació Dinero en Orden: de mis errores y mis aprendizajes. Desde 2017, cientos de mujeres y sus familias pasaron por mis programas, clases y asesorías.</p>
+      <p class="lead">Mi formación como periodista y locutora me permite explicarte lo que parece difícil, en 20 minutos y sin juzgar.</p>
+      <div class="vals"><span>Sinceridad</span><span>Claridad</span><span>¡No hay excusas!</span><span>No juzgamos</span><span>Presupuestamos la inflación</span><span>El cambio está en vos</span></div>
+      <p style="margin-top:26px"><a class="btn" href="https://www.instagram.com/dineroenorden/" target="_blank" rel="noopener">Seguime en Instagram <span class="arr">→</span></a></p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="top">
+      <div><a class="brand" href="#inicio" style="color:#fff"><img src="/dineroenorden/img/logo.svg" alt="" style="filter:invert(1)"><span>Dinero en Orden<small style="color:var(--lime)">Celeste Sánchez</small></span></a><p style="margin-top:16px;font-size:14px">Educación financiera para familias. Hablo claro sobre plata.</p></div>
+      <div><h4>Aprender</h4><a href="#programa">Programa $Í HAY PLATA</a><a href="#asesorias">Asesorías</a><a href="#tienda">Tienda</a><a href="#gratis">Escuela gratuita</a></div>
+      <div><h4>Escuchar y ver</h4><a href="#podcast">Podcast</a><a href="https://www.instagram.com/dineroenorden/" target="_blank" rel="noopener">Instagram</a><a href="https://dineroenorden.com/blog/" target="_blank" rel="noopener">Blog y noticias</a></div>
+      <div><h4>Empresas y prensa</h4><a href="#charlas">Charlas para empresas</a><a href="mailto:prensa@dineroenorden.com">prensa@dineroenorden.com</a><a href="mailto:correo@dineroenorden.com">correo@dineroenorden.com</a></div>
+    </div>
+    <div class="bottom"><span>© 2026 Dinero en Orden</span><span>Concepto de sitio por <a href="https://evansademilua.vercel.app" target="_blank" rel="noopener" style="display:inline;color:var(--lime)">Evans Ademilua · Large Technologies</a></span></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+  // loader
+  const ready=()=>{$('#loader').classList.add('done');document.body.classList.remove('loading');document.body.classList.add('ready');};
+  if(location.search.includes('shot')){ready();$$('.reveal').forEach(r=>r.classList.add('in'));$$('[data-count]').forEach(el=>{el.textContent=el.dataset.count+(el.dataset.suffix||'');el.removeAttribute('data-count');});}
+  window.addEventListener('load',()=>setTimeout(ready,1300));
+  setTimeout(ready,3500);
+  // nav
+  const nav=$('#nav');let last=0;
+  addEventListener('scroll',()=>{const y=scrollY;nav.classList.toggle('scrolled',y>40);nav.classList.toggle('hide',y>last&&y>400);last=y;},{passive:true});
+  const mob=$('#mobile'),bg=$('#burger');bg.onclick=()=>mob.classList.toggle('open');mob.querySelectorAll('a').forEach(a=>a.onclick=()=>mob.classList.remove('open'));
+  // active link
+  const secs=$$('section[id]');const links=$$('nav.links a');
+  new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+e.target.id));}}),{rootMargin:'-40% 0px -55% 0px'}).observe&&secs.forEach(s=>new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+e.target.id));}}),{rootMargin:'-40% 0px -55% 0px'}).observe(s));
+  // reveal
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12});
+  $$('.reveal').forEach(el=>io.observe(el));
+  // rotator
+  const rs=$$('#rot span');let ri=0;setInterval(()=>{rs[ri].classList.remove('on');ri=(ri+1)%rs.length;rs[ri].classList.add('on');},2400);
+  // counters
+  const cio=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const el=e.target,end=+el.dataset.count,suf=el.dataset.suffix||'';let t0=null;const step=ts=>{if(!t0)t0=ts;const p=Math.min(1,(ts-t0)/1400);el.textContent=Math.round(end*(1-Math.pow(1-p,3)))+suf;if(p<1)requestAnimationFrame(step);};requestAnimationFrame(step);cio.unobserve(el);}),{threshold:.5});
+  $$('[data-count]').forEach(el=>cio.observe(el));
+  // quiz
+  const answers={
+    deudas:{t:'Empezá por «Destruyendo deudas» y el programa $Í HAY PLATA',p:'Primero frenamos los intereses: qué pagar primero y cómo negociar. En la semana 4 del programa salís con tu plan de pagos. Y si querés que lo hagamos con tus números, el Pack Transformación es el camino más rápido.',h:'#programa',b:'Ver el programa'},
+    ahorro:{t:'Tu primer paso gratis + el Planner de Finanzas',p:'Bajate la hoja «Mis números reales» (gratis), encontrá tus gastos invisibles con la calculadora de abajo y empezá a registrar todo en el Planner (USD 8). En 30 días ves exactamente a dónde se va la plata.',h:'#gratis',b:'Quiero mi primer paso gratis'},
+    emprendo:{t:'Asesoría «Sueldo Emprendedor»',p:'Dos encuentros para trazar la estrategia que te permite pagarte un sueldo todos los meses, sin quitarle plata al negocio ni a tu familia. Emprendo hace casi 15 años: sé exactamente cómo es.',h:'#asesorias',b:'Quiero mi sueldo'}
+  };
+  $$('.opt').forEach(o=>o.onclick=()=>{$$('.opt').forEach(x=>x.classList.remove('sel'));o.classList.add('sel');const a=answers[o.dataset.k];const box=$('#ans');box.classList.remove('flash');void box.offsetWidth;box.classList.add('flash');box.innerHTML=`<div><h3>${a.t}</h3><p>${a.p}</p></div><a class="btn lime" href="${a.h}">${a.b} <span class="arr">→</span></a>`;});
+  // calc
+  const fmt=n=>'$ '+n.toLocaleString('es-AR');
+  const rng=$('#rng');const upd=()=>{$('#mes').textContent=fmt(+rng.value);$('#anio').firstChild.textContent=fmt(rng.value*12);};rng.addEventListener('input',upd);upd();
+  // tilt
+  const tilt=$('#tilt');if(tilt&&matchMedia('(hover:hover)').matches){tilt.addEventListener('mousemove',e=>{const r=tilt.getBoundingClientRect();const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;tilt.style.transform=`rotateY(${x*10}deg) rotateX(${-y*10}deg)`;});tilt.addEventListener('mouseleave',()=>tilt.style.transform='');}
+  // testimonials
+  const sl=$$('.slide'),dots=$('#dots');let si=0;sl.forEach((_,i)=>{const b=document.createElement('button');b.setAttribute('aria-label','Testimonio '+(i+1));b.onclick=()=>go(i);dots.appendChild(b);});
+  const go=i=>{sl[si].classList.remove('on');dots.children[si].classList.remove('on');si=i;sl[si].classList.add('on');dots.children[si].classList.add('on');};go(0);setInterval(()=>go((si+1)%sl.length),5500);
+  // forms (demo: validates, shows confirmation; in production connects to the email tool and the leads dashboard)
+  const wire=(id,ok)=>{const f=$(id);f.addEventListener('submit',e=>{e.preventDefault();if(!f.checkValidity()){f.reportValidity();return;}f.querySelectorAll('input,textarea,select,button').forEach(x=>x.disabled=true);$(ok).classList.add('show');});};
+  wire('#fCharla','#okCharla');wire('#fGratis','#okGratis');
+})();
+</script>
+</body>
+</html>
