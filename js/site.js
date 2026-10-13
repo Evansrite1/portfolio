@@ -5,7 +5,8 @@
     '.section-head, .about-photo, .about-text, .fact-card, .service, ' +
     '.process-list li, .work-card, .work-feature, .rate-banner, .case-shot, .case-meta > div, ' +
     '.case-body h2, .case-body p, .case-body ul, .banner-shot, .review-card, ' +
-    '.draft-group-head, .draft-row, .book-head, .book-panel, .work-note'
+    '.book-head, .book-panel, .work-note, .result, .solution, .build, .audit, .step, .sol-close, .work-toolbar, ' +
+    '.photo-full, .req-copy, .req-card, .book-simple'
   );
 
   revealTargets.forEach(function (el) { el.classList.add('reveal'); });

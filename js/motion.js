@@ -1,6 +1,6 @@
-/* motion.js : expressive layer for the home page.
-   Preloader, split text, cursor, magnetic buttons, tilt, parallax,
-   marquee, sticky header, drafts hover preview, booking panel.      */
+/* motion.js : shared motion and interaction layer.
+   Preloader, split text, sticky header, cursor, magnetic buttons, tilt,
+   booking-button scroll, build filters, solution filters.            */
 (function () {
   'use strict';
 
@@ -17,9 +17,7 @@
     var idx = 0;
     nodes.forEach(function (node) {
       var isEl = node.nodeType === 1;
-      var text = node.textContent;
-      var words = text.split(/(\s+)/);
-      words.forEach(function (w) {
+      node.textContent.split(/(\s+)/).forEach(function (w) {
         if (!w) return;
         if (/^\s+$/.test(w)) { out.appendChild(document.createTextNode(' ')); return; }
         var outer = document.createElement('span'); outer.className = 'w';
@@ -35,6 +33,23 @@
   var splitEls = document.querySelectorAll('[data-split]');
   splitEls.forEach(splitWords);
 
+  /* ---------- Book button: land on the booking section ---------- */
+  function scrollToBook(smooth) {
+    var sec = document.getElementById('book');
+    if (!sec) return;
+    var r = sec.getBoundingClientRect();
+    var y = window.pageYOffset + r.top - Math.max(70, (window.innerHeight - r.height) / 2);
+    window.scrollTo({ top: Math.max(0, y), behavior: (smooth && !reduced) ? 'smooth' : 'auto' });
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href="#book"]');
+    if (a && document.getElementById('book')) {
+      e.preventDefault();
+      scrollToBook(true);
+      try { history.replaceState(null, '', '#book'); } catch (x) {}
+    }
+  });
+
   /* ---------- Preloader ---------- */
   var loader = document.getElementById('loader');
   var count = document.getElementById('loader-count');
@@ -47,6 +62,7 @@
     doc.classList.add('loaded');
     if (heroH1) heroH1.classList.add('in');
     try { sessionStorage.setItem('evans-loaded', '1'); } catch (e) {}
+    if (location.hash === '#book') { scrollToBook(false); setTimeout(function () { scrollToBook(false); }, 350); }
   }
 
   if (loader && !reduced && !seen) {
@@ -83,36 +99,32 @@
     headSplits.forEach(function (el) { el.classList.add('in'); });
   }
 
-  /* ---------- Scroll progress + sticky header + active nav ---------- */
-  var progress = document.getElementById('progress');
+  /* ---------- Sticky header + active nav ---------- */
   var header = document.querySelector('header.site');
-  var navLinks = Array.prototype.slice.call(document.querySelectorAll('nav.site a[href^="#"]'));
-  var sections = navLinks.map(function (a) { return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('nav.site a[href^="#"]:not(.nav-cta)'));
+  var sections = navLinks.map(function (a) { return document.querySelector(a.getAttribute('href')); });
   var scrollY = 0, ticking = false;
 
   function onScroll() {
-    scrollY = window.scrollY || window.pageYOffset;
+    scrollY = window.pageYOffset;
     if (!ticking) { requestAnimationFrame(frame); ticking = true; }
   }
   function frame() {
     ticking = false;
-    var h = doc.scrollHeight - window.innerHeight;
-    if (progress) progress.style.transform = 'scaleX(' + (h > 0 ? scrollY / h : 0) + ')';
     if (header) header.classList.toggle('scrolled', scrollY > 40);
     var current = null, mid = scrollY + window.innerHeight * 0.4;
-    sections.forEach(function (s) { if (s.offsetTop <= mid) current = s; });
+    sections.forEach(function (s) {
+      if (!s) return;
+      var top = s.getBoundingClientRect().top + scrollY;
+      if (top <= mid) current = s;
+    });
+    var bookSec = document.getElementById('book');
+    if (bookSec && bookSec.getBoundingClientRect().top + scrollY <= mid) current = null;
     navLinks.forEach(function (a) {
       var on = current && a.getAttribute('href') === '#' + current.id;
       if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
     });
-    if (banner && bannerImg && !reduced) {
-      var r = banner.getBoundingClientRect();
-      var p = (r.top + r.height / 2 - window.innerHeight / 2) / window.innerHeight;
-      bannerImg.style.transform = 'scale(1.15) translateY(' + (p * -10).toFixed(2) + '%)';
-    }
   }
-  var banner = document.querySelector('[data-parallax]');
-  var bannerImg = banner ? banner.querySelector('img') : null;
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll);
   onScroll();
@@ -132,13 +144,14 @@
     document.addEventListener('mouseenter', function () { cursor.classList.remove('is-hidden'); });
     document.addEventListener('mouseover', function (e) {
       var t = e.target;
-      var view = t.closest && t.closest('.draft-row, .work-card, .work-feature, .banner-shot, .about-photo');
-      var link = t.closest && t.closest('a, button, .chip, .day, label');
-      var text = t.closest && t.closest('input[type="text"], textarea');
+      if (!t.closest) return;
+      var view = t.closest('.build-shot, .photo-full img, .about-photo');
+      var link = t.closest('a, button, .chip, label, summary, .solution, .tx');
+      var text = t.closest('input[type="text"], textarea');
       cursor.classList.toggle('is-view', !!view);
       cursor.classList.toggle('is-link', !!link && !view);
       cursor.classList.toggle('is-text', !!text && !link);
-      if (view) label.textContent = view.classList.contains('draft-row') ? 'Open' : 'View';
+      if (view) label.textContent = view.classList.contains('build-shot') ? 'Open' : 'View';
     });
     (function loop() {
       cur.x = lerp(cur.x, mouse.x, 0.22); cur.y = lerp(cur.y, mouse.y, 0.22);
@@ -150,151 +163,114 @@
   /* ---------- Magnetic buttons ---------- */
   if (finePointer && !reduced) {
     document.querySelectorAll('.magnet').forEach(function (btn) {
-      var raf = null;
-      function move(e) {
+      btn.addEventListener('mousemove', function (e) {
         var r = btn.getBoundingClientRect();
         var dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
         btn.style.transform = 'translate(' + (dx * 0.28).toFixed(1) + 'px,' + (dy * 0.38).toFixed(1) + 'px)';
-      }
-      btn.addEventListener('mousemove', move);
+      });
       btn.addEventListener('mouseleave', function () { btn.style.transform = ''; });
     });
   }
 
   /* ---------- Tilt cards ---------- */
   if (finePointer && !reduced) {
-    document.querySelectorAll('.work-card, .review-card, .fact-card, .work-feature').forEach(function (card) {
+    document.querySelectorAll('.review-card, .fact-card').forEach(function (card) {
       card.setAttribute('data-tilt', '');
       card.addEventListener('mousemove', function (e) {
         var r = card.getBoundingClientRect();
         var px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
         card.classList.add('tilting');
-        card.style.transform = 'perspective(900px) rotateX(' + (-py * 7).toFixed(2) + 'deg) rotateY(' + (px * 9).toFixed(2) + 'deg) translateY(-4px)';
+        card.style.transform = 'perspective(900px) rotateX(' + (-py * 6).toFixed(2) + 'deg) rotateY(' + (px * 8).toFixed(2) + 'deg) translateY(-3px)';
       });
       card.addEventListener('mouseleave', function () { card.classList.remove('tilting'); card.style.transform = ''; });
     });
   }
 
-  /* ---------- Hero mouse parallax ---------- */
-  var hero = document.getElementById('hero');
-  if (hero && finePointer && !reduced) {
-    var avatar = hero.querySelector('.avatar'), body = hero.querySelector(':scope > div');
-    var hx = 0, hy = 0, tx = 0, ty = 0;
-    hero.addEventListener('mousemove', function (e) {
-      var r = hero.getBoundingClientRect();
-      tx = (e.clientX - r.left) / r.width - 0.5; ty = (e.clientY - r.top) / r.height - 0.5;
+  /* ---------- Recent builds: filter + show all ---------- */
+  var grid = document.getElementById('builds-grid');
+  if (grid) {
+    var cards = Array.prototype.slice.call(grid.querySelectorAll('.build'));
+    var more = document.getElementById('work-more');
+    var bar = document.querySelector('.work-toolbar');
+    var current = 'all', expanded = false;
+    var applyBuilds = function () {
+      var showAll = expanded || current !== 'all';
+      cards.forEach(function (c) { c.hidden = !(current === 'all' || c.getAttribute('data-type') === current); });
+      grid.classList.toggle('expanded', showAll);
+      cards.forEach(function (c) { if (!c.hidden && (showAll || !c.classList.contains('is-extra'))) c.classList.add('in'); });
+      if (more) more.hidden = showAll;
+    };
+    if (bar) bar.addEventListener('click', function (e) {
+      var b = e.target.closest('.chip'); if (!b) return;
+      current = b.getAttribute('data-filter');
+      bar.querySelectorAll('.chip').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      applyBuilds();
     });
-    hero.addEventListener('mouseleave', function () { tx = 0; ty = 0; });
-    (function hl() {
-      hx = lerp(hx, tx, 0.08); hy = lerp(hy, ty, 0.08);
-      if (avatar) avatar.style.transform = 'translate(' + (hx * 18).toFixed(1) + 'px,' + (hy * 18).toFixed(1) + 'px)';
-      if (body) body.style.transform = 'translate(' + (hx * -8).toFixed(1) + 'px,' + (hy * -8).toFixed(1) + 'px)';
-      requestAnimationFrame(hl);
-    })();
+    if (more) more.addEventListener('click', function () { expanded = true; applyBuilds(); });
+    applyBuilds();
   }
 
-  /* ---------- Drafts hover preview ---------- */
-  var preview = document.getElementById('draft-preview');
-  if (preview && finePointer && !reduced) {
-    var pimg = preview.querySelector('img'), px = 0, py = 0, pvx = 0, pvy = 0, pOn = false, lastSrc = '';
-    document.querySelectorAll('.draft-row[data-preview]').forEach(function (row) {
-      row.addEventListener('mouseenter', function (e) {
-        var src = row.getAttribute('data-preview');
-        if (src !== lastSrc) { pimg.src = src; lastSrc = src; preview.classList.remove('pulse'); void preview.offsetWidth; preview.classList.add('pulse'); }
-        if (!pOn) { pvx = e.clientX; pvy = e.clientY; }
-        pOn = true; preview.classList.add('show');
+  /* ---------- Solutions page: filter by goal ---------- */
+  var solGrid = document.getElementById('sol-grid');
+  var goalBar = document.querySelector('.goal-bar');
+  if (solGrid && goalBar) {
+    var sols = Array.prototype.slice.call(solGrid.querySelectorAll('.solution'));
+    var empty = document.getElementById('sol-empty');
+    goalBar.addEventListener('click', function (e) {
+      var b = e.target.closest('.chip'); if (!b) return;
+      var g = b.getAttribute('data-goal'), shown = 0;
+      goalBar.querySelectorAll('.chip').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      sols.forEach(function (s) {
+        var ok = g === 'all' || (' ' + s.getAttribute('data-goals') + ' ').indexOf(' ' + g + ' ') > -1;
+        s.hidden = !ok;
+        if (ok) { s.classList.add('in'); shown++; }
       });
-      row.addEventListener('mouseleave', function () { pOn = false; preview.classList.remove('show'); });
+      if (empty) empty.hidden = shown > 0;
     });
-    document.addEventListener('mousemove', function (e) { px = e.clientX; py = e.clientY; }, { passive: true });
-    (function pl() {
-      if (pOn || preview.classList.contains('show')) {
-        pvx = lerp(pvx, px, 0.14); pvy = lerp(pvy, py, 0.14);
-        var lx = Math.max(190, Math.min(window.innerWidth - 190, pvx + 40)); /* keep inside the viewport */
-        preview.style.left = lx.toFixed(1) + 'px';
-        preview.style.top = pvy.toFixed(1) + 'px';
-        var vx = (px - pvx);
-        preview.style.transform = 'translate(-50%,-50%) rotate(' + (vx * 0.04).toFixed(2) + 'deg) scale(' + (preview.classList.contains('show') ? 1 : 0.85) + ')';
-      }
-      requestAnimationFrame(pl);
-    })();
   }
-
-  /* ---------- Booking panel ---------- */
-  var form = document.getElementById('book-form');
-  if (form) {
-    var state = { topic: '', day: '', slot: '' };
-    var topics = document.getElementById('book-topics');
-    var days = document.getElementById('book-days');
-    var slots = document.getElementById('book-slots');
-    var nameIn = document.getElementById('book-name');
-    var noteIn = document.getElementById('book-note');
-    var sumBox = document.getElementById('book-summary');
-    var sumText = document.getElementById('book-summary-text');
-    var waBtn = document.getElementById('book-wa');
-    var mailBtn = document.getElementById('book-mail');
-    var steps = form.querySelectorAll('.book-step');
-    var WA = '2347035940200', MAIL = 'ademiluaolufemi2@gmail.com';
-    var DW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    var MN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-    /* next six working days starting tomorrow, Sundays skipped */
-    var d = new Date(); d.setHours(12, 0, 0, 0); var added = 0;
-    while (added < 6) {
-      d.setDate(d.getDate() + 1);
-      if (d.getDay() === 0) continue;
-      var b = document.createElement('button');
-      b.type = 'button'; b.className = 'day';
-      var labelFull = DW[d.getDay()] + ' ' + d.getDate() + ' ' + MN[d.getMonth()];
-      b.setAttribute('data-day', labelFull);
-      b.innerHTML = '<span class="dw">' + DW[d.getDay()] + '</span><span class="dn">' + d.getDate() + '</span><span class="dm">' + MN[d.getMonth()] + '</span>';
-      days.appendChild(b); added++;
-    }
-
-    function pick(group, btn, key, attr) {
-      group.querySelectorAll('[aria-pressed="true"]').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
-      btn.setAttribute('aria-pressed', 'true');
-      state[key] = btn.getAttribute(attr);
-      render();
-    }
-    topics.addEventListener('click', function (e) { var b = e.target.closest('.chip'); if (b) pick(topics, b, 'topic', 'data-topic'); });
-    days.addEventListener('click', function (e) { var b = e.target.closest('.day'); if (b) pick(days, b, 'day', 'data-day'); });
-    slots.addEventListener('click', function (e) { var b = e.target.closest('.chip'); if (b) pick(slots, b, 'slot', 'data-slot'); });
-    nameIn.addEventListener('input', render); noteIn.addEventListener('input', render);
-
-    function render() {
-      var ready = state.topic && state.day && state.slot;
-      steps[0].classList.toggle('done', !!state.topic);
-      steps[1].classList.toggle('done', !!(state.day && state.slot));
-      steps[2].classList.toggle('done', !!nameIn.value.trim());
-      var who = nameIn.value.trim();
-      var parts = [];
-      if (state.topic) parts.push(state.topic);
-      if (state.day) parts.push(state.day + (state.slot ? ', ' + state.slot : ''));
-      else if (state.slot) parts.push('any day, ' + state.slot);
-      var text = parts.length ? parts.join(' · ') + (who ? ' · ' + who : '') : 'Pick a topic, a day and a window to build your request.';
-      if (sumText.textContent !== text) {
-        sumText.textContent = text;
-        sumText.classList.remove('flash'); void sumText.offsetWidth; sumText.classList.add('flash');
+  /* ---------- Solutions page: open a card for the full detail ---------- */
+  var modal = document.getElementById('sol-modal');
+  if (modal && solGrid) {
+    var mbody = document.getElementById('sol-modal-body');
+    var lastFocus = null;
+    var openModal = function (card) {
+      var d = card.querySelector('.sol-detail');
+      if (!d) return;
+      mbody.innerHTML = d.innerHTML;
+      modal.setAttribute('aria-label', (card.querySelector('h3') || {}).textContent || 'Solution details');
+      modal.classList.add('open');
+      doc.classList.add('modal-open');
+      lastFocus = document.activeElement;
+      var c = modal.querySelector('.modal-close'); if (c) c.focus();
+    };
+    var closeModal = function () {
+      modal.classList.remove('open');
+      doc.classList.remove('modal-open');
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    };
+    solGrid.addEventListener('click', function (e) {
+      var card = e.target.closest('.solution');
+      if (!card || e.target.closest('a')) return;
+      openModal(card);
+    });
+    solGrid.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      var card = e.target.closest && e.target.closest('.solution');
+      if (!card || e.target !== card) return;
+      e.preventDefault();
+      openModal(card);
+    });
+    modal.addEventListener('click', function (e) { if (e.target.closest('[data-close]')) closeModal(); });
+    document.addEventListener('keydown', function (e) {
+      if (!modal.classList.contains('open')) return;
+      if (e.key === 'Escape') { closeModal(); return; }
+      if (e.key === 'Tab') {
+        var f = modal.querySelectorAll('a[href], button');
+        if (!f.length) return;
+        var first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
       }
-      sumBox.classList.toggle('ready', !!ready);
-      waBtn.classList.toggle('is-off', !ready); mailBtn.classList.toggle('is-off', !ready);
-      waBtn.setAttribute('aria-disabled', ready ? 'false' : 'true');
-      mailBtn.setAttribute('aria-disabled', ready ? 'false' : 'true');
-      if (!ready) return;
-      var lines = [
-        'Hi Evans, I’d like to book a twenty minute call.',
-        'Topic: ' + state.topic,
-        'When: ' + state.day + ', ' + state.slot + ' (Lagos time)',
-        who ? 'Name: ' + who : null,
-        noteIn.value.trim() ? 'About the business: ' + noteIn.value.trim() : null,
-        'Sent from evansademilua.vercel.app'
-      ].filter(Boolean);
-      var body = lines.join('\n');
-      waBtn.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(body);
-      mailBtn.href = 'mailto:' + MAIL + '?subject=' + encodeURIComponent('Meeting request: ' + state.topic + ', ' + state.day) + '&body=' + encodeURIComponent(body);
-    }
-    render();
-    form.addEventListener('submit', function (e) { e.preventDefault(); });
+    });
   }
 })();

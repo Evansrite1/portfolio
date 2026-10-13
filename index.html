@@ -1,45 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Evans Ademilua</title>
+<title>Evans Ademilua | Full stack developer and CEO of Large Technologies</title>
+<meta name="description" content="Evans Ademilua, full stack developer and CEO of Large Technologies. I build the systems that win you more customers, get you paid faster and take repetitive work off your team.">
 <link rel="stylesheet" href="css/site.css">
 <link rel="stylesheet" href="css/motion.css">
+<link rel="stylesheet" href="css/home.css">
 <script>document.documentElement.classList.add('js');</script>
-
+</head>
+<body>
 <div class="loader" id="loader" aria-hidden="true">
   <div class="loader-inner">
     <span class="loader-name">Evans Ademilua</span>
     <span class="loader-count" id="loader-count">00</span>
   </div>
 </div>
-<div class="progress" id="progress" aria-hidden="true"></div>
 <div class="cursor" id="cursor" aria-hidden="true"><span class="cursor-label"></span></div>
 
 <div class="bg-anim"><span></span><span></span><span></span></div>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<filter id="tx-liquid" x="-10%" y="-30%" width="120%" height="160%">
+<feTurbulence type="fractalNoise" baseFrequency="0.018 0.05" numOctaves="2" seed="4" result="t"><animate attributeName="baseFrequency" dur="6s" values="0.018 0.05;0.03 0.02;0.018 0.05" repeatCount="indefinite"/></feTurbulence>
+<feDisplacementMap in="SourceGraphic" in2="t" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+</filter></defs></svg>
+
 <div class="wrap">
 
   <header class="site">
-    <div class="mark">
-      <span class="name">Evans Ademilua</span>
-    </div>
-    <nav class="site">
+    <a class="mark" href="#hero"><span class="name">Evans Ademilua</span></a>
+    <nav class="site" aria-label="Main">
       <a href="#about">About</a>
       <a href="#work">Work</a>
-      <a href="#services">Services</a>
+      <a href="solutions.html">Solutions</a>
       <a href="#process">Process</a>
-      <a href="#drafts">Drafts</a>
+      <a href="#audits">Audit</a>
       <a href="#reviews">Reviews</a>
       <a href="#book" class="nav-cta">Book a meeting</a>
     </nav>
   </header>
 
-  <section class="hero" style="padding-top:60px;" id="hero">
-    <div class="avatar"><img src="images/evans-headshot.jpg" alt="Evans Ademilua"></div>
-    <div>
+  <section class="hero" id="hero" style="padding-top:60px;">
+    <div class="avatar"><img src="images/evans-headshot.jpg" alt="Evans Ademilua" width="688" height="688"></div>
+    <div class="hero-body">
       <div class="hero-name">Evans Ademilua</div>
-      <div class="hero-role">CEO, Large Technologies</div>
+      <div class="hero-role">Full stack developer, CEO of Large Technologies</div>
       <h1 data-split>I build whatever you can <em>imagine.</em></h1>
-      <p class="dek">I build solutions that make your business more productive and bring your whole team together. Cutting out repetitive tasks and promoting real productivity, so people get to focus on what they're actually good at.</p>
+      <p class="dek">I build the systems that win you more customers, get you paid faster and take the repetitive work off your team, so you earn more from the business you already have.</p>
       <div class="cta-row">
         <a class="btn primary magnet" href="#book">Book a meeting</a>
         <a class="btn magnet" href="#work">Previous work</a>
@@ -47,453 +56,367 @@
     </div>
   </section>
 
-  <div class="marquee" aria-label="What I build">
-    <div class="marquee-track"><div class="marquee-group"><span>Booking apps</span><i aria-hidden="true"></i><span>Lead trackers</span><i aria-hidden="true"></i><span>Dashboards</span><i aria-hidden="true"></i><span>Workflow automation</span><i aria-hidden="true"></i><span>Client portals</span><i aria-hidden="true"></i><span>AI features</span><i aria-hidden="true"></i><span>Concept sites</span><i aria-hidden="true"></i><span>Growth audits</span><i aria-hidden="true"></i></div><div class="marquee-group" aria-hidden="true"><span>Booking apps</span><i aria-hidden="true"></i><span>Lead trackers</span><i aria-hidden="true"></i><span>Dashboards</span><i aria-hidden="true"></i><span>Workflow automation</span><i aria-hidden="true"></i><span>Client portals</span><i aria-hidden="true"></i><span>AI features</span><i aria-hidden="true"></i><span>Concept sites</span><i aria-hidden="true"></i><span>Growth audits</span><i aria-hidden="true"></i></div></div>
-  </div>
-
-  <div class="banner-shot reveal" data-parallax>
-    <img src="images/evans-speaking.jpg" alt="Evans Ademilua speaking at an event">
-    <div class="banner-caption">On stage talking systems, automation and building things that actually get used.</div>
-  </div>
+  <figure class="photo-full">
+    <img src="images/evans-speaking-clean-1200.jpg" srcset="images/evans-speaking-clean-800.jpg 800w, images/evans-speaking-clean-1200.jpg 1200w" sizes="(max-width: 1120px) 100vw, 1080px" width="1200" height="900" alt="Evans Ademilua speaking on stage at an event" loading="lazy" decoding="async">
+    <figcaption>On stage talking systems, automation and building things that actually get used.</figcaption>
+  </figure>
 
   <section id="about">
     <div class="section-head">
-      <h2>About</h2>
-      <span class="label">CEO, Large Technologies</span>
+      <h2 data-split>About</h2>
+      <span class="label">Full stack developer</span>
     </div>
 
     <div class="about-top">
-      <div class="about-photo"><img src="images/evans-headshot.jpg" alt="Evans Ademilua"></div>
+      <div class="about-photo"><img src="images/evans-headshot.jpg" alt="Evans Ademilua" width="688" height="688" loading="lazy" decoding="async"></div>
       <div class="about-text">
-        <p>I am Evans Ademilua, a software builder and the CEO of Large Technologies, the development intelligence, in Lagos. I spend my time doing one thing well: taking a business that is stuck running on spreadsheets, WhatsApp groups and manual follow-ups, and replacing that mess with a piece of software that actually fits how the business works.</p>
-        <p>I build with real code, no-code tools and AI-assisted "vibe coding," whichever gets you there fastest. Code is usually where I land though, it gives a system room to grow past its first version instead of hitting a wall the moment you need something a template does not support.</p>
-        <p>I work across multiple industries, real estate, hospitality, healthcare, events, education and beyond. The businesses I work best with all share one thing: the bottleneck is never a lack of effort, it's a lack of systems. I build the system.</p>
+        <p class="about-lead">I’m a full stack developer and the CEO of Large Technologies. I can build whatever you can imagine.</p>
+        <p>I spend my time looking at businesses: how they take bookings, answer leads, send invoices and keep their customers, and where money quietly slips through. Then I build the system that closes the gap, software that fits how the business really runs instead of spreadsheets, WhatsApp groups and manual follow-ups.</p>
+        <p>I build with real code, no-code tools and AI-assisted builds, whichever gets you there fastest. Code is usually where I land, because it gives a system room to grow past its first version.</p>
+        <p>I work across real estate, hospitality, healthcare, events, education and more. The businesses I work best with share one thing: the bottleneck is never effort, it is systems. I build the system.</p>
       </div>
     </div>
 
-    <div class="about-photo about-photo-wide">
-      <img src="images/evans-sweater-vest.png" alt="Evans Ademilua speaking at an event">
-    </div>
-
     <div class="facts-grid">
-      <div class="fact-card" style="--fc: var(--accent);"><span class="fk">Based in</span><span class="fv">Lagos, Nigeria</span></div>
       <div class="fact-card" style="--fc: #2f6f5e;"><span class="fk">Builds with</span><span class="fv">Code, no-code, AI-assisted builds</span></div>
       <div class="fact-card" style="--fc: #3f6fd1;"><span class="fk">Typical delivery</span><span class="fv">Two to three weeks</span></div>
-      <div class="fact-card" style="--fc: #c9982f;"><span class="fk">Works with</span><span class="fv">Multiple industries, wherever manual process is the bottleneck</span></div>
+      <div class="fact-card" style="--fc: #c9982f;"><span class="fk">Works with</span><span class="fv">Any industry where manual process is the bottleneck</span></div>
       <div class="fact-card" style="--fc: #8a4fd1;"><span class="fk">Engagement</span><span class="fv">Scoped and quoted per project</span></div>
     </div>
   </section>
 
-  <section id="services">
+  <section id="work">
     <div class="section-head">
-      <h2>What I build</h2>
-      <span class="label">Scope, 01 to 06</span>
+      <h2 data-split>Recent builds</h2>
+      <span class="label">Live projects and concept builds</span>
     </div>
-    <div class="services-grid">
-      <div class="service" style="--sc:#c85a2e;">
-        <span class="num svc-icon svc-icon-cal" aria-hidden="true">01</span>
-        <h3>Booking and scheduling apps</h3>
-        <p>A client facing booking flow with confirmations and reminders, for clinics, salons, tours, restaurants and service calls.</p>
-        <div class="tag-row"><span class="tag">custom code</span></div>
-      </div>
-      <div class="service" style="--sc:#3f6fd1;">
-        <span class="num svc-icon svc-icon-list" aria-hidden="true">02</span>
-        <h3>Lead and deal trackers</h3>
-        <p>Replaces the spreadsheet a real estate or sales team shares over WhatsApp, with one live view of every lead and its status.</p>
-        <div class="tag-row"><span class="tag">custom database</span></div>
-      </div>
-      <div class="service" style="--sc:#2f6f5e;">
-        <span class="num svc-icon svc-icon-bars" aria-hidden="true">03</span>
-        <h3>Internal tools and dashboards</h3>
-        <p>Purpose built screens for your team's actual workflow, inventory, jobs, approvals, instead of a bloated off the shelf tool.</p>
-        <div class="tag-row"><span class="tag">dashboards</span></div>
-      </div>
-      <div class="service" style="--sc:#c9982f;">
-        <span class="num svc-icon svc-icon-spin" aria-hidden="true">04</span>
-        <h3>Workflow automation</h3>
-        <p>Connects the tools you already use, forms, WhatsApp, email, sheets, so data moves without anyone retyping it.</p>
-        <div class="tag-row"><span class="tag">API integrations</span></div>
-      </div>
-      <div class="service" style="--sc:#8a4fd1;">
-        <span class="num svc-icon svc-icon-door" aria-hidden="true">05</span>
-        <h3>Client portals</h3>
-        <p>A private, branded space for your clients to see status, documents or progress, instead of a scattered email thread.</p>
-        <div class="tag-row"><span class="tag">auth and database</span></div>
-      </div>
-      <div class="service" style="--sc:#d1272f;">
-        <span class="num svc-icon svc-icon-pulse" aria-hidden="true">06</span>
-        <h3>AI powered features</h3>
-        <p>A focused AI feature bolted onto a real workflow, drafting, summarizing, sorting, not a chatbot for its own sake.</p>
-        <div class="tag-row"><span class="tag">LLM integration</span></div>
-      </div>
+    <p class="work-note">Systems shipped and running, plus the concept sites I build for a business before we ever talk. Most client work is under NDA, so these are the pieces I can show.</p>
+
+    <div class="work-toolbar" role="group" aria-label="Filter builds">
+      <button type="button" class="chip" data-filter="all" aria-pressed="true">All <small>15</small></button>
+      <button type="button" class="chip" data-filter="live" aria-pressed="false">Live projects <small>5</small></button>
+      <button type="button" class="chip" data-filter="concept" aria-pressed="false">Concept builds and drafts <small>10</small></button>
     </div>
 
-    <p class="work-note" style="margin-top:28px"><strong>Concept builds.</strong> Full sites and audits I build for a business before we ever talk, so they can see it working. <a href="#drafts">See the drafts and audits</a>.</p>
+    <div class="builds-grid" id="builds-grid">
+      <article class="build" data-type="live">
+        <a class="build-shot" href="work/caretrac.html" tabindex="-1" aria-hidden="true">
+          <img src="images/caretrac-live.png" alt="" width="800" height="500" loading="lazy" decoding="async">
+          <span class="build-badge is-live"><i></i>Live</span><span class="build-open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></span>
+        </a>
+        <div class="build-body">
+          <div class="build-meta"><span class="build-kind">Client portal</span></div>
+          <h3><a href="work/caretrac.html">CareTRAC</a></h3>
+          <p class="build-who">Care General Construction</p>
+          <p class="build-desc">Contractors log site progress and photos, homeowners track milestones and message them, all in one secure portal.</p>
+          <div class="build-foot"><div class="tag-row"><span class="tag">FastAPI</span><span class="tag">React</span></div><a class="build-link" href="https://portal.caregencon.com" target="_blank" rel="noopener">Live site <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a></div>
+        </div>
+      </article>
+      <article class="build" data-type="concept">
+        <a class="build-shot" href="/natashacadman/" tabindex="-1" aria-hidden="true">
+          <img src="images/previews/natasha-cadman.jpg" alt="" width="800" height="500" loading="lazy" decoding="async">
+          <span class="build-badge">13 Oct 2026</span><span class="build-open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></span>
+        </a>
+        <div class="build-body">
+          <div class="build-meta"><span class="build-kind">Concept site</span><span class="build-date">13 Oct 2026</span></div>
+          <h3><a href="/natashacadman/">Natasha Cadman</a></h3>
+          <p class="build-who">Editorial brand photographer, Leeds</p>
+          <p class="build-desc">A full rebuild of her photography site with a filterable portfolio, a quiz and a real booking flow, plus a growth strategy deck.</p>
+          <div class="build-foot"><div class="tag-row"><span class="tag">Site</span><span class="tag">Growth deck</span></div></div>
+        </div>
+      </article>
+      <article class="build" data-type="concept">
+        <a class="build-shot" href="/dineroenorden/" tabindex="-1" aria-hidden="true">
+          <img src="images/previews/dinero-en-orden.jpg" alt="" width="800" height="500" loading="lazy" decoding="async">
+          <span class="build-badge">13 Oct 2026</span><span class="build-open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></span>
+        </a>
+        <div class="build-body">
+          <div class="build-meta"><span class="build-kind">Concept site</span><span class="build-date">13 Oct 2026</span></div>
+          <h3><a href="/dineroenorden/">Dinero en Orden</a></h3>
+          <p class="build-who">Celeste Sánchez, financial educator</p>
+          <p class="build-desc">A Spanish-language site with every link wired to her real products, plus a growth plan deck for the next level.</p>
+          <div class="build-foot"><div class="tag-row"><span class="tag">Site</span><span class="tag">Spanish</span><span class="tag">Growth deck</span></div></div>
+        </div>
+      </article>
+      <article class="build" data-type="live">
+        <a class="build-shot" href="work/billionaire-club.html" tabindex="-1" aria-hidden="true">
+          <img src="images/billionaire-club.jpg" alt="" width="800" height="500" loading="lazy" decoding="async">
+          <span class="build-badge is-live"><i></i>Live</span><span class="build-open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></span>
+        </a>
+        <div class="build-body">
+          <div class="build-meta"><span class="build-kind">Membership platform</span></div>
+          <h3><a href="work/billionaire-club.html">Billionaire Club</a></h3>
+          <p class="build-who">Community platform</p>
+          <p class="build-desc">A learning and earning community where members build skills, earn from them and train the next member.</p>
+          <div class="build-foot"><div class="tag-row"><span class="tag">Next.js</span></div><a class="build-link" href="https://billionaireclub.vercel.app" target="_blank" rel="noopener">Live site <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a></div>
+        </div>
+      </article>
+      <article class="build" data-type="concept">
+        <a class="build-shot" href="/maisongray/" tabindex="-1" aria-hidden="true">
+          <img src="images/previews/maison-gray.jpg" alt="" width="800" height="500" loading="lazy" decoding="async">
+          <span class="build-badge">10 Oct 2026</span><span class="build-open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></span>
+        </a>
+        <div class="build-body">
+          <div class="build-meta"><span class="build-kind">Concept site</span><span class="build-date">10 Oct 2026</span></div>
+          <h3><a href="/maisongray/">Maison Gray</a></h3>
+          <p class="build-who">Luxury custom homes, Chicago</p>
+          <p class="build-desc">A concept site for a luxury custom home builder and interior designer in the western suburbs of Chicago.</p>
+          <div class="build-foot"><div class="tag-row"><span class="tag">Site</span><span class="tag">Lead form</span></div></div>
+        </div>
+      </article>
+      <article class="build" data-type="live">
+        <a class="build-shot" href="work/sky-team-ife.html" tabindex="-1" aria-hidden="true">
+          <img src="images/sky-team-ife.jpg" alt="" width="800" height="500" loading="lazy" decoding="async">
+          <span class="build-badge is-live"><i></i>Live</span><span class="build-open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></span>
+        </a>
+        <div class="build-body">
+          <div class="build-meta"><span class="build-kind">Operations dashboard</span></div>
+          <h3><a href="work/sky-team-ife.html">Sky Team Ife</a></h3>
+          <p class="build-who">Sky Team organization</p>
+          <p class="build-desc">Attendance, weekly reports, office rankings and center analytics for a multi-location team, with row-level security.</p>
+          <div class="build-foot"><div class="tag-row"><span class="tag">Supabase</span><span class="tag">Vercel</span></div><a class="build-link" href="https://sky-team-ife.vercel.app" target="_blank" rel="noopener">Live site <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a></div>
+        </div>
+      </article>
+      <article class="build is-extra" data-type="concept">
+        <a class="build-shot" href="/drafts/stratum/" tabindex="-1" aria-hidden="true">
+          <img src="images/previews/stratum.jpg" alt="" width="800" height="500" loading="lazy" decoding="async">
+          <span class="build-badge">13 Oct 2026</span><span class="build-open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></span>
+        </a>
+        <div class="build-body">
+          <div class="build-meta"><span class="build-kind">Homepage concept and offer</span><span class="build-date">13 Oct 2026</span></div>
+          <h3><a href="/drafts/stratum/">Stratum OAM</a></h3>
+          <p class="build-who">Owners association manager, Dubai</p>
+          <p class="build-desc">A homepage concept and growth offer built around an owner login that shows service charge against budget.</p>
+          <div class="build-foot"><div class="tag-row"><span class="tag">Site</span><span class="tag">Owner portal</span></div></div>
+        </div>
+      </article>
+      <article class="build is-extra" data-type="concept">
+        <a class="build-shot" href="/drafts/ocgpro/" tabindex="-1" aria-hidden="true">
+          <img src="images/previews/ocg-pro.jpg" alt="" width="800" height="500" loading="lazy" decoding="async">
+          <span class="build-badge">12 Oct 2026</span><span class="build-open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></span>
+        </a>
+        <div class="build-body">
+          <div class="build-meta"><span class="build-kind">Concept site and plan</span><span class="build-date">12 Oct 2026</span></div>
+          <h3><a href="/drafts/ocgpro/">OCG-PRO</a></h3>
+          <p class="build-who">Owner’s representative, Central Asia</p>
+          <p class="build-desc">A concept site and growth plan for an independent firm that protects construction investors in Central Asia.</p>
+          <div class="build-foot"><div class="tag-row"><span class="tag">Site</span><span class="tag">Growth plan</span></div></div>
+        </div>
+      </article>
+      <article class="build is-extra" data-type="live">
+        <a class="build-shot" href="work/chillwireless.html" tabindex="-1" aria-hidden="true">
+          <img src="images/chillwireless.jpg" alt="" width="800" height="500" loading="lazy" decoding="async">
+          <span class="build-badge is-live"><i></i>Live</span><span class="build-open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></span>
+        </a>
+        <div class="build-body">
+          <div class="build-meta"><span class="build-kind">E-commerce</span></div>
+          <h3><a href="work/chillwireless.html">Chill Wireless</a></h3>
+          <p class="build-who">Jake Hassan</p>
+          <p class="build-desc">A wireless carrier storefront for browsing and buying unlimited premium plans on a nationwide 5G network.</p>
+          <div class="build-foot"><div class="tag-row"><span class="tag">Store</span></div><a class="build-link" href="https://www.chillwireless.com/" target="_blank" rel="noopener">Live site <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a></div>
+        </div>
+      </article>
+      <article class="build is-extra" data-type="live">
+        <a class="build-shot" href="work/cge.html" tabindex="-1" aria-hidden="true">
+          <img src="images/cge-site.jpg" alt="" width="800" height="500" loading="lazy" decoding="async">
+          <span class="build-badge is-live"><i></i>Live</span><span class="build-open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></span>
+        </a>
+        <div class="build-body">
+          <div class="build-meta"><span class="build-kind">Booking site</span></div>
+          <h3><a href="work/cge.html">Common Ground Engineering</a></h3>
+          <p class="build-who">Electrical consulting firm</p>
+          <p class="build-desc">A one page site with Telegram and Cal.com wired straight into the booking flow, with no manual back and forth.</p>
+          <div class="build-foot"><div class="tag-row"><span class="tag">Cal.com</span><span class="tag">Telegram</span></div><a class="build-link" href="https://cge-site.vercel.app" target="_blank" rel="noopener">Live site <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a></div>
+        </div>
+      </article>
+      <article class="build is-extra" data-type="concept">
+        <a class="build-shot" href="/drafts/kelcie-mae/" tabindex="-1" aria-hidden="true">
+          <img src="images/previews/kelcie-mae.jpg" alt="" width="800" height="500" loading="lazy" decoding="async">
+          <span class="build-badge">6 Oct 2026</span><span class="build-open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></span>
+        </a>
+        <div class="build-body">
+          <div class="build-meta"><span class="build-kind">Concept site</span><span class="build-date">6 Oct 2026</span></div>
+          <h3><a href="/drafts/kelcie-mae/">Kelcie Mae</a></h3>
+          <p class="build-who">UGC creator, San Diego</p>
+          <p class="build-desc">A concept site that sells her content the way her audience hears it, like a recommendation from a friend.</p>
+          <div class="build-foot"><div class="tag-row"><span class="tag">Site</span><span class="tag">Portfolio</span></div></div>
+        </div>
+      </article>
+      <article class="build is-extra" data-type="concept">
+        <a class="build-shot" href="/drafts/crewreadinessboardmockup/" tabindex="-1" aria-hidden="true">
+          <img src="images/previews/crew-readiness.jpg" alt="" width="800" height="500" loading="lazy" decoding="async">
+          <span class="build-badge">29 Sep 2026</span><span class="build-open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></span>
+        </a>
+        <div class="build-body">
+          <div class="build-meta"><span class="build-kind">Product mockup</span><span class="build-date">29 Sep 2026</span></div>
+          <h3><a href="/drafts/crewreadinessboardmockup/">Crew Readiness Board</a></h3>
+          <p class="build-who">Five-restaurant operator</p>
+          <p class="build-desc">One screen showing who is trained on what and who is ready to step up across all five restaurants.</p>
+          <div class="build-foot"><div class="tag-row"><span class="tag">Dashboard</span></div></div>
+        </div>
+      </article>
+      <article class="build is-extra" data-type="concept">
+        <a class="build-shot" href="/drafts/handymancoach-homepage-mockup.html" tabindex="-1" aria-hidden="true">
+          <img src="images/previews/handyman-coach.jpg" alt="" width="800" height="500" loading="lazy" decoding="async">
+          <span class="build-badge">30 Sep 2026</span><span class="build-open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></span>
+        </a>
+        <div class="build-body">
+          <div class="build-meta"><span class="build-kind">Homepage mockup</span><span class="build-date">30 Sep 2026</span></div>
+          <h3><a href="/drafts/handymancoach-homepage-mockup.html">Handyman Coach</a></h3>
+          <p class="build-who">Coach for tradespeople</p>
+          <p class="build-desc">A homepage mockup for a coach who helps people get paid for the trade work they already know how to do.</p>
+          <div class="build-foot"><div class="tag-row"><span class="tag">Site</span></div></div>
+        </div>
+      </article>
+      <article class="build is-extra" data-type="concept">
+        <a class="build-shot" href="/drafts/manya-andreevna-inquiry-system-scope.html" tabindex="-1" aria-hidden="true">
+          <img src="images/previews/manya-inquiry.jpg" alt="" width="800" height="500" loading="lazy" decoding="async">
+          <span class="build-badge">3 Oct 2026</span><span class="build-open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></span>
+        </a>
+        <div class="build-body">
+          <div class="build-meta"><span class="build-kind">Build scope</span><span class="build-date">3 Oct 2026</span></div>
+          <h3><a href="/drafts/manya-andreevna-inquiry-system-scope.html">The Inquiry System</a></h3>
+          <p class="build-who">Manya Andreevna Photography</p>
+          <p class="build-desc">A scoped build that turns a wedding photographer’s contact form into booked weddings.</p>
+          <div class="build-foot"><div class="tag-row"><span class="tag">Forms</span><span class="tag">Automation</span></div></div>
+        </div>
+      </article>
+      <article class="build is-extra" data-type="concept">
+        <a class="build-shot" href="/drafts/kate-anthony-bio-draft.html" tabindex="-1" aria-hidden="true">
+          <img src="images/previews/kate-bio.jpg" alt="" width="800" height="500" loading="lazy" decoding="async">
+          <span class="build-badge">29 Sep 2026</span><span class="build-open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></span>
+        </a>
+        <div class="build-body">
+          <div class="build-meta"><span class="build-kind">Copy draft</span><span class="build-date">29 Sep 2026</span></div>
+          <h3><a href="/drafts/kate-anthony-bio-draft.html">Kate Anthony Instagram bio</a></h3>
+          <p class="build-who">Divorce coach and podcaster</p>
+          <p class="build-desc">Three ready to paste bios that turn a sold-out retreat into proof for the next one.</p>
+          <div class="build-foot"><div class="tag-row"><span class="tag">Draft</span></div></div>
+        </div>
+      </article>
+    </div>
+    <div class="builds-more"><button type="button" class="btn magnet" id="work-more">Show all 15 builds</button></div>
+    <p class="work-note solutions-link">Looking for what I can build for your business? <a href="solutions.html">See the nine solutions</a>.</p>
   </section>
 
   <section id="process">
     <div class="section-head">
-      <h2>How a project runs</h2>
-      <span class="label">Sequence</span>
+      <h2 data-split>How a project runs</h2>
+      <span class="label">Four steps</span>
     </div>
-    <ol class="process-list">
-      <li>
-        <span class="step-num">01</span>
-        <div><h3>Scope call or a detailed breakdown</h3><p>Either works: hop on a short call, or send a detailed breakdown of what your project is about. Whichever gets me the full picture fastest.</p></div>
-        <span class="dur">Day 1</span>
-        <span class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5c0 8 7 15 15 15l2-4-5-2-2 2c-2-1-4-3-5-5l2-2-2-5z"/></svg></span>
+    <ol class="steps">
+      <li class="step">
+        <span class="step-top"><span class="step-n">01</span><span class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span></span>
+        <h3>Agree the scope and price</h3>
+        <p>We talk through what you need. Then I send a clear proposal: exactly what gets built and exactly what it costs, agreed before any work starts.</p>
       </li>
-      <li>
-        <span class="step-num">02</span>
-        <div><h3>Proposal</h3><p>I come back with a proposal: exactly what it costs and exactly how the project will go, no hourly surprises.</p></div>
-        <span class="dur">Day 2 to 3</span>
-        <span class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5M9 12h6M9 16h6M9 8h2"/></svg></span>
+      <li class="step">
+        <span class="step-top"><span class="step-n">02</span><span class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg></span></span>
+        <h3>I build it</h3>
+        <p>Working software, not mockups. You watch it take shape and tell me what to adjust along the way.</p>
       </li>
-      <li>
-        <span class="step-num">03</span>
-        <div><h3>Build</h3><p>Working software, not mockups. An average build takes two to three weeks. If a build runs longer, it's usually because we're waiting on verification from a third-party API or platform, not because the work stalled.</p></div>
-        <span class="dur">Week 1 to 3</span>
-        <span class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 6 2 12l6 6M16 6l6 6-6 6M14 4l-4 16"/></svg></span>
+      <li class="step">
+        <span class="step-top"><span class="step-n">03</span><span class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><path d="M22 4 12 14l-3-3"/></svg></span></span>
+        <h3>Handover and changes</h3>
+        <p>I hand over the finished system with a walkthrough. Any change you need after launch gets made.</p>
       </li>
-      <li>
-        <span class="step-num">04</span>
-        <div><h3>Handover</h3><p>A walkthrough call, a handover document, and a set window of free fixes after launch.</p></div>
-        <span class="dur">Week 3</span>
-        <span class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m3 12 4-4 4 4 4-4 4 4"/><path d="M3 12v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6"/></svg></span>
-      </li>
-      <li>
-        <span class="step-num">05</span>
-        <div><h3>Leave a review</h3><p>Once you've used it for a bit, leave a review of your experience. It shows up right here on the site for the next person deciding whether to work with me.</p></div>
-        <span class="dur">After launch</span>
-        <span class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2.5 15 9l7 1-5 5 1.3 7-6.3-3.5L5.7 22 7 15 2 10l7-1z"/></svg></span>
+      <li class="step">
+        <span class="step-top"><span class="step-n">04</span><span class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></span></span>
+        <h3>You review it</h3>
+        <p>Once it is running, tell others how it went. Your review goes on this page for the next person deciding.</p>
       </li>
     </ol>
   </section>
 
-  <section id="work">
-    <div class="section-head">
-      <h2>Recent builds</h2>
-      <span class="label">Live projects</span>
-    </div>
-    <p class="work-note">Systems shipped and running today. These are the only projects I can show publicly, most client work is under NDA. Click through to see any of them live.</p>
-
-    <a href="work/caretrac.html" class="work-feature">
-      <div class="work-feature-shot"><img src="images/caretrac-live.png" alt="CareTRAC sign-in screen, built for Care General Construction" loading="lazy"></div>
-      <div class="work-feature-body">
-        <span class="kicker">Field and client coordination platform</span>
-        <h3>CareTRAC</h3>
-        <p>Built for Erik at Care General Construction: contractors log site progress and photos, homeowners track milestones and message their contractor, all from one secure portal. FastAPI backend with a dedicated scheduler service, React frontend.</p>
-        <div class="meta">
-          <span class="tag">FastAPI + React</span>
-          <span class="tag">Case study</span>
-          <span class="tag">Live ↗</span>
+  <section id="audits">
+    <div class="req">
+      <div class="req-copy">
+        <span class="label">Request an audit</span>
+        <h2 data-split>Get an audit of your business in under 12 hours.</h2>
+        <p class="req-lead">Send me your website, your Instagram or any business link. I study what you already have and send back exactly what I would change to bring in more bookings and revenue.</p>
+        <div class="req-time">
+          <span class="req-ring" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+          <div><b>Under 12 hours</b><span>from your request to your audit</span></div>
         </div>
-      </div>
-    </a>
-
-    <div class="work-grid">
-      <div class="work-card">
-        <a href="work/billionaire-club.html" class="shot"><img src="images/billionaire-club.jpg" alt="Billionaire Club homepage screenshot" loading="lazy"></a>
-        <div class="body">
-          <span class="kicker">Client portal / community platform</span>
-          <h3><a href="work/billionaire-club.html">Billionaire Club</a></h3>
-          <p>A digital business ecosystem where members learn real skills, earn from what they learn, and grow into leaders who train the next member.</p>
-          <div class="meta">
-            <span class="tag">Next.js</span>
-            <a class="tag" href="work/billionaire-club.html">Case study</a>
-            <a class="tag" href="https://billionaireclub.vercel.app" target="_blank" rel="noopener">Live ↗</a>
-          </div>
-        </div>
+        <ul class="req-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>What is costing you customers right now</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>The fixes, ranked by what earns the most first</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>How I would build each one, in plain English</span></li>
+        </ul>
       </div>
 
-      <div class="work-card">
-        <a href="work/sky-team-ife.html" class="shot"><img src="images/sky-team-ife.jpg" alt="Sky Team Ife sign-in screen screenshot" loading="lazy"></a>
-        <div class="body">
-          <span class="kicker">Internal dashboard</span>
-          <h3><a href="work/sky-team-ife.html">Sky Team Ife</a></h3>
-          <p>Built for the Sky Team organization: attendance, weekly reports, office rankings and center analytics for a multi-location team, backed by Supabase with full row-level security.</p>
-          <div class="meta">
-            <span class="tag">Vercel + Supabase</span>
-            <a class="tag" href="work/sky-team-ife.html">Case study</a>
-            <a class="tag" href="https://sky-team-ife.vercel.app" target="_blank" rel="noopener">Live ↗</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="work-card">
-        <a href="work/chillwireless.html" class="shot"><img src="images/chillwireless.jpg" alt="Chill Wireless homepage screenshot" loading="lazy"></a>
-        <div class="body">
-          <span class="kicker">E-commerce / telecom</span>
-          <h3><a href="work/chillwireless.html">Chill Wireless</a></h3>
-          <p>Built for Jake Hassan: a wireless carrier's storefront for browsing and buying unlimited premium plans on the nationwide 5G network.</p>
-          <div class="meta">
-            <span class="tag">E-commerce</span>
-            <a class="tag" href="work/chillwireless.html">Case study</a>
-            <a class="tag" href="https://www.chillwireless.com/" target="_blank" rel="noopener">Live ↗</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="work-card">
-        <a href="work/cge.html" class="shot"><img src="images/cge-site.jpg" alt="Common Ground Engineering site screenshot" loading="lazy"></a>
-        <div class="body">
-          <span class="kicker">Booking / lead capture</span>
-          <h3><a href="work/cge.html">Common Ground Engineering</a></h3>
-          <p>A one-page site for an electrical consulting firm with Telegram and Cal.com wired straight into the booking flow, no manual back-and-forth.</p>
-          <div class="meta">
-            <span class="tag">Static + API</span>
-            <a class="tag" href="work/cge.html">Case study</a>
-            <a class="tag" href="https://cge-site.vercel.app" target="_blank" rel="noopener">Live ↗</a>
-          </div>
-        </div>
+      <div class="req-channels">
+        <span class="label">Pick how you want to reach me</span>
+        <a class="req-card" style="--rc:#14a800" href="https://www.upwork.com/" target="_blank" rel="noopener">
+          <span class="req-ic req-up" aria-hidden="true">Up</span>
+          <span class="req-txt"><b>Upwork</b><span>Send me a message or an invite on my profile</span></span>
+          <span class="req-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+        <a class="req-card" style="--rc:#0a66c2" href="https://www.linkedin.com/in/evansademilua/" target="_blank" rel="noopener">
+          <span class="req-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></span>
+          <span class="req-txt"><b>LinkedIn</b><span>Message me and drop your link in the chat</span></span>
+          <span class="req-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+        <a class="req-card" style="--rc:#ff5b52" href="mailto:ademiluaolufemi2@gmail.com?subject=Audit%20request&amp;body=Hi%20Evans%2C%20I%27d%20like%20an%20audit%20of%20my%20business.%0A%0AMy%20website%20or%20link%3A%20%0AWhat%20I%20want%20more%20of%20%28bookings%2C%20sales%2C%20leads%29%3A%20" >
+          <span class="req-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></span>
+          <span class="req-txt"><b>Email</b><span>ademiluaolufemi2@gmail.com</span></span>
+          <span class="req-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+        <a class="req-card" style="--rc:#25d366" href="https://wa.me/2347035940200?text=Hi%20Evans%2C%20I%27d%20like%20an%20audit%20of%20my%20business.%20My%20website%20or%20link%3A%20" target="_blank" rel="noopener">
+          <span class="req-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5z"/></svg></span>
+          <span class="req-txt"><b>WhatsApp</b><span>The quickest way to get started</span></span>
+          <span class="req-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
       </div>
     </div>
-  </section>
-
-  <section id="drafts">
-    <div class="section-head">
-      <h2 data-split>Drafts and audits</h2>
-      <span class="label">Built before we ever spoke</span>
-    </div>
-    <p class="work-note">When I want to work with a business, I do not send a pitch. I build the thing first: a full concept site, a product mockup, or a growth audit of what they already have, then I send the link. <span class="hover-only">Hover any row to preview it, click to open it.</span><span class="touch-only">Tap any row to open it.</span></p>
-
-    <div class="draft-group">
-      <div class="draft-group-head"><span class="label">Concept sites and mockups</span><span class="label">08 pieces</span></div>
-      <div class="draft-list">
-      <a class="draft-row" href="/natashacadman/" data-preview="images/previews/natasha-cadman.jpg">
-        <span class="draft-idx">01</span>
-        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/natasha-cadman.jpg" alt="" loading="lazy"></span>
-        <span class="draft-name">Natasha Cadman</span>
-        <span class="draft-kind">Concept site + plan</span>
-        <span class="draft-for">Brand photographer<em>Leeds, UK</em></span>
-        <span class="draft-year">2026</span>
-        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
-      </a>
-      <a class="draft-row" href="/dineroenorden/" data-preview="images/previews/dinero-en-orden.jpg">
-        <span class="draft-idx">02</span>
-        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/dinero-en-orden.jpg" alt="" loading="lazy"></span>
-        <span class="draft-name">Dinero en Orden</span>
-        <span class="draft-kind">Concept site</span>
-        <span class="draft-for">Celeste Sánchez, finance educator<em>Argentina</em></span>
-        <span class="draft-year">2026</span>
-        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
-      </a>
-      <a class="draft-row" href="/maisongray/" data-preview="images/previews/maison-gray.jpg">
-        <span class="draft-idx">03</span>
-        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/maison-gray.jpg" alt="" loading="lazy"></span>
-        <span class="draft-name">Maison Gray</span>
-        <span class="draft-kind">Concept site</span>
-        <span class="draft-for">Luxury custom homes<em>Chicago</em></span>
-        <span class="draft-year">2026</span>
-        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
-      </a>
-      <a class="draft-row" href="/drafts/ocgpro/" data-preview="images/previews/ocg-pro.jpg">
-        <span class="draft-idx">04</span>
-        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/ocg-pro.jpg" alt="" loading="lazy"></span>
-        <span class="draft-name">OCG-PRO</span>
-        <span class="draft-kind">Concept site + growth plan</span>
-        <span class="draft-for">Owner’s representative<em>Central Asia</em></span>
-        <span class="draft-year">2026</span>
-        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
-      </a>
-      <a class="draft-row" href="/drafts/kelcie-mae/" data-preview="images/previews/kelcie-mae.jpg">
-        <span class="draft-idx">05</span>
-        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/kelcie-mae.jpg" alt="" loading="lazy"></span>
-        <span class="draft-name">Kelcie Mae</span>
-        <span class="draft-kind">Concept site</span>
-        <span class="draft-for">UGC creator<em>San Diego</em></span>
-        <span class="draft-year">2026</span>
-        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
-      </a>
-      <a class="draft-row" href="/drafts/crewreadinessboardmockup/" data-preview="images/previews/crew-readiness.jpg">
-        <span class="draft-idx">06</span>
-        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/crew-readiness.jpg" alt="" loading="lazy"></span>
-        <span class="draft-name">Crew Readiness Board</span>
-        <span class="draft-kind">Product mockup</span>
-        <span class="draft-for">Multi-restaurant operator<em>United States</em></span>
-        <span class="draft-year">2026</span>
-        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
-      </a>
-      <a class="draft-row" href="/drafts/handymancoach-homepage-mockup.html" data-preview="images/previews/handyman-coach.jpg">
-        <span class="draft-idx">07</span>
-        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/handyman-coach.jpg" alt="" loading="lazy"></span>
-        <span class="draft-name">Handyman Coach</span>
-        <span class="draft-kind">Homepage mockup</span>
-        <span class="draft-for">Trades coaching<em>United States</em></span>
-        <span class="draft-year">2026</span>
-        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
-      </a>
-      <a class="draft-row" href="/drafts/manya-andreevna-inquiry-system-scope.html" data-preview="images/previews/manya-inquiry.jpg">
-        <span class="draft-idx">08</span>
-        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/manya-inquiry.jpg" alt="" loading="lazy"></span>
-        <span class="draft-name">The Inquiry System</span>
-        <span class="draft-kind">Build scope</span>
-        <span class="draft-for">Wedding photographer<em>Europe</em></span>
-        <span class="draft-year">2026</span>
-        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
-      </a>
-      </div>
-    </div>
-
-    <div class="draft-group">
-      <div class="draft-group-head"><span class="label">Growth audits and drafts</span><span class="label">04 pieces</span></div>
-      <div class="draft-list">
-      <a class="draft-row" href="/Audit/kate-anthony-audit.html" data-preview="images/previews/kate-audit.jpg">
-        <span class="draft-idx">08</span>
-        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/kate-audit.jpg" alt="" loading="lazy"></span>
-        <span class="draft-name">Kate Anthony, the next chapter</span>
-        <span class="draft-kind">Growth audit</span>
-        <span class="draft-for">Divorce coach and podcaster<em>United States</em></span>
-        <span class="draft-year">Sep 2026</span>
-        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
-      </a>
-      <a class="draft-row" href="/Audit/marcela-variani-audit.html" data-preview="images/previews/marcela-audit.jpg">
-        <span class="draft-idx">09</span>
-        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/marcela-audit.jpg" alt="" loading="lazy"></span>
-        <span class="draft-name">In Love with Marcela</span>
-        <span class="draft-kind">Growth audit</span>
-        <span class="draft-for">Celebrant<em>Dubai and Barcelona</em></span>
-        <span class="draft-year">Sep 2026</span>
-        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
-      </a>
-      <a class="draft-row" href="/Audit/dinero-en-orden-proximo-nivel.pdf" target="_blank" rel="noopener" data-preview="images/previews/dinero-en-orden.jpg">
-        <span class="draft-idx">10</span>
-        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/dinero-en-orden.jpg" alt="" loading="lazy"></span>
-        <span class="draft-name">Dinero en Orden, próximo nivel</span>
-        <span class="draft-kind">Growth audit, PDF</span>
-        <span class="draft-for">Celeste Sánchez<em>Argentina</em></span>
-        <span class="draft-year">Oct 2026</span>
-        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
-      </a>
-      <a class="draft-row" href="/drafts/kate-anthony-bio-draft.html" data-preview="images/previews/kate-bio.jpg">
-        <span class="draft-idx">11</span>
-        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/kate-bio.jpg" alt="" loading="lazy"></span>
-        <span class="draft-name">Instagram bio, three options</span>
-        <span class="draft-kind">Copy draft</span>
-        <span class="draft-for">Kate Anthony<em>United States</em></span>
-        <span class="draft-year">Sep 2026</span>
-        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
-      </a>
-      </div>
-    </div>
-
-    <div class="draft-preview" id="draft-preview" aria-hidden="true"><img alt=""></div>
   </section>
 
   <section id="reviews">
     <div class="section-head">
-      <h2>What clients say</h2>
+      <h2 data-split>What clients say</h2>
       <span class="label">Real feedback</span>
     </div>
-    <p class="work-note">Verified feedback from Upwork, where most of my early client work has happened.</p>
+    <p class="work-note">Verified feedback from Upwork, in the words clients used.</p>
     <div class="reviews-grid" id="reviews-grid">
       <div class="review-card">
-        <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <p class="review-quote">"I hired Evans to help with some tricky issues on my Bubble app, and he delivered beyond expectations. He quickly understood the problems, communicated clearly, and implemented clean, effective fixes that improved the app's performance and user experience. Highly recommend!"</p>
-        <div class="review-who">
-          <span class="review-name">Verified Upwork client</span>
-          <span class="review-role">Build or Fix Your Bubble.io App</span>
-        </div>
+        <span class="review-src src-up">Verified on Upwork</span>
+        <p class="review-quote">&quot;I hired Evans to help with some tricky issues on my Bubble app, and he delivered beyond expectations. He quickly understood the problems, communicated clearly, and implemented clean, effective fixes that improved the app's performance and user experience. Highly recommend!&quot;</p>
+        <div class="review-who"><span class="review-name">Verified Upwork client</span><span class="review-role">Build or Fix Your Bubble.io App</span></div>
       </div>
       <div class="review-card">
-        <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <p class="review-quote">"Evans did an outstanding job on my n8n automation. He quickly understood my needs, communicated clearly, and delivered a flawless solution that exceeded expectations. Highly recommend for any automation work!"</p>
-        <div class="review-who">
-          <span class="review-name">Verified Upwork client</span>
-          <span class="review-role">Custom Slack Bot Development</span>
-        </div>
+        <span class="review-src src-up">Verified on Upwork</span>
+        <p class="review-quote">&quot;Evans did an outstanding job on my n8n automation. He quickly understood my needs, communicated clearly, and delivered a flawless solution that exceeded expectations. Highly recommend for any automation work!&quot;</p>
+        <div class="review-who"><span class="review-name">Verified Upwork client</span><span class="review-role">Custom Slack Bot Development</span></div>
       </div>
       <div class="review-card">
-        <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <p class="review-quote">"Working with Olufemi was a great experience! He communicates very well, understood all my requirements for my Bubble.io AI app and fixed all the errors immediately and implemented them to my complete satisfaction. I will 100% hire him again."</p>
-        <div class="review-who">
-          <span class="review-name">Verified Upwork client</span>
-          <span class="review-role">Bubble Developer, Tourism Platform</span>
-        </div>
+        <span class="review-src src-up">Verified on Upwork</span>
+        <p class="review-quote">&quot;Working with Olufemi was a great experience! He communicates very well, understood all my requirements for my Bubble.io AI app and fixed all the errors immediately and implemented them to my complete satisfaction. I will 100% hire him again.&quot;</p>
+        <div class="review-who"><span class="review-name">Verified Upwork client</span><span class="review-role">Bubble Developer, Tourism Platform</span></div>
       </div>
       <div class="review-card">
-        <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <p class="review-quote">"Working with Olufemi has been a remarkable experience. He combines solid technical skills in automation, AI building and API integration with a clear understanding of real-world business needs. His ability to merge design and functionality makes him a top-tier developer I'd recommend to any forward-thinking team."</p>
-        <div class="review-who">
-          <span class="review-name">Verified Upwork client</span>
-          <span class="review-role">AI Automation Specialist</span>
-        </div>
+        <span class="review-src src-up">Verified on Upwork</span>
+        <p class="review-quote">&quot;Working with Olufemi has been a remarkable experience. He combines solid technical skills in automation, AI building and API integration with a clear understanding of real-world business needs. His ability to merge design and functionality makes him a top-tier developer I'd recommend to any forward-thinking team.&quot;</p>
+        <div class="review-who"><span class="review-name">Verified Upwork client</span><span class="review-role">AI Automation Specialist</span></div>
       </div>
     </div>
   </section>
 
   <section id="book">
-    <div class="book-grid">
-      <div class="book-head">
-        <span class="label">Book a meeting</span>
-        <h2 data-split>Let’s book twenty minutes.</h2>
-        <p>Pick a day, pick a window, tell me what you are building. The request lands on my WhatsApp or in my inbox in one tap and I confirm the exact time within a few hours.</p>
-        <ul class="book-facts">
-          <li><span class="fk">Where</span><span class="fv">Google Meet or a WhatsApp call</span></li>
-          <li><span class="fk">Time zone</span><span class="fv">Lagos, GMT+1. I adapt to yours.</span></li>
-          <li><span class="fk">Bring</span><span class="fv">The problem, not a spec. We work it out together.</span></li>
-        </ul>
+    <div class="book-simple">
+      <span class="label">Book a meeting</span>
+      <h2 data-split>Book a meeting.</h2>
+      <p class="book-lead">Reach out any way that suits you. I reply fast.</p>
+      <div class="book-direct">
+        <a class="btn primary magnet" href="https://wa.me/2347035940200" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5z"/></svg> Call me on WhatsApp</a>
+        <a class="btn magnet" href="mailto:ademiluaolufemi2@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg> Send an email</a>
+        <a class="btn magnet" href="https://www.linkedin.com/in/evansademilua/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg> Message me on LinkedIn</a>
       </div>
-
-      <form class="book-panel" id="book-form" autocomplete="off">
-        <div class="book-step">
-          <span class="book-step-num">01</span>
-          <div class="book-step-body">
-            <span class="book-q">What are we talking about?</span>
-            <div class="chip-row" id="book-topics" role="group" aria-label="Topic">
-              <button type="button" class="chip" data-topic="A booking or scheduling app">Booking app</button>
-              <button type="button" class="chip" data-topic="A lead or deal tracker">Lead tracker</button>
-              <button type="button" class="chip" data-topic="An internal tool or dashboard">Dashboard</button>
-              <button type="button" class="chip" data-topic="Workflow automation">Automation</button>
-              <button type="button" class="chip" data-topic="A client portal">Client portal</button>
-              <button type="button" class="chip" data-topic="An AI feature">AI feature</button>
-              <button type="button" class="chip" data-topic="A website">Website</button>
-              <button type="button" class="chip" data-topic="Something else">Something else</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="book-step">
-          <span class="book-step-num">02</span>
-          <div class="book-step-body">
-            <span class="book-q">Which day?</span>
-            <div class="day-strip" id="book-days" role="group" aria-label="Day"></div>
-            <span class="book-q" style="margin-top:14px">Which window? <span class="book-hint">Lagos time</span></span>
-            <div class="chip-row" id="book-slots" role="group" aria-label="Time window">
-              <button type="button" class="chip" data-slot="morning, 9am to 12pm">Morning <small>9 to 12</small></button>
-              <button type="button" class="chip" data-slot="afternoon, 12pm to 4pm">Afternoon <small>12 to 4</small></button>
-              <button type="button" class="chip" data-slot="evening, 4pm to 7pm">Evening <small>4 to 7</small></button>
-            </div>
-          </div>
-        </div>
-
-        <div class="book-step">
-          <span class="book-step-num">03</span>
-          <div class="book-step-body">
-            <label class="book-q" for="book-name">Your name</label>
-            <input type="text" id="book-name" placeholder="So I know who I am meeting" maxlength="80">
-            <label class="book-q" for="book-note" style="margin-top:12px">One line about the business <span class="book-hint">optional</span></label>
-            <input type="text" id="book-note" placeholder="e.g. a clinic in Abuja losing bookings over WhatsApp" maxlength="160">
-          </div>
-        </div>
-
-        <div class="book-summary" id="book-summary" aria-live="polite">
-          <span class="book-summary-k">Your request</span>
-          <span class="book-summary-v" id="book-summary-text">Pick a topic, a day and a window to build your request.</span>
-        </div>
-
-        <div class="book-actions">
-          <a class="btn primary magnet book-send" id="book-wa" href="https://wa.me/2347035940200" target="_blank" rel="noopener">Send on WhatsApp</a>
-          <a class="btn magnet book-send" id="book-mail" href="mailto:ademiluaolufemi2@gmail.com">Send by email</a>
-        </div>
-        <p class="book-foot">No account, no calendar app. Your request opens as a message you can edit before you send it.</p>
-      </form>
     </div>
   </section>
 
   <section id="contact">
     <div class="big-marquee" aria-hidden="true">
-      <div class="big-marquee-track"><span>Tell me what you want built &mdash; </span><span>Tell me what you want built &mdash; </span></div>
+      <div class="big-marquee-track"><span>Tell me what you want built • </span><span>Tell me what you want built • </span></div>
     </div>
     <div class="contact-block">
       <h2 data-split>Tell me what you want built.</h2>
@@ -514,4 +437,8 @@
 </div>
 <script src="js/site.js" defer></script>
 <script src="js/motion.js" defer></script>
+<script src="js/ambient.js" defer></script>
+<script src="js/imagine.js" defer></script>
 <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
