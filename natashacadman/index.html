@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Natasha Cadman | Editorial Brand Photography for Female Founders | Leeds &amp; Yorkshire</title>
+<meta name="description" content="Editorial brand photography for female founders in Leeds, Harrogate, York and across Yorkshire. Strategic brand photos, not just pretty ones. Book The Portrait, Content or Complete Edit.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300;1,9..144,500&family=Manrope:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#141311;--ink-2:#26231f;--ivory:#f6f2ec;--paper:#fcfaf6;--muted:#6f6962;--line:#e4ddd2;
+  --blush:#f0d9d2;--blush-d:#d9b3a7;--terra:#b4523a;--terra-d:#8f3f2d;--sage:#8a9a7b;
+  --serif:"Fraunces",Georgia,serif;--sans:"Manrope",system-ui,sans-serif;--ease:cubic-bezier(.22,.8,.2,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;overflow-x:hidden;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body.loading{overflow:hidden}
+img{display:block;max-width:100%}
+a{color:inherit}
+::selection{background:var(--blush);color:var(--ink)}
+h1,h2,h3{font-family:var(--serif);font-weight:300;letter-spacing:-.02em;line-height:1.02;margin:0}
+h2{font-size:clamp(36px,5vw,62px)}
+h3{font-size:clamp(22px,2.6vw,30px);font-weight:500}
+p{margin:0 0 1em}
+em{font-style:italic;font-weight:300}
+.wrap{width:min(1200px,calc(100% - 40px));margin:0 auto}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.26em;text-transform:uppercase;color:var(--terra)}
+.lead{font-size:clamp(17px,1.5vw,20px);color:var(--muted);max-width:58ch}
+
+/* PROGRESS + GLOW */
+.progress{position:fixed;left:0;top:0;height:3px;width:100%;z-index:60;pointer-events:none}
+.progress i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--terra),var(--blush-d));transform-origin:left;transform:scaleX(0)}
+.glow{position:fixed;width:460px;height:460px;border-radius:50%;background:radial-gradient(circle,rgba(217,179,167,.35),transparent 60%);pointer-events:none;z-index:1;transform:translate(-50%,-50%);opacity:0;transition:opacity .4s;mix-blend-mode:multiply}
+body.ready .glow{opacity:1}
+@media (hover:none){.glow{display:none}}
+
+/* LOADER */
+.loader{position:fixed;inset:0;z-index:100;background:var(--ink);display:grid;place-items:center;color:#fff;transition:transform 1s var(--ease)}
+.loader.done{transform:translateY(-100%)}
+.loader .w{display:flex;flex-direction:column;align-items:center;gap:14px}
+.loader .nc{font-family:var(--serif);font-size:64px;font-weight:300;letter-spacing:-.04em;line-height:1;opacity:0;animation:fade .8s var(--ease) .1s forwards}
+.loader .nc i{font-style:italic;color:var(--blush)}
+.loader .t{font-size:11px;letter-spacing:.4em;text-transform:uppercase;opacity:0;animation:fade .7s ease .4s forwards}
+.loader .bar{width:140px;height:1px;background:rgba(255,255,255,.15);overflow:hidden}
+.loader .bar i{display:block;height:100%;width:100%;background:var(--blush);transform:translateX(-100%);animation:load 1.2s var(--ease) .2s forwards}
+@keyframes fade{to{opacity:1}}
+@keyframes load{to{transform:none}}
+
+.concept{background:var(--ink);color:#cfc8bf;font-size:12.5px;letter-spacing:.04em;text-align:center;padding:8px 16px;position:relative;z-index:30}
+.concept b{color:var(--blush);font-weight:700}
+
+/* NAV */
+header.nav{position:fixed;top:34px;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:18px clamp(16px,4vw,56px);transition:transform .5s var(--ease),background .4s,padding .4s,top .4s,box-shadow .4s}
+header.nav.scrolled{top:0;background:rgba(252,250,246,.9);backdrop-filter:blur(12px);padding-top:10px;padding-bottom:10px;box-shadow:0 1px 0 var(--line)}
+header.nav.hide{transform:translateY(-110%)}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.brand .nc{font-family:var(--serif);font-size:30px;font-weight:300;letter-spacing:-.05em;line-height:1}
+.brand .nc i{font-style:italic;color:var(--terra)}
+.brand span{font-size:11px;font-weight:800;letter-spacing:.26em;text-transform:uppercase}
+.brand small{display:block;font-weight:500;letter-spacing:.14em;color:var(--muted);font-size:10px}
+nav.links{display:flex;gap:26px;font-size:13px;font-weight:600;letter-spacing:.04em}
+nav.links a{text-decoration:none;position:relative;padding:4px 0}
+nav.links a::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1.5px;background:var(--terra);transform:scaleX(0);transform-origin:right;transition:transform .45s var(--ease)}
+nav.links a:hover::after,nav.links a.active::after{transform:scaleX(1);transform-origin:left}
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:10px;border:1.5px solid var(--ink);padding:14px 26px;font-size:12.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;background:var(--ink);color:#fff;cursor:pointer;font-family:var(--sans);transition:transform .3s var(--ease),color .4s var(--ease),border-color .4s;z-index:0;will-change:transform}
+.btn::before{content:"";position:absolute;inset:0;background:var(--blush);transform:translateY(101%);transition:transform .45s var(--ease);z-index:-1}
+.btn:hover::before{transform:none}
+.btn:hover{color:var(--ink);border-color:var(--blush)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost::before{background:var(--ink)}
+.btn.ghost:hover{color:#fff;border-color:var(--ink)}
+.btn.light{background:#fff;color:var(--ink);border-color:#fff}
+.btn.light::before{background:var(--blush)}
+.btn .arr{transition:transform .35s var(--ease)}
+.btn:hover .arr{transform:translateX(4px)}
+.burger{display:none;background:none;border:0;cursor:pointer;padding:8px}
+.burger i{display:block;width:26px;height:1.5px;background:var(--ink);margin:6px 0}
+.mobile{position:fixed;inset:0;z-index:39;background:var(--ink);color:#fff;display:flex;flex-direction:column;justify-content:center;gap:8px;padding:40px;transform:translateY(-100%);transition:transform .6s var(--ease)}
+.mobile.open{transform:none}
+.mobile a{font-family:var(--serif);font-size:36px;font-weight:300;text-decoration:none;opacity:0;transform:translateY(20px);transition:.5s var(--ease)}
+.mobile.open a{opacity:1;transform:none}
+.mobile.open a:nth-child(2){transition-delay:.05s}.mobile.open a:nth-child(3){transition-delay:.1s}.mobile.open a:nth-child(4){transition-delay:.15s}.mobile.open a:nth-child(5){transition-delay:.2s}.mobile.open a:nth-child(6){transition-delay:.25s}.mobile.open a:nth-child(7){transition-delay:.3s}
+
+/* HERO */
+.hero{position:relative;min-height:100svh;padding:150px 0 70px;background:var(--ivory);overflow:hidden}
+.hero .blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.7;pointer-events:none;animation:drift 16s ease-in-out infinite alternate}
+.hero .b1{width:560px;height:560px;background:var(--blush);top:-160px;right:-120px}
+.hero .b2{width:380px;height:380px;background:#e9ecdf;bottom:-120px;left:-120px;animation-delay:-7s}
+@keyframes drift{to{transform:translate(40px,30px) scale(1.08)}}
+.hero .wrap{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:50px;align-items:center}
+.hero h1{font-size:clamp(46px,7vw,94px)}
+.hero h1 .line{display:block;overflow:hidden;padding-bottom:.06em;margin-bottom:-.06em}
+.hero h1 .line>span{display:block;transform:translateY(110%);transition:transform 1s var(--ease)}
+body.ready .hero h1 .line>span{transform:none}
+.hero h1 .line:nth-child(2)>span{transition-delay:.1s}.hero h1 .line:nth-child(3)>span{transition-delay:.2s}
+.rotator{display:inline-grid;vertical-align:bottom;text-align:left}
+.rotator>span{grid-area:1/1;opacity:0;transform:translateY(16px);transition:.6s var(--ease);white-space:nowrap;font-style:italic;color:var(--terra)}
+.rotator>span.on{opacity:1;transform:none}
+.hero .sub{margin:26px 0 34px;max-width:52ch;font-size:clamp(17px,1.5vw,20px);color:var(--muted);opacity:0;transform:translateY(14px);transition:.9s var(--ease) .35s}
+body.ready .hero .sub{opacity:1;transform:none}
+.hero .cta{display:flex;gap:14px;flex-wrap:wrap;opacity:0;transform:translateY(14px);transition:.9s var(--ease) .5s}
+body.ready .hero .cta{opacity:1;transform:none}
+.hero .visual{position:relative;aspect-ratio:4/5;opacity:0;transform:translateY(30px) rotate(1.5deg);transition:1.2s var(--ease) .4s}
+body.ready .hero .visual{opacity:1;transform:none}
+.hero .visual .ph{position:absolute;inset:0;overflow:hidden;box-shadow:0 50px 90px -40px rgba(20,19,17,.5)}
+.hero .visual .ph img{width:100%;height:100%;object-fit:cover;object-position:top;transform:scale(1.12);will-change:transform}
+.chip{position:absolute;background:#fff;padding:12px 16px;box-shadow:0 20px 40px -20px rgba(20,19,17,.4);font-size:13px;font-weight:600;display:flex;align-items:center;gap:10px;animation:float 5s ease-in-out infinite}
+.chip b{font-family:var(--serif);font-size:24px;font-weight:500;color:var(--terra)}
+.chip.c1{top:8%;left:-12%}.chip.c2{bottom:16%;right:-8%;animation-delay:-2s}.chip.c3{bottom:-3%;left:6%;animation-delay:-3.5s;background:var(--ink);color:#fff}
+@keyframes float{50%{transform:translateY(-10px)}}
+.stats{display:flex;gap:clamp(20px,4vw,56px);margin-top:56px;padding-top:28px;border-top:1px solid var(--line);flex-wrap:wrap;opacity:0;transition:.9s var(--ease) .7s}
+body.ready .stats{opacity:1}
+.stat b{display:block;font-family:var(--serif);font-size:clamp(30px,3.4vw,44px);font-weight:500;line-height:1}
+.stat span{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+/* MARQUEE */
+.press{background:var(--ink);color:#fff;padding:22px 0;overflow:hidden}
+.press .lbl{text-align:center;font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--blush);margin-bottom:10px;font-weight:700}
+.marquee{display:flex;width:max-content;animation:mq 30s linear infinite}
+.press:hover .marquee{animation-play-state:paused}
+.marquee span{font-family:var(--serif);font-size:28px;font-weight:300;font-style:italic;padding:0 38px;white-space:nowrap;display:flex;align-items:center;gap:38px}
+.marquee span::after{content:"✦";color:var(--blush);font-size:14px;font-style:normal}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+section{padding:clamp(70px,9vw,120px) 0}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.clip{clip-path:inset(0 0 100% 0);transition:clip-path 1.2s var(--ease)}
+.clip.in{clip-path:inset(0 0 0 0)}
+.words .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.1em;margin-bottom:-.1em}
+.words .w i{display:inline-block;font-style:inherit;transform:translateY(110%);transition:transform .9s var(--ease)}
+.words.in .w i{transform:none}
+.head{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin-bottom:clamp(36px,5vw,64px)}
+.head .lead{margin:0}
+
+/* QUIZ */
+.quiz{background:var(--ink);color:#fff;padding:clamp(34px,5vw,64px);position:relative;overflow:hidden}
+.quiz::after{content:"NC";position:absolute;right:-30px;bottom:-110px;font-family:var(--serif);font-size:420px;font-weight:300;color:rgba(240,217,210,.06);line-height:1;pointer-events:none;letter-spacing:-.06em}
+.quiz h2{color:#fff}
+.quiz .eyebrow{color:var(--blush)}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0}
+.opt{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);padding:22px;cursor:pointer;text-align:left;color:#fff;font-family:var(--sans);font-size:16px;font-weight:600;transition:.35s var(--ease)}
+.opt small{display:block;font-weight:400;color:#bdb5aa;margin-top:6px;font-size:14px}
+.opt:hover{transform:translateY(-4px);border-color:var(--blush)}
+.opt.sel{background:var(--blush);color:var(--ink);border-color:var(--blush)}
+.opt.sel small{color:#6b4e45}
+.ans{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;background:rgba(255,255,255,.06);padding:24px 28px;min-height:120px}
+.ans.flash{animation:pop .6s var(--ease)}
+@keyframes pop{0%{transform:scale(.98);opacity:.4}100%{transform:none;opacity:1}}
+.ans h3{color:var(--blush);margin-bottom:6px}
+.ans p{color:#d9d2c8;margin:0}
+
+/* GALLERY */
+.galeria{background:var(--ivory)}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 26px}
+.filters button{background:transparent;border:1.5px solid var(--line);color:var(--ink);padding:9px 16px;font:700 12px var(--sans);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:.3s var(--ease)}
+.filters button:hover{border-color:var(--ink);transform:translateY(-2px)}
+.filters button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.masonry{columns:4;column-gap:14px}
+.gitem{break-inside:avoid;margin:0 0 14px;overflow:hidden;position:relative;cursor:zoom-in;transition:transform .6s var(--ease)}
+.gitem:hover{transform:translateY(-4px)}
+.gitem img{width:100%;display:block;transition:transform 1.4s var(--ease)}
+.gitem:hover img{transform:scale(1.06)}
+.gitem::after{content:attr(data-cap);position:absolute;left:0;right:0;bottom:0;padding:34px 14px 12px;background:linear-gradient(transparent,rgba(20,19,17,.85));font-size:12.5px;font-weight:600;color:#fff;opacity:0;transform:translateY(8px);transition:.4s var(--ease);line-height:1.35}
+.gitem:hover::after{opacity:1;transform:none}
+.gitem .k{position:absolute;top:10px;left:10px;background:#fff;color:var(--ink);font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:4px 8px;z-index:1}
+.gitem.hide{display:none}
+.gitem.pop{animation:gpop .6s var(--ease) both}
+@keyframes gpop{from{opacity:0;transform:translateY(18px) scale(.97)}}
+.lb{position:fixed;inset:0;z-index:80;background:rgba(20,19,17,.95);display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .4s}
+.lb.on{opacity:1;pointer-events:auto}
+.lb img{max-height:86vh;max-width:min(92vw,900px);box-shadow:0 40px 80px -30px #000;transform:scale(.96);transition:transform .5s var(--ease)}
+.lb.on img{transform:none}
+.lb .cap{position:absolute;bottom:28px;left:0;right:0;text-align:center;color:#fff;font-weight:600;font-size:14px;padding:0 20px;letter-spacing:.04em}
+.lb button{position:absolute;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;width:52px;height:52px;border-radius:50%;cursor:pointer;font-size:22px;display:grid;place-items:center;transition:.3s}
+.lb button:hover{background:var(--blush);color:var(--ink)}
+.lb .x{top:22px;right:22px}.lb .prev{left:22px;top:50%;transform:translateY(-50%)}.lb .next{right:22px;top:50%;transform:translateY(-50%)}
+
+/* EDITS */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:#fff;padding:34px 32px;border:1px solid var(--line);display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden;transition:.45s var(--ease)}
+.card::before{content:"";position:absolute;left:0;top:0;width:100%;height:5px;background:var(--terra);transform:scaleX(0);transform-origin:left;transition:.5s var(--ease)}
+.card:hover{transform:translateY(-8px);box-shadow:0 30px 60px -30px rgba(20,19,17,.35)}
+.card:hover::before{transform:none}
+.card.hot{background:var(--ink);color:#fff;border-color:var(--ink)}
+.card.hot h3{color:#fff}
+.card.hot .muted{color:#bdb5aa}
+.card .muted{color:var(--muted);font-size:15px;flex:1}
+.card .p{font-family:var(--serif);font-size:44px;font-weight:500}
+.card .p small{font-family:var(--sans);font-size:12px;font-weight:700;color:var(--muted);margin-left:8px;letter-spacing:.1em;text-transform:uppercase}
+.card.hot .p small{color:#bdb5aa}
+.card ul{margin:0;padding-left:18px;font-size:14.5px;color:var(--muted)}
+.card.hot ul{color:#d9d2c8}
+.pill{position:absolute;top:18px;right:18px;background:var(--blush);color:var(--ink);font-size:10.5px;font-weight:800;letter-spacing:.16em;padding:6px 10px}
+
+/* TWO-UP */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.two .box{position:relative;overflow:hidden;min-height:460px;display:flex;align-items:flex-end;padding:32px;color:#fff;background:var(--ink);text-decoration:none}
+.two .box img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.75;transition:transform 1.4s var(--ease),opacity .6s}
+.two .box:hover img{transform:scale(1.05);opacity:.6}
+.two .box>div{position:relative}
+.two .box h3{color:#fff;font-size:clamp(26px,3vw,40px)}
+.two .box p{color:#e5ded5;max-width:40ch;font-size:15.5px}
+.two .box .p{font-family:var(--serif);font-size:30px;color:var(--blush)}
+
+/* PROCESS */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;counter-reset:s}
+.step{background:#fff;border:1px solid var(--line);padding:26px;position:relative;transition:.4s var(--ease)}
+.step:hover{transform:translateY(-6px);border-color:var(--ink)}
+.step b{font-family:var(--serif);font-size:44px;font-weight:300;color:var(--terra);display:block;line-height:1;font-style:italic}
+.step strong{display:block;margin:12px 0 6px;font-size:17px}
+.step span{font-size:14.5px;color:var(--muted);line-height:1.5}
+
+/* FREEBIES */
+.free .box{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;background:var(--blush);padding:clamp(28px,4vw,56px);overflow:hidden;position:relative}
+.free .box::after{content:"";position:absolute;right:-90px;top:-90px;width:300px;height:300px;border-radius:50%;background:#fff;opacity:.5}
+.free form{position:relative;display:grid;gap:12px;background:#fff;padding:26px}
+.field{display:flex;flex-direction:column;gap:6px;font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.field input,.field select,.field textarea{font:500 16px var(--sans);padding:13px 14px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);outline:0;transition:.3s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--ink);box-shadow:0 0 0 4px var(--blush)}
+.checks{display:grid;gap:10px;margin:20px 0}
+.checks div{display:flex;gap:12px;align-items:center;font-weight:600}
+.checks div::before{content:"✓";width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:800;flex:none;font-size:13px}
+.ok{display:none;background:var(--ink);color:#fff;padding:18px 20px;font-weight:600}
+.ok.show{display:block;animation:pop .5s var(--ease)}
+
+/* TESTIMONIALS */
+.testi{background:var(--ink);color:#fff}
+.slides{position:relative;min-height:240px}
+.slide{position:absolute;inset:0;opacity:0;transform:translateX(30px);transition:.7s var(--ease);display:grid;gap:16px;align-content:center;text-align:center;max-width:860px;margin:0 auto;pointer-events:none}
+.slide.on{opacity:1;transform:none;pointer-events:auto}
+.slide q{font-family:var(--serif);font-size:clamp(24px,3vw,40px);line-height:1.25;font-style:italic;font-weight:300;quotes:"“" "”"}
+.slide cite{font-style:normal;font-weight:800;letter-spacing:.2em;text-transform:uppercase;font-size:11.5px;color:var(--blush)}
+.dots{display:flex;gap:8px;justify-content:center;margin-top:24px}
+.dots button{width:10px;height:10px;border-radius:50%;border:0;background:rgba(255,255,255,.25);cursor:pointer;transition:.3s}
+.dots button.on{background:var(--blush);transform:scale(1.3)}
+
+/* ABOUT */
+.sobre .grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:clamp(30px,5vw,80px);align-items:center}
+.sobre .ph{overflow:hidden;aspect-ratio:4/5}
+.sobre .ph img{width:100%;height:100%;object-fit:cover}
+.vals{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.vals span{border:1.5px solid var(--ink);padding:8px 14px;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+
+/* BOOK */
+.book{background:var(--ivory)}
+.bookform{display:grid;grid-template-columns:1fr 1fr;gap:16px;background:#fff;padding:32px;border:1px solid var(--line)}
+.bookform h3{grid-column:1/-1}
+.field.full{grid-column:1/-1}
+.form-foot{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.form-foot small{color:var(--muted);font-size:13px}
+.bookform .ok{grid-column:1/-1}
+
+footer{background:var(--ink);color:#bdb5aa;padding:70px 0 30px}
+footer .top{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:30px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,.1)}
+footer h4{color:#fff;font-size:11px;letter-spacing:.26em;text-transform:uppercase;margin:0 0 14px}
+footer a{display:block;text-decoration:none;margin:6px 0;transition:.3s}
+footer a:hover{color:var(--blush)}
+footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:24px;font-size:13px;flex-wrap:wrap}
+
+@media (max-width:980px){
+  .hero .wrap,.sobre .grid,.free .box,.head,.two{grid-template-columns:1fr}
+  .cards,.opts,.steps{grid-template-columns:1fr}
+  .masonry{columns:2}
+  .bookform{grid-template-columns:1fr}
+  footer .top{grid-template-columns:1fr 1fr}
+  nav.links,.nav .btn{display:none}
+  .burger{display:block}
+  .chip.c1{left:0}.chip.c2{right:0}
+  .hero{padding-top:120px}
+  .ans{grid-template-columns:1fr}
+}
+@media (max-width:560px){.masonry{columns:2;column-gap:8px}.gitem{margin-bottom:8px}footer .top{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal,.clip{opacity:1;transform:none;clip-path:none}}
+</style>
+</head>
+<body class="loading">
+
+<div class="loader" id="loader"><div class="w"><div class="nc">N<i>C</i></div><div class="t">Natasha Cadman Photography</div><div class="bar"><i></i></div></div></div>
+<div class="progress"><i id="prog"></i></div><div class="glow" id="glow"></div>
+<div class="concept"><b>Concept</b> · A new site for Natasha Cadman Photography, prepared by Evans Ademilua · Large Technologies</div>
+
+<header class="nav" id="nav">
+  <a class="brand" href="#top"><span class="nc">N<i>C</i></span><span>Natasha Cadman<small>Brand photography · Leeds</small></span></a>
+  <nav class="links"><a href="#portfolio">Portfolio</a><a href="#edits">The Edits</a><a href="#headshots">Headshots</a><a href="#process">The Shoot</a><a href="#free">Freebies</a><a href="#about">About</a></nav>
+  <a class="btn" href="#book">Book your shoot <span class="arr">→</span></a>
+  <button class="burger" id="burger" aria-label="Menu"><i></i><i></i><i></i></button>
+</header>
+<div class="mobile" id="mobile"><a href="#portfolio">Portfolio</a><a href="#edits">The Edits</a><a href="#headshots">Headshots &amp; Websites</a><a href="#process">What happens on a shoot</a><a href="#free">Freebies</a><a href="#about">About Natasha</a><a href="#book">Book your shoot</a></div>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="blob b1"></div><div class="blob b2"></div>
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Editorial brand photography · Leeds &amp; Yorkshire</span>
+      <h1 style="margin-top:18px">
+        <span class="line"><span>Brand photos for</span></span>
+        <span class="line"><span>women with something</span></span>
+        <span class="line"><span>to <span class="rotator" id="rot"><span class="on">sell.</span><span>say.</span><span>launch.</span><span>be known for.</span></span></span></span>
+      </h1>
+      <p class="sub">Strategic brand photography, not just pretty pictures. A library of natural, editorial images you can pull out for your website, your next post and your next launch, so showing up stops being a scramble.</p>
+      <div class="cta"><a class="btn" href="#book">Book your shoot <span class="arr">→</span></a><a class="btn ghost" href="#quiz">Which Edit is for me?</a></div>
+      <div class="stats">
+        <div class="stat"><b data-count="10" data-suffix="+">0</b><span>Years behind the camera</span></div>
+        <div class="stat"><b data-count="300" data-prefix="£">0</b><span>Edits start from</span></div>
+        <div class="stat"><b data-count="9">0</b><span>Shoots published this month</span></div>
+        <div class="stat"><b>Leeds</b><span>Harrogate · York · Yorkshire</span></div>
+      </div>
+    </div>
+    <div class="visual">
+      <div class="ph"><img src="/natashacadman/img/proofs-55.jpg" alt="Natasha Cadman with her camera"></div>
+      <div class="chip c1"><b>✦</b> Natural, editorial, actually useful</div>
+      <div class="chip c2"><b>3</b> Edits. One is yours.</div>
+      <div class="chip c3">📸 Studio or on location</div>
+    </div>
+  </div>
+</section>
+
+<div class="press">
+  <div class="lbl">Recent brands in front of the lens</div>
+  <div class="marquee" id="mq">
+    <span>SkinWorx</span><span>Studio 490</span><span>Leafy Couture</span><span>Love Rocks Celebrancy</span><span>Pure Pilates</span><span>R&amp;R Aesthetics Clinic</span><span>The Strategy Clinic</span><span>Treelce Living</span>
+    <span>SkinWorx</span><span>Studio 490</span><span>Leafy Couture</span><span>Love Rocks Celebrancy</span><span>Pure Pilates</span><span>R&amp;R Aesthetics Clinic</span><span>The Strategy Clinic</span><span>Treelce Living</span>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<section id="quiz">
+  <div class="wrap">
+    <div class="quiz reveal">
+      <span class="eyebrow">Which Edit is for you?</span>
+      <h2 style="margin-top:14px">Tell me where your business is,<br>and I'll tell you which shoot to book.</h2>
+      <div class="opts" id="opts">
+        <button class="opt" data-k="portrait">My headshot is two years old<small>I need a handful of current, confident photos of me.</small></button>
+        <button class="opt" data-k="content">I'm always scrambling for something to post<small>Same three favourites. Phone photos. Again.</small></button>
+        <button class="opt" data-k="complete">I'm launching or levelling up<small>New offer, new chapter, visuals need to come with me.</small></button>
+      </div>
+      <div class="ans" id="ans"><div><h3>Pick the one that sounds like you 👆</h3><p>Ten seconds, and you'll know which Edit fits and what it costs. No "enquire to find out".</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section class="galeria" id="portfolio">
+  <div class="wrap">
+    <div class="head reveal">
+      <div><span class="eyebrow">Portfolio</span><h2 style="margin-top:14px">Women who have something<br>to say, sell and be known for.</h2></div>
+      <p class="lead">Filter by shoot type, tap any image to see it full size. Every one of these is a real client, shot in Leeds, Yorkshire and on location.</p>
+    </div>
+    <div class="filters reveal" id="filters"><button class="on" data-f="all">All</button><button data-f="studio">Studio</button><button data-f="location">On location</button><button data-f="teams">Teams &amp; brands</button><button data-f="headshots">Headshots</button></div>
+    <div class="masonry reveal" id="masonry">
+      <figure class="gitem" data-f="location" data-cap="Buy the house. On location, Yorkshire."><span class="k">Location</span><img src="/natashacadman/img/ig-buythehouse.jpg" alt="Client holding a newspaper reading Buy the House" loading="lazy"></figure>
+      <figure class="gitem" data-f="studio" data-cap="Love Rocks Celebrancy. Studio, pink set."><span class="k">Studio</span><img src="/natashacadman/img/ig-green.jpg" alt="Client in a green suit on a pink backdrop" loading="lazy"></figure>
+      <figure class="gitem" data-f="headshots" data-cap="Branding day, Maria. Studio headshot session."><span class="k">Headshots</span><img src="/natashacadman/img/brandingdaymaria-17.jpg" alt="Woman leaning on a sunlit wall" loading="lazy"></figure>
+      <figure class="gitem" data-f="teams" data-cap="SkinWorx. The whole clinic team."><span class="k">Teams</span><img src="/natashacadman/img/skinworx_-254.jpg" alt="SkinWorx clinic team" loading="lazy"></figure>
+      <figure class="gitem" data-f="location" data-cap="Ariel White. At home, yellow trousers."><span class="k">Location</span><img src="/natashacadman/img/ariel_white_-106.jpg" alt="Founder in yellow trousers on a staircase" loading="lazy"></figure>
+      <figure class="gitem" data-f="studio" data-cap="Studio session, black and white."><span class="k">Studio</span><img src="/natashacadman/img/ig-client-bw.jpg" alt="Woman seated in black and white" loading="lazy"></figure>
+      <figure class="gitem" data-f="location" data-cap="Studio 490. Mirror, arch, afternoon light."><span class="k">Location</span><img src="/natashacadman/img/studio490-516.jpg" alt="Woman reflected in an arched mirror" loading="lazy"></figure>
+      <figure class="gitem" data-f="studio" data-cap="Danielle Bateman. Red drape, studio."><span class="k">Studio</span><img src="/natashacadman/img/daniellebatemanstudioshoot_-194.jpg" alt="Woman in rust trousers against a red drape" loading="lazy"></figure>
+      <figure class="gitem" data-f="location" data-cap="Leafy Couture. Retreat day with flowers."><span class="k">Location</span><img src="/natashacadman/img/leafycoutureretreat-317.jpg" alt="Woman holding a bouquet outdoors" loading="lazy"></figure>
+      <figure class="gitem" data-f="headshots" data-cap="Dani. Studio headshots, monochrome."><span class="k">Headshots</span><img src="/natashacadman/img/danijan25-63.jpg" alt="Woman seated on a stool, black and white" loading="lazy"></figure>
+      <figure class="gitem" data-f="location" data-cap="Tye. Location shoot, kitchen."><span class="k">Location</span><img src="/natashacadman/img/tyelocationshoot-28.jpg" alt="Woman laughing in a kitchen" loading="lazy"></figure>
+      <figure class="gitem" data-f="teams" data-cap="SkinWorx. Founder portrait in clinic."><span class="k">Teams</span><img src="/natashacadman/img/skinworx_-638.jpg" alt="Clinic founder in black" loading="lazy"></figure>
+      <figure class="gitem" data-f="studio" data-cap="Tia. Pink set, disco ball."><span class="k">Studio</span><img src="/natashacadman/img/tiastudioshoot-177.jpg" alt="Woman in green with a disco ball" loading="lazy"></figure>
+      <figure class="gitem" data-f="location" data-cap="Laura Penrose. Buy the house, detail."><span class="k">Location</span><img src="/natashacadman/img/laura_penrose_-11.jpg" alt="Pink heels and a newspaper" loading="lazy"></figure>
+      <figure class="gitem" data-f="headshots" data-cap="Studio headshots, clean backdrop."><span class="k">Headshots</span><img src="/natashacadman/img/1p3a2934.jpg" alt="Woman in cream on a white backdrop" loading="lazy"></figure>
+      <figure class="gitem" data-f="location" data-cap="Studio 490. Daybed, soft light."><span class="k">Location</span><img src="/natashacadman/img/studio490-306.jpg" alt="Woman on a daybed" loading="lazy"></figure>
+    </div>
+  </div>
+</section>
+<div class="lb" id="lb"><button class="x" aria-label="Close">✕</button><button class="prev" aria-label="Previous">‹</button><img src="" alt=""><button class="next" aria-label="Next">›</button><div class="cap"></div></div>
+
+<!-- EDITS -->
+<section id="edits">
+  <div class="wrap">
+    <div class="head reveal">
+      <div><span class="eyebrow">The Edits · Leeds branding photography packages</span><h2 style="margin-top:14px">Three shoots. Clear prices.<br>Book the one you need.</h2></div>
+      <p class="lead">Your brand photos should do more than make you feel comfortable. They should help you sell. Every Edit is built to support your visibility and attract clients who are ready to invest.</p>
+    </div>
+    <div class="cards reveal">
+      <div class="card"><h3>The Portrait Edit</h3><p class="muted">Simply, really good photographs of you. For when your headshot needs a refresh, your website needs updating, or you're tired of using the same photo everywhere.</p><ul><li>Relaxed, considered portrait session</li><li>A handful of images that feel like you</li><li>Studio or on location</li></ul><div class="p">£300<small>from</small></div><a class="btn ghost" href="#book" data-edit="The Portrait Edit">Book this Edit</a></div>
+      <div class="card hot"><span class="pill">MOST POPULAR</span><h3>The Content Edit</h3><p class="muted">You have something to say. You just need the pictures to go with it. A bank of natural, intentional imagery so you always have something to post with.</p><ul><li>Full content shoot, multiple set-ups</li><li>A library you can pull from for months</li><li>Outfit and location planning included</li></ul><div class="p">£550<small>most popular</small></div><a class="btn light" href="#book" data-edit="The Content Edit">Book this Edit</a></div>
+      <div class="card"><h3>The Complete Edit</h3><p class="muted">For the woman who knows exactly where she's going next. The full brand experience, built around your next move, with story-led Reels to launch, sell and show up with intention.</p><ul><li>Deeper, story-led shoot</li><li>Complete visual library + Reels</li><li>Built around your launch</li></ul><div class="p">£895<small>complete</small></div><a class="btn ghost" href="#book" data-edit="The Complete Edit">Book this Edit</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- HEADSHOTS + WEBSITES -->
+<section id="headshots" style="padding-top:0">
+  <div class="wrap two reveal">
+    <a class="box" href="#book" data-edit="Headshots"><img src="/natashacadman/img/emmastudio-117.jpg" alt="Studio headshot"><div><span class="eyebrow" style="color:var(--blush)">Headshot photography</span><h3 style="margin-top:10px">Modern, professional headshots in Leeds.</h3><p>10 to 15 fully edited headshots. Studio or at your office. Perfect for LinkedIn, your team and your About page.</p><div class="p">£300</div></div></a>
+    <a class="box" href="#book" data-edit="Website + Photography"><img src="/natashacadman/img/studio490-196.jpg" alt="Founder working on a laptop"><div><span class="eyebrow" style="color:var(--blush)">Websites · with Jim at The Strategy Clinic</span><h3 style="margin-top:10px">Your site and your photos, done in-house, in 7 days.</h3><p>Strategic, enquiry-generating websites for coaches and service businesses, with your brand shoot included so it all matches from day one.</p><div class="p">from £1,750</div></div></a>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="book" id="process">
+  <div class="wrap">
+    <div class="head reveal">
+      <div><span class="eyebrow">What happens on a shoot</span><h2 style="margin-top:14px">Not stressful. I mean it.</h2></div>
+      <p class="lead">You have enough going on with life and business. The last thing I want is to add to it. Here's exactly how it goes.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="step"><b>01</b><strong>Book and pay your deposit</strong><span>Pick your Edit and a date online. Deposit secures it. You get a confirmation and your pre-shoot checklist straight away.</span></div>
+      <div class="step"><b>02</b><strong>Plan it together</strong><span>A short call or voice notes on outfits, locations and the content you actually need for the next 3 months.</span></div>
+      <div class="step"><b>03</b><strong>Shoot day</strong><span>I'm your hype person. Guided posing, natural light, zero awkwardness. Studio in Leeds or your own space.</span></div>
+      <div class="step"><b>04</b><strong>Your gallery, fast</strong><span>Edited images in your online gallery, sized for web and social, with a plan for how to use them.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FREEBIES -->
+<section class="free" id="free">
+  <div class="wrap">
+    <div class="box reveal">
+      <div style="position:relative">
+        <span class="eyebrow" style="color:var(--terra-d)">Free · straight to your inbox</span>
+        <h2 style="margin-top:14px">Three freebies that make your shoot easier.</h2>
+        <div class="checks">
+          <div>The Posing Guide: pose with confidence, even if you hate photos of yourself</div>
+          <div>25 AI prompts to plan a quarter of content around one shoot</div>
+          <div>The Pre-Shoot Checklist: outfits, props, locations, done</div>
+          <div>Then one email a week with behind-the-scenes and shoot openings</div>
+        </div>
+      </div>
+      <form id="fFree" novalidate>
+        <h3>Send me all three</h3>
+        <label class="field">First name<input name="nombre" required placeholder="Your name"></label>
+        <label class="field">Email<input type="email" name="email" required placeholder="you@yourbusiness.co.uk"></label>
+        <button class="btn" type="submit">Send the freebies <span class="arr">→</span></button>
+        <small style="color:var(--muted)">No spam. Unsubscribe any time.</small>
+        <div class="ok" id="okFree">Check your inbox, the Posing Guide, the prompts and the checklist are on their way.</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi">
+  <div class="wrap reveal">
+    <div style="text-align:center;margin-bottom:30px"><span class="eyebrow" style="color:var(--blush)">Kind words</span></div>
+    <div class="slides" id="slides">
+      <div class="slide on"><q>Oh my goodness… I LOVE them! I've never had that reaction to a branding shoot before.</q><cite>Branding client</cite></div>
+      <div class="slide"><q>These are insane! Sooo good. How am I supposed to choose? Of course I'll get them all.</q><cite>Content Edit client</cite></div>
+      <div class="slide"><q>Tash, we've just seen the photos. They are absolutely incredible.</q><cite>Team shoot</cite></div>
+      <div class="slide"><q>As usual, knocked it out of the park. Amazing. Talent galore. Thank you sooo much.</q><cite>Returning client</cite></div>
+    </div>
+    <div class="dots" id="dots"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="sobre" id="about">
+  <div class="wrap grid">
+    <div class="ph clip"><img src="/natashacadman/img/ig-welcome.jpg" alt="Natasha Cadman"></div>
+    <div class="reveal">
+      <span class="eyebrow">Hello, I'm Natasha</span>
+      <h2 style="margin-top:14px">Mother of three, photographer for over a decade, your hype person on the day.</h2>
+      <p class="lead" style="margin-top:16px">I photograph women who have something to say, something to sell, and a business they're bloody proud of, but don't always have the pictures to back it up. I've shot in England, South Africa, France, Mallorca and Belize, and Yorkshire is still my favourite.</p>
+      <p class="lead">You shouldn't need to become a full-time content creator just to have a business that looks good online. That's what the shoot is for.</p>
+      <div class="vals"><span>Natural</span><span>Editorial</span><span>Actually useful</span><span>Zero awkwardness</span><span>Leeds &amp; Yorkshire</span></div>
+      <p style="margin-top:26px"><a class="btn ghost" href="https://www.instagram.com/natashacadman/" target="_blank" rel="noopener">Come behind the scenes on Instagram <span class="arr">→</span></a></p>
+    </div>
+  </div>
+</section>
+
+<!-- BOOK -->
+<section class="book" id="book">
+  <div class="wrap">
+    <div class="head reveal">
+      <div><span class="eyebrow">Book your shoot</span><h2 style="margin-top:14px">Pick your Edit, pick a month.<br>I'll confirm within 24 hours.</h2></div>
+      <p class="lead">No "enquire to find out". You already know the price. Tell me a little about your business and I'll come back with dates and a deposit link.</p>
+    </div>
+    <form class="bookform reveal" id="fBook" novalidate>
+      <label class="field">Your name<input name="nombre" required placeholder="Name"></label>
+      <label class="field">Email<input type="email" name="email" required placeholder="you@yourbusiness.co.uk"></label>
+      <label class="field">Your business<input name="biz" required placeholder="What do you do?"></label>
+      <label class="field">Which shoot<select name="edit" id="editSel"><option>The Portrait Edit (£300)</option><option>The Content Edit (£550)</option><option>The Complete Edit (£895)</option><option>Headshots (£300)</option><option>Website + Photography (from £1,750)</option></select></label>
+      <label class="field">Preferred month<select name="mes"><option>November 2026</option><option>December 2026</option><option>January 2027</option><option>February 2027</option><option>Flexible</option></select></label>
+      <label class="field">Studio or location<select name="where"><option>Studio in Leeds</option><option>My own space</option><option>Outdoors / on location</option><option>Not sure yet</option></select></label>
+      <label class="field full">What are you launching, selling or refreshing?<textarea name="msg" rows="3" placeholder="Tell me what the photos need to do for you"></textarea></label>
+      <div class="form-foot"><small>I reply within 24 hours with dates and a deposit link. Deposit secures your date.</small><button class="btn" type="submit">Request my dates <span class="arr">→</span></button></div>
+      <div class="ok" id="okBook">Got it. I'll be in your inbox within 24 hours with dates and your deposit link. Keep an eye on promotions, just in case.</div>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="top">
+      <div><a class="brand" href="#top" style="color:#fff"><span class="nc">N<i style="color:var(--blush)">C</i></span><span>Natasha Cadman<small style="color:#bdb5aa">Brand photography · Leeds</small></span></a><p style="margin-top:16px;font-size:14px">Editorial brand photography for female founders across Leeds, Harrogate, York and West Yorkshire.</p></div>
+      <div><h4>Book</h4><a href="#edits">The Edits</a><a href="#headshots">Headshots</a><a href="#headshots">Websites with The Strategy Clinic</a><a href="#book">Book your shoot</a></div>
+      <div><h4>Explore</h4><a href="#portfolio">Portfolio</a><a href="#free">Freebies</a><a href="https://www.natashacadmanblog.com/" target="_blank" rel="noopener">Blog</a><a href="https://open.spotify.com/show/04MXHZwk0L6ebvXBQb8bVl" target="_blank" rel="noopener">Podcast</a><a href="https://www.etsy.com/uk/shop/NatashaCadmanStore" target="_blank" rel="noopener">Shop</a></div>
+      <div><h4>Contact</h4><a href="mailto:hello@natashacadman.com">hello@natashacadman.com</a><a href="tel:+447834069032">07834 069032</a><a href="https://www.instagram.com/natashacadman/" target="_blank" rel="noopener">Instagram</a><a href="https://www.pinterest.co.uk/natashacadman/" target="_blank" rel="noopener">Pinterest</a></div>
+    </div>
+    <div class="bottom"><span>© 2026 Natasha Cadman Photography · Privacy · Terms</span><span>Concept site by <a href="https://evansademilua.vercel.app" target="_blank" rel="noopener" style="display:inline;color:var(--blush)">Evans Ademilua · Large Technologies</a></span></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+  const ready=()=>{$('#loader').classList.add('done');document.body.classList.remove('loading');document.body.classList.add('ready');};
+  if(location.search.includes('shot')){ready();$$('.reveal,.clip,.words').forEach(r=>r.classList.add('in'));$$('[data-count]').forEach(el=>{el.textContent=(el.dataset.prefix||'')+el.dataset.count+(el.dataset.suffix||'');el.removeAttribute('data-count');});}
+  window.addEventListener('load',()=>setTimeout(ready,1300));setTimeout(ready,3500);
+  const nav=$('#nav');let last=0;
+  const prog=$('#prog');const heroImg=$('.hero .ph img');
+  addEventListener('scroll',()=>{const y=scrollY;nav.classList.toggle('scrolled',y>40);nav.classList.toggle('hide',y>last&&y>400);last=y;const h=document.documentElement;prog.style.transform='scaleX('+(h.scrollTop/(h.scrollHeight-h.clientHeight))+')';if(heroImg&&y<900)heroImg.style.transform='scale(1.12) translateY('+(y*0.12)+'px)';},{passive:true});
+  const glow=$('#glow');addEventListener('pointermove',e=>{glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px';},{passive:true});
+  const mob=$('#mobile'),bg=$('#burger');bg.onclick=()=>mob.classList.toggle('open');mob.querySelectorAll('a').forEach(a=>a.onclick=()=>mob.classList.remove('open'));
+  const links=$$('nav.links a');
+  $$('section[id]').forEach(s=>new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+e.target.id));}),{rootMargin:'-40% 0px -55% 0px'}).observe(s));
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12});
+  $$('.reveal,.clip').forEach(el=>io.observe(el));
+  $$('section h2').forEach(h=>{if(h.closest('.quiz'))return;h.classList.add('words');h.innerHTML=h.innerHTML.split(/(<br\s*\/?>)/i).map(part=>/^<br/i.test(part)?part:part.split(' ').filter(Boolean).map((w,i)=>'<span class="w"><i style="transition-delay:'+(i*45)+'ms">'+w+'</i></span>').join(' ')).join('');});
+  const wio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');wio.unobserve(e.target);}}),{threshold:.3});
+  $$('.words').forEach(h=>wio.observe(h));
+  if(location.search.includes('shot'))$$('.words').forEach(h=>h.classList.add('in'));
+  const rs=$$('#rot>span');let ri=0;setInterval(()=>{rs[ri].classList.remove('on');ri=(ri+1)%rs.length;rs[ri].classList.add('on');},2400);
+  const cio=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const el=e.target,end=+el.dataset.count,suf=el.dataset.suffix||'',pre=el.dataset.prefix||'';let t0=null;const step=ts=>{if(!t0)t0=ts;const p=Math.min(1,(ts-t0)/1400);el.textContent=pre+Math.round(end*(1-Math.pow(1-p,3)))+suf;if(p<1)requestAnimationFrame(step);};requestAnimationFrame(step);cio.unobserve(el);}),{threshold:.5});
+  $$('[data-count]').forEach(el=>cio.observe(el));
+  if(matchMedia('(hover:hover)').matches)$$('.btn').forEach(b=>{b.addEventListener('mousemove',e=>{const r=b.getBoundingClientRect();b.style.transform='translate('+((e.clientX-r.left-r.width/2)*.18)+'px,'+((e.clientY-r.top-r.height/2)*.28)+'px)';});b.addEventListener('mouseleave',()=>b.style.transform='');});
+  // quiz
+  const answers={
+    portrait:{t:'The Portrait Edit · £300',p:'A relaxed portrait session that gives you a handful of current, confident images for your About page, LinkedIn and the next three months of posts. Book it and you get a date within 24 hours.',h:'#book',b:'Book The Portrait Edit',e:'The Portrait Edit (£300)'},
+    content:{t:'The Content Edit · £550 · most popular',p:'A bank of natural, intentional imagery across several set-ups, so you always have something to post with. We plan it around what you actually sell, not just what looks nice.',h:'#book',b:'Book The Content Edit',e:'The Content Edit (£550)'},
+    complete:{t:'The Complete Edit · £895',p:'The full brand experience, built around your next move: a deeper shoot, a complete visual library and story-led Reels to launch, sell and show up with intention.',h:'#book',b:'Book The Complete Edit',e:'The Complete Edit (£895)'}
+  };
+  $$('.opt').forEach(o=>o.onclick=()=>{$$('.opt').forEach(x=>x.classList.remove('sel'));o.classList.add('sel');const a=answers[o.dataset.k];const box=$('#ans');box.classList.remove('flash');void box.offsetWidth;box.classList.add('flash');box.innerHTML=`<div><h3>${a.t}</h3><p>${a.p}</p></div><a class="btn light" href="${a.h}" data-edit="${a.e}">${a.b} <span class="arr">→</span></a>`;});
+  // preselect edit when clicking a Book button
+  document.addEventListener('click',e=>{const a=e.target.closest('[data-edit]');if(!a)return;const sel=$('#editSel');const opt=[...sel.options].find(o=>o.text.startsWith(a.dataset.edit.replace(/ \(.*/,'')));if(opt)sel.value=opt.text;});
+  // gallery
+  const items=$$('.gitem');
+  $$('#filters button').forEach(f=>f.onclick=()=>{$$('#filters button').forEach(x=>x.classList.remove('on'));f.classList.add('on');items.forEach((it,i)=>{const show=f.dataset.f==='all'||it.dataset.f===f.dataset.f;it.classList.toggle('hide',!show);it.classList.remove('pop');void it.offsetWidth;if(show){it.style.animationDelay=(i*40)+'ms';it.classList.add('pop');}});});
+  const lb=$('#lb'),lbi=lb.querySelector('img'),lbc=lb.querySelector('.cap');let cur=0;
+  const vis=()=>items.filter(i=>!i.classList.contains('hide'));
+  const open=i=>{cur=i;const it=vis()[cur];lbi.src=it.querySelector('img').src;lbc.textContent=it.dataset.cap;lb.classList.add('on');document.body.style.overflow='hidden';};
+  const close=()=>{lb.classList.remove('on');document.body.style.overflow='';};
+  items.forEach(it=>it.onclick=()=>open(vis().indexOf(it)));
+  lb.querySelector('.x').onclick=close;lb.onclick=e=>{if(e.target===lb)close();};
+  lb.querySelector('.prev').onclick=e=>{e.stopPropagation();open((cur-1+vis().length)%vis().length);};
+  lb.querySelector('.next').onclick=e=>{e.stopPropagation();open((cur+1)%vis().length);};
+  addEventListener('keydown',e=>{if(!lb.classList.contains('on'))return;if(e.key==='Escape')close();if(e.key==='ArrowRight')open((cur+1)%vis().length);if(e.key==='ArrowLeft')open((cur-1+vis().length)%vis().length);});
+  // testimonials
+  const sl=$$('.slide'),dots=$('#dots');let si=0;sl.forEach((_,i)=>{const b=document.createElement('button');b.setAttribute('aria-label','Testimonial '+(i+1));b.onclick=()=>go(i);dots.appendChild(b);});
+  const go=i=>{sl[si].classList.remove('on');dots.children[si].classList.remove('on');si=i;sl[si].classList.add('on');dots.children[si].classList.add('on');};go(0);setInterval(()=>go((si+1)%sl.length),5500);
+  // forms (demo: validates and confirms; production connects to Flodesk + the booking/deposit link + the leads panel)
+  const wire=(id,ok)=>{const f=$(id);f.addEventListener('submit',e=>{e.preventDefault();if(!f.checkValidity()){f.reportValidity();return;}f.querySelectorAll('input,textarea,select,button').forEach(x=>x.disabled=true);$(ok).classList.add('show');});};
+  wire('#fFree','#okFree');wire('#fBook','#okBook');
+})();
+</script>
+</body>
+</html>

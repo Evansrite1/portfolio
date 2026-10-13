@@ -2,6 +2,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Evans Ademilua</title>
 <link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/motion.css">
+<script>document.documentElement.classList.add('js');</script>
+
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader-inner">
+    <span class="loader-name">Evans Ademilua</span>
+    <span class="loader-count" id="loader-count">00</span>
+  </div>
+</div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor-label"></span></div>
 
 <div class="bg-anim"><span></span><span></span><span></span></div>
 
@@ -16,27 +27,31 @@
       <a href="#work">Work</a>
       <a href="#services">Services</a>
       <a href="#process">Process</a>
+      <a href="#drafts">Drafts</a>
       <a href="#reviews">Reviews</a>
-      <a href="#rates">Rates</a>
-      <a href="#contact">Contact</a>
+      <a href="#book" class="nav-cta">Book a meeting</a>
     </nav>
   </header>
 
-  <section class="hero" style="padding-top:60px;">
+  <section class="hero" style="padding-top:60px;" id="hero">
     <div class="avatar"><img src="images/evans-headshot.jpg" alt="Evans Ademilua"></div>
     <div>
       <div class="hero-name">Evans Ademilua</div>
       <div class="hero-role">CEO, Large Technologies</div>
-      <h1>I build whatever you can <em>imagine.</em></h1>
+      <h1 data-split>I build whatever you can <em>imagine.</em></h1>
       <p class="dek">I build solutions that make your business more productive and bring your whole team together. Cutting out repetitive tasks and promoting real productivity, so people get to focus on what they're actually good at.</p>
       <div class="cta-row">
-        <a class="btn primary" href="#contact">Contact me</a>
-        <a class="btn" href="#work">Previous work</a>
+        <a class="btn primary magnet" href="#book">Book a meeting</a>
+        <a class="btn magnet" href="#work">Previous work</a>
       </div>
     </div>
   </section>
 
-  <div class="banner-shot reveal">
+  <div class="marquee" aria-label="What I build">
+    <div class="marquee-track"><div class="marquee-group"><span>Booking apps</span><i aria-hidden="true"></i><span>Lead trackers</span><i aria-hidden="true"></i><span>Dashboards</span><i aria-hidden="true"></i><span>Workflow automation</span><i aria-hidden="true"></i><span>Client portals</span><i aria-hidden="true"></i><span>AI features</span><i aria-hidden="true"></i><span>Concept sites</span><i aria-hidden="true"></i><span>Growth audits</span><i aria-hidden="true"></i></div><div class="marquee-group" aria-hidden="true"><span>Booking apps</span><i aria-hidden="true"></i><span>Lead trackers</span><i aria-hidden="true"></i><span>Dashboards</span><i aria-hidden="true"></i><span>Workflow automation</span><i aria-hidden="true"></i><span>Client portals</span><i aria-hidden="true"></i><span>AI features</span><i aria-hidden="true"></i><span>Concept sites</span><i aria-hidden="true"></i><span>Growth audits</span><i aria-hidden="true"></i></div></div>
+  </div>
+
+  <div class="banner-shot reveal" data-parallax>
     <img src="images/evans-speaking.jpg" alt="Evans Ademilua speaking at an event">
     <div class="banner-caption">On stage talking systems, automation and building things that actually get used.</div>
   </div>
@@ -113,7 +128,7 @@
       </div>
     </div>
 
-    <p class="work-note" style="margin-top:28px"><strong>Concept builds.</strong> Full sites I build for a business before we ever talk, so they can see it working: <a href="/dineroenorden/">Dinero en Orden</a> (finance educator, Argentina) · <a href="/maisongray/">Maison Gray</a> (luxury homes, Chicago) · <a href="/drafts/ocgpro/">OCG Pro</a> · <a href="/drafts/crewreadinessboardmockup/">Crew Readiness Board</a>.</p>
+    <p class="work-note" style="margin-top:28px"><strong>Concept builds.</strong> Full sites and audits I build for a business before we ever talk, so they can see it working. <a href="#drafts">See the drafts and audits</a>.</p>
   </section>
 
   <section id="process">
@@ -235,6 +250,127 @@
     </div>
   </section>
 
+  <section id="drafts">
+    <div class="section-head">
+      <h2 data-split>Drafts and audits</h2>
+      <span class="label">Built before we ever spoke</span>
+    </div>
+    <p class="work-note">When I want to work with a business, I do not send a pitch. I build the thing first: a full concept site, a product mockup, or a growth audit of what they already have, then I send the link. <span class="hover-only">Hover any row to preview it, click to open it.</span><span class="touch-only">Tap any row to open it.</span></p>
+
+    <div class="draft-group">
+      <div class="draft-group-head"><span class="label">Concept sites and mockups</span><span class="label">07 pieces</span></div>
+      <div class="draft-list">
+      <a class="draft-row" href="/dineroenorden/" data-preview="images/previews/dinero-en-orden.jpg">
+        <span class="draft-idx">01</span>
+        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/dinero-en-orden.jpg" alt="" loading="lazy"></span>
+        <span class="draft-name">Dinero en Orden</span>
+        <span class="draft-kind">Concept site</span>
+        <span class="draft-for">Celeste Sánchez, finance educator<em>Argentina</em></span>
+        <span class="draft-year">2026</span>
+        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="draft-row" href="/maisongray/" data-preview="images/previews/maison-gray.jpg">
+        <span class="draft-idx">02</span>
+        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/maison-gray.jpg" alt="" loading="lazy"></span>
+        <span class="draft-name">Maison Gray</span>
+        <span class="draft-kind">Concept site</span>
+        <span class="draft-for">Luxury custom homes<em>Chicago</em></span>
+        <span class="draft-year">2026</span>
+        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="draft-row" href="/drafts/ocgpro/" data-preview="images/previews/ocg-pro.jpg">
+        <span class="draft-idx">03</span>
+        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/ocg-pro.jpg" alt="" loading="lazy"></span>
+        <span class="draft-name">OCG-PRO</span>
+        <span class="draft-kind">Concept site + growth plan</span>
+        <span class="draft-for">Owner’s representative<em>Central Asia</em></span>
+        <span class="draft-year">2026</span>
+        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="draft-row" href="/drafts/kelcie-mae/" data-preview="images/previews/kelcie-mae.jpg">
+        <span class="draft-idx">04</span>
+        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/kelcie-mae.jpg" alt="" loading="lazy"></span>
+        <span class="draft-name">Kelcie Mae</span>
+        <span class="draft-kind">Concept site</span>
+        <span class="draft-for">UGC creator<em>San Diego</em></span>
+        <span class="draft-year">2026</span>
+        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="draft-row" href="/drafts/crewreadinessboardmockup/" data-preview="images/previews/crew-readiness.jpg">
+        <span class="draft-idx">05</span>
+        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/crew-readiness.jpg" alt="" loading="lazy"></span>
+        <span class="draft-name">Crew Readiness Board</span>
+        <span class="draft-kind">Product mockup</span>
+        <span class="draft-for">Multi-restaurant operator<em>United States</em></span>
+        <span class="draft-year">2026</span>
+        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="draft-row" href="/drafts/handymancoach-homepage-mockup.html" data-preview="images/previews/handyman-coach.jpg">
+        <span class="draft-idx">06</span>
+        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/handyman-coach.jpg" alt="" loading="lazy"></span>
+        <span class="draft-name">Handyman Coach</span>
+        <span class="draft-kind">Homepage mockup</span>
+        <span class="draft-for">Trades coaching<em>United States</em></span>
+        <span class="draft-year">2026</span>
+        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="draft-row" href="/drafts/manya-andreevna-inquiry-system-scope.html" data-preview="images/previews/manya-inquiry.jpg">
+        <span class="draft-idx">07</span>
+        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/manya-inquiry.jpg" alt="" loading="lazy"></span>
+        <span class="draft-name">The Inquiry System</span>
+        <span class="draft-kind">Build scope</span>
+        <span class="draft-for">Wedding photographer<em>Europe</em></span>
+        <span class="draft-year">2026</span>
+        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      </div>
+    </div>
+
+    <div class="draft-group">
+      <div class="draft-group-head"><span class="label">Growth audits and drafts</span><span class="label">04 pieces</span></div>
+      <div class="draft-list">
+      <a class="draft-row" href="/Audit/kate-anthony-audit.html" data-preview="images/previews/kate-audit.jpg">
+        <span class="draft-idx">08</span>
+        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/kate-audit.jpg" alt="" loading="lazy"></span>
+        <span class="draft-name">Kate Anthony, the next chapter</span>
+        <span class="draft-kind">Growth audit</span>
+        <span class="draft-for">Divorce coach and podcaster<em>United States</em></span>
+        <span class="draft-year">Sep 2026</span>
+        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="draft-row" href="/Audit/marcela-variani-audit.html" data-preview="images/previews/marcela-audit.jpg">
+        <span class="draft-idx">09</span>
+        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/marcela-audit.jpg" alt="" loading="lazy"></span>
+        <span class="draft-name">In Love with Marcela</span>
+        <span class="draft-kind">Growth audit</span>
+        <span class="draft-for">Celebrant<em>Dubai and Barcelona</em></span>
+        <span class="draft-year">Sep 2026</span>
+        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="draft-row" href="/Audit/dinero-en-orden-proximo-nivel.pdf" target="_blank" rel="noopener" data-preview="images/previews/dinero-en-orden.jpg">
+        <span class="draft-idx">10</span>
+        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/dinero-en-orden.jpg" alt="" loading="lazy"></span>
+        <span class="draft-name">Dinero en Orden, próximo nivel</span>
+        <span class="draft-kind">Growth audit, PDF</span>
+        <span class="draft-for">Celeste Sánchez<em>Argentina</em></span>
+        <span class="draft-year">Oct 2026</span>
+        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="draft-row" href="/drafts/kate-anthony-bio-draft.html" data-preview="images/previews/kate-bio.jpg">
+        <span class="draft-idx">11</span>
+        <span class="draft-thumb" aria-hidden="true"><img src="images/previews/kate-bio.jpg" alt="" loading="lazy"></span>
+        <span class="draft-name">Instagram bio, three options</span>
+        <span class="draft-kind">Copy draft</span>
+        <span class="draft-for">Kate Anthony<em>United States</em></span>
+        <span class="draft-year">Sep 2026</span>
+        <span class="draft-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      </div>
+    </div>
+
+    <div class="draft-preview" id="draft-preview" aria-hidden="true"><img alt=""></div>
+  </section>
+
   <section id="reviews">
     <div class="section-head">
       <h2>What clients say</h2>
@@ -277,29 +413,81 @@
     </div>
   </section>
 
-  <section id="rates">
-    <div class="section-head">
-      <h2>Investment</h2>
-      <span class="label">Scoped per project</span>
-    </div>
-    <div class="rate-banner">
-      <div class="rate-range">$500 <span>to</span> $75,000<sup>+</sup></div>
-      <p>Every project is scoped and quoted individually. There's no fixed package, the number depends on how much the system needs to do, not a tier you're boxed into. Large Technologies isn't limited to websites and web apps either, if it's a solution your business needs, physical or digital, we can build it.</p>
-      <div class="rate-factors">
-        <div><span class="fk">Scope</span><span class="fv">How many screens, roles and flows it needs</span></div>
-        <div><span class="fk">Integrations</span><span class="fv">Payments, APIs, automations, existing tools</span></div>
-        <div><span class="fk">Timeline</span><span class="fv">Standard build vs. a tight deadline</span></div>
-        <div><span class="fk">Support</span><span class="fv">One-off build vs. ongoing maintenance</span></div>
+  <section id="book">
+    <div class="book-grid">
+      <div class="book-head">
+        <span class="label">Book a meeting</span>
+        <h2 data-split>Let’s book twenty minutes.</h2>
+        <p>Pick a day, pick a window, tell me what you are building. The request lands on my WhatsApp or in my inbox in one tap and I confirm the exact time within a few hours.</p>
+        <ul class="book-facts">
+          <li><span class="fk">Where</span><span class="fv">Google Meet or a WhatsApp call</span></li>
+          <li><span class="fk">Time zone</span><span class="fv">Lagos, GMT+1. I adapt to yours.</span></li>
+          <li><span class="fk">Bring</span><span class="fv">The problem, not a spec. We work it out together.</span></li>
+        </ul>
       </div>
-      <div class="cta-row" style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:4px;">
-        <a class="btn primary" href="https://www.linkedin.com/in/evansademilua/" target="_blank" rel="noopener">Talk to me on LinkedIn</a>
-      </div>
+
+      <form class="book-panel" id="book-form" autocomplete="off">
+        <div class="book-step">
+          <span class="book-step-num">01</span>
+          <div class="book-step-body">
+            <span class="book-q">What are we talking about?</span>
+            <div class="chip-row" id="book-topics" role="group" aria-label="Topic">
+              <button type="button" class="chip" data-topic="A booking or scheduling app">Booking app</button>
+              <button type="button" class="chip" data-topic="A lead or deal tracker">Lead tracker</button>
+              <button type="button" class="chip" data-topic="An internal tool or dashboard">Dashboard</button>
+              <button type="button" class="chip" data-topic="Workflow automation">Automation</button>
+              <button type="button" class="chip" data-topic="A client portal">Client portal</button>
+              <button type="button" class="chip" data-topic="An AI feature">AI feature</button>
+              <button type="button" class="chip" data-topic="A website">Website</button>
+              <button type="button" class="chip" data-topic="Something else">Something else</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="book-step">
+          <span class="book-step-num">02</span>
+          <div class="book-step-body">
+            <span class="book-q">Which day?</span>
+            <div class="day-strip" id="book-days" role="group" aria-label="Day"></div>
+            <span class="book-q" style="margin-top:14px">Which window? <span class="book-hint">Lagos time</span></span>
+            <div class="chip-row" id="book-slots" role="group" aria-label="Time window">
+              <button type="button" class="chip" data-slot="morning, 9am to 12pm">Morning <small>9 to 12</small></button>
+              <button type="button" class="chip" data-slot="afternoon, 12pm to 4pm">Afternoon <small>12 to 4</small></button>
+              <button type="button" class="chip" data-slot="evening, 4pm to 7pm">Evening <small>4 to 7</small></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="book-step">
+          <span class="book-step-num">03</span>
+          <div class="book-step-body">
+            <label class="book-q" for="book-name">Your name</label>
+            <input type="text" id="book-name" placeholder="So I know who I am meeting" maxlength="80">
+            <label class="book-q" for="book-note" style="margin-top:12px">One line about the business <span class="book-hint">optional</span></label>
+            <input type="text" id="book-note" placeholder="e.g. a clinic in Abuja losing bookings over WhatsApp" maxlength="160">
+          </div>
+        </div>
+
+        <div class="book-summary" id="book-summary" aria-live="polite">
+          <span class="book-summary-k">Your request</span>
+          <span class="book-summary-v" id="book-summary-text">Pick a topic, a day and a window to build your request.</span>
+        </div>
+
+        <div class="book-actions">
+          <a class="btn primary magnet book-send" id="book-wa" href="https://wa.me/2347035940200" target="_blank" rel="noopener">Send on WhatsApp</a>
+          <a class="btn magnet book-send" id="book-mail" href="mailto:ademiluaolufemi2@gmail.com">Send by email</a>
+        </div>
+        <p class="book-foot">No account, no calendar app. Your request opens as a message you can edit before you send it.</p>
+      </form>
     </div>
   </section>
 
   <section id="contact">
+    <div class="big-marquee" aria-hidden="true">
+      <div class="big-marquee-track"><span>Tell me what you want built &mdash; </span><span>Tell me what you want built &mdash; </span></div>
+    </div>
     <div class="contact-block">
-      <h2>Tell me what you want built.</h2>
+      <h2 data-split>Tell me what you want built.</h2>
       <div class="contact-links">
         <a href="mailto:ademiluaolufemi2@gmail.com">ademiluaolufemi2@gmail.com</a>
         <a href="https://wa.me/2347035940200" target="_blank" rel="noopener">0703 594 0200, WhatsApp</a>
@@ -311,8 +499,10 @@
   <footer class="site">
     <span>Evans Ademilua, Large Technologies</span>
     <span>Lagos, Nigeria</span>
+    <a href="#hero" class="to-top">Back to top <span aria-hidden="true">&uarr;</span></a>
   </footer>
 
 </div>
 <script src="js/site.js" defer></script>
+<script src="js/motion.js" defer></script>
 <script defer src="/_vercel/insights/script.js"></script>
