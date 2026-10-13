@@ -29,9 +29,48 @@ h3{font-size:clamp(22px,2.6vw,30px)}
 p{margin:0 0 1em}
 .wrap{width:min(1180px,calc(100% - 40px));margin:0 auto}
 .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--violet)}
-.eyebrow::before{content:"";width:28px;height:2px;background:var(--lime);border-radius:2px}
 .lead{font-size:clamp(18px,1.6vw,21px);color:var(--muted);max-width:60ch}
 mark{background:linear-gradient(transparent 55%,var(--lime) 55%);color:inherit;padding:0 .1em}
+
+/* PROGRESS + GLOW */
+.progress{position:fixed;left:0;top:0;height:3px;width:100%;z-index:60;pointer-events:none}
+.progress i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--violet),var(--lime));transform-origin:left;transform:scaleX(0)}
+.glow{position:fixed;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(106,78,232,.16),transparent 60%);pointer-events:none;z-index:1;transform:translate(-50%,-50%);transition:opacity .4s;opacity:0;mix-blend-mode:multiply}
+body.ready .glow{opacity:1}
+@media (hover:none){.glow{display:none}}
+.words .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.08em;margin-bottom:-.08em}
+.words .w i{display:inline-block;font-style:inherit;transform:translateY(110%);transition:transform .9s var(--ease)}
+.words.in .w i{transform:none}
+/* GALLERY */
+.galeria{background:var(--ink);color:#fff;overflow:hidden}
+.galeria h2{color:#fff}
+.galeria .eyebrow{color:var(--lime)}
+.galeria .lead{color:#bfb8cf}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin:26px 0 22px}
+.filters button{background:transparent;border:1.5px solid rgba(255,255,255,.25);color:#fff;border-radius:999px;padding:9px 16px;font:700 13px var(--sans);cursor:pointer;transition:.3s var(--ease)}
+.filters button:hover{border-color:var(--lime);transform:translateY(-2px)}
+.filters button.on{background:var(--lime);color:var(--ink);border-color:var(--lime)}
+.masonry{columns:4;column-gap:14px}
+.gitem{break-inside:avoid;margin:0 0 14px;border-radius:18px;overflow:hidden;position:relative;cursor:zoom-in;transition:transform .6s var(--ease)}
+.gitem:hover{transform:translateY(-4px)}
+.gitem img{width:100%;display:block;transition:transform 1.2s var(--ease)}
+.gitem:hover img{transform:scale(1.06)}
+.gitem::after{content:attr(data-cap);position:absolute;left:0;right:0;bottom:0;padding:34px 14px 12px;background:linear-gradient(transparent,rgba(23,19,31,.88));font-size:13px;font-weight:600;opacity:0;transform:translateY(8px);transition:.4s var(--ease);line-height:1.35}
+.gitem:hover::after{opacity:1;transform:none}
+.gitem .k{position:absolute;top:10px;left:10px;background:var(--lime);color:var(--ink);font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:4px 8px;border-radius:999px;z-index:1}
+.gitem.hide{display:none}
+.gitem.pop{animation:gpop .6s var(--ease) both}
+@keyframes gpop{from{opacity:0;transform:translateY(18px) scale(.97)}}
+.lb{position:fixed;inset:0;z-index:80;background:rgba(23,19,31,.94);display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .4s}
+.lb.on{opacity:1;pointer-events:auto}
+.lb img{max-height:86vh;max-width:min(92vw,900px);border-radius:16px;box-shadow:0 40px 80px -30px #000;transform:scale(.96);transition:transform .5s var(--ease)}
+.lb.on img{transform:none}
+.lb .cap{position:absolute;bottom:28px;left:0;right:0;text-align:center;color:#fff;font-weight:600;font-size:15px;padding:0 20px}
+.lb button{position:absolute;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;width:52px;height:52px;border-radius:50%;cursor:pointer;font-size:22px;display:grid;place-items:center;transition:.3s}
+.lb button:hover{background:var(--lime);color:var(--ink)}
+.lb .x{top:22px;right:22px}.lb .prev{left:22px;top:50%;transform:translateY(-50%)}.lb .next{right:22px;top:50%;transform:translateY(-50%)}
+@media (max-width:980px){.masonry{columns:2}}
+@media (max-width:560px){.masonry{columns:2;column-gap:8px}.gitem{margin-bottom:8px;border-radius:12px}}
 
 /* LOADER */
 .loader{position:fixed;inset:0;z-index:100;background:var(--ink);display:grid;place-items:center;transition:transform 1s var(--ease);color:#fff}
@@ -104,7 +143,7 @@ body.ready .hero .cta{opacity:1;transform:none}
 .hero .visual{position:relative;aspect-ratio:4/4.6;opacity:0;transform:translateY(30px) rotate(2deg);transition:1.2s var(--ease) .4s}
 body.ready .hero .visual{opacity:1;transform:none}
 .hero .visual .ph{position:absolute;inset:0;border-radius:28px;overflow:hidden;box-shadow:0 40px 80px -30px rgba(23,19,31,.45)}
-.hero .visual .ph img{width:100%;height:100%;object-fit:cover;transform:scale(1.06);transition:transform 1.4s var(--ease)}
+.hero .visual .ph img{width:100%;height:100%;object-fit:cover;transform:scale(1.12);will-change:transform}
 .hero .visual:hover .ph img{transform:scale(1)}
 .chip{position:absolute;background:#fff;border-radius:16px;padding:12px 16px;box-shadow:0 20px 40px -20px rgba(23,19,31,.4);font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:10px;animation:float 5s ease-in-out infinite}
 .chip b{font-family:var(--serif);font-size:22px;color:var(--violet);font-weight:700}
@@ -297,18 +336,19 @@ footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:2
 
 <div class="loader" id="loader"><div class="w"><div class="coin">$</div><div class="t">Dinero en Orden</div><div class="bar"><i></i></div></div></div>
 
+<div class="progress"><i id="prog"></i></div><div class="glow" id="glow"></div>
 <div class="concept"><b>Concepto</b> · Propuesta de sitio nuevo para Dinero en Orden, preparada por Evans Ademilua · Large Technologies</div>
 
 <header class="nav" id="nav">
   <a class="brand" href="#inicio"><img src="/dineroenorden/img/logo.svg" alt="Dinero en Orden"><span>Dinero en Orden<small>Celeste Sánchez</small></span></a>
   <nav class="links">
-    <a href="#charlas">Charlas</a><a href="#programa">Programa</a><a href="#asesorias">Asesorías</a><a href="#tienda">Tienda</a><a href="#podcast">Podcast</a><a href="#sobre">Celeste</a>
+    <a href="#charlas">Charlas</a><a href="#programa">Programa</a><a href="#asesorias">Asesorías</a><a href="#tienda">Tienda</a><a href="#podcast">Podcast</a><a href="#galeria">Fotos</a><a href="#sobre">Celeste</a>
   </nav>
   <a class="btn lime" href="#gratis">Empezá gratis <span class="arr">→</span></a>
   <button class="burger" id="burger" aria-label="Menú"><i></i><i></i><i></i></button>
 </header>
 <div class="mobile" id="mobile">
-  <a href="#charlas">Charlas para empresas</a><a href="#programa">Programa $Í HAY PLATA</a><a href="#asesorias">Asesorías</a><a href="#tienda">Tienda</a><a href="#podcast">Podcast</a><a href="#sobre">Sobre Celeste</a><a href="#gratis">Empezá gratis</a>
+  <a href="#charlas">Charlas para empresas</a><a href="#programa">Programa $Í HAY PLATA</a><a href="#asesorias">Asesorías</a><a href="#tienda">Tienda</a><a href="#podcast">Podcast</a><a href="#galeria">Fotos</a><a href="#sobre">Sobre Celeste</a><a href="#gratis">Empezá gratis</a>
 </div>
 
 <!-- HERO -->
@@ -485,6 +525,34 @@ footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:2
   </div>
 </section>
 
+<!-- GALERIA -->
+<section class="galeria" id="galeria">
+  <div class="wrap">
+    <div class="head reveal">
+      <div><span class="eyebrow">Celeste en acción</span><h2 style="margin-top:14px">En la tele, en el escenario<br>y en tu feed.</h2></div>
+      <p class="lead">Filtrá, tocá una foto y mirala en grande. Todo esto ya existe en tu Instagram; acá trabaja para vos las 24 horas.</p>
+    </div>
+    <div class="filters reveal" id="filters">
+      <button class="on" data-f="all">Todas</button><button data-f="medios">En los medios</button><button data-f="charlas">Charlas y eventos</button><button data-f="celeste">Celeste</button><button data-f="posts">Posts</button>
+    </div>
+    <div class="masonry reveal" id="masonry">
+      <figure class="gitem" data-f="celeste" data-cap="¡Hola! Soy Celeste. Periodista, productora y locutora nacional."><span class="k">Celeste</span><img src="/dineroenorden/img/ig-hola.jpg" alt="Hola, soy Celeste" loading="lazy"></figure>
+      <figure class="gitem" data-f="medios" data-cap="En la tele: revisar descuentos antes de pagar."><span class="k">En los medios</span><img src="/dineroenorden/img/ig-tv.jpg" alt="Celeste en televisión" loading="lazy"></figure>
+      <figure class="gitem" data-f="posts" data-cap="¿Por dónde empiezo a ordenar mi plata? La pregunta de siempre."><span class="k">Post</span><img src="/dineroenorden/img/ig-empiezo.jpg" alt="Por dónde empiezo a ordenar mi plata" loading="lazy"></figure>
+      <figure class="gitem" data-f="charlas" data-cap="El peligro del «me lo merezco», en vivo desde el estudio."><span class="k">Charlas</span><img src="/dineroenorden/img/ig-stage.jpg" alt="Celeste en un streaming" loading="lazy"></figure>
+      <figure class="gitem" data-f="celeste" data-cap="Renovando: la paleta, el planner y la sonrisa."><span class="k">Celeste</span><img src="/dineroenorden/img/ig-renovando.jpg" alt="Renovando la marca" loading="lazy"></figure>
+      <figure class="gitem" data-f="charlas" data-cap="¿Cómo organizar las finanzas en la pareja? Charla para una comunidad de bienestar."><span class="k">Charlas</span><img src="/dineroenorden/img/ig-pareja.jpg" alt="Charla finanzas en pareja" loading="lazy"></figure>
+      <figure class="gitem" data-f="posts" data-cap="Flores que nos gustan mucho."><span class="k">Post</span><img src="/dineroenorden/img/ig-flores.jpg" alt="Flores de billetes" loading="lazy"></figure>
+      <figure class="gitem" data-f="celeste" data-cap="Nunca es tarde para empezar a hacer las cosas bien."><span class="k">Celeste</span><img src="/dineroenorden/img/ig-collage.jpg" alt="Celeste con el planner" loading="lazy"></figure>
+      <figure class="gitem" data-f="medios" data-cap="Detrás de cámara, en el estudio de TV."><span class="k">En los medios</span><img src="/dineroenorden/img/ig-studio.jpg" alt="Estudio de televisión" loading="lazy"></figure>
+      <figure class="gitem" data-f="posts" data-cap="En Dinero en Orden creemos en claridad, no hay excusas y no juzgamos."><span class="k">Post</span><img src="/dineroenorden/img/ig-claridad.jpg" alt="Valores de Dinero en Orden" loading="lazy"></figure>
+      <figure class="gitem" data-f="charlas" data-cap="Tomemos un café y hablemos de tu futuro económico."><span class="k">Charlas</span><img src="/dineroenorden/img/ig-cafe.jpg" alt="Charla café futuro económico" loading="lazy"></figure>
+      <figure class="gitem" data-f="celeste" data-cap="Ser rico en Argentina es barato."><span class="k">Celeste</span><img src="/dineroenorden/img/ig-serrico.jpg" alt="Ser rico en Argentina es barato" loading="lazy"></figure>
+    </div>
+  </div>
+</section>
+<div class="lb" id="lb"><button class="x" aria-label="Cerrar">✕</button><button class="prev" aria-label="Anterior">‹</button><img src="" alt=""><button class="next" aria-label="Siguiente">›</button><div class="cap"></div></div>
+
 <!-- GRATIS -->
 <section class="gratis" id="gratis">
   <div class="wrap">
@@ -593,6 +661,29 @@ footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:2
   // testimonials
   const sl=$$('.slide'),dots=$('#dots');let si=0;sl.forEach((_,i)=>{const b=document.createElement('button');b.setAttribute('aria-label','Testimonio '+(i+1));b.onclick=()=>go(i);dots.appendChild(b);});
   const go=i=>{sl[si].classList.remove('on');dots.children[si].classList.remove('on');si=i;sl[si].classList.add('on');dots.children[si].classList.add('on');};go(0);setInterval(()=>go((si+1)%sl.length),5500);
+  // progress bar + glow + hero parallax
+  const prog=$('#prog');const heroImg=$('.hero .ph img');
+  addEventListener('scroll',()=>{const h=document.documentElement;prog.style.transform='scaleX('+(h.scrollTop/(h.scrollHeight-h.clientHeight))+')';if(heroImg&&scrollY<900)heroImg.style.transform='scale(1.12) translateY('+(scrollY*0.12)+'px)';},{passive:true});
+  const glow=$('#glow');addEventListener('pointermove',e=>{glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px';},{passive:true});
+  // word reveal on section headings
+  $$('section h2').forEach(h=>{if(h.closest('.quiz'))return;h.classList.add('words');h.innerHTML=h.innerHTML.split(/(<br\s*\/?>)/i).map(part=>/^<br/i.test(part)?part:part.split(' ').filter(Boolean).map((w,i)=>'<span class="w"><i style="transition-delay:'+(i*45)+'ms">'+w+'</i></span>').join(' ')).join('');});
+  const wio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');wio.unobserve(e.target);}}),{threshold:.3});
+  $$('.words').forEach(h=>wio.observe(h));
+  if(location.search.includes('shot'))$$('.words').forEach(h=>h.classList.add('in'));
+  // magnetic buttons
+  if(matchMedia('(hover:hover)').matches)$$('.btn').forEach(b=>{b.addEventListener('mousemove',e=>{const r=b.getBoundingClientRect();b.style.transform='translate('+((e.clientX-r.left-r.width/2)*.18)+'px,'+((e.clientY-r.top-r.height/2)*.28)+'px)';});b.addEventListener('mouseleave',()=>b.style.transform='');});
+  // gallery filters + lightbox
+  const items=$$('.gitem');
+  $$('#filters button').forEach(f=>f.onclick=()=>{$$('#filters button').forEach(x=>x.classList.remove('on'));f.classList.add('on');items.forEach((it,i)=>{const show=f.dataset.f==='all'||it.dataset.f===f.dataset.f;it.classList.toggle('hide',!show);it.classList.remove('pop');void it.offsetWidth;if(show){it.style.animationDelay=(i*40)+'ms';it.classList.add('pop');}});});
+  const lb=$('#lb'),lbi=lb.querySelector('img'),lbc=lb.querySelector('.cap');let cur=0;
+  const vis=()=>items.filter(i=>!i.classList.contains('hide'));
+  const open=i=>{cur=i;const it=vis()[cur];lbi.src=it.querySelector('img').src;lbc.textContent=it.dataset.cap;lb.classList.add('on');document.body.style.overflow='hidden';};
+  const close=()=>{lb.classList.remove('on');document.body.style.overflow='';};
+  items.forEach(it=>it.onclick=()=>open(vis().indexOf(it)));
+  lb.querySelector('.x').onclick=close;lb.onclick=e=>{if(e.target===lb)close();};
+  lb.querySelector('.prev').onclick=e=>{e.stopPropagation();open((cur-1+vis().length)%vis().length);};
+  lb.querySelector('.next').onclick=e=>{e.stopPropagation();open((cur+1)%vis().length);};
+  addEventListener('keydown',e=>{if(!lb.classList.contains('on'))return;if(e.key==='Escape')close();if(e.key==='ArrowRight')open((cur+1)%vis().length);if(e.key==='ArrowLeft')open((cur-1+vis().length)%vis().length);});
   // forms (demo: validates, shows confirmation; in production connects to the email tool and the leads dashboard)
   const wire=(id,ok)=>{const f=$(id);f.addEventListener('submit',e=>{e.preventDefault();if(!f.checkValidity()){f.reportValidity();return;}f.querySelectorAll('input,textarea,select,button').forEach(x=>x.disabled=true);$(ok).classList.add('show');});};
   wire('#fCharla','#okCharla');wire('#fGratis','#okGratis');
