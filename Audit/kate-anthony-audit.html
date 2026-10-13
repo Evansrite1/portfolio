@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kate Anthony Growth Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Public+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a field guide. Numbered chapters down one column, key figures in a margin strip on wide screens. */
+:root{
+  --paper:#fbf6f7;
+  --card:#ffffff;
+  --ink:#2b1520;
+  --muted:#6f5963;
+  --line:#ead9df;
+  --plum:#5c1236;
+  --blush:#f7dde5;
+  --sage:#4f6b52;
+  --sage-soft:#e3ebe1;
+  --display:"Gloock", "Georgia", "Times New Roman", serif;
+  --body:"Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#170d12; --card:#21141b; --ink:#f4e9ee; --muted:#bca6b1; --line:#3b2530;
+    --plum:#f08cb4; --blush:#3a1a28; --sage:#a8c4a7; --sage-soft:#1f2a20; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#170d12; --card:#21141b; --ink:#f4e9ee; --muted:#bca6b1; --line:#3b2530;
+  --plum:#f08cb4; --blush:#3a1a28; --sage:#a8c4a7; --sage-soft:#1f2a20; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.65}
+.wrap{max-width:780px;margin:0 auto;padding-inline:20px;padding-block:48px 80px;display:grid;gap:56px}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.12;text-wrap:balance;margin:0}
+p{margin:0}
+.label{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+/* Cover */
+.cover{display:grid;gap:18px;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.cover h1{font-size:clamp(40px,7.5vw,66px);color:var(--plum)}
+.cover .sub{font-size:19px;color:var(--muted);max-width:56ch}
+.meta{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:14px;color:var(--muted)}
+.meta b{color:var(--ink)}
+
+.lede{display:grid;gap:16px;font-size:18px;max-width:65ch}
+.lede mark{background:var(--sage-soft);color:var(--ink);padding:0 4px}
+
+/* Wins */
+.wins{background:var(--sage-soft);padding:22px 20px;display:grid;gap:14px}
+.wins h2{font-size:26px;color:var(--sage)}
+.wins ul{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.wins li{display:grid;grid-template-columns:18px 1fr;gap:10px}
+.wins li::before{content:"✓";color:var(--sage);font-weight:700}
+.wins li div{min-width:0}
+
+/* Figures */
+.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:24px 20px}
+.fig{display:grid;gap:2px;border-top:2px solid var(--plum);padding-top:10px;min-width:0}
+.fig .n{font-family:var(--display);font-size:34px;line-height:1.05;font-variant-numeric:tabular-nums}
+.fig .t{font-size:14px;color:var(--muted);line-height:1.4}
+
+/* Chapters */
+.part{display:grid;gap:30px}
+.part-head{display:grid;gap:8px}
+.part-head h2{font-size:clamp(30px,5vw,42px)}
+.part-head p{color:var(--muted);max-width:60ch}
+.ch{display:grid;grid-template-columns:64px 1fr;gap:4px 20px;align-items:start}
+.ch .no{font-family:var(--mono);font-size:13px;color:var(--plum);border:1px solid var(--plum);padding:4px 0;text-align:center;margin-top:6px}
+.ch .body{display:grid;gap:10px;min-width:0}
+.ch h3{font-size:25px}
+.ch p{max-width:62ch}
+.quote{font-family:var(--mono);font-size:13px;line-height:1.6;color:var(--muted);background:var(--blush);padding:12px 14px;overflow-wrap:anywhere}
+.quote b{color:var(--ink)}
+@media (max-width:520px){.ch{grid-template-columns:1fr}.ch .no{width:64px}}
+
+/* Reach chart */
+.chart{border:1px solid var(--line);background:var(--card);padding:20px 18px;display:grid;gap:14px}
+.row{display:grid;grid-template-columns:minmax(0,200px) 1fr 70px;gap:12px;align-items:center;font-size:14px}
+.row .name{color:var(--muted);min-width:0}
+.row .track{height:12px;background:var(--blush);position:relative}
+.row .fill{position:absolute;inset:0 auto 0 0;background:var(--plum)}
+.row.bench .fill{background:var(--sage)}
+.row .val{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+.chart .note{font-size:13px;color:var(--muted)}
+@media (max-width:520px){.row{grid-template-columns:1fr 60px}.row .name{grid-column:1 / -1}}
+
+/* Plan */
+.lane{display:grid;gap:14px}
+.lane h3{font-size:26px;display:flex;flex-wrap:wrap;gap:10px;align-items:baseline}
+.lane h3 small{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sage)}
+.checks{margin:0;padding:0;list-style:none;display:grid;gap:12px}
+.checks li{display:grid;grid-template-columns:22px 1fr;gap:12px}
+.checks li::before{content:"";width:15px;height:15px;border:1.5px solid var(--plum);margin-top:6px}
+.checks li div{min-width:0}
+
+.ladder{display:grid;gap:0;border-left:2px solid var(--plum);padding-left:18px}
+.step{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:10px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.step:last-child{border-bottom:0}
+.step .p{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--plum)}
+.step div{min-width:0}
+.step.gap .p{color:var(--sage)}
+@media (max-width:520px){.step{grid-template-columns:1fr;gap:2px}}
+
+.weeks{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:16px}
+.week{background:var(--card);border:1px solid var(--line);padding:14px;display:grid;gap:6px;min-width:0}
+.week .label{color:var(--plum)}
+.week p{font-size:15px}
+
+.outcomes{display:grid;gap:12px}
+.outcomes p{max-width:62ch}
+
+.close{border-top:3px solid var(--plum);padding-top:22px;display:grid;gap:12px}
+.close h2{font-size:30px}
+.sig{font-family:var(--display);font-size:24px;color:var(--plum)}
+.foot{font-size:13px;color:var(--muted)}
+@media print{*{-webkit-print-color-adjust:exact;print-color-adjust:exact}.wrap{padding-block:0;gap:40px}.ch,.checks li,.week,.fig,.step,.chart,.wins{break-inside:avoid}.part-head{break-after:avoid}}
+a{color:var(--plum)}
+a:focus-visible{outline:2px solid var(--plum);outline-offset:3px}
+</style>
+
+<div class="wrap">
+
+  <header class="cover">
+    <div class="label">Private growth audit · 29 September 2026</div>
+    <h1>Kate Anthony, the next chapter</h1>
+    <p class="sub">Where your business already wins, where money and reach are slipping through, and what to change first.</p>
+    <div class="meta"><span>For <b>Kate Anthony</b>, Divorce Coach</span><span>By <b>Evans Ademilua</b>, Large Technologies</span></div>
+  </header>
+
+  <section class="lede">
+    <p>You've built something most coaches never reach: a podcast with millions of downloads, a book, a sold-out retreat, and a full ladder of programs. So this isn't a list of what's broken. It's a look at the gaps between those pieces, especially between Instagram and everything else.</p>
+    <p>I went through your Instagram, every link on your Instagram links page, your program pages and prices, and what shows up in search. Everything below was checked directly on 29 September. The headline: <mark>the business is strong, but Instagram is sending people to last month's retreat and has no path to the new one.</mark></p>
+  </section>
+
+  <section class="wins">
+    <h2>What's already working</h2>
+    <ul>
+      <li><div><b>September's Unbreakable retreat sold out</b> at $2,500, and April 2027 is already taking reservations with a six-payment plan.</div></li>
+      <li><div><b>You rank first on search</b> for "high-conflict divorce coach for women". That is a hard position to win.</div></li>
+      <li><div><b>A real price ladder</b> from a $50 book to Premium Coaching, with a membership in the middle.</div></li>
+      <li><div><b>Your email platform is already installed</b> on the site, so capturing more subscribers is a small step, not a rebuild.</div></li>
+    </ul>
+  </section>
+
+  <section class="figs" aria-label="Key figures">
+    <div class="fig"><span class="n">4.5M</span><span class="t">podcast downloads, 300+ episodes</span></div>
+    <div class="fig"><span class="n">26.7K</span><span class="t">Instagram followers</span></div>
+    <div class="fig"><span class="n">$2,500</span><span class="t">retreat seat, September sold out</span></div>
+    <div class="fig"><span class="n">0</span><span class="t">tappable paths from Instagram to the retreat</span></div>
+  </section>
+
+  <!-- PART ONE -->
+  <section class="part">
+    <div class="part-head">
+      <div class="label">Part one</div>
+      <h2>What the business is doing today</h2>
+      <p>Six findings, in the order a new visitor from Instagram runs into them.</p>
+    </div>
+
+    <article class="ch">
+      <div class="no">01</div>
+      <div class="body">
+        <h3>Your bio is still selling a retreat that's over</h3>
+        <p>The third line of your bio says "Sedona Retreat Sept 10–13 | Save your spot 👇". Those dates passed more than two weeks ago, and your own retreat page says September is sold out. A new visitor sees an old event, while the most persuasive fact you have, that it sold out, isn't mentioned anywhere on Instagram.</p>
+        <div class="quote">Bio today: <b>🌵 Sedona Retreat Sept 10–13 | Save your spot👇</b><br>Retreat page today: <b>September 2026 is sold out. Now accepting reservations for April 2027</b></div>
+      </div>
+    </article>
+
+    <article class="ch">
+      <div class="no">02</div>
+      <div class="body">
+        <h3>There's no way to tap through to the retreat</h3>
+        <p>"kateanthony.com/unbreakable" sits in your bio as plain text. Instagram doesn't turn bio text into a link, so it can't be tapped. The only tappable link is your Instagram Links page, and its seven buttons cover the podcast, Phoenix Rising, the Toolkit, The D Word, private coaching and two "start here" pages. The Unbreakable retreat isn't one of them. So "Save your spot 👇" points at a page with no retreat on it.</p>
+        <div class="quote">Also on that page: "Join Phoenix Rising" and "Getting divorced? Start here" both open the same Phoenix Rising page.</div>
+      </div>
+    </article>
+
+    <article class="ch">
+      <div class="no">03</div>
+      <div class="body">
+        <h3>Instagram reaches a small slice of your audience</h3>
+        <p>Your podcast is the engine of this business. Instagram isn't pulling its weight yet. Across your five most recent posts, likes ranged from 4 to 34 on 26.7K followers. A commonly cited healthy range is 1 to 3% of followers engaging per post.</p>
+        <div class="chart" role="img" aria-label="Likes on five recent posts compared with 1% of 26,700 followers">
+          <div class="row bench"><span class="name">1% of followers</span><span class="track"><span class="fill" style="width:100%"></span></span><span class="val">267</span></div>
+          <div class="row"><span class="name">"Healing doesn't always look…"</span><span class="track"><span class="fill" style="width:12.7%"></span></span><span class="val">34</span></div>
+          <div class="row"><span class="name">"Just rest" reel</span><span class="track"><span class="fill" style="width:4.5%"></span></span><span class="val">12</span></div>
+          <div class="row"><span class="name">"Why am I suddenly missing…"</span><span class="track"><span class="fill" style="width:3.4%"></span></span><span class="val">9</span></div>
+          <div class="row"><span class="name">"Missing someone after leaving…"</span><span class="track"><span class="fill" style="width:2.6%"></span></span><span class="val">7</span></div>
+          <div class="row"><span class="name">ADHD and marriage reel</span><span class="track"><span class="fill" style="width:1.5%"></span></span><span class="val">4</span></div>
+          <p class="note">Likes counted on 29 September 2026. The green bar is what 1% of 26,700 followers would look like.</p>
+        </div>
+        <p>Comments are also limited on your recent posts. Given the topic, that protection makes complete sense. It does cost reach, though, because comments are one of the main signals Instagram uses to decide how widely to show a post.</p>
+      </div>
+    </article>
+
+    <article class="ch">
+      <div class="no">04</div>
+      <div class="body">
+        <h3>No free way onto your email list</h3>
+        <p>4.5 million downloads means a huge number of women who already trust your voice. But on your homepage, your podcast "Start here" page and your Should I Stay or Should I Go? page, I couldn't find a free guide, quiz or checklist to join your list. The first thing anyone can get from you is the $50 book. Listeners who aren't ready to buy simply leave, and you can't reach them again.</p>
+      </div>
+    </article>
+
+    <article class="ch">
+      <div class="no">05</div>
+      <div class="body">
+        <h3>The podcast is hard to find by search</h3>
+        <p>You win "high-conflict divorce coach for women". For the broader search "divorce podcast", the first ten results were The Divorce Podcast with Kate Daly, the Goodpods and FeedSpot "best divorce podcasts" lists, and other shows. The Divorce Survival Guide wasn't on the page, even with 300+ episodes behind it.</p>
+      </div>
+    </article>
+
+    <article class="ch">
+      <div class="no">06</div>
+      <div class="body">
+        <h3>Small technical items on the site</h3>
+        <p>The homepage's main heading tag is empty, so search engines don't get your headline "High-Conflict Divorce Changes the Rules" as the page's main heading. Sections such as the retreat price and "How it works" fade in only as you scroll, so quick skimmers and some tools see blank space first. And the homepage took about nine seconds to fully load in my test. None of these is urgent. Together they're worth a tidy-up.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- PART TWO -->
+  <section class="part">
+    <div class="part-head">
+      <div class="label">Part two</div>
+      <h2>What it should be doing</h2>
+      <p>Grouped by what matters most: more visibility, more influence, more money.</p>
+    </div>
+
+    <div class="lane">
+      <h3>More visibility <small>Be found</small></h3>
+      <ul class="checks">
+        <li><div><b>Update the bio today.</b> Replace the September line with "Sept retreat sold out. April 2027 open 👇". I've written three ready-to-paste versions for you.</div></li>
+        <li><div><b>Make the retreat the first button</b> on your Instagram Links page: "Unbreakable Retreat · April 29 to May 2, 2027 · September sold out".</div></li>
+        <li><div><b>Turn every podcast episode into Instagram content:</b> one clip reel and one quote carousel per episode, each ending with "full episode in bio". You have 300+ episodes of material.</div></li>
+        <li><div><b>Get on the lists that rank.</b> Ask to be added to the Goodpods and FeedSpot divorce podcast rankings, and trade guest spots with the shows that appear for "divorce podcast".</div></li>
+        <li><div><b>Open comments on educational posts</b> and use Instagram's keyword filters to hide anything hurtful. Keep personal posts limited if you prefer.</div></li>
+      </ul>
+    </div>
+
+    <div class="lane">
+      <h3>More influence <small>Be trusted</small></h3>
+      <ul class="checks">
+        <li><div><b>Say the proof out loud:</b> "4.5M downloads", "New York Times recommended", "retreat sold out" in your bio, pinned posts and at the top of each program page.</div></li>
+        <li><div><b>Share retreat stories.</b> A short post from a September attendee (with permission) will sell April better than any description.</div></li>
+        <li><div><b>Do more collaborations.</b> Your pinned collab with The Happily Never After is a good example. One collab reel a month puts you in front of an audience that already cares about the topic.</div></li>
+      </ul>
+    </div>
+
+    <div class="lane">
+      <h3>More money <small>Be booked</small></h3>
+      <p>Your ladder is strong. It only needs a free first step and clear links between each rung:</p>
+      <div class="ladder">
+        <div class="step gap"><span class="p">Free · new</span><div>A short quiz, "Should I stay or should I go?", that gives a result by email. It feeds straight into your $297 program of the same name.</div></div>
+        <div class="step"><span class="p">$50</span><div>The D Word</div></div>
+        <div class="step"><span class="p">$97</span><div>Divorce Strategy Toolkit</div></div>
+        <div class="step"><span class="p">$297</span><div>Should I Stay or Should I Go?</div></div>
+        <div class="step"><span class="p">Monthly</span><div>Phoenix Rising, six-month minimum</div></div>
+        <div class="step"><span class="p">$2,500</span><div>Unbreakable retreat, April 2027</div></div>
+        <div class="step"><span class="p">Up to $5,997</span><div>Premium Coaching</div></div>
+      </div>
+      <ul class="checks">
+        <li><div><b>Add an email sequence after the quiz</b> that walks a subscriber up the ladder over two to three weeks: podcast episodes first, then the book, then the matching program.</div></li>
+        <li><div><b>Open an April waitlist with a small deposit option.</b> September sold out, so demand is proven. A waitlist can fill April before you announce it widely.</div></li>
+        <li><div><b>Offer the next rung at checkout:</b> Toolkit buyers see Phoenix Rising, retreat guests see Premium Coaching.</div></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- PART THREE -->
+  <section class="part">
+    <div class="part-head">
+      <div class="label">Part three</div>
+      <h2>What changes once it's fixed</h2>
+    </div>
+    <div class="outcomes">
+      <p><b>Instagram starts selling the retreat.</b> Visitors see "sold out" as proof and can tap straight to April.</p>
+      <p><b>Your list grows every day the podcast plays.</b> Listeners who aren't ready to buy stay in touch instead of disappearing.</p>
+      <p><b>More women find the show</b> through search and podcast rankings, not only through word of mouth.</p>
+      <p><b>More revenue from people who already bought once,</b> because every product points to the next one.</p>
+    </div>
+
+    <div>
+      <div class="label" style="margin-bottom:14px">A 30-day order of work</div>
+      <div class="weeks">
+        <div class="week"><span class="label">This week</span><p>New bio. Retreat as the first link. Merge the two duplicate Phoenix Rising buttons.</p></div>
+        <div class="week"><span class="label">Week 2</span><p>Build the free "Stay or go?" quiz and connect it to your email platform.</p></div>
+        <div class="week"><span class="label">Week 3</span><p>Email sequence up the ladder. April waitlist live. First retreat testimonial post.</p></div>
+        <div class="week"><span class="label">Week 4</span><p>Podcast ranking list submissions. Episode clips on a weekly rhythm. Homepage heading fixed.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="close">
+    <h2>Over to you</h2>
+    <p>I promised you a draft of an updated bio, so it's attached with this audit: three versions under Instagram's 150-character limit, plus the new order for your Instagram Links page. Use whichever fits. If you'd like help with any of the bigger pieces, like the quiz and its email sequence or a proper retreat page, I'm happy to talk.</p>
+    <p class="sig">Evans Ademilua</p>
+    <p class="foot">Large Technologies · Instagram @theevanslarge1 · evansademilua.vercel.app</p>
+  </section>
+
+</div>
+
+</html>

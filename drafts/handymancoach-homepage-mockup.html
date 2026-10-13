@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brandon Handyman Coach Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a work order. Hero states the claim, a receipt proves it, four numbered steps show the method, one booking button closes. Single dark workshop look. */
+:root{
+  --bg:#121412;
+  --panel:#1b1e1b;
+  --ink:#f1f2ee;
+  --muted:#a2aba3;
+  --line:#2e332e;
+  --vis:#ffc400;
+  --vis-ink:#141414;
+  --display:"Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --body:"Barlow", "Helvetica Neue", Arial, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.6}
+.concept{background:var(--vis);color:var(--vis-ink);font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-align:center;padding:8px 16px}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px}
+h1,h2,h3{font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:.95;margin:0;letter-spacing:.01em;text-wrap:balance}
+p{margin:0}
+.label{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--vis)}
+
+nav{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:18px;border-bottom:1px solid var(--line)}
+.logo{font-family:var(--display);font-weight:900;font-size:26px;text-transform:uppercase;letter-spacing:.02em}
+.logo span{color:var(--vis)}
+.btn{display:inline-block;background:var(--vis);color:var(--vis-ink);font-weight:700;text-decoration:none;padding:14px 22px;font-size:17px;border:2px solid var(--vis)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+nav .btn{padding:10px 16px;font-size:15px}
+
+.hero{display:grid;grid-template-columns:1.25fr .9fr;gap:40px;padding-block:56px 64px;align-items:center}
+.hero h1{font-size:clamp(46px,7.5vw,92px)}
+.hero h1 em{font-style:normal;color:var(--vis)}
+.hero .lead{font-size:20px;color:var(--muted);max-width:40ch;margin-top:18px}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.hero-copy{min-width:0}
+
+/* Receipt */
+.receipt{background:#f4f2ea;color:#1b1b1b;font-family:var(--mono);font-size:14px;padding:22px 20px 26px;position:relative;box-shadow:0 18px 40px rgba(0,0,0,.45);transform:rotate(1.2deg)}
+.receipt::after{content:"";position:absolute;left:0;right:0;bottom:-10px;height:10px;background:linear-gradient(-45deg,transparent 7px,#f4f2ea 0) 0 0/14px 10px,linear-gradient(45deg,transparent 7px,#f4f2ea 0) 0 0/14px 10px}
+.receipt h3{font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-align:center;font-weight:600}
+.receipt .sub{text-align:center;font-size:12px;color:#555;margin:4px 0 14px}
+.rline{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed #b9b5a8;font-variant-numeric:tabular-nums}
+.rline.total{border-bottom:0;border-top:2px solid #1b1b1b;margin-top:6px;padding-top:10px;font-weight:600;font-size:17px}
+.rline.zero span:last-child{color:#a12b1f}
+.stamp{margin-top:14px;text-align:center;font-size:12px;color:#555}
+
+/* Stats strip */
+.strip{border-block:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr)}
+.strip div{padding:22px 16px;border-right:1px solid var(--line);display:grid;gap:4px;min-width:0}
+.strip div:last-child{border-right:0}
+.strip b{font-family:var(--display);font-size:44px;line-height:1;color:var(--vis);font-variant-numeric:tabular-nums}
+.strip span{font-size:15px;color:var(--muted);line-height:1.35}
+
+/* Story */
+.story{display:grid;grid-template-columns:1fr 1fr;gap:48px;padding-block:72px}
+.story h2{font-size:clamp(36px,5vw,58px)}
+.story p{color:var(--muted);max-width:52ch}
+.story .quote{font-size:24px;color:var(--ink);font-weight:600;line-height:1.35;border-left:4px solid var(--vis);padding-left:18px}
+.story > div{display:grid;gap:18px;align-content:start;min-width:0}
+
+/* Steps */
+.steps{padding-block:24px 72px;display:grid;gap:28px}
+.steps h2{font-size:clamp(36px,5vw,58px)}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.step{background:var(--panel);padding:22px 18px;display:grid;gap:10px;align-content:start;min-width:0}
+.step .n{font-family:var(--mono);font-size:13px;color:var(--vis)}
+.step h3{font-size:28px}
+.step p{font-size:16px;color:var(--muted)}
+
+/* Loop */
+.loop{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-family:var(--display);font-weight:900;font-size:clamp(26px,4vw,40px);text-transform:uppercase}
+.loop i{font-style:normal;color:var(--vis)}
+
+/* Wins placeholder */
+.wins{padding-block:0 72px;display:grid;gap:22px}
+.wins h2{font-size:clamp(34px,4.6vw,52px)}
+.wingrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.win{border:1px dashed var(--line);padding:18px;display:grid;gap:8px;color:var(--muted);font-size:15px;min-width:0}
+.win b{color:var(--ink);font-family:var(--mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+
+/* Close */
+.close{background:var(--vis);color:var(--vis-ink);padding-block:64px}
+.close .wrap{display:grid;grid-template-columns:1.3fr 1fr;gap:32px;align-items:center}
+.close h2{font-size:clamp(40px,6vw,72px)}
+.close p{font-size:19px;max-width:44ch}
+.close .btn{background:var(--vis-ink);color:var(--vis);border-color:var(--vis-ink);font-size:19px;padding:18px 26px}
+.close .alt{font-family:var(--mono);font-size:13px;margin-top:12px}
+footer{padding-block:28px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+
+@media (max-width:860px){
+  .hero,.story,.close .wrap{grid-template-columns:1fr}
+  .receipt{transform:none;max-width:420px}
+  .grid4{grid-template-columns:1fr 1fr}
+  .strip{grid-template-columns:1fr 1fr}
+  .strip div:nth-child(2){border-right:0}
+  .strip div:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .wingrid{grid-template-columns:1fr}
+}
+@media (max-width:480px){.grid4{grid-template-columns:1fr} nav .btn{display:none}}
+@media (prefers-reduced-motion:no-preference){.receipt{transition:transform .3s}.receipt:hover{transform:rotate(0)}}
+</style>
+</head>
+<body>
+<div class="concept">CONCEPT MOCKUP · prepared for Brandon by Large Technologies · buttons are placeholders</div>
+
+<header class="wrap">
+  <nav>
+    <div class="logo">Handyman<span>Coach</span></div>
+    <a class="btn" href="#book">Book a free call</a>
+  </nav>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <div class="hero-copy">
+      <div class="label">For handymen who can fix anything</div>
+      <h1>You know the work. <em>Now get paid for it.</em></h1>
+      <p class="lead">In May 2024 I made $0. Five months later I'd collected $103,192 with flyers, an SUV and a few tools. I'll show you how to book jobs, price them right and stop doing every job yourself.</p>
+      <div class="ctas">
+        <a class="btn" href="#book">Book a free 15-minute call</a>
+        <a class="btn ghost" href="#story">See how I did it</a>
+      </div>
+    </div>
+    <div class="receipt" role="img" aria-label="Receipt of Brandon's first five months: $103,192 collected, $50,036 paid to other contractors, $47,522 net profit">
+      <h3>FIRST 5 MONTHS</h3>
+      <p class="sub">June 1 to October 31, 2024</p>
+      <div class="rline zero"><span>Income, May 2024</span><span>$0</span></div>
+      <div class="rline"><span>Collected from jobs</span><span>$103,192</span></div>
+      <div class="rline"><span>Paid to other guys</span><span>$50,036</span></div>
+      <div class="rline total"><span>Net profit</span><span>$47,522</span></div>
+      <p class="stamp">No ads · no website · no following</p>
+    </div>
+  </section>
+
+  <section class="strip wrap" aria-label="Results">
+    <div><b>$0</b><span>coming in, May 2024</span></div>
+    <div><b>5 mo</b><span>from zero to booked out</span></div>
+    <div><b>$47.5K</b><span>net profit in my pocket</span></div>
+    <div><b>$1K</b><span>a day, the profit target I teach</span></div>
+  </section>
+
+  <section class="wrap story" id="story">
+    <div>
+      <div class="label">The story</div>
+      <h2>Nobody knew I existed</h2>
+      <p class="quote">"The work was never the problem. Drywall, faucets, doors, decks, ceilings. I can do all of it."</p>
+    </div>
+    <div>
+      <p>I had 20+ years of skills and no customers, no website, no reviews, no ads and no logo. So I quit waiting for a plan and printed flyers.</p>
+      <p>I walked neighborhoods and put paper on doors. The phone rang. I showed up. I did the work right. They told their neighbor.</p>
+      <p>You're not missing talent. You're missing customers, pricing and a way to stop being the only pair of hands. That's what I coach.</p>
+    </div>
+  </section>
+
+  <section class="wrap steps">
+    <div class="label">The method</div>
+    <h2>Four moves that changed everything</h2>
+    <div class="grid4">
+      <article class="step"><span class="n">STEP 01</span><h3>Pick work that pays in days</h3><p>Home services collect same-week. Most businesses take a year to make a dollar.</p></article>
+      <article class="step"><span class="n">STEP 02</span><h3>Put paper on doors</h3><p>Flyers cost pennies and work the same afternoon. Your first ten customers live within two miles.</p></article>
+      <article class="step"><span class="n">STEP 03</span><h3>Price the job, not the hour</h3><p>Three trips, dry time, sand, texture, paint. Same hole, two very different numbers.</p></article>
+      <article class="step"><span class="n">STEP 04</span><h3>Stop being the only hands</h3><p>$50,036 in contract labor kept the business running when I wasn't on the ladder.</p></article>
+    </div>
+    <div class="loop" aria-label="Book jobs, price jobs, assign jobs, repeat">Book jobs <i>→</i> Price jobs <i>→</i> Assign jobs <i>→</i> Repeat</div>
+  </section>
+
+  <section class="wrap wins">
+    <div class="label">Student wins</div>
+    <h2>Handymen I've coached</h2>
+    <div class="wingrid">
+      <div class="win"><b>Placeholder</b>Your students' results go here: first week's collections, first hire, a price they finally raised.</div>
+      <div class="win"><b>Placeholder</b>A short quote and a photo of the truck or the job site does more than any headline.</div>
+      <div class="win"><b>Placeholder</b>Screenshots from DMs work too, with permission.</div>
+    </div>
+  </section>
+</main>
+
+<section class="close" id="book">
+  <div class="wrap">
+    <div>
+      <h2>Your first check inside a week</h2>
+      <p>If you own a few tools, can drive and are willing to knock on a door, book a free 15-minute call. We'll map your first ten customers together.</p>
+    </div>
+    <div>
+      <a class="btn" href="#book">Book my free call</a>
+      <p class="alt">Rather message? DM "GROW" on Instagram.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">Concept by Large Technologies · evansademilua.vercel.app · All figures from Brandon's public posts.</footer>
+</body>
+</html>

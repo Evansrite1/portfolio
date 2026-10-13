@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marcela Variani Growth Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;1,6..96,500&family=Karla:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single-column theatre programme. Three acts, each opened by a curtain rule, read top to bottom. */
+:root{
+  --paper:#f6f1f3;
+  --card:#fffbfc;
+  --ink:#2a1a23;
+  --muted:#6e5b66;
+  --line:#e3d5dc;
+  --rose:#a8233a;
+  --rose-soft:#f3dfe4;
+  --gold:#8a6a2f;
+  --display:"Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --body:"Karla", "Helvetica Neue", Arial, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#18111a; --card:#211821; --ink:#f2e8ed; --muted:#b9a5b0; --line:#3a2b35;
+    --rose:#ec6680; --rose-soft:#3a1d27; --gold:#d3b171; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#18111a; --card:#211821; --ink:#f2e8ed; --muted:#b9a5b0; --line:#3a2b35;
+  --rose:#ec6680; --rose-soft:#3a1d27; --gold:#d3b171; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.65}
+.wrap{max-width:760px;margin:0 auto;padding-inline:20px;padding-block:48px 80px;display:grid;gap:56px}
+h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.15;text-wrap:balance;margin:0}
+p{margin:0}
+.label{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* Playbill cover */
+.bill{border:1px solid var(--line);background:var(--card);padding:40px 28px;text-align:center;display:grid;gap:18px;position:relative}
+.bill::before,.bill::after{content:"";position:absolute;left:12px;right:12px;height:1px;background:var(--line)}
+.bill::before{top:12px}.bill::after{bottom:12px}
+.bill h1{font-size:clamp(38px,7vw,60px);letter-spacing:-.01em}
+.bill h1 em{color:var(--rose);font-style:italic}
+.bill .sub{font-size:18px;color:var(--muted);max-width:52ch;margin:0 auto}
+.cast{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 28px;font-size:14px;color:var(--muted)}
+.cast b{color:var(--ink);font-weight:700}
+
+.lede{display:grid;gap:16px;font-size:18px;max-width:65ch}
+.lede strong{color:var(--rose);font-weight:700}
+
+/* Snapshot figures */
+.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.fig{background:var(--card);padding:18px 16px;display:grid;gap:4px;min-width:0}
+.fig .n{font-family:var(--display);font-size:32px;line-height:1}
+.fig .t{font-size:14px;color:var(--muted);line-height:1.4}
+
+/* Acts */
+.act{display:grid;gap:28px}
+.curtain{display:grid;gap:10px;padding-top:22px;border-top:3px double var(--rose)}
+.curtain h2{font-size:clamp(28px,5vw,40px)}
+.curtain p{color:var(--muted);max-width:60ch}
+.scene{display:grid;grid-template-columns:52px 1fr;gap:4px 18px;align-items:start}
+.scene .num{font-family:var(--display);font-style:italic;font-size:30px;color:var(--rose);line-height:1.1}
+.scene .body{display:grid;gap:10px;min-width:0}
+.scene h3{font-size:23px}
+.scene p{max-width:62ch}
+.evidence{font-family:var(--mono);font-size:13px;line-height:1.55;color:var(--muted);background:var(--rose-soft);padding:12px 14px;border-left:2px solid var(--rose);overflow-wrap:anywhere}
+@media (max-width:520px){.scene{grid-template-columns:1fr}.scene .num{font-size:24px}}
+
+/* Engagement chart */
+.chart{background:var(--card);border:1px solid var(--line);padding:20px 18px;display:grid;gap:14px}
+.bars{display:grid;gap:10px}
+.bar{display:grid;grid-template-columns:minmax(0,190px) 1fr 64px;gap:12px;align-items:center;font-size:14px}
+.bar .name{color:var(--muted);min-width:0}
+.bar .track{height:12px;background:var(--rose-soft);position:relative}
+.bar .fill{position:absolute;inset:0 auto 0 0;background:var(--rose)}
+.bar .val{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+.bar.bench .fill{background:var(--gold)}
+.chart .note{font-size:13px;color:var(--muted)}
+@media (max-width:520px){.bar{grid-template-columns:1fr 56px}.bar .name{grid-column:1 / -1}}
+
+/* Checklist */
+.lane{display:grid;gap:14px}
+.lane h3{font-size:24px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.lane h3 span{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.checks{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.checks li{display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:start}
+.checks li::before{content:"";width:16px;height:16px;border:1.5px solid var(--rose);margin-top:5px}
+.checks li div{min-width:0}
+.checks b{font-weight:700}
+
+.ladder{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+.rung{background:var(--card);display:grid;grid-template-columns:130px 1fr;gap:16px;padding:14px 16px;align-items:baseline}
+.rung .p{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--rose)}
+.rung div{min-width:0}
+@media (max-width:520px){.rung{grid-template-columns:1fr;gap:4px}}
+
+/* Calendar */
+.weeks{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px}
+.week{border-top:2px solid var(--ink);padding-top:10px;display:grid;gap:6px;min-width:0}
+.week .label{color:var(--rose)}
+.week p{font-size:15px}
+
+.outcome{display:grid;gap:14px}
+.outcome p{max-width:62ch}
+
+.close{border:1px solid var(--line);background:var(--card);padding:28px 24px;display:grid;gap:12px}
+.close h2{font-size:28px}
+.sig{font-family:var(--display);font-style:italic;font-size:22px}
+.foot{font-size:13px;color:var(--muted)}
+@media print{*{-webkit-print-color-adjust:exact;print-color-adjust:exact}.wrap{padding-block:0;gap:40px}.scene,.lane li,.week,.fig,.rung,.chart,.close,.bill{break-inside:avoid}.curtain{break-after:avoid}}
+a{color:var(--rose)}
+a:focus-visible{outline:2px solid var(--rose);outline-offset:3px}
+</style>
+
+<div class="wrap">
+
+  <header class="bill">
+    <div class="label">A private growth audit · prepared 29 September 2026</div>
+    <h1>In Love with <em>Marcela</em></h1>
+    <p class="sub">What your business is doing today, what it could be doing, and a plan you can build yourself, step by step.</p>
+    <div class="cast">
+      <span>For <b>Marcela Variani</b></span>
+      <span>Dubai · Barcelona</span>
+      <span>By <b>Evans Ademilua</b>, Large Technologies</span>
+    </div>
+  </header>
+
+  <section class="lede">
+    <p>You told me you like building your own page so you can change anything yourself. That makes sense, so this isn't a pitch for a website. It's a map you can build from.</p>
+    <p>I went through everything a new client would see: your Instagram, your booking pages, both websites, your other accounts, and what shows up when a woman in Dubai searches for help. The short version: <strong>your work is rare and your credentials are serious, but the path from "I love her content" to "I'm booked" is harder than it needs to be.</strong> Every point below is something I checked directly on 29 September.</p>
+  </section>
+
+  <section class="figs" aria-label="Snapshot">
+    <div class="fig"><span class="n mono">21.5K</span><span class="t">Instagram followers</span></div>
+    <div class="fig"><span class="n mono">500+</span><span class="t">students, per your bio</span></div>
+    <div class="fig"><span class="n mono">4</span><span class="t">different DM keywords in use</span></div>
+    <div class="fig"><span class="n mono">€350</span><span class="t">first thing your bio link asks for</span></div>
+    <div class="fig"><span class="n mono">5</span><span class="t">separate brand homes</span></div>
+  </section>
+
+  <!-- ACT ONE -->
+  <section class="act">
+    <div class="curtain">
+      <div class="label">Act one</div>
+      <h2>Where the business is today</h2>
+      <p>Seven things I found, in the order a new client runs into them.</p>
+    </div>
+
+    <article class="scene">
+      <div class="num">i.</div>
+      <div class="body">
+        <h3>Your front door asks a stranger for €350</h3>
+        <p>The one link in your Instagram bio opens the 1:1 Clarity Session: 75 minutes, €350. For someone who found you five minutes ago, that is a big first step. Meanwhile you already have a free 15-minute discovery call on the same booking profile, and another one on your website. Neither is linked from Instagram, so the easiest yes you offer is hidden.</p>
+        <div class="evidence">Bio link: cal.eu/marcelavarianiconsultancy/claritysession → "1:1 Clarity Session (60–90 min)", 1h 15m, €350.00<br>Also on the same profile: "Free Discovery Call", 15m, not linked from Instagram</div>
+      </div>
+    </article>
+
+    <article class="scene">
+      <div class="num">ii.</div>
+      <div class="body">
+        <h3>Four doors, and all of them lead into your DMs</h3>
+        <p>Your recent posts ask people to DM <b>COACH</b>, <b>THEATER</b>, <b>THAILAND</b> or <b>DUBAI</b>. Each one is a real offer, but none of them has a page. Someone who is curious about the Thailand retreat at 11pm has to message you and wait, with nothing to read in the meantime: no dates, no price range, no photos of the venue, no stories from past participants. A lot of interest quietly cools off in that gap.</p>
+      </div>
+    </article>
+
+    <article class="scene">
+      <div class="num">iii.</div>
+      <div class="body">
+        <h3>Most of your 21.5K followers aren't seeing you</h3>
+        <p>Your recent posts reach a small slice of your audience. Across five recent posts, likes ranged from 3 to 50. For an account your size, a commonly cited healthy range is 1 to 3% of followers engaging per post. You're sitting well under that.</p>
+        <div class="chart" role="img" aria-label="Likes per recent post as a share of 21,500 followers, compared with a 1% benchmark">
+          <div class="bars">
+            <div class="bar"><span class="name">Benchmark, 1% of followers</span><span class="track"><span class="fill" style="width:100%"></span></span><span class="val">215</span></div>
+            <div class="bar"><span class="name">Therapeutic Theater reel</span><span class="track"><span class="fill" style="width:23.3%"></span></span><span class="val">50</span></div>
+            <div class="bar"><span class="name">"I've arrived in Dubai"</span><span class="track"><span class="fill" style="width:19.5%"></span></span><span class="val">42</span></div>
+            <div class="bar"><span class="name">Thailand retreat, pinned</span><span class="track"><span class="fill" style="width:6.5%"></span></span><span class="val">14</span></div>
+            <div class="bar"><span class="name">Thailand retreat reel</span><span class="track"><span class="fill" style="width:3.3%"></span></span><span class="val">7</span></div>
+            <div class="bar"><span class="name">Newest post, 29 Sept</span><span class="track"><span class="fill" style="width:1.4%"></span></span><span class="val">3</span></div>
+          </div>
+          <p class="note">Likes as counted on 29 September 2026. The bar marked in gold is what 1% of 21,500 followers would look like.</p>
+        </div>
+        <p>Two likely reasons. Many of your followers came from earlier chapters of your life (a lot of the comments are in Portuguese and Spanish), while your offers now speak to women in Dubai. And some of your comments come from engagement-bait accounts ("When I comment on a reel, it goes viral"), which don't help. The good news: the Therapeutic Theater reel did best by far. That is your signature, and your audience responds to it.</p>
+      </div>
+    </article>
+
+    <article class="scene">
+      <div class="num">iv.</div>
+      <div class="body">
+        <h3>Your credentials are almost invisible</h3>
+        <p>Very few coaches can say what you can: a degree in Philosophy and Human Sciences (PUCRS, Brazil), a specialization in Education for Expression (Roma Tre, Italy), a Master's in Philosophy for Children (Universidade dos Açores), Therapeutic Theater training at Espailudic, the Gestalt School of Catalunya, and Mindfulness training in Italy. Today they appear only halfway down your website's homepage. They're not in your Instagram bio, not on your booking page, and not in your pinned posts.</p>
+      </div>
+    </article>
+
+    <article class="scene">
+      <div class="num">v.</div>
+      <div class="body">
+        <h3>The brand is split five ways</h3>
+        <p>A client can meet you as <b>@inlovewithmarcela</b> on Instagram, <b>ILWM</b> at inlovewithmarcela.com, <b>Marcela Variani Consultancy</b> on your booking page and corporate site, <b>@thesoftceomanifesto</b> (32 followers, no posts yet), and a corporate wellness coach on LinkedIn. Your booking page also lists tarot readings (€45 to €115) right next to relationship coaching. Each piece makes sense to you. To a stranger, it's hard to tell which Marcela to book.</p>
+        <div class="evidence">Two booking systems in use: Cal.com (Instagram) and Calendly (website)</div>
+      </div>
+    </article>
+
+    <article class="scene">
+      <div class="num">vi.</div>
+      <div class="body">
+        <h3>The website is between chapters</h3>
+        <p>You mentioned you're rebuilding, so this is only a list for the new version. Today the "1:1 Relationship Coaching" page shows "Something new is coming". The homepage headline is "Welcome here!". There are no testimonials even though your "Wins" highlight is full of them. There's no email signup, no link back to Instagram, and no page for the Thailand retreat, the Dubai workshops or Therapeutic Theater.</p>
+      </div>
+    </article>
+
+    <article class="scene">
+      <div class="num">vii.</div>
+      <div class="body">
+        <h3>Dubai can't find you on Google yet</h3>
+        <p>I searched "relationship coach Dubai women workshop". The first ten results were other coaches and directories (Hub of Consciousness, Coach G, Lighthouse Coaching, Dubai Life Coach, Noomii and others). You weren't on the page. For in-person work in a new city, that search is where many clients start.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ACT TWO -->
+  <section class="act">
+    <div class="curtain">
+      <div class="label">Act two</div>
+      <h2>What it should be doing</h2>
+      <p>A checklist you can work through yourself, grouped by what you asked about: more visibility, more influence, more money.</p>
+    </div>
+
+    <div class="lane">
+      <h3>More visibility <span>Be found</span></h3>
+      <ul class="checks">
+        <li><div><b>One "Start here" link in your bio</b> with four clear doors: book a free call, Therapeutic Theater sessions, the Thailand retreat, Dubai workshops. The DM keywords can stay; they just point to a page instead of a waiting inbox.</div></li>
+        <li><div><b>Rename your pages for the words clients search.</b> "Welcome here!" becomes something like "Relationship Coach for Women in Dubai". Give every page its own title and description with Dubai, Barcelona and online.</div></li>
+        <li><div><b>Create a free Google Business Profile in Dubai.</b> It's the fastest route onto the map results for "relationship coach near me".</div></li>
+        <li><div><b>Make Therapeutic Theater the headline.</b> It's your best-performing content and the most distinctive thing you offer. One page that explains what happens in a session, with photos, will travel further than any generic coaching page.</div></li>
+        <li><div><b>Borrow audiences in Dubai.</b> You already collaborate with Roam Circle on the retreat. Do the same with women's communities, yoga studios and co-working spaces: one hosted Therapeutic Theater evening puts you in front of a room that already trusts the host.</div></li>
+      </ul>
+    </div>
+
+    <div class="lane">
+      <h3>More influence <span>Be trusted</span></h3>
+      <ul class="checks">
+        <li><div><b>Put your credentials where decisions happen:</b> one line in your Instagram bio ("Philosophy MA · Gestalt Therapeutic Theater"), and a short block on every booking page.</div></li>
+        <li><div><b>Turn your "Wins" highlight into written testimonials</b> with first names and photos, and place three on each offer page. Your corporate site already has strong ones you can reuse.</div></li>
+        <li><div><b>Choose one name for the public.</b> Keep Marcela Variani Consultancy for companies, but let clients meet one brand: In Love with Marcela. Move tarot to its own page so it doesn't compete with coaching.</div></li>
+        <li><div><b>Refresh your following over time.</b> Speak to the women you serve now (Dubai, English, Therapeutic Theater) and let the audience rebalance around them. Remove obvious spam comments so real ones stand out.</div></li>
+      </ul>
+    </div>
+
+    <div class="lane">
+      <h3>More money <span>Be booked</span></h3>
+      <p>Give people a ladder to climb instead of one steep step. Something like this, using offers you already have:</p>
+      <div class="ladder" role="list">
+        <div class="rung" role="listitem"><span class="p">Free</span><div>A short self-check or guide ("What pattern keeps repeating in your relationships?") in exchange for an email. This builds your list.</div></div>
+        <div class="rung" role="listitem"><span class="p">Free · 15 min</span><div>Discovery call, linked from your bio.</div></div>
+        <div class="rung" role="listitem"><span class="p">€350</span><div>Clarity Session. Offer to credit it toward a longer program if they continue, which makes the €350 an easy decision.</div></div>
+        <div class="rung" role="listitem"><span class="p">Program</span><div>Your 1:1 coaching container, sold on its own page with outcomes, length and testimonials.</div></div>
+        <div class="rung" role="listitem"><span class="p">Retreat</span><div>Thailand, December, 6 to 10 women. With 8 seats, every €500 on the price is €4,000 in revenue, so a proper page that justifies a premium price matters.</div></div>
+        <div class="rung" role="listitem"><span class="p">Companies</span><div>Corporate wellness and team workshops through Marcela Variani Consultancy.</div></div>
+      </div>
+      <ul class="checks">
+        <li><div><b>Start a retreat waitlist today:</b> a simple form (name, email, "what are you hoping to leave behind?"). A waitlist fills seats before the page even goes public, and the answers write your marketing for you.</div></li>
+        <li><div><b>Make Dubai workshops recurring and ticketed</b>, for example a monthly Therapeutic Theater circle with a fixed number of seats, booked and paid online.</div></li>
+        <li><div><b>Reply to every DM keyword automatically</b> with the matching page, then follow up personally. Nobody waits, and you still get the conversation.</div></li>
+        <li><div><b>Use one booking system.</b> Cal.com or Calendly, not both, so reminders, payments and your calendar all live in one place.</div></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ACT THREE -->
+  <section class="act">
+    <div class="curtain">
+      <div class="label">Act three</div>
+      <h2>What changes once it's fixed</h2>
+    </div>
+    <div class="outcome">
+      <p><b>More first conversations.</b> A woman who connects with a reel can book a free call in two taps, instead of facing a €350 decision on day one.</p>
+      <p><b>Fewer lost leads.</b> Every DM keyword returns a page with the answer, so interest doesn't cool off while you sleep.</p>
+      <p><b>Easier sales.</b> Credentials and testimonials do the persuading before the call starts, so calls become about fit, not about proving yourself.</p>
+      <p><b>A retreat that fills from a list,</b> with a price that reflects what it is, rather than from DMs one by one.</p>
+      <p><b>A presence in Dubai</b> that shows up on Google and in other people's rooms, not just on Instagram.</p>
+    </div>
+
+    <div>
+      <div class="label" style="margin-bottom:14px">A 30-day order of work</div>
+      <div class="weeks">
+        <div class="week"><span class="label">Week 1</span><p>"Start here" link in bio. Free call linked. Each DM keyword answered with a page.</p></div>
+        <div class="week"><span class="label">Week 2</span><p>Credentials and testimonials on every page. Retreat waitlist live.</p></div>
+        <div class="week"><span class="label">Week 3</span><p>Page titles for Dubai. Google Business Profile. One booking system.</p></div>
+        <div class="week"><span class="label">Week 4</span><p>Therapeutic Theater page and retreat page. First hosted workshop with a partner.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="close">
+    <h2>Yours to build</h2>
+    <p>Everything above can be done with the tools you already use. If a piece ever feels like more than you want to take on, like the retreat page or the automatic DM replies, I'm happy to help with just that part. Either way, I hope this is useful for the next chapter.</p>
+    <p class="sig">Evans Ademilua</p>
+    <p class="foot">Large Technologies · Instagram @theevanslarge1 · evansademilua.vercel.app</p>
+  </section>
+
+</div>
+
+</html>

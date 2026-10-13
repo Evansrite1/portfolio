@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kate Anthony Bio Draft</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Public+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{--paper:#fbf6f7;--card:#fff;--ink:#2b1520;--muted:#6f5963;--line:#ead9df;--plum:#5c1236;--blush:#f7dde5;--sage:#4f6b52;color-scheme:light}
+@media (prefers-color-scheme: dark){:root{--paper:#170d12;--card:#21141b;--ink:#f4e9ee;--muted:#bca6b1;--line:#3b2530;--plum:#f08cb4;--blush:#3a1a28;--sage:#a8c4a7;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Public Sans","Helvetica Neue",Arial,sans-serif;font-size:17px;line-height:1.6}
+.wrap{max-width:720px;margin:0 auto;padding-inline:20px;padding-block:44px 72px;display:grid;gap:40px}
+h1,h2{font-family:"Gloock",Georgia,serif;font-weight:400;margin:0;line-height:1.15}
+h1{font-size:clamp(34px,6vw,50px);color:var(--plum)}
+h2{font-size:26px}
+p{margin:0;max-width:62ch}
+.label{font-family:"JetBrains Mono",Menlo,monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.head{display:grid;gap:12px}
+.opts{display:grid;gap:18px}
+.opt{background:var(--card);border:1px solid var(--line);padding:18px;display:grid;gap:12px}
+.opt-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.opt h2{font-size:22px}
+.count{font-family:"JetBrains Mono",Menlo,monospace;font-size:13px;color:var(--sage)}
+.bio{font-family:"Public Sans",Arial,sans-serif;white-space:pre-line;background:var(--blush);padding:14px 16px;font-size:16px;line-height:1.55}
+.why{font-size:15px;color:var(--muted)}
+button{font:inherit;font-size:14px;border:1px solid var(--plum);background:transparent;color:var(--plum);padding:6px 14px;cursor:pointer}
+button:focus-visible{outline:2px solid var(--plum);outline-offset:2px}
+ol{margin:0;padding-left:22px;display:grid;gap:8px}
+ol li b{font-family:"JetBrains Mono",Menlo,monospace;font-size:14px;letter-spacing:.04em}
+.note{font-size:15px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <div class="label">Draft · prepared for Kate Anthony · 29 September 2026</div>
+    <h1>Your updated Instagram bio</h1>
+    <p>As promised, a fresh bio that stops promoting September's retreat and turns its sell-out into proof for April. Three versions, all under Instagram's 150-character limit. Pick one, or mix lines.</p>
+  </header>
+
+  <section class="opts">
+    <article class="opt">
+      <div class="opt-top"><h2>Option A · closest to your current voice</h2><span class="count" data-for="a"></span></div>
+      <div class="bio" id="a">✨ Divorce coach · 4.5M+ podcast downloads
+💥 Helping women heal after divorce
+🌵 Sept retreat sold out · April 2027 open 👇</div>
+      <p class="why">Keeps your emoji rhythm and second line, adds your strongest number, and turns the old retreat line into social proof.</p>
+      <div><button type="button" data-copy="a">Copy option A</button></div>
+    </article>
+
+    <article class="opt">
+      <div class="opt-top"><h2>Option B · built for search</h2><span class="count" data-for="b"></span></div>
+      <div class="bio" id="b">Divorce coach · The Divorce Survival Guide podcast
+For women leaving high-conflict marriages
+Sedona retreat: Sept sold out, April 2027 open 👇</div>
+      <p class="why">Instagram search reads bio words. This version carries your podcast name and "high-conflict", the phrase you already rank first for on Google.</p>
+      <div><button type="button" data-copy="b">Copy option B</button></div>
+    </article>
+
+    <article class="opt">
+      <div class="opt-top"><h2>Option C · warmest</h2><span class="count" data-for="c"></span></div>
+      <div class="bio" id="c">✨ Top divorce podcast host · 4.5M+ downloads
+💥 You don't have to navigate it alone
+🌵 Unbreakable: April 2027 open (Sept sold out) 👇</div>
+      <p class="why">Borrows the line from your homepage ("You Don't Have to Navigate It Alone") so Instagram and your site sound like one voice.</p>
+      <div><button type="button" data-copy="c">Copy option C</button></div>
+    </article>
+  </section>
+
+  <section class="head">
+    <h2>New order for your Instagram Links page</h2>
+    <p>Today the retreat isn't on this page at all, and two buttons open the same Phoenix Rising page. Suggested order:</p>
+    <ol>
+      <li><b>UNBREAKABLE RETREAT · APRIL 29 TO MAY 2, 2027 · SEPTEMBER SOLD OUT</b></li>
+      <li><b>TRYING TO DECIDE? START HERE</b> (link the free "Stay or go?" quiz here once it exists)</li>
+      <li><b>GETTING DIVORCED? START HERE</b> (Phoenix Rising)</li>
+      <li><b>LISTEN TO THE TOP PODCAST ON DIVORCE IN THE WORLD</b></li>
+      <li><b>GET YOUR DIVORCE STRATEGY TOOLKIT</b></li>
+      <li><b>BUY THE D WORD</b></li>
+      <li><b>PRIVATE DIVORCE STRATEGY COACHING</b></li>
+    </ol>
+    <p class="note">Removed: the separate "Join Phoenix Rising" button, since "Getting divorced? Start here" already opens the same page.</p>
+  </section>
+
+  <p class="note">Prepared by Evans Ademilua, Large Technologies · evansademilua.vercel.app</p>
+</div>
+<script>
+document.querySelectorAll('[data-for]').forEach(function(el){
+  var t=document.getElementById(el.getAttribute('data-for')).textContent;
+  el.textContent=Array.from(t).length+' / 150 characters';
+});
+document.querySelectorAll('[data-copy]').forEach(function(b){
+  b.addEventListener('click',function(){
+    var box=document.getElementById(b.getAttribute('data-copy'));
+    var done=function(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy option '+b.getAttribute('data-copy').toUpperCase();},1600);};
+    if(navigator.clipboard){navigator.clipboard.writeText(box.textContent).then(done).catch(function(){var r=document.createRange();r.selectNodeContents(box);var s=getSelection();s.removeAllRanges();s.addRange(r);});}
+  });
+});
+</script>
+</body>
+</html>
