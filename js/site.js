@@ -4,7 +4,8 @@
   var revealTargets = document.querySelectorAll(
     '.section-head, .about-photo, .about-text, .fact-card, .service, ' +
     '.process-list li, .work-card, .work-feature, .rate-banner, .case-shot, .case-meta > div, ' +
-    '.case-body h2, .case-body p, .case-body ul, .banner-shot, .review-card'
+    '.case-body h2, .case-body p, .case-body ul, .banner-shot, .review-card, ' +
+    '.draft-group-head, .draft-row, .book-head, .book-panel, .work-note'
   );
 
   revealTargets.forEach(function (el) { el.classList.add('reveal'); });
