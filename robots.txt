@@ -1,0 +1,32 @@
+# https://evansademilua.vercel.app
+# Everything public is open to search engines and AI search crawlers.
+User-agent: *
+Allow: /
+Disallow: /Audit/
+Disallow: /drafts/
+
+# AI search and assistant crawlers (named so there is no doubt they are welcome)
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: GPTBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Perplexity-User
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-SearchBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: Applebot
+Allow: /
+User-agent: Bingbot
+Allow: /
+User-agent: Googlebot
+Allow: /
+
+Sitemap: https://evansademilua.vercel.app/sitemap.xml

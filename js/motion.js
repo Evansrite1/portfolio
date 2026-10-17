@@ -273,4 +273,21 @@
       }
     });
   }
+  /* ---------- Floating button: embedded systems, coming soon ---------- */
+  var fab = document.getElementById('fab');
+  if (fab) {
+    var fabBtn = document.getElementById('fab-btn');
+    var setFab = function (open) {
+      fab.classList.toggle('open', open);
+      fabBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    fabBtn.addEventListener('click', function () { setFab(!fab.classList.contains('open')); });
+    document.getElementById('fab-close').addEventListener('click', function () { setFab(false); fabBtn.focus(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && fab.classList.contains('open')) { setFab(false); fabBtn.focus(); }
+    });
+    document.addEventListener('click', function (e) {
+      if (fab.classList.contains('open') && !e.target.closest('#fab')) setFab(false);
+    });
+  }
 })();

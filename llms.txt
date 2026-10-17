@@ -1,0 +1,23 @@
+# Evans Ademilua
+
+> Evans Ademilua is a full stack developer and the CEO of Large Technologies, based in Lagos, Nigeria. He builds booking systems, client portals, internal dashboards, workflow automation and AI features for businesses. He is also known as Olufemi Ademilua. Top Rated on Upwork with eight 5-star client reviews.
+
+## Key pages
+- [Home and portfolio](https://evansademilua.vercel.app/): about, recent builds, how a project runs, and how to request an audit
+- [Solutions](https://evansademilua.vercel.app/solutions.html): nine systems he builds, what each does and how it benefits the owner
+- [CV](https://evansademilua.vercel.app/cv.html): curriculum vitae, skills, experience, education
+- [CareTRAC case study](https://evansademilua.vercel.app/work/caretrac.html): field and client coordination portal (FastAPI, React)
+- [Sky Team Ife case study](https://evansademilua.vercel.app/work/sky-team-ife.html): operations dashboard (Vercel, Supabase)
+- [Billionaire Club case study](https://evansademilua.vercel.app/work/billionaire-club.html): community platform (Next.js)
+- [Chill Wireless case study](https://evansademilua.vercel.app/work/chillwireless.html): e-commerce storefront
+- [Common Ground Engineering case study](https://evansademilua.vercel.app/work/cge.html): booking and lead capture (Cal.com, Telegram)
+
+## Skills
+Python, FastAPI, TypeScript, React, Next.js, Node.js, PostgreSQL, Supabase, n8n workflow automation, LLM API integration (OpenAI, Claude), Bubble.io, FlutterFlow.
+
+## Profiles
+- [LinkedIn](https://www.linkedin.com/in/evansademilua)
+- [Upwork](https://www.upwork.com/freelancers/~018567da5396e7b2fe)
+
+## Contact
+Request a business audit or book a meeting from the home page: https://evansademilua.vercel.app/#audits
