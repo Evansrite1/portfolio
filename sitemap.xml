@@ -2,42 +2,92 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://evansademilua.vercel.app/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-18</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://evansademilua.vercel.app/full-stack-developer/</loc>
+    <lastmod>2026-10-18</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://evansademilua.vercel.app/web-developer/</loc>
+    <lastmod>2026-10-18</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://evansademilua.vercel.app/solutions.html</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-18</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://evansademilua.vercel.app/cv.html</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-18</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://evansademilua.vercel.app/tools/</loc>
+    <lastmod>2026-10-18</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://evansademilua.vercel.app/tools/qr-code-generator/</loc>
+    <lastmod>2026-10-18</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://evansademilua.vercel.app/tools/barcode-generator/</loc>
+    <lastmod>2026-10-18</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://evansademilua.vercel.app/tools/remove-background/</loc>
+    <lastmod>2026-10-18</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://evansademilua.vercel.app/tools/wifi-qr-code-generator/</loc>
+    <lastmod>2026-10-18</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://evansademilua.vercel.app/tools/whatsapp-qr-code-generator/</loc>
+    <lastmod>2026-10-18</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://evansademilua.vercel.app/tools/vcard-qr-code-generator/</loc>
+    <lastmod>2026-10-18</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://evansademilua.vercel.app/tools/qr-code-scanner/</loc>
+    <lastmod>2026-10-18</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://evansademilua.vercel.app/work/caretrac.html</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-18</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://evansademilua.vercel.app/work/billionaire-club.html</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-18</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://evansademilua.vercel.app/work/sky-team-ife.html</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-18</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://evansademilua.vercel.app/work/chillwireless.html</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-18</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://evansademilua.vercel.app/work/cge.html</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-18</lastmod>
     <priority>0.6</priority>
   </url>
 </urlset>

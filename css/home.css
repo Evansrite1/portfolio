@@ -413,3 +413,8 @@ html.modal-open { overflow: hidden; }
 @media (max-width: 520px) { .fab { right: 12px; bottom: 12px; } .fab-btn { padding: 6px 16px 6px 6px; gap: 10px; } .fab-ic { width: 38px; height: 38px; } .fab-txt b { font-size: 0.82rem; } }
 @media print { .fab { display: none; } }
 @media (prefers-reduced-motion: reduce) { .fab-ic::after { animation: none; display: none; } .fab-panel, .fab-btn { transition: none; } }
+
+nav.site a.nav-fab em { font-style: normal; font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); border-radius: 999px; padding: 1px 6px; margin-left: 4px; vertical-align: 1px; }
+nav.site a.nav-fab::after { display: none; }
+@media (max-width: 1060px) { nav.site { gap: 18px; } }
+@media (max-width: 760px) { nav.site a[href$="#reviews"], nav.site a[href$="#audits"] { display: none; } }

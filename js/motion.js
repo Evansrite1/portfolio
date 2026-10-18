@@ -101,7 +101,7 @@
 
   /* ---------- Sticky header + active nav ---------- */
   var header = document.querySelector('header.site');
-  var navLinks = Array.prototype.slice.call(document.querySelectorAll('nav.site a[href^="#"]:not(.nav-cta)'));
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('nav.site a[href^="#"]:not(.nav-cta):not(.nav-fab)'));
   var sections = navLinks.map(function (a) { return document.querySelector(a.getAttribute('href')); });
   var scrollY = 0, ticking = false;
 
@@ -282,12 +282,17 @@
       fabBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
     };
     fabBtn.addEventListener('click', function () { setFab(!fab.classList.contains('open')); });
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href="#embedded"]');
+      if (a) { e.preventDefault(); setFab(true); }
+    });
+    if (location.hash === '#embedded') setTimeout(function () { setFab(true); }, 1200);
     document.getElementById('fab-close').addEventListener('click', function () { setFab(false); fabBtn.focus(); });
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && fab.classList.contains('open')) { setFab(false); fabBtn.focus(); }
     });
     document.addEventListener('click', function (e) {
-      if (fab.classList.contains('open') && !e.target.closest('#fab')) setFab(false);
+      if (fab.classList.contains('open') && !e.target.closest('#fab') && !e.target.closest('a[href="#embedded"]')) setFab(false);
     });
   }
 })();

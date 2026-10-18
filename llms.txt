@@ -1,9 +1,15 @@
 # Evans Ademilua
 
-> Evans Ademilua is a full stack developer and the CEO of Large Technologies, based in Lagos, Nigeria. He builds booking systems, client portals, internal dashboards, workflow automation and AI features for businesses. He is also known as Olufemi Ademilua. Top Rated on Upwork with eight 5-star client reviews.
+> Evans Ademilua is a full stack developer and web developer and the CEO of Large Technologies, based in Lagos, Nigeria. He is also known as Olufemi Evans Ademilua, Olufemi Ademilua and Evans Large. He builds websites, web apps, booking systems, client portals, internal dashboards, workflow automation and AI features for businesses. Top Rated on Upwork with eight 5-star client reviews.
 
 ## Key pages
 - [Home and portfolio](https://evansademilua.vercel.app/): about, recent builds, how a project runs, and how to request an audit
+- [Full stack developer for hire](https://evansademilua.vercel.app/full-stack-developer/): what he builds, the stack he uses and how to hire him
+- [Web developer in Lagos, Nigeria](https://evansademilua.vercel.app/web-developer/): websites and web apps for businesses worldwide
+- [Free online tools](https://evansademilua.vercel.app/tools/): QR code generator, barcode generator, WiFi QR, WhatsApp QR and link, vCard QR and a QR scanner
+- [QR code generator](https://evansademilua.vercel.app/tools/qr-code-generator/): free, no sign-up, never expires
+- [Barcode generator](https://evansademilua.vercel.app/tools/barcode-generator/): Code 128, EAN-13, UPC-A and more
+- [Background remover](https://evansademilua.vercel.app/tools/remove-background/): remove an image background, exact for logos and AI for photos
 - [Solutions](https://evansademilua.vercel.app/solutions.html): nine systems he builds, what each does and how it benefits the owner
 - [CV](https://evansademilua.vercel.app/cv.html): curriculum vitae, skills, experience, education
 - [CareTRAC case study](https://evansademilua.vercel.app/work/caretrac.html): field and client coordination portal (FastAPI, React)
