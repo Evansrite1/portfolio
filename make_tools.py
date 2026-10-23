@@ -517,7 +517,7 @@ def load_new_tools():
             continue
         card = (i['slug'], i['kicker'], i['tile_title'], i['tile_desc'], i['nav'])
         if i['slug'] not in NAMES:
-            CARDS.append(card)
+            CARDS.insert(i.get('pos', len(CARDS)), card)
             NAMES[i['slug']] = i['nav']
         PAGES[i['slug']] = mod.PAGE
 
