@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Maison Gray | New Website Proposal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+@page{size:1920px 1080px;margin:0}
+:root{--green:#1d3530;--green-2:#284840;--cream:#f5f1e9;--paper:#fbf9f4;--ink:#1b1b19;--muted:#6b6a63;--line:#ddd6c8;--gold:#b49763;--gold-l:#e6d3a9;--red:#a4473a;--ok:#4d8a5d}
+*{box-sizing:border-box}
+body{margin:0;font-family:Jost,sans-serif;font-weight:300;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.s{width:1920px;height:1080px;position:relative;overflow:hidden;page-break-after:always;padding:100px 130px;background:var(--paper)}
+.s:last-child{page-break-after:auto}
+.k{font-size:20px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold)}
+h1,h2,h3{font-family:"Cormorant Garamond",serif;font-weight:400;margin:0}
+h2{font-size:80px;line-height:1.02;margin:18px 0 36px}
+h2 em,h1 em{color:var(--green-2)}
+p{margin:0}
+.foot{position:absolute;left:130px;right:130px;bottom:50px;display:flex;justify-content:space-between;font-size:18px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.dark{background:var(--green);color:#f1ece1}
+.dark h1 em,.dark h2 em{color:var(--gold-l)}
+.dark .k{color:var(--gold-l)}
+.dark .foot{color:rgba(241,236,225,.55)}
+.lead{font-size:28px;line-height:1.5;color:#4a4a44;max-width:1300px}
+.dark .lead{color:rgba(241,236,225,.85)}
+/* cover */
+.cover{padding:0;display:grid;grid-template-columns:1fr 1fr}
+.cover .l{padding:110px 110px;display:flex;flex-direction:column;justify-content:space-between;background:var(--green);color:#f1ece1}
+.cover .r{background:url(../img/dg-kitchen.jpg) center/cover}
+.mono{width:96px;height:96px;border:1px solid rgba(255,255,255,.6);display:grid;place-items:center;font-family:"Cormorant Garamond",serif;font-size:44px}
+.cover h1{font-size:118px;line-height:.98;margin:40px 0 30px}
+.cover h1 em{color:var(--gold-l)}
+.cover p{font-size:30px;line-height:1.5;opacity:.85;max-width:720px}
+.cover .by{font-size:20px;letter-spacing:.24em;text-transform:uppercase;opacity:.7}
+.agenda{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:20px}
+.agenda div{border-top:1px solid var(--line);padding:26px 26px 0 0}
+.agenda b{display:block;font-family:"Cormorant Garamond",serif;font-size:56px;color:var(--gold);font-weight:400;line-height:1}
+.agenda h3{font-size:38px;margin:14px 0 10px}
+.agenda p{font-size:22px;color:#4a4a44;line-height:1.45}
+/* channels */
+.ch{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.c{background:#fff;border:1px solid var(--line);padding:28px 30px}
+.c .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.c h3{font-size:36px;font-weight:500}
+.pill{font-size:16px;letter-spacing:.14em;text-transform:uppercase;padding:6px 12px;border:1px solid}
+.pill.bad{color:var(--red);border-color:#e7c3ba;background:#fff4ef}
+.pill.mid{color:#8a6d2d;border-color:#e8d9b5;background:#fbf5e6}
+.pill.good{color:var(--ok);border-color:#c5dccb;background:#f0f7f2}
+.c p{font-size:22px;color:#4a4a44;line-height:1.45}
+.alert{margin-top:28px;background:#fff4ef;border:1px solid #e7c3ba;color:var(--red);padding:20px 26px;font-size:24px;line-height:1.4}
+.alert b{font-weight:500}
+/* findings */
+.find{display:grid;grid-template-columns:1fr 1fr;gap:26px 60px}
+.fi{border-top:1px solid var(--line);padding-top:20px;display:grid;grid-template-columns:56px 1fr;gap:18px}
+.fi .n{font-family:"Cormorant Garamond",serif;font-size:44px;color:var(--red);line-height:1}
+.fi b{display:block;font-family:"Cormorant Garamond",serif;font-weight:500;font-size:34px;line-height:1.15;margin-bottom:6px}
+.fi span{font-size:22px;color:#4a4a44;line-height:1.45}
+/* competitors */
+.comp{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.cp{border:1px solid var(--line);background:#fff;padding:24px 24px}
+.cp h3{font-size:31px;font-weight:500;line-height:1.1}
+.cp .w{font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:6px 0 12px}
+.cp ul{margin:0;padding-left:20px;font-size:20px;color:#4a4a44;line-height:1.45}
+.cp.you{background:#fff4ef;border-color:#e7c3ba}
+.cp.you h3{color:var(--red)}
+/* table */
+table{width:100%;border-collapse:collapse;font-size:23px}
+th,td{text-align:left;padding:15px 16px;border-bottom:1px solid var(--line)}
+th{font-size:16px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:400}
+td.y{color:var(--ok);font-weight:500}td.n{color:var(--red)}td.p{color:#8a6d2d}
+td:first-child{font-family:"Cormorant Garamond",serif;font-size:30px}
+th.new,td.new{background:#f0f7f2}
+/* gaps */
+.gaps{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;margin-top:10px}
+.gp{border-top:2px solid var(--gold-l);padding-top:24px}
+.gp h3{font-size:40px;margin-bottom:12px}
+.gp p{font-size:23px;line-height:1.5;opacity:.85}
+/* before after */
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:50px}
+.shot{background-size:cover;background-position:top center;border:1px solid var(--line);box-shadow:0 30px 60px -30px rgba(0,0,0,.35)}
+.ba .shot{height:520px}
+figure{margin:0}
+figcaption{margin-top:20px;font-size:24px;color:#4a4a44;line-height:1.45}
+figcaption b{display:block;font-size:18px;letter-spacing:.24em;text-transform:uppercase;margin-bottom:6px}
+.tag-old{color:var(--red)}.tag-new{color:var(--ok)}
+/* tour */
+.tour{display:grid;grid-template-columns:1.45fr .55fr;gap:60px;align-items:start}
+.tour .shot{height:700px}
+.tour h2{font-size:60px;margin:14px 0 24px}
+.tour ul{margin:0;padding-left:24px;font-size:23px;line-height:1.5;color:#4a4a44}
+.tour li{margin-bottom:14px}
+.tour li b{font-weight:500;color:var(--ink)}
+.mob{display:grid;grid-template-columns:1.3fr .7fr;gap:50px;align-items:start}
+.phone{width:330px;height:660px;border-radius:44px;border:10px solid #111;background:#111 url(shot-mobile.png) top center/cover;margin:0 auto;box-shadow:0 40px 80px -30px rgba(0,0,0,.5)}
+/* built / left */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:28px 60px}
+.it{display:grid;grid-template-columns:44px 1fr;gap:16px;border-top:1px solid var(--line);padding-top:18px}
+.it .ck{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:20px}
+.done .ck{background:#e5f1e8;color:var(--ok)}
+.todo .ck{background:#fbf5e6;color:#8a6d2d;font-family:"Cormorant Garamond",serif;font-size:22px}
+.it b{display:block;font-family:"Cormorant Garamond",serif;font-weight:500;font-size:32px;line-height:1.15;margin-bottom:4px}
+.it span{font-size:21px;color:#4a4a44;line-height:1.45}
+.who{font-size:15px;letter-spacing:.14em;text-transform:uppercase;margin-left:10px;padding:3px 9px;border:1px solid var(--line);color:var(--muted);vertical-align:middle;font-family:Jost,sans-serif}
+.who.us{color:var(--ok);border-color:#c5dccb}
+.who.you{color:#8a6d2d;border-color:#e8d9b5}
+/* flow */
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:20px}
+.st{padding:32px 26px;border:1px solid rgba(255,255,255,.18);border-right:0;position:relative;min-height:320px}
+.st:last-child{border-right:1px solid rgba(255,255,255,.18)}
+.st .n{font-family:"Cormorant Garamond",serif;font-size:56px;color:var(--gold-l);line-height:1}
+.st h3{font-weight:500;font-size:34px;margin:16px 0 10px}
+.st p{font-size:21px;opacity:.82;line-height:1.45}
+.st::after{content:"\2192";position:absolute;right:-18px;top:44px;width:36px;height:36px;border-radius:50%;background:var(--gold-l);color:var(--green);display:grid;place-items:center;font-size:20px;z-index:2}
+.st:last-child::after{display:none}
+.note{margin-top:40px;font-size:26px;opacity:.85;max-width:1300px;line-height:1.5}
+/* next */
+.next{display:grid;grid-template-columns:1.1fr .9fr;gap:90px;align-items:center}
+.steps li{font-size:30px;line-height:1.5;margin-bottom:20px}
+.steps{padding-left:34px;margin:0}
+.linkbox{border:1px solid rgba(255,255,255,.25);padding:44px}
+.linkbox .u{font-family:"Cormorant Garamond",serif;font-size:38px;color:var(--gold-l);margin:14px 0 26px;white-space:nowrap}
+.linkbox .u small{display:block;font-size:52px;line-height:1.1}
+.linkbox p{font-size:24px;opacity:.85;line-height:1.5}
+/* results */
+.res{display:grid;grid-template-columns:1.1fr 1fr 1fr;border-top:1px solid rgba(255,255,255,.2);margin-top:10px}
+.res>div{padding:22px 26px;border-bottom:1px solid rgba(255,255,255,.2);font-size:26px;display:flex;align-items:center}
+.res .h{font-size:17px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-l);opacity:.9}
+.res .num{font-family:"Cormorant Garamond",serif;font-size:50px;line-height:1;color:#fff}
+.res .big{font-family:"Cormorant Garamond",serif;font-size:66px;color:var(--gold-l);line-height:1}
+.res .lab{opacity:.85}
+.tl{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+.ph{border:1px solid var(--line);background:#fff;padding:32px 32px}
+.ph .d{font-size:18px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.ph h3{font-size:44px;margin:10px 0 18px;line-height:1.05}
+.ph .goal{font-family:"Cormorant Garamond",serif;font-size:34px;color:var(--green-2);border-top:1px solid var(--line);padding-top:16px;margin-top:18px;line-height:1.2}
+.ph ul{margin:0;padding-left:22px;font-size:22px;line-height:1.5;color:#4a4a44}
+.ph.hi{background:var(--green);color:#f1ece1;border-color:var(--green)}
+.ph.hi ul{color:rgba(241,236,225,.85)}.ph.hi .goal{color:var(--gold-l);border-color:rgba(255,255,255,.2)}.ph.hi .d{color:var(--gold-l)}
+.math{margin-top:34px;display:flex;gap:30px;align-items:center;background:#f0f7f2;border:1px solid #c5dccb;padding:22px 30px;font-size:25px;line-height:1.4}
+.math b{font-family:"Cormorant Garamond",serif;font-size:44px;font-weight:500;color:var(--ok);white-space:nowrap}
+</style>
+</head>
+<body>
+
+<!-- 1 COVER -->
+<section class="s cover">
+  <div class="l">
+    <div class="mono">MG</div>
+    <div>
+      <h1>A website that wins<br><em>custom homes.</em></h1>
+      <p>A new site for Maison Gray, built around your real projects, your story and a consultation process that brings you serious clients.</p>
+    </div>
+    <div class="by">Prepared for Gina &amp; Andrew &middot; Large Technologies &middot; October 2026</div>
+  </div>
+  <div class="r"></div>
+</section>
+
+<!-- 2 AGENDA -->
+<section class="s">
+  <div class="k">What's inside</div>
+  <h2>Four parts, <em>one plan.</em></h2>
+  <div class="agenda">
+    <div><b>01</b><h3>Where you are</h3><p>What Maison Gray is doing online today, and what it's costing you.</p></div>
+    <div><b>02</b><h3>Your competitors</h3><p>What seven local design-build firms do online, and the gaps none of them fill.</p></div>
+    <div><b>03</b><h3>Your new site</h3><p>A full tour of the website we've already built for you, section by section.</p></div>
+    <div><b>04</b><h3>Your results</h3><p>What's done, what's left, and the results this system is built to deliver.</p></div>
+  </div>
+  <div class="foot"><span>Maison Gray &middot; Proposal</span><span>02</span></div>
+</section>
+
+<!-- 3 WHERE YOU ARE: CHANNELS -->
+<section class="s">
+  <div class="k">01 &middot; Where you are today</div>
+  <h2>Great work, <em>hard to find.</em></h2>
+  <div class="ch">
+    <div class="c"><div class="top"><h3>Website</h3><span class="pill bad">Outdated</span></div><p>One Wix page, last updated around 2022. No project pages, no tracking, footer says &copy;2016.</p></div>
+    <div class="c"><div class="top"><h3>Google</h3><span class="pill bad">Wrong name</span></div><p>Your site tells Google it's "Black Hills Design &amp; Build | Hinsdale". We couldn't find a Google Business Profile.</p></div>
+    <div class="c"><div class="top"><h3>Instagram</h3><span class="pill good">Strong</span></div><p>About 1.8K followers and a full custom build documented week by week. Your best marketing asset today.</p></div>
+    <div class="c"><div class="top"><h3>Houzz</h3><span class="pill mid">Started</span></div><p>Profile with 4 projects and 23 service areas, but 0 reviews.</p></div>
+    <div class="c"><div class="top"><h3>Lead capture</h3><span class="pill bad">Basic</span></div><p>An old Wix contact form, a phone number and an email. No budget or timeline questions, no follow-up.</p></div>
+    <div class="c"><div class="top"><h3>Tracking</h3><span class="pill bad">None</span></div><p>No Google Analytics, no Meta Pixel, no CRM. You can't see where clients come from.</p></div>
+  </div>
+  <div class="alert"><b>Time-sensitive:</b> maisongraydesigns.com is registered until <b>October 30, 2026</b>. Please confirm auto-renew is on with GoDaddy so the domain doesn't lapse.</div>
+  <div class="foot"><span>Maison Gray &middot; Where you are</span><span>03</span></div>
+</section>
+
+<!-- 4 FINDINGS -->
+<section class="s">
+  <div class="k">01 &middot; Your current website</div>
+  <h2>Your work is excellent.<br>Your website <em>hides it.</em></h2>
+  <div class="find">
+    <div class="fi"><div class="n">01</div><div><b>Google shows another name</b><span>Page title, description and share previews all say "Black Hills Design &amp; Build".</span></div></div>
+    <div class="fi"><div class="n">02</div><div><b>The menu goes nowhere</b><span>Home, About, Services and Contact all return to the same single page.</span></div></div>
+    <div class="fi"><div class="n">03</div><div><b>No portfolio</b><span>Only a few images, including screenshots and one stock photo. None of your custom build.</span></div></div>
+    <div class="fi"><div class="n">04</div><div><b>No way to qualify leads</b><span>No form asking budget, timeline or location, so every inquiry starts from zero.</span></div></div>
+    <div class="fi"><div class="n">05</div><div><b>Invisible locally</b><span>"Chicago - Southwest Michigan" gives Google nothing to rank, even though you serve 23 towns.</span></div></div>
+    <div class="fi"><div class="n">06</div><div><b>Trust signals missing</b><span>No reviews, no process, no photos of Gina and Andrew, default Wix icon in the browser tab.</span></div></div>
+  </div>
+  <div class="foot"><span>Maison Gray &middot; Website review</span><span>04</span></div>
+</section>
+
+<!-- 5 COMPETITORS -->
+<section class="s">
+  <div class="k">02 &middot; Your competitors</div>
+  <h2>What local builders are <em>doing online.</em></h2>
+  <div class="comp">
+    <div class="cp"><h3>Normandy Remodeling</h3><div class="w">Hinsdale &middot; design-build</div><ul><li>Case studies by town</li><li>111 Houzz reviews</li><li>Process page and videos</li><li>Analytics + Meta Pixel</li></ul></div>
+    <div class="cp"><h3>Battaglia Homes</h3><div class="w">Hinsdale &middot; luxury custom</div><ul><li>Gallery of homes</li><li>Testimonials page</li><li>Awards (Gold &amp; Platinum Key)</li><li>Step-by-step building process</li></ul></div>
+    <div class="cp"><h3>CI Design + Build</h3><div class="w">Chicago &middot; interiors + build</div><ul><li>Named project pages</li><li>Team page</li><li>Form asks budget and start date</li><li>Closest model to Maison Gray</li></ul></div>
+    <div class="cp"><h3>The Walker Group</h3><div class="w">Clarendon Hills &middot; since 1996</div><ul><li>Image-only project pages</li><li>Basic contact form</li><li>Built on Houzz Pro site builder</li><li>No reviews on site</li></ul></div>
+    <div class="cp"><h3>Ross Builders</h3><div class="w">Hinsdale &middot; luxury custom</div><ul><li>Portfolio page</li><li>Still shows theme demo text</li><li>Name, email, message form only</li><li>No testimonials</li></ul></div>
+    <div class="cp"><h3>Schmidke Construction</h3><div class="w">SW Michigan &middot; lakeshore</div><ul><li>Project write-ups</li><li>Process page</li><li>Form asks address and plans</li><li>Calendly booking</li></ul></div>
+    <div class="cp"><h3>Pantelleria Construction</h3><div class="w">SW Michigan</div><ul><li>Gallery and process page</li><li>Town-by-town pages</li><li>CRM (GoHighLevel)</li><li>Testimonials</li></ul></div>
+    <div class="cp you"><h3>Maison Gray today</h3><div class="w">Chicago + SW Michigan</div><ul><li>One page, no portfolio</li><li>Wrong name in Google</li><li>No reviews, no process</li><li>No tracking or CRM</li></ul></div>
+  </div>
+  <div class="foot"><span>Reviewed October 2026 from each firm's public website</span><span>05</span></div>
+</section>
+
+<!-- 6 COMPARISON -->
+<section class="s">
+  <div class="k">02 &middot; Side by side</div>
+  <h2>Where you stand, <em>and where you'll be.</em></h2>
+  <table>
+    <tr><th></th><th>Competitors (of 7)</th><th>Maison Gray today</th><th class="new">New Maison Gray site</th></tr>
+    <tr><td>Project portfolio</td><td class="y">7 of 7</td><td class="n">No</td><td class="y new">Yes</td></tr>
+    <tr><td>Process page</td><td class="y">5 of 7</td><td class="n">No</td><td class="y new">Yes</td></tr>
+    <tr><td>Testimonials or reviews</td><td class="p">4 of 7</td><td class="n">No</td><td class="p new">Ready, needs your reviews</td></tr>
+    <tr><td>Form asking budget &amp; timeline</td><td class="p">2 of 7</td><td class="n">No</td><td class="y new">Yes</td></tr>
+    <tr><td>Service-area pages</td><td class="p">2 of 7</td><td class="n">No</td><td class="y new">Yes (8 towns)</td></tr>
+    <tr><td>Analytics, Pixel or CRM</td><td class="p">3 of 7</td><td class="n">No</td><td class="p new">Ready to connect</td></tr>
+    <tr><td>Correct name in Google</td><td class="y">7 of 7</td><td class="n">No</td><td class="y new">Yes</td></tr>
+    <tr><td>Interactive gallery &amp; live build timeline</td><td class="n">0 of 7</td><td class="n">No</td><td class="y new">Yes</td></tr>
+  </table>
+  <div class="foot"><span>Maison Gray &middot; Competitor comparison</span><span>06</span></div>
+</section>
+
+<!-- 7 GAPS -->
+<section class="s dark">
+  <div class="k">02 &middot; Your opportunity</div>
+  <h2>What <em>nobody</em> is doing yet.</h2>
+  <p class="lead" style="margin-bottom:46px">The bar is lower than it looks. Even the biggest local firms leave these open, and Maison Gray can own them.</p>
+  <div class="gaps">
+    <div class="gp"><h3>A planning guide</h3><p>No competitor offers a "Custom Home Planning Guide" download. It turns browsers into leads months before they're ready.</p></div>
+    <div class="gp"><h3>Build in public</h3><p>Almost none show a project unfolding. Your weekly Instagram updates become a live build story on your site.</p></div>
+    <div class="gp"><h3>Designer + builder</h3><p>Few firms can say one couple designs and builds. It's your strongest selling point, and today it's buried.</p></div>
+    <div class="gp"><h3>Chicago and Michigan</h3><p>No one serves both the western suburbs and SW Michigan lake homes with one brand. You can.</p></div>
+  </div>
+  <div class="foot"><span>Maison Gray &middot; Opportunity</span><span>07</span></div>
+</section>
+
+<!-- 8 BEFORE / AFTER -->
+<section class="s">
+  <div class="k">03 &middot; Your new site</div>
+  <h2>We already built <em>your new site.</em></h2>
+  <div class="ba">
+    <figure><div class="shot" style="background-image:url(shot-old.png)"></div><figcaption><b class="tag-old">Today</b>One dark page, a stock photo and no way to see your builds.</figcaption></figure>
+    <figure><div class="shot" style="background-image:url(shot-hero.png)"></div><figcaption><b class="tag-new">New site</b>Your real projects, Gina and Andrew front and centre, and a consultation form on the first screen.</figcaption></figure>
+  </div>
+  <div class="foot"><span>evansademilua.vercel.app/maisongray</span><span>08</span></div>
+</section>
+
+<!-- 9 TOUR: ABOUT + SERVICES -->
+<section class="s">
+  <div class="tour">
+    <div class="shot" style="background-image:url(tour-services.png)"></div>
+    <div>
+      <div class="k">Site tour &middot; 1</div>
+      <h2>Who you are, <em>what you do.</em></h2>
+      <ul>
+        <li><b>Your story:</b> Gina's design eye and Andrew's build discipline, in your own words.</li>
+        <li><b>Three services:</b> Design, Build and Renovate, each with real photos and what's included.</li>
+        <li><b>Motion:</b> cards tilt on hover and photos glide in as visitors scroll.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Maison Gray &middot; Site tour</span><span>09</span></div>
+</section>
+
+<!-- 10 TOUR: WORK -->
+<section class="s">
+  <div class="tour">
+    <div class="shot" style="background-image:url(tour-work.png)"></div>
+    <div>
+      <div class="k">Site tour &middot; 2</div>
+      <h2>Your build, <em>front and centre.</em></h2>
+      <ul>
+        <li><b>Current project:</b> your custom home with drone shots, the 5' x 10' stair window and the brick you hand-picked.</li>
+        <li><b>Full-screen gallery:</b> click any photo to view it large, with arrows.</li>
+        <li><b>Live timeline:</b> excavation to landscape, showing exactly where the build is.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Maison Gray &middot; Site tour</span><span>10</span></div>
+</section>
+
+<!-- 11 TOUR: REMODELS + PROCESS -->
+<section class="s">
+  <div class="tour">
+    <div class="shot" style="background-image:url(tour-remodels.png)"></div>
+    <div>
+      <div class="k">Site tour &middot; 3</div>
+      <h2>Renovations <em>and process.</em></h2>
+      <ul>
+        <li><b>Details you can feel:</b> Downers Grove kitchen, Saint Charles bath, wrapped tile corners.</li>
+        <li><b>Five-step process:</b> consultation, design, plan and price, build, walkthrough.</li>
+        <li><b>Your motto:</b> "chase perfection, catch excellence" lights up word by word.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Maison Gray &middot; Site tour</span><span>11</span></div>
+</section>
+
+<!-- 12 TOUR: CONTACT + MOBILE -->
+<section class="s">
+  <div class="mob">
+    <div>
+      <div class="k">Site tour &middot; 4</div>
+      <h2 style="font-size:64px">A form that tells you <em>who's serious.</em></h2>
+      <div class="shot" style="height:500px;background-image:url(tour-contact.png)"></div>
+    </div>
+    <div>
+      <div class="phone"></div>
+      <p style="text-align:center;font-size:22px;color:#4a4a44;margin-top:22px">Polished on every phone, where most of your Instagram visitors arrive.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Asks project type, location, budget and timeline</span><span>12</span></div>
+</section>
+
+<!-- 13 WHAT I'VE BUILT -->
+<section class="s">
+  <div class="k">04 &middot; What's done</div>
+  <h2>What we've <em>already built.</em></h2>
+  <div class="two">
+    <div class="it done"><div class="ck">&#10003;</div><div><b>Full website design</b><span>Your brand colours, monogram, fonts and real photos, matching your sign.</span></div></div>
+    <div class="it done"><div class="ck">&#10003;</div><div><b>Every section written</b><span>Story, services, current build, renovations, process, service areas and contact.</span></div></div>
+    <div class="it done"><div class="ck">&#10003;</div><div><b>Project gallery + timeline</b><span>Full-screen photo viewer and a live build progress tracker.</span></div></div>
+    <div class="it done"><div class="ck">&#10003;</div><div><b>Two consultation forms</b><span>A quick form on the first screen and a full one asking budget and timeline.</span></div></div>
+    <div class="it done"><div class="ck">&#10003;</div><div><b>Premium animations</b><span>Opening reveal, scroll effects, hover motion, smooth menu, built for speed.</span></div></div>
+    <div class="it done"><div class="ck">&#10003;</div><div><b>Mobile ready</b><span>Tested on phone sizes, with a full-screen menu and tap-to-call.</span></div></div>
+    <div class="it done"><div class="ck">&#10003;</div><div><b>Correct name for Google</b><span>Title and description now say Maison Gray, with your service towns.</span></div></div>
+    <div class="it done"><div class="ck">&#10003;</div><div><b>Research done</b><span>Your current site, 7 competitors and the gaps you can own.</span></div></div>
+  </div>
+  <div class="foot"><span>Maison Gray &middot; Completed</span><span>13</span></div>
+</section>
+
+<!-- 14 WHAT'S LEFT -->
+<section class="s">
+  <div class="k">04 &middot; What's left to start earning</div>
+  <h2>Eight steps to <em>your first inquiries.</em></h2>
+  <div class="two">
+    <div class="it todo"><div class="ck">1</div><div><b>Renew your domain <span class="who you">You</span></b><span>Confirm maisongraydesigns.com renews before October 30.</span></div></div>
+    <div class="it todo"><div class="ck">2</div><div><b>Launch on your domain <span class="who us">Us</span></b><span>Move the new site onto maisongraydesigns.com and retire the Wix page.</span></div></div>
+    <div class="it todo"><div class="ck">3</div><div><b>Connect the forms <span class="who us">Us</span></b><span>Every request goes straight to Gina's inbox and a simple lead tracker.</span></div></div>
+    <div class="it todo"><div class="ck">4</div><div><b>Analytics + Meta Pixel <span class="who us">Us</span></b><span>See which posts and pages bring clients, and retarget visitors.</span></div></div>
+    <div class="it todo"><div class="ck">5</div><div><b>Google Business Profile <span class="who us">Us</span></b><span>Set up or claim it so you show on Google Maps under your real name.</span></div></div>
+    <div class="it todo"><div class="ck">6</div><div><b>Photos and reviews <span class="who you">You</span></b><span>Send finished-project photos and ask 3 to 5 past clients for reviews.</span></div></div>
+    <div class="it todo"><div class="ck">7</div><div><b>Your brand name <span class="who you">You</span></b><span>Confirm Maison Gray vs Black Hills Design &amp; Build so Google ranks the right one.</span></div></div>
+    <div class="it todo"><div class="ck">8</div><div><b>Planning guide <span class="who us">Us</span></b><span>A free downloadable guide that collects emails from future clients.</span></div></div>
+  </div>
+  <div class="foot"><span>Maison Gray &middot; Remaining steps</span><span>14</span></div>
+</section>
+
+<!-- 15 RESULTS -->
+<section class="s dark">
+  <div class="k">04 &middot; Your results</div>
+  <h2>What this system <em>delivers every month.</em></h2>
+  <div class="res">
+    <div class="h">Every 30 days</div><div class="h">Organic (no ad spend)</div><div class="h">With ads ($1,000 to $1,500 a month)</div>
+    <div class="lab">Website visitors</div><div class="num">300 to 600</div><div class="num">1,500 to 3,000</div>
+    <div class="lab">Inquiries with budget &amp; timeline</div><div class="num">6 to 15</div><div class="num">30 to 60</div>
+    <div class="lab">Qualified consultations</div><div class="num">2 to 4</div><div class="num">6 to 12</div>
+    <div class="lab" style="font-weight:500">Signed projects</div><div class="big">1+</div><div class="big">2 to 3</div>
+  </div>
+  <p class="note" style="font-size:22px;margin-top:30px">Monthly targets once the site is live on maisongraydesigns.com and the eight steps are complete, typically by day 60.</p>
+  <div class="foot"><span>Maison Gray &middot; Results</span><span>15</span></div>
+</section>
+
+<!-- 16 TIMELINE -->
+<section class="s">
+  <div class="k">04 &middot; Your first 90 days</div>
+  <h2>From launch to <em>a steady pipeline.</em></h2>
+  <div class="tl">
+    <div class="ph"><div class="d">Days 1 to 30</div><h3>Launch</h3><ul><li>New site live on your domain</li><li>Forms sending to Gina's inbox and lead tracker</li><li>Google Business Profile and first 5 reviews</li><li>Instagram bio pointing to the site</li></ul><div class="goal">First 3 to 8 inquiries</div></div>
+    <div class="ph"><div class="d">Days 31 to 60</div><h3>Momentum</h3><ul><li>Showing on Google Maps in your towns</li><li>Analytics shows which posts bring clients</li><li>Planning guide collecting future clients</li><li>Every inquiry answered within 1 hour</li></ul><div class="goal">6 to 15 inquiries, first signed project</div></div>
+    <div class="ph hi"><div class="d">Days 61 to 90</div><h3>Pipeline</h3><ul><li>Reviews building trust on Google and Houzz</li><li>Follow-ups on day 1, 3 and 7 win back the quiet ones</li><li>Optional ads to scale what's working</li><li>Monthly report: leads, sources, wins</li></ul><div class="goal">1+ signed project every month</div></div>
+  </div>
+  <div class="math"><b>1 project</b><span>One remodel is worth $10K to $250K to Maison Gray. A single signed job pays for the whole system many times over.</span></div>
+  <div class="foot"><span>evansademilua.vercel.app/maisongray</span><span>16</span></div>
+</section>
+
+</body>
+</html>

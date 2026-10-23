@@ -45,7 +45,7 @@ h1 { font-size: clamp(2rem, 5.2vw, 3.2rem); line-height: 1.08; letter-spacing: -
 .lead { font-size: clamp(1rem, 2vw, 1.15rem); color: var(--soft); max-width: 66ch; margin: 0 0 22px; }
 .pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 6px; padding: 0; list-style: none; }
 .pills li { font-size: 0.78rem; color: var(--soft); border: 1px solid var(--line2); border-radius: 999px; padding: 5px 12px; }
-.pills li::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--ok); margin-right: 8px; vertical-align: 1px; }
+.pills li::before { content: ""; display: inline-block; width: 13px; height: 13px; margin-right: 8px; vertical-align: -2px; background: var(--ok); -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7'/%3E%3C/svg%3E") center / contain no-repeat; }
 
 /* tool layout */
 .tool { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 22px; margin: 22px 0 10px; align-items: start; }
@@ -163,7 +163,9 @@ h3 { font-size: 1.1rem; margin: 22px 0 6px; }
 .toolsbar .wrap { display: flex; }
 .toolsbar nav { margin-left: 0; padding: 4px 0; }
 .toolsbar nav a { font-size: 0.82rem; padding: 6px 12px; }
-.th nav a.nav-fab em { font-style: normal; font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); border-radius: 999px; padding: 1px 6px; margin-left: 6px; vertical-align: 1px; }
+.th nav a.nav-fab { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; padding: 0; margin-left: 4px; border: 1px solid var(--line); border-radius: 50%; color: var(--accent); }
+.th nav a.nav-fab svg { width: 18px; height: 18px; }
+.th nav a.nav-fab:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .tabs button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 input[type="range"] { width: 100%; accent-color: var(--accent); }
 .bg-box { display: grid; place-items: center; min-height: 260px; border-radius: 14px; padding: 12px; overflow: hidden; background: repeating-conic-gradient(#e9e9e9 0% 25%, #ffffff 0% 50%) 0 0 / 16px 16px; }

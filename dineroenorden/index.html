@@ -160,7 +160,7 @@ body.ready .stats{opacity:1}
 .marquee{display:flex;gap:0;width:max-content;animation:mq 28s linear infinite}
 .press:hover .marquee{animation-play-state:paused}
 .marquee span{font-family:var(--serif);font-size:30px;font-weight:700;padding:0 38px;white-space:nowrap;opacity:.9;display:flex;align-items:center;gap:38px}
-.marquee span::after{content:"✦";color:var(--lime);font-size:16px}
+.marquee span::after{content:"";display:inline-block;width:16px;height:16px;background:var(--lime);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z'/%3E%3C/svg%3E") center/contain no-repeat}
 @keyframes mq{to{transform:translateX(-50%)}}
 
 /* SECTIONS */
@@ -287,7 +287,7 @@ section{padding:clamp(70px,9vw,120px) 0}
 .gratis .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .checks{display:grid;gap:10px;margin:20px 0}
 .checks div{display:flex;gap:12px;align-items:center;font-weight:600}
-.checks div::before{content:"✓";width:26px;height:26px;border-radius:50%;background:var(--lime);display:grid;place-items:center;font-weight:800;flex:none}
+.checks div::before{content:"";width:26px;height:26px;border-radius:50%;background:var(--lime) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2317131f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7'/%3E%3C/svg%3E") center/14px no-repeat;flex:none}
 
 /* TESTIMONIOS */
 .testi{position:relative}
@@ -337,14 +337,14 @@ footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:2
 <div class="loader" id="loader"><div class="w"><div class="coin">$</div><div class="t">Dinero en Orden</div><div class="bar"><i></i></div></div></div>
 
 <div class="progress"><i id="prog"></i></div><div class="glow" id="glow"></div>
-<div class="concept"><b>Concepto</b> · Propuesta de sitio nuevo para Dinero en Orden, preparada por Evans Ademilua · Large Technologies</div>
+<div class="concept"><b>Concepto</b> | Propuesta de sitio nuevo para Dinero en Orden, preparada por Evans Ademilua | Large Technologies</div>
 
 <header class="nav" id="nav">
   <a class="brand" href="#inicio"><img src="/dineroenorden/img/logo.svg" alt="Dinero en Orden"><span>Dinero en Orden<small>Celeste Sánchez</small></span></a>
   <nav class="links">
     <a href="#charlas">Charlas</a><a href="#programa">Programa</a><a href="#asesorias">Asesorías</a><a href="#tienda">Tienda</a><a href="#podcast">Podcast</a><a href="#galeria">Fotos</a><a href="#sobre">Celeste</a>
   </nav>
-  <a class="btn lime" href="#gratis">Empezá gratis <span class="arr">→</span></a>
+  <a class="btn lime" href="#gratis">Empezá gratis <span class="arr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
   <button class="burger" id="burger" aria-label="Menú"><i></i><i></i><i></i></button>
 </header>
 <div class="mobile" id="mobile">
@@ -356,7 +356,7 @@ footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:2
   <div class="blob b1"></div><div class="blob b2"></div>
   <div class="wrap">
     <div>
-      <span class="eyebrow">Periodista · Economía familiar y consumo</span>
+      <span class="eyebrow">Periodista | Economía familiar y consumo</span>
       <h1 style="margin-top:18px">
         <span class="line"><span>Hablo <em>claro</em></span></span>
         <span class="line"><span>sobre plata para</span></span>
@@ -364,7 +364,7 @@ footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:2
       </h1>
       <p class="sub">Desde 2017 ayudo a familias a llegar cómodas a fin de mes, salir de deudas y ahorrar, sin palabras difíciles y presupuestando la inflación. Yo ya estuve donde estás vos.</p>
       <div class="cta">
-        <a class="btn" href="#gratis">Quiero mi primer paso gratis <span class="arr">→</span></a>
+        <a class="btn" href="#gratis">Quiero mi primer paso gratis <span class="arr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
         <a class="btn ghost" href="#charlas">Llevá una charla a tu empresa</a>
       </div>
       <div class="stats">
@@ -378,7 +378,7 @@ footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:2
       <div class="ph"><img src="/dineroenorden/img/podcast.jpg" alt="Celeste Sánchez"></div>
       <div class="chip c1"><b>$</b> Presupuestamos la inflación</div>
       <div class="chip c2"><b>5/5</b> Cientos de mujeres y familias</div>
-      <div class="chip c3">🎙️ Speaker para empresas y eventos</div>
+      <div class="chip c3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>Speaker para empresas y eventos</div>
     </div>
   </div>
 </section>
@@ -404,7 +404,7 @@ footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:2
         <button class="opt" data-k="emprendo">Soy emprendedora y no tengo sueldo<small>Mi negocio y mi casa se mezclan.</small></button>
       </div>
       <div class="ans" id="ans">
-        <div><h3>Elegí una opción arriba 👆</h3><p>En 10 segundos sabés cuál es tu próximo paso, y cuánto cuesta (spoiler: el primero es gratis).</p></div>
+        <div><h3>Elegí una opción arriba <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;"><path d="M12 19V5M6 11l6-6 6 6"/></svg></h3><p>En 10 segundos sabés cuál es tu próximo paso, y cuánto cuesta (spoiler: el primero es gratis).</p></div>
       </div>
     </div>
   </div>
@@ -429,7 +429,7 @@ footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:2
       <label class="field">Email<input type="email" name="email" required placeholder="tu@empresa.com"></label>
       <label class="field">Formato<select name="formato"><option>Presencial (AMBA)</option><option>Presencial (resto del país)</option><option>Virtual</option><option>Serie de talleres</option></select></label>
       <label class="field full">Contame del equipo<textarea name="msg" rows="3" placeholder="Cuántas personas, para cuándo y qué les preocupa"></textarea></label>
-      <div class="form-foot"><small>Respondo en menos de 24 horas hábiles con propuesta y fechas.</small><button class="btn" type="submit">Enviar pedido <span class="arr">→</span></button></div>
+      <div class="form-foot"><small>Respondo en menos de 24 horas hábiles con propuesta y fechas.</small><button class="btn" type="submit">Enviar pedido <span class="arr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button></div>
       <div class="ok" id="okCharla">¡Listo! Te escribo en menos de 24 horas hábiles con la propuesta. Mientras tanto, mirá cómo fueron las últimas charlas en Instagram.</div>
     </form>
   </div>
@@ -439,7 +439,7 @@ footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:2
 <section class="programa" id="programa">
   <div class="wrap grid">
     <div class="reveal">
-      <span class="eyebrow">Programa online · 4 semanas</span>
+      <span class="eyebrow">Programa online | 4 semanas</span>
       <h2 style="margin-top:14px">$Í HAY PLATA</h2>
       <p class="lead" style="margin-top:16px">El paso a paso exacto para que en 4 semanas tengas presupuesto detallado, gastos controlados, más ingresos y un plan para salir de deudas. A tu ritmo, con mi seguimiento y acceso de por vida.</p>
       <div class="weeks">
@@ -449,9 +449,9 @@ footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:2
         <div class="week"><b>4</b><div><strong>Deudas y ahorro en piloto automático</strong><span>Tu plan de pagos y tu primer fondo de emergencia.</span></div></div>
       </div>
       <div class="price"><b>USD 36</b><s>USD 45</s><em>ACCESO DE POR VIDA</em></div>
-      <a class="btn" href="https://dineroenorden.com/producto/sihayplata/" target="_blank" rel="noopener">Me sumo al programa <span class="arr">→</span></a>
+      <a class="btn" href="https://dineroenorden.com/producto/sihayplata/" target="_blank" rel="noopener">Me sumo al programa <span class="arr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
     </div>
-    <div class="tilt reveal" id="tilt"><img src="/dineroenorden/img/hero-desk.jpg" alt="Las excusas no pagan las cuentas"><div class="tag">★★★★★ "Fue la luz al final de mi camino" · Natalia</div></div>
+    <div class="tilt reveal" id="tilt"><img src="/dineroenorden/img/hero-desk.jpg" alt="Las excusas no pagan las cuentas"><div class="tag"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg> "Fue la luz al final de mi camino" | Natalia</div></div>
   </div>
 </section>
 
@@ -498,12 +498,12 @@ footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:2
       <p class="lead">Con cada producto, al aplicar lo que aprendés recuperás lo que pagaste y ahorrás mucho más. Es la garantía de Dinero en Orden.</p>
     </div>
     <div class="shop reveal">
-      <a class="item" href="https://dineroenorden.com/producto/planner-semestral/" target="_blank" rel="noopener"><div class="im"><img src="/dineroenorden/img/planner-3.jpg" alt="Planner de finanzas"></div><div class="b"><strong>Planner de Finanzas, Ahorros y Gastos</strong><span>USD 8 · digital</span></div></a>
-      <a class="item" href="https://dineroenorden.com/producto/clase-destruyendo-deudas/" target="_blank" rel="noopener"><div class="im"><span class="emoji">💳</span></div><div class="b"><strong>Mini curso «Destruyendo deudas»</strong><span>USD 15</span></div></a>
-      <a class="item" href="https://dineroenorden.com/producto/clase-como-crear-varias-fuentes-de-ingresos/" target="_blank" rel="noopener"><div class="im"><span class="emoji">💸</span></div><div class="b"><strong>Mini curso «Varias fuentes de ingresos»</strong><span>USD 15</span></div></a>
+      <a class="item" href="https://dineroenorden.com/producto/planner-semestral/" target="_blank" rel="noopener"><div class="im"><img src="/dineroenorden/img/planner-3.jpg" alt="Planner de finanzas"></div><div class="b"><strong>Planner de Finanzas, Ahorros y Gastos</strong><span>USD 8: digital</span></div></a>
+      <a class="item" href="https://dineroenorden.com/producto/clase-destruyendo-deudas/" target="_blank" rel="noopener"><div class="im"><span class="emoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;stroke-width:1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></svg></span></div><div class="b"><strong>Mini curso «Destruyendo deudas»</strong><span>USD 15</span></div></a>
+      <a class="item" href="https://dineroenorden.com/producto/clase-como-crear-varias-fuentes-de-ingresos/" target="_blank" rel="noopener"><div class="im"><span class="emoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;stroke-width:1.5"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M5.5 9.5h2M16.5 14.5h2"/></svg></span></div><div class="b"><strong>Mini curso «Varias fuentes de ingresos»</strong><span>USD 15</span></div></a>
       <a class="item" href="https://dineroenorden.com/producto/masterclass-sobres/" target="_blank" rel="noopener"><div class="im"><img src="/dineroenorden/img/planner-2.jpg" alt="Sobres con efectivo"></div><div class="b"><strong>Masterclass «Sobres + reservas en billetera virtual»</strong><span>USD 15</span></div></a>
     </div>
-    <p style="text-align:center;margin-top:28px"><a class="btn ghost" href="https://dineroenorden.com/tienda/" target="_blank" rel="noopener">Ver toda la tienda <span class="arr">→</span></a></p>
+    <p style="text-align:center;margin-top:28px"><a class="btn ghost" href="https://dineroenorden.com/tienda/" target="_blank" rel="noopener">Ver toda la tienda <span class="arr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a></p>
   </div>
 </section>
 
@@ -512,15 +512,15 @@ footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:2
   <div class="wrap grid">
     <div class="cover reveal"><img src="/dineroenorden/img/podcast-tall.jpg" alt="Reseteá tu dinero, el podcast"><div class="eq"><i></i><i></i><i></i><i></i><i></i></div></div>
     <div class="reveal">
-      <span class="eyebrow" style="color:var(--lime)">Podcast · 65 episodios</span>
+      <span class="eyebrow" style="color:var(--lime)">Podcast | 65 episodios</span>
       <h2 style="margin-top:14px">Reseteá tu dinero</h2>
       <p class="lead" style="color:#bfb8cf;margin-top:14px">¿Tenés 20 minutos? Tenés tiempo para aprender sobre tu dinero. Sin palabras difíciles, todo en la realidad argentina.</p>
       <div class="eps">
-        <a class="ep" href="https://podcasts.apple.com/ni/podcast/resete%C3%A1-tu-dinero-el-podcast-de-dinero-en-orden/id1509774746" target="_blank" rel="noopener"><div class="play">▶</div><div><strong>¿Se te pasó el año sin ahorrar? 3 formas de empezar a guardar plata</strong><small>Episodio 64 · 20 min</small></div></a>
-        <a class="ep" href="https://podcasts.apple.com/ni/podcast/resete%C3%A1-tu-dinero-el-podcast-de-dinero-en-orden/id1509774746" target="_blank" rel="noopener"><div class="play">▶</div><div><strong>¿Mitad de mes y sin plata? Cómo aumentar tu ingreso disponible</strong><small>Episodio 63 · 20 min</small></div></a>
-        <a class="ep" href="https://podcasts.apple.com/ni/podcast/resete%C3%A1-tu-dinero-el-podcast-de-dinero-en-orden/id1509774746" target="_blank" rel="noopener"><div class="play">▶</div><div><strong>Dejá de perder plata: 5 gastos invisibles que podés cortar hoy</strong><small>Episodio 60 · 20 min</small></div></a>
+        <a class="ep" href="https://podcasts.apple.com/ni/podcast/resete%C3%A1-tu-dinero-el-podcast-de-dinero-en-orden/id1509774746" target="_blank" rel="noopener"><div class="play">▶</div><div><strong>¿Se te pasó el año sin ahorrar? 3 formas de empezar a guardar plata</strong><small>Episodio 64: 20 min</small></div></a>
+        <a class="ep" href="https://podcasts.apple.com/ni/podcast/resete%C3%A1-tu-dinero-el-podcast-de-dinero-en-orden/id1509774746" target="_blank" rel="noopener"><div class="play">▶</div><div><strong>¿Mitad de mes y sin plata? Cómo aumentar tu ingreso disponible</strong><small>Episodio 63: 20 min</small></div></a>
+        <a class="ep" href="https://podcasts.apple.com/ni/podcast/resete%C3%A1-tu-dinero-el-podcast-de-dinero-en-orden/id1509774746" target="_blank" rel="noopener"><div class="play">▶</div><div><strong>Dejá de perder plata: 5 gastos invisibles que podés cortar hoy</strong><small>Episodio 60: 20 min</small></div></a>
       </div>
-      <a class="btn lime" href="https://podcasts.apple.com/ni/podcast/resete%C3%A1-tu-dinero-el-podcast-de-dinero-en-orden/id1509774746" target="_blank" rel="noopener">Escuchar todos los episodios <span class="arr">→</span></a>
+      <a class="btn lime" href="https://podcasts.apple.com/ni/podcast/resete%C3%A1-tu-dinero-el-podcast-de-dinero-en-orden/id1509774746" target="_blank" rel="noopener">Escuchar todos los episodios <span class="arr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
     </div>
   </div>
 </section>
@@ -551,14 +551,14 @@ footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:2
     </div>
   </div>
 </section>
-<div class="lb" id="lb"><button class="x" aria-label="Cerrar">✕</button><button class="prev" aria-label="Anterior">‹</button><img src="" alt=""><button class="next" aria-label="Siguiente">›</button><div class="cap"></div></div>
+<div class="lb" id="lb"><button class="x" aria-label="Cerrar"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;"><path d="M6 6l12 12M18 6 6 18"/></svg></button><button class="prev" aria-label="Anterior">‹</button><img src="" alt=""><button class="next" aria-label="Siguiente">›</button><div class="cap"></div></div>
 
 <!-- GRATIS -->
 <section class="gratis" id="gratis">
   <div class="wrap">
     <div class="box reveal">
       <div style="position:relative">
-        <span class="eyebrow">Gratis · sin contraseñas ni vueltas</span>
+        <span class="eyebrow">Gratis | sin contraseñas ni vueltas</span>
         <h2 style="margin-top:14px">Tu primer paso para ordenar la plata, hoy.</h2>
         <div class="checks">
           <div>La hoja «Mis números reales» para completar en 15 minutos</div>
@@ -574,7 +574,7 @@ footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:2
           <label class="field">País<select name="pais"><option>Argentina</option><option>Uruguay</option><option>Chile</option><option>México</option><option>España</option><option>Otro</option></select></label>
         </div>
         <label class="field">Email<input type="email" name="email" required placeholder="tu@email.com"></label>
-        <button class="btn" type="submit">Quiero mi primer paso gratis <span class="arr">→</span></button>
+        <button class="btn" type="submit">Quiero mi primer paso gratis <span class="arr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
         <small style="color:var(--muted)">Cero spam. Te llega al instante, sin contraseña.</small>
         <div class="ok" id="okGratis">¡Revisá tu email! Ya te mandé la hoja «Mis números reales». Si no llegó, mirá en promociones.</div>
       </form>
@@ -587,10 +587,10 @@ footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:2
   <div class="wrap reveal">
     <div style="text-align:center;margin-bottom:30px"><span class="eyebrow">Lo que dicen</span></div>
     <div class="slides" id="slides">
-      <div class="slide on"><div class="stars">★★★★★</div><q>Tengo mi planner anual de finanzas del hogar y debo decir que fue la mejor inversión que hice. En casa logramos planificar y poder ahorrar.</q><cite>Cliente del planner</cite></div>
-      <div class="slide"><div class="stars">★★★★★</div><q>Lo que más me gusta es que también lo pasaste, no lo decís desde el librito de economía. Sabés de la angustia y la desesperación, y eso hace la diferencia.</q><cite>María Luz</cite></div>
-      <div class="slide"><div class="stars">★★★★★</div><q>Logré poner al día las cuotas del auto, di de baja cosas que eran innecesarias y empecé a dar clases para generar más ingresos. Gracias por estas 5 semanas.</q><cite>Albana · Pack de asesorías</cite></div>
-      <div class="slide"><div class="stars">★★★★★</div><q>Trabajé con el planner, los retos de ahorro y obtuve los resultados esperados. La asesoría para mi emprendimiento me facilitó incrementar mis ventas.</q><cite>Rosario · Sueldo Emprendedor</cite></div>
+      <div class="slide on"><div class="stars"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></div><q>Tengo mi planner anual de finanzas del hogar y debo decir que fue la mejor inversión que hice. En casa logramos planificar y poder ahorrar.</q><cite>Cliente del planner</cite></div>
+      <div class="slide"><div class="stars"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></div><q>Lo que más me gusta es que también lo pasaste, no lo decís desde el librito de economía. Sabés de la angustia y la desesperación, y eso hace la diferencia.</q><cite>María Luz</cite></div>
+      <div class="slide"><div class="stars"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></div><q>Logré poner al día las cuotas del auto, di de baja cosas que eran innecesarias y empecé a dar clases para generar más ingresos. Gracias por estas 5 semanas.</q><cite>Albana | Pack de asesorías</cite></div>
+      <div class="slide"><div class="stars"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;margin-right:.15em"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></div><q>Trabajé con el planner, los retos de ahorro y obtuve los resultados esperados. La asesoría para mi emprendimiento me facilitó incrementar mis ventas.</q><cite>Rosario | Sueldo Emprendedor</cite></div>
     </div>
     <div class="dots" id="dots"></div>
   </div>
@@ -606,7 +606,7 @@ footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:2
       <p class="lead" style="margin-top:16px">Las deudas triplicaban nuestros ingresos, gastábamos sin control y nunca sabía en qué se iba la plata. Aprendí a ordenar nuestros números y de ahí nació Dinero en Orden: de mis errores y mis aprendizajes. Desde 2017, cientos de mujeres y sus familias pasaron por mis programas, clases y asesorías.</p>
       <p class="lead">Mi formación como periodista y locutora me permite explicarte lo que parece difícil, en 20 minutos y sin juzgar.</p>
       <div class="vals"><span>Sinceridad</span><span>Claridad</span><span>¡No hay excusas!</span><span>No juzgamos</span><span>Presupuestamos la inflación</span><span>El cambio está en vos</span></div>
-      <p style="margin-top:26px"><a class="btn" href="https://www.instagram.com/dineroenorden/" target="_blank" rel="noopener">Seguime en Instagram <span class="arr">→</span></a></p>
+      <p style="margin-top:26px"><a class="btn" href="https://www.instagram.com/dineroenorden/" target="_blank" rel="noopener">Seguime en Instagram <span class="arr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a></p>
     </div>
   </div>
 </section>
@@ -619,7 +619,7 @@ footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:2
       <div><h4>Escuchar y ver</h4><a href="#podcast">Podcast</a><a href="https://www.instagram.com/dineroenorden/" target="_blank" rel="noopener">Instagram</a><a href="https://dineroenorden.com/blog/" target="_blank" rel="noopener">Blog y noticias</a></div>
       <div><h4>Empresas y prensa</h4><a href="#charlas">Charlas para empresas</a><a href="mailto:prensa@dineroenorden.com">prensa@dineroenorden.com</a><a href="mailto:correo@dineroenorden.com">correo@dineroenorden.com</a></div>
     </div>
-    <div class="bottom"><span>© 2026 Dinero en Orden</span><span>Concepto de sitio por <a href="https://evansademilua.vercel.app" target="_blank" rel="noopener" style="display:inline;color:var(--lime)">Evans Ademilua · Large Technologies</a></span></div>
+    <div class="bottom"><span>© 2026 Dinero en Orden</span><span>Concepto de sitio por <a href="https://evansademilua.vercel.app" target="_blank" rel="noopener" style="display:inline;color:var(--lime)">Evans Ademilua | Large Technologies</a></span></div>
   </div>
 </footer>
 
@@ -652,7 +652,7 @@ footer .bottom{display:flex;justify-content:space-between;gap:20px;padding-top:2
     ahorro:{t:'Tu primer paso gratis + el Planner de Finanzas',p:'Bajate la hoja «Mis números reales» (gratis), encontrá tus gastos invisibles con la calculadora de abajo y empezá a registrar todo en el Planner (USD 8). En 30 días ves exactamente a dónde se va la plata.',h:'#gratis',b:'Quiero mi primer paso gratis'},
     emprendo:{t:'Asesoría «Sueldo Emprendedor»',p:'Dos encuentros para trazar la estrategia que te permite pagarte un sueldo todos los meses, sin quitarle plata al negocio ni a tu familia. Emprendo hace casi 15 años: sé exactamente cómo es.',h:'#asesorias',b:'Quiero mi sueldo'}
   };
-  $$('.opt').forEach(o=>o.onclick=()=>{$$('.opt').forEach(x=>x.classList.remove('sel'));o.classList.add('sel');const a=answers[o.dataset.k];const box=$('#ans');box.classList.remove('flash');void box.offsetWidth;box.classList.add('flash');box.innerHTML=`<div><h3>${a.t}</h3><p>${a.p}</p></div><a class="btn lime" href="${a.h}">${a.b} <span class="arr">→</span></a>`;});
+  $$('.opt').forEach(o=>o.onclick=()=>{$$('.opt').forEach(x=>x.classList.remove('sel'));o.classList.add('sel');const a=answers[o.dataset.k];const box=$('#ans');box.classList.remove('flash');void box.offsetWidth;box.classList.add('flash');box.innerHTML=`<div><h3>${a.t}</h3><p>${a.p}</p></div><a class="btn lime" href="${a.h}">${a.b} <span class="arr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:-.15em;"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>`;});
   // calc
   const fmt=n=>'$ '+n.toLocaleString('es-AR');
   const rng=$('#rng');const upd=()=>{$('#mes').textContent=fmt(+rng.value);$('#anio').firstChild.textContent=fmt(rng.value*12);};rng.addEventListener('input',upd);upd();
