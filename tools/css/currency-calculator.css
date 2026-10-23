@@ -1,0 +1,27 @@
+.fx-pick{position:relative}
+.fx-pick input{width:100%}
+.fx-list{position:absolute;z-index:30;left:0;right:0;top:calc(100% + 4px);max-height:260px;overflow:auto;margin:0;padding:4px;list-style:none;background:var(--raised);border:1px solid var(--line2);border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.28)}
+.fx-list li{padding:8px 10px;border-radius:8px;font-size:.88rem;cursor:pointer;color:var(--soft)}
+.fx-list li.on{background:var(--paper);color:var(--ink)}
+.fx-list li[aria-selected="true"]{font-weight:700;color:var(--ink)}
+.fx-list li.none{cursor:default}
+.fx-swaprow{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:end}
+@media (max-width:560px){.fx-swaprow{grid-template-columns:1fr}.fx-swaprow .fx-swap{justify-self:start}}
+.fx-swap{height:44px;margin-bottom:14px}
+.fx-result{margin:0;display:flex;flex-direction:column;gap:4px;word-break:break-word}
+.fx-small{font-size:.92rem;color:var(--faint)}
+.fx-big{font-size:clamp(1.6rem,4.5vw,2.3rem);font-weight:700;letter-spacing:-.02em;line-height:1.15}
+.fx-rateline{font-size:.84rem;color:var(--soft);margin:10px 0 0}
+.fx-src{font-size:.78rem;color:var(--faint);margin:14px 0 0}
+.fx-src.warn{color:var(--accent)}
+.fx-table{width:100%;border-collapse:collapse;margin-top:6px;font-size:.88rem}
+.fx-table th{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);text-align:left;font-weight:600;padding:4px 6px}
+.fx-table td{padding:8px 6px;border-top:1px solid var(--line);vertical-align:middle}
+.fx-table td small{display:block;color:var(--faint);font-size:.72rem;line-height:1.25}
+.fx-table .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.fx-table th.num{text-align:right}
+.fx-table .rt{color:var(--faint)}
+.fx-x{font:inherit;width:28px;height:28px;border-radius:50%;border:1px solid var(--line2);background:var(--paper);color:var(--soft);cursor:pointer;line-height:1}
+.fx-x:hover{border-color:var(--accent);color:var(--accent)}
+.fx-pinrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end;margin-top:12px}
+.fx-pinrow .field{margin:0}

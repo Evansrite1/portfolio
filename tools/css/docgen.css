@@ -1,0 +1,63 @@
+/* Invoice and receipt generator layout. The document preview is always white paper with dark text. */
+.dg-tool { grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); }
+.dg-tool .preview { max-height: calc(100vh - 96px); overflow: auto; }
+@media (max-width: 900px) {
+  .dg-tool { grid-template-columns: 1fr; }
+  .dg-tool .preview { max-height: none; overflow: visible; }
+}
+.dg-tool details.opts { border-top: 1px solid var(--line); margin-top: 8px; padding-top: 12px; }
+.dg-tool details.opts:first-child { border-top: 0; margin-top: 0; padding-top: 0; }
+.dg-tool input[type="date"], .dg-tool input[type="time"] {
+  width: 100%; font: inherit; font-size: 0.95rem; color: var(--ink); background: var(--paper); border: 1px solid var(--line2); border-radius: 10px; padding: 10px 13px; min-height: 44px;
+}
+.dg-tool input[type="date"]:focus, .dg-tool input[type="time"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); outline: none; }
+.dg-tool input[aria-invalid="true"], .dg-tool select[aria-invalid="true"] { border-color: var(--accent); }
+.dg-tool input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+.dg-tool input[type="number"]::-webkit-outer-spin-button, .dg-tool input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.dg-row3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 560px) { .dg-row3 { grid-template-columns: 1fr 1fr; } }
+.dg-inline { display: flex; gap: 8px; }
+.dg-inline input { flex: 1 1 auto; min-width: 0; }
+.dg-inline .btn { padding: 8px 12px; font-size: 0.8rem; white-space: nowrap; }
+
+/* line items */
+.dg-item { display: grid; grid-template-columns: minmax(0, 1fr) 70px 104px 74px 40px; gap: 8px; align-items: end; margin: 0 0 10px; }
+.dg-item.dg-item-r { grid-template-columns: minmax(0, 1fr) 70px 104px 40px; }
+.dg-item .dg-sm { font-size: 0.74rem; font-weight: 600; color: var(--faint); margin: 0 0 4px; }
+.dg-item:not(:first-child) .dg-sm { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.dg-item input { padding: 10px 10px; min-width: 0; }
+.dg-x { padding: 0; width: 40px; height: 44px; font-size: 1.3rem; line-height: 1; }
+@media (max-width: 640px) {
+  .dg-item, .dg-item.dg-item-r { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr) minmax(0, 0.9fr) 40px; padding: 12px; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; }
+  .dg-item.dg-item-r { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr) 40px; }
+  .dg-item .dg-c-d { grid-column: 1 / -1; }
+  .dg-item .dg-c-x { grid-column: -2 / -1; }
+  .dg-item:not(:first-child) .dg-sm { position: static; width: auto; height: auto; overflow: visible; clip: auto; }
+  .dg-item .dg-c-x { align-self: end; }
+}
+
+/* design options */
+.dg-sws { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.dg-sw { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--line2); cursor: pointer; padding: 0; }
+.dg-sw:hover { border-color: var(--ink); }
+.dg-accent-row { display: grid; grid-template-columns: 90px 1fr; gap: 12px; align-items: start; }
+.dg-sig-canvas { width: 100%; height: 120px; background: #fff; border: 1px solid var(--line2); border-radius: 10px; touch-action: none; cursor: crosshair; display: block; }
+.dg-errors { border: 1px solid var(--accent); border-radius: 12px; padding: 12px 16px; margin: 12px 0 0; font-size: 0.88rem; background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.dg-errors ul { margin: 6px 0 0; padding-left: 18px; }
+.dg-warn { font-size: 0.82rem; color: var(--accent); margin: 10px 0 0; }
+.dg-wa-box { width: 100%; min-height: 140px; margin-top: 10px; font-family: var(--mono); font-size: 0.78rem; }
+.dg-actions { margin: 0 0 14px; }
+.dg-actions .btn { flex: 1 1 auto; }
+
+/* the paper */
+.dg-pages { display: grid; gap: 16px; margin: 0 auto; }
+.dg-page { background: #fff; color: #15181d; border-radius: 3px; box-shadow: 0 2px 16px rgba(0, 0, 0, 0.28); overflow: hidden; line-height: 0; }
+.dg-svg { display: block; width: 100%; height: auto; }
+
+/* print: show only the document pages */
+@media print {
+  #print-sheet.dg-print { display: block !important; padding: 0 !important; margin: 0 !important; text-align: left !important; background: #fff; }
+  #print-sheet.dg-print .dg-pg { overflow: hidden; break-after: page; page-break-after: always; margin: 0; padding: 0; }
+  #print-sheet.dg-print .dg-pg:last-child { break-after: auto; page-break-after: auto; }
+  #print-sheet.dg-print .dg-pg svg.dg-svg { width: 100% !important; height: 100% !important; display: block; }
+}

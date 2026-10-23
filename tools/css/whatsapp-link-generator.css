@@ -1,0 +1,14 @@
+.wa-chat{background:#efeae2;border-radius:14px;padding:16px;min-height:150px;display:flex;flex-direction:column;justify-content:flex-start}
+.wa-bubble{align-self:flex-end;max-width:92%;background:#d9fdd3;color:#111b21;border-radius:10px 10px 2px 10px;padding:8px 10px 6px;font-size:.92rem;line-height:1.4;white-space:pre-wrap;word-break:break-word;box-shadow:0 1px 1px rgba(11,20,26,.18)}
+.wa-bubble.empty{background:#fff;color:#667781;font-style:italic}
+.wa-time{display:block;text-align:right;font-size:.68rem;color:#667781;margin-top:2px}
+.wa-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.wa-chips button{font:inherit;font-size:.82rem;color:var(--soft);background:var(--paper);border:1px solid var(--line2);border-radius:999px;padding:6px 13px;cursor:pointer;transition:all .2s}
+.wa-chips button:hover{border-color:var(--ink);color:var(--ink)}
+.wa-chips button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.wa-num{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+.wa-qr-wrap{display:grid;place-items:center;margin-top:16px;background:#fff;border-radius:14px;padding:10px}
+.wa-qr-wrap canvas{width:100%;max-width:240px;height:auto;display:block;image-rendering:pixelated}
+.wa-qr-wrap.empty canvas{opacity:.15}
+.wa-err{color:var(--accent);font-size:.84rem;margin:6px 0 0;min-height:1px}
+.wa-link{font-family:var(--mono);font-size:.78rem;background:var(--paper);border:1px dashed var(--line2);border-radius:10px;padding:10px 12px;word-break:break-all;color:var(--soft);margin:14px 0 0;max-height:9em;overflow:auto}

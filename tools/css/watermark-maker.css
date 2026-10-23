@@ -1,0 +1,24 @@
+#wm-tool input[type="range"] { width: 100%; accent-color: var(--accent); }
+#wm-tool input[type="color"] { width: 100%; height: 42px; padding: 3px; border: 1px solid var(--line2); border-radius: 10px; background: var(--paper); }
+.wm-seg { display: grid; grid-template-columns: repeat(3, 44px); gap: 6px; }
+.wm-seg button { height: 44px; border-radius: 10px; border: 1px solid var(--line2); background: var(--paper); cursor: pointer; display: grid; place-items: center; padding: 0; }
+.wm-seg button i { width: 12px; height: 12px; border-radius: 3px; background: var(--faint); display: block; }
+.wm-seg button[aria-pressed="true"] { border-color: var(--accent); }
+.wm-seg button[aria-pressed="true"] i { background: var(--accent); }
+.wm-seg button:disabled { opacity: 0.4; cursor: not-allowed; }
+.wm-stage { display: grid; place-items: center; min-height: 240px; border-radius: 14px; padding: 10px; overflow: hidden; background: repeating-conic-gradient(var(--line) 0 25%, var(--paper) 0 50%) 0 0 / 18px 18px; }
+.wm-stage canvas { max-width: 100%; max-height: 520px; width: auto; height: auto; display: block; }
+.wm-stage.empty canvas { display: none; }
+.wm-stage .wm-empty { display: none; color: var(--faint); font-size: 0.9rem; text-align: center; padding: 20px; background: var(--paper); border-radius: 10px; }
+.wm-stage.empty .wm-empty { display: block; }
+.wm-list { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 8px; }
+.wm-row { display: flex; gap: 6px; align-items: center; padding: 6px; border: 1px solid var(--line2); border-radius: 12px; background: var(--paper); }
+.wm-row.on { border-color: var(--accent); }
+.wm-pick { flex: 1; min-width: 0; display: flex; gap: 10px; align-items: center; text-align: left; font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 2px; }
+.wm-pick img { width: 44px; height: 44px; object-fit: cover; border-radius: 8px; flex: none; }
+.wm-pick span { min-width: 0; }
+.wm-pick b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.88rem; }
+.wm-pick small { display: block; font-size: 0.76rem; color: var(--faint); }
+.wm-bad { color: var(--accent) !important; }
+.wm-row .btn { padding: 7px 11px; font-size: 0.78rem; }
+@media (max-width: 520px) { .wm-row { flex-wrap: wrap; } .wm-pick { flex-basis: 100%; } .wm-row .btn { flex: 1; } }

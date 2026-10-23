@@ -13,6 +13,8 @@ resumes/
 posts/
 prompts/
 /*.py
+!/make_tools.py
+!/make_seo.py
 /*.mjs
 /*.b64
 /*.csv
@@ -39,7 +41,6 @@ prompts/
 /chapter_brand_snapshot.html
 /linkedin_repositioning.html
 /x.html
-/934a2f59ce8df823af70bb1a0a85d323.txt
 arete/plan_v*.html
 drafts/maison-gray/preview-desktop.png
 drafts/maison-gray/shot-*.png

@@ -1,0 +1,75 @@
+/* Audio editor. Uses the shared variables from tools.css. */
+.ae-tool { display: block; }
+.ae-tool .card { margin: 0 0 18px; }
+.ae-note { font-size: 0.84rem; color: var(--soft); margin: 10px 0 0; }
+.ae-drop { padding: 22px 18px; }
+.ae-drop .btns { justify-content: center; margin-top: 0; }
+.ae-drop input[type="file"] { display: none; }
+
+.ae-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 12px; }
+.ae-bar .btn { padding: 9px 14px; font-size: 0.84rem; }
+.ae-bar .sep { width: 1px; height: 26px; background: var(--line2); margin: 0 4px; }
+.ae-bar .grow { flex: 1; }
+.ae-time { font-family: var(--mono); font-size: 1.05rem; padding: 7px 12px; border: 1px solid var(--line2); border-radius: 10px; background: var(--paper); white-space: nowrap; }
+.ae-time small { color: var(--faint); font-size: 0.8rem; }
+.ae-bar .btn[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.ae-bar .btn.rec { color: var(--accent); }
+.ae-bar .btn.rec.on, .ae-rec-btn.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.ae-bar .check { margin: 0 0 0 4px; font-size: 0.8rem; white-space: nowrap; }
+
+.ae-timeline { display: flex; align-items: flex-start; border: 1px solid var(--line2); border-radius: 14px; background: var(--paper); overflow: hidden; }
+.ae-heads { width: 196px; flex: none; border-right: 1px solid var(--line2); background: var(--raised); }
+.ae-heads .spacer { height: 28px; border-bottom: 1px solid var(--line2); display: flex; align-items: center; padding: 0 10px; font-size: 0.7rem; color: var(--faint); }
+.ae-head { height: 96px; box-sizing: border-box; padding: 7px 9px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; justify-content: space-between; border-left: 4px solid var(--tc, var(--accent)); cursor: default; }
+.ae-head.sel { background: color-mix(in srgb, var(--tc, var(--accent)) 14%, var(--raised)); }
+.ae-head .r1, .ae-head .r2, .ae-head .r3 { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.ae-head input[type="text"] { flex: 1; min-width: 0; padding: 4px 7px; font-size: 0.8rem; border-radius: 7px; }
+.ae-head input[type="color"] { width: 26px; height: 26px; padding: 1px; border-radius: 7px; flex: none; }
+.ae-head .ms, .ae-head .del { flex: none; width: 26px; height: 26px; padding: 0; font: inherit; font-size: 0.74rem; font-weight: 700; border: 1px solid var(--line2); border-radius: 7px; background: var(--paper); color: var(--ink); cursor: pointer; }
+.ae-head .ms[aria-pressed="true"].m { background: #e0a800; border-color: #e0a800; color: #111; }
+.ae-head .ms[aria-pressed="true"].s { background: #2fb574; border-color: #2fb574; color: #111; }
+.ae-head .del:hover { border-color: var(--accent); color: var(--accent); }
+.ae-head input[type="range"] { flex: 1; min-width: 0; height: 18px; accent-color: var(--accent); }
+.ae-head .r3 span { font-size: 0.68rem; color: var(--faint); width: 26px; flex: none; }
+.ae-head.recrow { color: var(--accent); font-size: 0.8rem; justify-content: center; font-weight: 600; }
+
+.ae-scroll { flex: 1; min-width: 0; overflow-x: auto; overflow-y: hidden; position: relative; }
+.ae-inner { position: relative; }
+.ae-canvas { position: sticky; left: 0; display: block; touch-action: pan-x pan-y; outline: none; }
+.ae-canvas:focus-visible { box-shadow: inset 0 0 0 2px var(--accent); }
+
+.ae-clipbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; margin: 14px 0 0; }
+.ae-clipbar .btn { padding: 8px 12px; font-size: 0.82rem; }
+.ae-clipbar .f { display: flex; flex-direction: column; gap: 3px; }
+.ae-clipbar .f label { margin: 0; font-size: 0.72rem; font-weight: 600; color: var(--soft); }
+.ae-clipbar .f input { width: 84px; padding: 7px 9px; font-size: 0.84rem; }
+.ae-clipbar-t { font-size: 0.76rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--faint); margin: 16px 0 0; }
+
+.ae-two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.ae-two .card { margin: 0; }
+@media (max-width: 860px) { .ae-two { grid-template-columns: 1fr; } }
+.ae-tool h2.ae-h { font-size: 1.05rem; margin: 0 0 12px; }
+.ae-tool .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+@media (max-width: 520px) { .ae-tool .row3 { grid-template-columns: 1fr; } }
+
+.ae-meter { display: flex; gap: 3px; height: 16px; margin: 4px 0 4px; }
+.ae-meter i { flex: 1; min-width: 4px; background: var(--line); border-radius: 3px; position: relative; overflow: hidden; }
+.ae-meter i b { position: absolute; left: 0; bottom: 0; top: 0; width: 0; background: var(--ok); }
+.ae-meter i b.hot { background: #e0a800; }
+.ae-meter i b.clip { background: var(--accent); }
+.ae-meter.v i { height: 100%; }
+.ae-status { font-size: 0.86rem; color: var(--soft); margin: 12px 0 0; min-height: 1.2em; }
+.ae-error { font-size: 0.88rem; color: var(--accent); margin: 8px 0 0; font-weight: 600; }
+.ae-error:empty { display: none; }
+.ae-warn { font-size: 0.84rem; padding: 10px 12px; border: 1px solid var(--line2); border-left: 3px solid var(--accent); border-radius: 8px; margin: 0 0 14px; color: var(--soft); }
+.ae-tool progress { width: 100%; height: 10px; accent-color: var(--accent); margin: 10px 0 0; }
+.ae-tool progress[hidden] { display: none; }
+.ae-kb { font-size: 0.78rem; color: var(--faint); margin: 12px 0 0; }
+.ae-kb kbd { font-family: var(--mono); font-size: 0.74rem; border: 1px solid var(--line2); border-radius: 5px; padding: 1px 5px; background: var(--paper); }
+.ae-desk { font-size: 0.8rem; color: var(--faint); margin: 0 0 12px; }
+.ae-last { font-size: 0.84rem; margin: 10px 0 0; color: var(--soft); }
+
+@media (max-width: 640px) {
+  .ae-heads { width: 150px; }
+  .ae-bar .sep { display: none; }
+}

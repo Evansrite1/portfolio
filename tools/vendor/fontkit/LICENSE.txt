@@ -1,0 +1,4 @@
+MIT License
+
+@pdf-lib/fontkit 1.1.1 (fork of fontkit by Devon Govett), https://github.com/Hopding/fontkit
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software to deal in it without restriction, subject to the usual MIT conditions: the copyright notice and this permission notice must be included in all copies or substantial portions of the software. The software is provided "as is", without warranty of any kind.

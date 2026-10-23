@@ -1,0 +1,8 @@
+{
+  "redirects": [
+    { "source": "/tools/barcode-generator", "destination": "/tools/", "permanent": true },
+    { "source": "/tools/barcode-generator/", "destination": "/tools/", "permanent": true },
+    { "source": "/tools/vcard-qr-code-generator", "destination": "/tools/qr-code-generator/", "permanent": true },
+    { "source": "/tools/vcard-qr-code-generator/", "destination": "/tools/qr-code-generator/", "permanent": true }
+  ]
+}
