@@ -27,67 +27,113 @@
 <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <style>
-  :root { color-scheme: light; }
+  :root { color-scheme: light; --navy: #14213d; --coral: #e8453c; --tint: #fdeceb; }
   * { box-sizing: border-box; }
-  body { margin: 0; background: #f2f2f2; color: #111; font-family: Arial, Helvetica, sans-serif; font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
-  .bar { max-width: 820px; margin: 0 auto; padding: 18px 20px 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; }
-  .bar a { color: #111; text-decoration: none; }
-  .bar .dl { background: #111; color: #fff; padding: 9px 16px; border-radius: 3px; font-weight: 600; }
-  .bar .dl:hover { background: #333; }
-  .cv { max-width: 820px; margin: 14px auto 40px; background: #fff; padding: 48px 56px 52px; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
-  h1 { margin: 0; font-size: 32px; line-height: 1.15; letter-spacing: 0.01em; }
-  .role { margin: 4px 0 8px; font-size: 17px; color: #333; }
-  .contact { margin: 0; font-size: 13px; color: #333; line-height: 1.7; }
-  .contact a { color: #111; }
-  header { padding-bottom: 14px; border-bottom: 2px solid #111; }
-  h2 { margin: 24px 0 8px; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; border-bottom: 1px solid #999; padding-bottom: 4px; }
-  p { margin: 0 0 6px; }
+  body { margin: 0; background: linear-gradient(180deg, #e9edf8 0%, #f6efee 100%); color: #1b1f2a; font-family: Arial, Helvetica, sans-serif; font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  a { color: #c2362e; }
+  .bar { max-width: 860px; margin: 0 auto; padding: 18px 20px 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 13px; }
+  .bar > a:first-child { color: var(--navy); text-decoration: none; font-weight: 600; }
+  .dls { display: flex; gap: 10px; flex-wrap: wrap; }
+  .dl { text-decoration: none; padding: 10px 16px; border-radius: 999px; font-weight: 700; font-size: 13px; border: 2px solid var(--coral); transition: transform .15s, box-shadow .15s; }
+  .dl:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(232,69,60,.28); }
+  .dl.color { background: var(--coral); color: #fff; }
+  .dl.bw { background: #fff; color: #111; border-color: #111; }
+  .dl.bw:hover { box-shadow: 0 6px 16px rgba(0,0,0,.18); }
+  .cv { max-width: 860px; margin: 14px auto 44px; background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 10px 40px rgba(20,33,61,.16); }
+  header { background: linear-gradient(120deg, var(--navy) 0%, #2a3d78 58%, var(--coral) 130%); color: #fff; padding: 38px 48px 34px; display: flex; gap: 26px; align-items: center; justify-content: space-between; }
+  header .txt { min-width: 0; }
+  h1 { margin: 0; font-size: 38px; line-height: 1.1; letter-spacing: .005em; }
+  .role { margin: 6px 0 14px; font-size: 18px; color: #ffb4ad; font-weight: 600; }
+  .contact { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: #dfe5f5; }
+  .contact a { color: #fff; text-decoration-color: rgba(255,255,255,.45); }
+  .photo { flex: none; width: 112px; height: 112px; border-radius: 50%; border: 4px solid rgba(255,255,255,.85); object-fit: cover; box-shadow: 0 6px 20px rgba(0,0,0,.35); }
+  .body { padding: 8px 48px 46px; }
+  section { margin-top: 26px; }
+  h2 { margin: 0 0 12px; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--navy); display: flex; align-items: center; gap: 10px; break-after: avoid; }
+  h2::before { content: ""; width: 26px; height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--coral), #e0881a); }
+  h2::after { content: ""; flex: 1; height: 1px; background: #dde1ec; }
+  p { margin: 0 0 8px; }
   ul { margin: 6px 0 0; padding-left: 20px; }
-  li { margin: 0 0 4px; }
-  .skills { list-style: none; padding: 0; margin: 0; }
-  .skills li { margin: 0 0 3px; }
-  .job { margin-bottom: 14px; break-inside: avoid; }
+  li { margin: 0 0 5px; }
+  li::marker { color: var(--coral); }
+  .comp { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; }
+  .comp li { margin: 0; background: color-mix(in srgb, var(--c) 9%, #fff); border: 1px solid color-mix(in srgb, var(--c) 30%, #fff); border-left: 4px solid var(--c); border-radius: 8px; padding: 8px 12px; font-weight: 600; font-size: 14px; }
+  .skills { list-style: none; padding: 0; margin: 0; display: grid; gap: 7px; }
+  .skills li { margin: 0; display: grid; grid-template-columns: 170px 1fr; gap: 12px; align-items: baseline; padding: 7px 0; border-bottom: 1px dashed #e3e6ef; }
+  .skills b { font-size: 13px; }
+  .job { margin: 0 0 18px; padding-left: 18px; position: relative; break-inside: avoid; border-left: 2px solid #e3e6ef; }
+  .job::before { content: ""; position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: var(--coral); border: 3px solid #fff; box-shadow: 0 0 0 2px var(--coral); }
   .row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
-  .row h3 { margin: 0; font-size: 15px; font-weight: 400; }
-  .place { color: #555; font-size: 13px; }
-  .dates { font-size: 13px; color: #333; white-space: nowrap; }
-  .projects { padding-left: 20px; }
-  a { color: #0b4f9c; }
-  @media (max-width: 640px) {
-    .cv { padding: 28px 20px 34px; margin: 10px 0 24px; box-shadow: none; }
-    h1 { font-size: 26px; }
-    .row { flex-direction: column; gap: 0; }
+  .row h3 { margin: 0; font-size: 15.5px; font-weight: 400; }
+  .row h3 b { color: var(--navy); }
+  .place { color: #6a7083; font-size: 13px; }
+  .dates { font-size: 12px; color: var(--navy); white-space: nowrap; background: #eef1fa; padding: 3px 10px; border-radius: 999px; font-weight: 600; }
+  .projects { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .card { border: 1px solid #e3e6ef; border-top: 5px solid var(--c); border-radius: 12px; padding: 14px 16px 10px; break-inside: avoid; background: #fff; }
+  .card h3 { font-size: 16px; }
+  .stack { margin: 4px 0 6px; font-size: 12px; font-weight: 700; color: var(--c); }
+  .card ul { font-size: 13.5px; padding-left: 18px; }
+  .lnk { font-size: 12px; color: #c2362e; word-break: break-all; text-align: right; }
+  .approach { list-style: none; padding: 0; margin: 0; display: grid; gap: 9px; }
+  .approach li { margin: 0; display: flex; gap: 12px; align-items: flex-start; }
+  .approach span { flex: none; width: 24px; height: 24px; border-radius: 50%; color: #fff; display: grid; place-items: center; font-size: 12px; font-weight: 700; margin-top: 1px; }
+  @media (max-width: 700px) {
+    header { flex-direction: column-reverse; align-items: flex-start; padding: 26px 22px; }
+    h1 { font-size: 30px; }
+    .photo { width: 88px; height: 88px; }
+    .body { padding: 6px 22px 34px; }
+    .comp, .projects { grid-template-columns: 1fr; }
+    .skills li { grid-template-columns: 1fr; gap: 2px; }
+    .row { flex-direction: column; gap: 2px; align-items: flex-start; }
     .dates { white-space: normal; }
+    .lnk { text-align: left; }
   }
-  @page { size: Letter; margin: 0.55in; }
+  @page { size: Letter; margin: 0.5in; }
   @media print {
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     body { background: #fff; font-size: 10.5pt; }
     .bar { display: none; }
-    .cv { box-shadow: none; margin: 0; padding: 0; max-width: none; }
-    h1 { font-size: 22pt; }
-    a { color: #111; text-decoration: none; }
+    .cv { box-shadow: none; border-radius: 0; max-width: none; }
+    header { padding: 22px 26px; }
+    .body { padding: 4px 26px 20px; }
+    h1 { font-size: 26pt; }
+    .projects { grid-template-columns: 1fr 1fr; }
   }
 </style>
 </head>
 <body>
-<div class="bar"><a href="/">Portfolio</a><a class="dl" href="Evans_Ademilua_CV.pdf" download>Download PDF</a></div>
+<div class="bar"><a href="/">Portfolio</a><div class="dls"><a class="dl color" href="Evans_Ademilua_CV_Color.pdf" download>Download PDF, colour</a><a class="dl bw" href="Evans_Ademilua_CV.pdf" download>Download PDF, black and white</a></div></div>
 <main class="cv">
   <header>
-    <h1>Evans Ademilua</h1>
-    <p class="role">Full-Stack Software Engineer</p>
-    <p class="contact">Ile-Ife, Osun, Nigeria (remote, overlaps US and EU working hours) &nbsp;|&nbsp; <a href="mailto:ademiluaolufemi@gmail.com">ademiluaolufemi@gmail.com</a> &nbsp;|&nbsp; <a href="https://www.linkedin.com/in/evansademilua">linkedin.com/in/evansademilua</a> &nbsp;|&nbsp; <a href="https://evansademilua.vercel.app">evansademilua.vercel.app</a> &nbsp;|&nbsp; <a href="https://www.upwork.com/freelancers/~018567da5396e7b2fe">Upwork profile</a></p>
+    <div class="txt">
+      <h1>Evans Ademilua</h1>
+      <p class="role">Full-Stack Software Engineer</p>
+      <div class="contact"><span>Ile-Ife, Osun, Nigeria (remote, overlaps US and EU working hours)</span><a href="mailto:ademiluaolufemi@gmail.com">ademiluaolufemi@gmail.com</a><a href="https://www.linkedin.com/in/evansademilua">linkedin.com/in/evansademilua</a><a href="https://evansademilua.vercel.app">evansademilua.vercel.app</a><a href="https://www.upwork.com/freelancers/~018567da5396e7b2fe">Upwork profile</a></div>
+    </div>
+    <img class="photo" src="/images/evans-headshot.jpg" alt="Evans Ademilua" width="112" height="112">
   </header>
-  <section><h2>Summary</h2><p>Full-stack software engineer with over three years of hands-on experience building and fixing production web applications in Python (FastAPI), TypeScript, React, Next.js and PostgreSQL (Supabase). Experienced in integrating LLM APIs (OpenAI, Claude) and automation workflows (n8n), and in taking over unfamiliar or misbehaving codebases, isolating the real fault and shipping clean fixes without regressions. Top Rated on Upwork with eight 5-star client reviews. Seeking remote, contract-based work in software engineering, code review and AI evaluation.</p></section>
-  <section><h2>Technical skills</h2><ul class="skills"><li><b>Languages:</b> Python, TypeScript, JavaScript</li><li><b>Frameworks:</b> FastAPI, React, Next.js, Node.js, Tailwind CSS, REST APIs</li><li><b>Data and infrastructure:</b> PostgreSQL, Supabase (authentication, row-level security), Vercel</li><li><b>AI and automation:</b> LLM API integration (OpenAI, Claude), n8n workflow automation, Slack bot development</li><li><b>Low-code platforms:</b> Bubble.io, FlutterFlow, Webflow</li><li><b>Working style:</b> Debugging third-party code, scoping with clients, clear written communication, fixed-scope delivery</li></ul></section>
+  <div class="body">
+  <section><h2>Professional summary</h2><p>Full-stack software engineer with over three years of experience building, reviewing and fixing production web applications in Python (FastAPI), TypeScript, React, Next.js and PostgreSQL (Supabase). Known for taking over unfamiliar or misbehaving codebases, isolating the root cause and shipping clean fixes without regressions.</p><p>Builds secure, role-based systems for service businesses, simple phone-first interfaces for non-technical users, and browser-based software that processes files on the user&#x27;s own device. Integrates LLM APIs and runs speech recognition in the browser. Top Rated on Upwork with eight 5-star client reviews.</p><p>Open to remote, contract-based work in software engineering, code review and AI evaluation.</p></section>
+  <section><h2>Core competencies</h2><ul class="comp"><li style="--c:#e8453c">Production debugging and root-cause analysis</li><li style="--c:#3b6fe0">Authentication, role-based access and row-level security</li><li style="--c:#14a37f">REST API and PostgreSQL database design</li><li style="--c:#8a4fe0">Background jobs, file uploads and reliability</li><li style="--c:#e0881a">Browser software: Web Workers, WebCodecs, WebAssembly</li><li style="--c:#d13a8a">LLM API integration and in-browser speech recognition</li><li style="--c:#e8453c">Responsive, phone-first interface design</li><li style="--c:#3b6fe0">Workflow automation with n8n and Slack bots</li><li style="--c:#14a37f">Fixed-scope client delivery and clear written communication</li><li style="--c:#8a4fe0">SEO, structured data and AI-search readiness</li></ul></section>
+  <section><h2>Technical skills</h2><ul class="skills"><li><b style="color:#e8453c">Languages</b><span>Python, TypeScript, JavaScript, SQL, HTML and CSS</span></li><li><b style="color:#3b6fe0">Back end</b><span>FastAPI, Node.js, REST APIs, background workers and schedulers</span></li><li><b style="color:#14a37f">Front end</b><span>React, Next.js, Tailwind CSS, responsive and phone-first layouts, accessibility basics</span></li><li><b style="color:#8a4fe0">Browser platform</b><span>Web Workers, WebCodecs, WebAssembly, Web Audio, Canvas, File and Media APIs</span></li><li><b style="color:#e0881a">Data and infrastructure</b><span>PostgreSQL, Supabase (authentication, row-level security), Vercel, Git and GitHub</span></li><li><b style="color:#d13a8a">AI and automation</b><span>OpenAI and Claude APIs, on-device speech recognition, n8n workflows, Slack bots</span></li><li><b style="color:#e8453c">Low-code platforms</b><span>Bubble.io, FlutterFlow, Webflow</span></li></ul></section>
   <section><h2>Professional experience</h2>
-<article class="job"><div class="row"><h3><b>CEO and Founder</b>, Large Technologies <span class="place">Ile-Ife, Osun, Nigeria (remote)</span></h3><span class="dates">Sep 2026 to Present</span></div><ul><li>Lead scoping, architecture and delivery of custom software for service businesses: internal tools, client portals, booking and lead-tracking systems, and AI-assisted features.</li><li>CareTRAC: field and client coordination platform for a construction company. FastAPI backend with a dedicated scheduler service so slow photo uploads never block status updates, React frontend, and role-based permissions enforced at the database level. Scope call to live product in two weeks.</li><li>Sky Team Ife: internal operations dashboard for a multi-location organization, built on Vercel and Supabase with per-user accounts scoped by role and center and enforced with row-level security.</li><li>Common Ground Engineering: booking and lead-capture site integrating the Cal.com and Telegram APIs.</li></ul></article>
+<article class="job"><div class="row"><h3><b>CEO and Founder</b>, Large Technologies <span class="place">Ile-Ife, Osun, Nigeria (remote)</span></h3><span class="dates">Sep 2026 to Present</span></div><ul><li>Lead scoping, architecture and delivery of custom software for service businesses: internal tools, client portals, booking and lead-tracking systems, and AI-assisted features.</li><li>CareTRAC: built a field and client coordination platform for a construction company. FastAPI backend with a dedicated scheduler service so slow photo uploads never block status updates, a React front end, and role-based permissions enforced at the database level. Went from scoping call to live product in two weeks.</li><li>Sky Team Ife: built an internal operations dashboard for a multi-location organization on Vercel and Supabase, with per-user accounts scoped by role and center and enforced with row-level security.</li><li>Common Ground Engineering: built a booking and lead-capture site integrating the Cal.com and Telegram APIs.</li><li>Free online tools suite: designed, built and maintain 20+ browser-based tools, including a video editor, video compressor, audio editor, screen recorder, and PDF, image, invoice and QR tools. Every tool processes files on the user&#x27;s device, so nothing is uploaded.</li><li>Search and AI-search readiness: structured data, sitemaps, llms.txt and IndexNow so the site and tools can be found by search engines and AI assistants.</li></ul></article>
 <article class="job"><div class="row"><h3><b>Web Developer (Freelance)</b>, Upwork <span class="place">Remote</span></h3><span class="dates">Jan 2023 to Present</span></div><ul><li>Top Rated, with eight 5-star client reviews across Bubble.io application builds and fixes, n8n workflow automation, Slack bot development and AI integration work.</li><li>Take over applications that behave unpredictably in production, isolate the actual fault and ship clean fixes without regressions. Clients consistently cite clear communication and delivery beyond expectations.</li></ul></article>
 <article class="job"><div class="row"><h3><b>No-Code and Low-Code Developer (Freelance)</b>, Fiverr <span class="place">Remote</span></h3><span class="dates">Dec 2022 to Present</span></div><ul><li>FlutterFlow and web development for small-business clients: MVPs, booking flows and internal tools delivered against fixed scopes.</li></ul></article>
-<article class="job"><div class="row"><h3><b>Founder</b>, 100bits Agency <span class="place">Remote</span></h3><span class="dates">Mar 2024 to Present</span></div><ul><li>Bespoke website design and digital direct marketing for small business clients. Own delivery end to end.</li></ul></article>
-<article class="job"><div class="row"><h3><b>Sales Manager (Contract)</b>, Real Estate UK <span class="place">Remote</span></h3><span class="dates">Jul 2020 to Aug 2023</span></div><ul><li>Lead generation and marketing outreach for UK property clients. Source of the real estate domain knowledge behind current product work.</li></ul></article>
+<article class="job"><div class="row"><h3><b>Founder</b>, 100bits Agency <span class="place">Remote</span></h3><span class="dates">Mar 2024 to Present</span></div><ul><li>Design and build bespoke websites for small business clients, covering layout, copy and responsive behavior on phones, plus digital direct marketing. Own delivery end to end.</li></ul></article>
+<article class="job"><div class="row"><h3><b>Sales Manager (Contract)</b>, Real Estate UK <span class="place">Remote</span></h3><span class="dates">Jul 2020 to Aug 2023</span></div><ul><li>Lead generation and marketing outreach for UK property clients. Source of the real estate knowledge behind current product work.</li></ul></article>
   </section>
-  <section><h2>Selected projects</h2><ul class="projects"><li><b>CareTRAC</b> (FastAPI, React). Client portal for a construction company. <a href="https://portal.caregencon.com">portal.caregencon.com</a></li><li><b>Sky Team Ife</b> (Vercel, Supabase). Operations dashboard with row-level security. <a href="https://sky-team-ife.vercel.app">sky-team-ife.vercel.app</a></li><li><b>Billionaire Club</b> (Next.js, Vercel). Community and education platform. <a href="https://billionaireclub.vercel.app">billionaireclub.vercel.app</a></li><li><b>Common Ground Engineering</b> (Cal.com and Telegram APIs). Booking site for a consulting firm. <a href="https://cge-site.vercel.app">cge-site.vercel.app</a></li></ul></section>
+  <section><h2>Selected projects</h2><div class="projects">
+<article class="card" style="--c:#e8453c"><div class="row"><h3><b>CareTRAC</b></h3><a class="lnk" href="https://portal.caregencon.com">portal.caregencon.com</a></div><p class="stack">FastAPI, React, PostgreSQL</p><ul><li>Client portal and field coordination for a construction company.</li><li>Design decision: a separate scheduler service handles slow photo uploads so status updates stay instant. Permissions are enforced in the database, not only in the interface.</li></ul></article>
+<article class="card" style="--c:#3b6fe0"><div class="row"><h3><b>Sky Team Ife</b></h3><a class="lnk" href="https://sky-team-ife.vercel.app">sky-team-ife.vercel.app</a></div><p class="stack">Vercel, Supabase</p><ul><li>Operations dashboard for a multi-location organization.</li><li>Row-level security limits every user to their own role and center, so access rules cannot be bypassed from the front end.</li></ul></article>
+<article class="card" style="--c:#14a37f"><div class="row"><h3><b>Online video editor</b></h3><a class="lnk" href="https://evansademilua.vercel.app/tools/video-editor/">evansademilua.vercel.app/tools/video-editor</a></div><p class="stack">JavaScript, WebCodecs, Web Workers</p><ul><li>Phone-first editor with a multi-clip timeline, trimming, splitting, text, music, filters, speed, aspect ratios, video details and MP4 export, all in the browser.</li><li>One shared renderer draws both the preview and the export, so the saved video matches what the user saw. Automatic captions come from a speech model hosted on the site and run in a Web Worker, so the interface stays smooth and no audio leaves the device.</li><li>Includes undo and redo, a guided tour for first-time users, and an .srt subtitle export.</li></ul></article>
+<article class="card" style="--c:#8a4fe0"><div class="row"><h3><b>Free online tools suite</b></h3><a class="lnk" href="https://evansademilua.vercel.app/tools/">evansademilua.vercel.app/tools</a></div><p class="stack">JavaScript, Python site generator</p><ul><li>20+ tools for video, audio, images, PDFs, invoices, QR codes and more, built to work on phones and computers with no sign-up.</li><li>Each tool was tested with generated real media and documents, including large PDFs, multi-channel audio and long timelines.</li></ul></article>
+<article class="card" style="--c:#e0881a"><div class="row"><h3><b>Billionaire Club</b></h3><a class="lnk" href="https://billionaireclub.vercel.app">billionaireclub.vercel.app</a></div><p class="stack">Next.js, Vercel</p><ul><li>Community and education platform.</li></ul></article>
+<article class="card" style="--c:#d13a8a"><div class="row"><h3><b>Common Ground Engineering</b></h3><a class="lnk" href="https://cge-site.vercel.app">cge-site.vercel.app</a></div><p class="stack">Cal.com and Telegram APIs</p><ul><li>Booking and lead-capture site for a consulting firm.</li></ul></article>
+  </div></section>
+  <section><h2>Engineering approach</h2><ul class="approach"><li><span style="background:#e8453c">1</span>Reproduce the problem first and read the surrounding code before changing anything.</li><li><span style="background:#3b6fe0">2</span>Check security, correctness and performance: access control, input handling, error paths and queries that slow down as data grows.</li><li><span style="background:#14a37f">3</span>Fix the cause rather than the symptom, then confirm nothing else broke.</li><li><span style="background:#8a4fe0">4</span>Test with realistic data: real files, edge cases and phone-sized screens.</li><li><span style="background:#e0881a">5</span>Explain every change in plain language so non-technical clients can decide with confidence.</li></ul></section>
   <section><h2>Education</h2><div class="row"><p><b>B.Eng, Electrical and Electronics Engineering</b>, Obafemi Awolowo University, Nigeria</p><span class="dates">2020 to 2024</span></div></section>
+  </div>
 </main>
 </body>
 </html>
