@@ -9,6 +9,7 @@
 - [Free online tools](https://evansademilua.vercel.app/tools/): QR code generator, barcode generator, WiFi QR, WhatsApp QR and link, vCard QR and a QR scanner
 - [QR code generator](https://evansademilua.vercel.app/tools/qr-code-generator/): free, no sign-up, never expires
 - [Barcode generator](https://evansademilua.vercel.app/tools/barcode-generator/): Code 128, EAN-13, UPC-A and more
+- [Video compressor](https://evansademilua.vercel.app/tools/video-compressor/): shrink a large video, trim it or cut it into two parts, all in the browser
 - [Background remover](https://evansademilua.vercel.app/tools/remove-background/): remove an image background, exact for logos and AI for photos
 - [Solutions](https://evansademilua.vercel.app/solutions.html): nine systems he builds, what each does and how it benefits the owner
 - [CV](https://evansademilua.vercel.app/cv.html): curriculum vitae, skills, experience, education
