@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Display screen</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<style>
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; color: #fff; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  body.idle { cursor: none; }
+  .layer { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; transition: opacity var(--fade, .5s) ease; }
+  .layer.on { opacity: 1; z-index: 2; }
+  .layer img, .layer video { width: 100%; height: 100%; object-fit: contain; display: block; background: #000; }
+  .layer.fill img, .layer.fill video { object-fit: cover; }
+  .layer iframe { width: 100%; height: 100%; border: 0; background: #000; }
+  .txt { box-sizing: border-box; width: 100%; height: 100%; display: grid; place-items: center; padding: 6vh 8vw; text-align: center; }
+  .txt div { white-space: pre-wrap; font-weight: 800; line-height: 1.15; letter-spacing: -.01em; }
+  .txt.light { background: #fff; color: #111; }
+  .txt.dark { background: #000; color: #fff; }
+  .txt.coral { background: linear-gradient(135deg, #14213d, #e8453c); color: #fff; }
+  #black { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; transition: opacity .35s; z-index: 5; }
+  #black.on { opacity: 1; }
+  #wait { position: absolute; inset: 0; display: grid; place-items: center; z-index: 6; text-align: center; }
+  #wait h1 { margin: 0 0 8px; font-size: clamp(22px, 4vw, 44px); }
+  #wait p { margin: 0; color: #aaa; font-size: clamp(14px, 1.6vw, 20px); }
+  #wait .dot { width: 14px; height: 14px; border-radius: 50%; background: #e8453c; margin: 0 auto 18px; animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .3; transform: scale(.8); } }
+  #tip { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 8; background: rgba(20,20,22,.88); border: 1px solid #333; padding: 12px 20px; border-radius: 999px; font-size: 15px; transition: opacity .4s; white-space: nowrap; }
+  body.fs #tip, body.idle #tip { opacity: 0; pointer-events: none; }
+  #sound { position: absolute; inset: 0; z-index: 9; display: none; place-items: center; background: rgba(0,0,0,.55); }
+  #sound.on { display: grid; }
+  #sound button { font: inherit; font-size: clamp(16px, 2vw, 24px); font-weight: 700; padding: 18px 30px; border-radius: 999px; border: 0; background: #e8453c; color: #fff; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="layer" id="la"></div>
+<div class="layer" id="lb"></div>
+<div id="black"></div>
+<div id="wait"><div><div class="dot"></div><h1>Display ready</h1><p>Waiting for the presenter. Click anywhere to go full screen.</p></div></div>
+<div id="sound"><button type="button" id="soundBtn">Click once to turn on sound</button></div>
+<div id="tip">Click anywhere to go full screen</div>
+<script>
+(function () {
+  'use strict';
+  var bc = new BroadcastChannel('ae-second-screen');
+  var id = Math.random().toString(36).slice(2, 10);
+  var layers = [document.getElementById('la'), document.getElementById('lb')], front = 0;
+  var cur = null, media = null, frame = null, frameKind = '', urls = [], needSound = false, lastStatus = 0, ytInfo = null;
+
+  function send(o) { o.id = id; try { bc.postMessage(o); } catch (e) { /* channel closed */ } }
+  function status(extra) {
+    var o = { type: 'status', fs: !!document.fullscreenElement, w: screen.width, h: screen.height, needSound: needSound, live: cur ? cur.id : null };
+    if (media) { o.t = media.currentTime || 0; o.dur = isFinite(media.duration) ? media.duration : 0; o.paused = media.paused; o.ended = media.ended; o.muted = media.muted; }
+    else if (ytInfo) { o.t = ytInfo.t || 0; o.dur = ytInfo.dur || 0; o.paused = !ytInfo.playing; o.ended = !!ytInfo.ended; }
+    if (extra) for (var k in extra) o[k] = extra[k];
+    send(o);
+  }
+
+  /* ---------- showing items ---------- */
+  function ytId(u) {
+    var m = String(u).match(/(?:youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+    return m ? m[1] : null;
+  }
+  function ytStart(u) { var m = String(u).match(/[?&#](?:t|start)=(\d+)(s)?/); return m ? +m[1] : 0; }
+  function vimeoId(u) { var m = String(u).match(/vimeo\.com\/(?:video\/)?(\d+)/); return m ? m[1] : null; }
+  function slidesEmbed(u) { var m = String(u).match(/docs\.google\.com\/presentation\/d\/([A-Za-z0-9_-]+)/); return m ? 'https://docs.google.com/presentation/d/' + m[1] + '/embed?start=false&loop=false' : null; }
+
+  function fitText(box) {
+    var el = box.firstChild, lo = 10, hi = 400, W = box.clientWidth * 0.84, H = box.clientHeight * 0.8;
+    for (var i = 0; i < 14; i++) {
+      var mid = (lo + hi) / 2; el.style.fontSize = mid + 'px';
+      if (el.scrollWidth <= W && el.scrollHeight <= H) lo = mid; else hi = mid;
+    }
+    el.style.fontSize = lo + 'px';
+  }
+
+  function clearLayer(L) {
+    var v = L.querySelector('video'); if (v) { try { v.pause(); } catch (e) {} v.removeAttribute('src'); v.load(); }
+    L.innerHTML = '';
+  }
+
+  function show(item, opts) {
+    opts = opts || {};
+    document.documentElement.style.setProperty('--fade', opts.fade === false ? '0s' : '.5s');
+    document.getElementById('wait').style.display = 'none';
+    var back = layers[1 - front], old = layers[front];
+    clearLayer(back);
+    back.classList.toggle('fill', opts.fit === 'cover');
+    media = null; frame = null; frameKind = ''; ytInfo = null; needSound = false;
+    var oldUrls = urls; urls = [];
+    var src = item.file ? URL.createObjectURL(item.file) : item.url;
+    if (item.file) urls.push(src);
+
+    if (item.kind === 'image') {
+      var img = new Image(); img.alt = ''; img.src = src; back.appendChild(img);
+    } else if (item.kind === 'video') {
+      var v = document.createElement('video');
+      v.src = src; v.playsInline = true; v.loop = !!opts.loop; v.volume = opts.volume == null ? 1 : opts.volume;
+      v.addEventListener('timeupdate', function () { var n = Date.now(); if (n - lastStatus > 250) { lastStatus = n; status(); } });
+      ['play', 'pause', 'ended', 'loadedmetadata', 'seeked'].forEach(function (ev) { v.addEventListener(ev, function () { status(); }); });
+      back.appendChild(v); media = v;
+      if (opts.autoplay !== false) playWithSound(v);
+    } else if (item.kind === 'text') {
+      var box = document.createElement('div'); box.className = 'txt ' + (item.style || 'dark');
+      var d = document.createElement('div'); d.textContent = item.text || ''; box.appendChild(d); back.appendChild(box);
+      setTimeout(function () { fitText(box); }, 30);
+    } else {
+      var f = document.createElement('iframe');
+      f.allow = 'autoplay; encrypted-media; fullscreen; picture-in-picture';
+      f.referrerPolicy = 'strict-origin-when-cross-origin';
+      var y = ytId(item.url), vm = vimeoId(item.url), gs = slidesEmbed(item.url);
+      if (y) {
+        frameKind = 'youtube'; ytInfo = { t: 0, dur: 0, playing: false };
+        f.src = 'https://www.youtube-nocookie.com/embed/' + y + '?autoplay=1&rel=0&playsinline=1&enablejsapi=1&origin=' + encodeURIComponent(location.origin) + (ytStart(item.url) ? '&start=' + ytStart(item.url) : '') + (opts.loop ? '&loop=1&playlist=' + y : '');
+        f.addEventListener('load', function () { postYT({ event: 'listening', id: id }); postYT({ event: 'command', func: 'addEventListener', args: ['onStateChange'], id: id }); });
+      } else if (vm) {
+        frameKind = 'vimeo';
+        f.src = 'https://player.vimeo.com/video/' + vm + '?autoplay=1' + (opts.loop ? '&loop=1' : '');
+        f.addEventListener('load', function () { postVimeo({ method: 'addEventListener', value: 'timeupdate' }); });
+      } else if (gs) {
+        frameKind = 'web'; f.src = gs;
+      } else {
+        frameKind = 'web'; f.src = item.url;
+      }
+      back.appendChild(f); frame = f;
+    }
+    back.classList.add('on'); old.classList.remove('on');
+    front = 1 - front;
+    cur = item;
+    setTimeout(function () { if (!old.classList.contains('on')) clearLayer(old); oldUrls.forEach(function (u) { URL.revokeObjectURL(u); }); }, 700);
+    status();
+  }
+
+  function playWithSound(v) {
+    v.muted = false;
+    var p = v.play();
+    if (p && p.catch) p.catch(function () {
+      v.muted = true; needSound = true;
+      document.getElementById('sound').classList.add('on');
+      v.play().catch(function () {});
+      status();
+    });
+  }
+
+  /* ---------- embedded players ---------- */
+  function postYT(o) { if (frame && frame.contentWindow) frame.contentWindow.postMessage(JSON.stringify(o), 'https://www.youtube-nocookie.com'); }
+  function postVimeo(o) { if (frame && frame.contentWindow) frame.contentWindow.postMessage(JSON.stringify(o), 'https://player.vimeo.com'); }
+  window.addEventListener('message', function (e) {
+    var d = e.data; if (typeof d === 'string') { try { d = JSON.parse(d); } catch (x) { return; } }
+    if (!d || typeof d !== 'object') return;
+    if (e.origin === 'https://www.youtube-nocookie.com' && d.event === 'infoDelivery' && d.info && ytInfo) {
+      if (d.info.currentTime != null) ytInfo.t = d.info.currentTime;
+      if (d.info.duration) ytInfo.dur = d.info.duration;
+      if (d.info.playerState != null) { ytInfo.playing = d.info.playerState === 1; ytInfo.ended = d.info.playerState === 0; }
+      var n = Date.now(); if (n - lastStatus > 400) { lastStatus = n; status(); }
+    }
+    if (e.origin === 'https://www.youtube-nocookie.com' && d.event === 'onStateChange' && ytInfo) {
+      ytInfo.playing = d.info === 1; ytInfo.ended = d.info === 0; status();
+    }
+    if (e.origin === 'https://player.vimeo.com' && d.event === 'timeupdate' && d.data) {
+      ytInfo = ytInfo || {}; ytInfo.t = d.data.seconds; ytInfo.dur = d.data.duration; ytInfo.playing = true;
+      var m = Date.now(); if (m - lastStatus > 400) { lastStatus = m; status(); }
+    }
+  });
+
+  function control(m) {
+    if (media) {
+      if (m.cmd === 'play') { if (needSound) media.play().catch(function () {}); else playWithSound(media); }
+      else if (m.cmd === 'pause') media.pause();
+      else if (m.cmd === 'seek') media.currentTime = Math.max(0, Math.min(m.value, (media.duration || m.value)));
+      else if (m.cmd === 'volume') media.volume = Math.max(0, Math.min(1, m.value));
+      else if (m.cmd === 'loop') media.loop = !!m.value;
+      else if (m.cmd === 'restart') { media.currentTime = 0; playWithSound(media); }
+      status();
+    } else if (frameKind === 'youtube') {
+      if (m.cmd === 'play') { postYT({ event: 'command', func: 'playVideo', args: [] }); if (ytInfo) ytInfo.playing = true; }
+      else if (m.cmd === 'pause') { postYT({ event: 'command', func: 'pauseVideo', args: [] }); if (ytInfo) ytInfo.playing = false; }
+      else if (m.cmd === 'seek') postYT({ event: 'command', func: 'seekTo', args: [m.value, true] });
+      else if (m.cmd === 'volume') postYT({ event: 'command', func: 'setVolume', args: [Math.round(m.value * 100)] });
+      else if (m.cmd === 'restart') postYT({ event: 'command', func: 'seekTo', args: [0, true] });
+    } else if (frameKind === 'vimeo') {
+      if (m.cmd === 'play') { postVimeo({ method: 'play' }); if (ytInfo) ytInfo.playing = true; }
+      else if (m.cmd === 'pause') { postVimeo({ method: 'pause' }); if (ytInfo) ytInfo.playing = false; }
+      else if (m.cmd === 'seek') postVimeo({ method: 'setCurrentTime', value: m.value });
+      else if (m.cmd === 'volume') postVimeo({ method: 'setVolume', value: m.value });
+      else if (m.cmd === 'restart') postVimeo({ method: 'setCurrentTime', value: 0 });
+    }
+    if (frameKind) status();
+  }
+
+  /* ---------- messages from the presenter ---------- */
+  bc.onmessage = function (e) {
+    var m = e.data || {};
+    if (m.to && m.to !== id) return;
+    if (m.type === 'show') show(m.item, m.opts);
+    else if (m.type === 'black') { document.getElementById('black').classList.toggle('on', !!m.on); status(); }
+    else if (m.type === 'control') control(m);
+    else if (m.type === 'fit') { layers.forEach(function (L) { L.classList.toggle('fill', m.value === 'cover'); }); }
+    else if (m.type === 'clear') { layers.forEach(function (L) { clearLayer(L); L.classList.remove('on'); }); cur = null; media = null; frame = null; ytInfo = null; document.getElementById('wait').style.display = ''; status(); }
+    else if (m.type === 'ping') status();
+    else if (m.type === 'identify') {
+      var w = document.getElementById('wait'), was = w.style.display;
+      w.style.display = ''; w.querySelector('h1').textContent = 'This is the display screen';
+      setTimeout(function () { w.querySelector('h1').textContent = 'Display ready'; if (cur) w.style.display = was || 'none'; }, 2500);
+    }
+  };
+
+  /* ---------- full screen, sound and cursor ---------- */
+  function goFull() {
+    if (!document.fullscreenElement && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function () {});
+  }
+  function unlockSound() {
+    if (needSound && media) { media.muted = false; media.play().catch(function () {}); }
+    needSound = false; document.getElementById('sound').classList.remove('on'); status();
+  }
+  document.addEventListener('click', function () { goFull(); unlockSound(); });
+  document.addEventListener('dblclick', function () { if (document.fullscreenElement) document.exitFullscreen(); });
+  document.addEventListener('fullscreenchange', function () { document.body.classList.toggle('fs', !!document.fullscreenElement); status(); });
+  var idle;
+  function wake() { document.body.classList.remove('idle'); clearTimeout(idle); idle = setTimeout(function () { document.body.classList.add('idle'); }, 2500); }
+  document.addEventListener('mousemove', wake); wake();
+  window.addEventListener('resize', function () { var t = document.querySelector('.layer.on .txt'); if (t) fitText(t); });
+
+  send({ type: 'hello' });
+  setInterval(function () { send({ type: 'beat', fs: !!document.fullscreenElement }); }, 2000);
+  window.addEventListener('pagehide', function () { send({ type: 'bye' }); });
+  window.__display = { show: show, control: control, get cur() { return cur; }, get media() { return media; } };
+})();
+</script>
+</body>
+</html>
