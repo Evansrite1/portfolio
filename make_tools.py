@@ -22,7 +22,6 @@ CARDS = [
     ('qr-code-generator', 'QR codes', 'QR code generator', 'Links, text, WiFi, WhatsApp, email, phone, SMS, location and contact cards. Add a logo and colors.', 'QR code'),
     ('remove-background', 'Images', 'Background remover', 'Remove the background from any image. Exact for logos, AI cutout for photos. Transparent PNG.', 'Background remover'),
     ('video-compressor', 'Video', 'Video compressor', 'Shrink a big video, like 2 GB down to 500 MB. Trim it or cut it into two parts.', 'Video compressor'),
-    ('whatsapp-qr-code-generator', 'WhatsApp', 'WhatsApp QR code and link', 'A click-to-chat link and QR code with an optional message already typed.', 'WhatsApp QR'),
     ('qr-code-scanner', 'Scanner', 'QR code scanner', 'Read a code from a photo, a screenshot or your camera. Nothing is uploaded.', 'QR scanner'),
     ('wifi-qr-code-generator', 'WiFi', 'WiFi QR code generator', 'Let guests join your network with one scan. Print a clean sign for your wall.', 'WiFi QR'),
 ]
@@ -286,7 +285,7 @@ PAGES['qr-code-generator'] = dict(
 <li><b>Text.</b> Show a message, a code or a short note.</li>
 <li><b>Email.</b> Open a new email with the address, subject and message already filled in.</li>
 <li><b>Phone and SMS.</b> Start a call or a text with one scan.</li>
-<li><b>WhatsApp.</b> Open a chat with your number. See the <a href="/tools/whatsapp-qr-code-generator/">WhatsApp QR code generator</a>.</li>
+<li><b>WhatsApp.</b> Open a chat with your number. See the <a href="/tools/whatsapp-link-generator/">WhatsApp QR code generator</a>.</li>
 <li><b>WiFi.</b> Let guests join your network without typing a password. See the <a href="/tools/wifi-qr-code-generator/">WiFi QR code generator</a>.</li>
 <li><b>Contact card.</b> Save your details to their contacts. Pick the Contact card type above.</li>
 <li><b>Location.</b> Open a point on the map from its coordinates.</li>
@@ -313,7 +312,7 @@ PAGES['qr-code-generator'] = dict(
         ('Is my data private?', 'Yes. The code is generated in your browser. Nothing you type is uploaded or stored by this site.'),
         ('Can I track how many people scan my code?', 'Not with a static code. If you need scan counts, point the code to a link that you control, add tracking parameters to it, and read the results in your analytics tool.'),
     ],
-    related=['remove-background', 'barcode-generator', 'wifi-qr-code-generator', 'whatsapp-qr-code-generator', 'vcard-qr-code-generator', 'qr-code-scanner'])
+    related=['remove-background', 'barcode-generator', 'wifi-qr-code-generator', 'whatsapp-link-generator', 'vcard-qr-code-generator', 'qr-code-scanner'])
 
 PAGES['wifi-qr-code-generator'] = dict(
     title='WiFi QR Code Generator: Share Your Password With a Scan',
@@ -342,39 +341,7 @@ PAGES['wifi-qr-code-generator'] = dict(
         ('Does the QR code stop working if I change the password?', 'Yes. The password is stored inside the code. If you change it, make a new code and replace the printed one.'),
         ('Can I print the WiFi code?', 'Yes. Use the Print button for a clean page with just the code and the network name, or download the SVG for large prints.'),
     ],
-    related=['qr-code-generator', 'whatsapp-qr-code-generator', 'vcard-qr-code-generator', 'qr-code-scanner', 'barcode-generator'])
-
-PAGES['whatsapp-qr-code-generator'] = dict(
-    title='WhatsApp QR Code and Link Generator: Free Click-to-Chat',
-    desc='Create a WhatsApp link and QR code that opens a chat with your number, with an optional message already typed. Free, no sign-up, download PNG or SVG.',
-    h1='WhatsApp QR code and link generator', app='WhatsApp QR Code and Link Generator',
-    lead='Create a wa.me link and a QR code that opens a WhatsApp chat with your number, with an optional message already typed. Put it on flyers, menus, shop windows and websites so customers can message you in one tap.',
-    pills=['No sign-up', 'Link and QR code', 'Pre-filled message', 'Runs in your browser'],
-    tool=qr_tool(['whatsapp'], 'whatsapp'), vendor=['qrcode.js'], own=['bgremove.js', 'qr.js'],
-    sections='''
-<section class="block prose"><h2>How to make a WhatsApp QR code</h2>
-<ol>
-<li><b>Enter your number with the country code.</b> Digits only, no plus sign and no leading zero. For example 2347012345678 for a Nigerian number.</li>
-<li><b>Add a message (optional).</b> It appears already typed in the chat, for example "Hello, I would like to place an order".</li>
-<li><b>Copy the link or download the code.</b> Use the link in bios and buttons, and the QR code on printed material.</li>
-</ol></section>
-<section class="block prose"><h2>Where to use it</h2>
-<ul>
-<li>Shop windows, menus and receipts, so customers can order or ask questions.</li>
-<li>Business cards, flyers and posters.</li>
-<li>Instagram, TikTok and website buttons, using the link.</li>
-<li>Event registration desks and product packaging.</li>
-</ul></section>
-<section class="block prose"><h2>Country codes</h2>
-<p>Nigeria 234, Ghana 233, Kenya 254, South Africa 27, United Kingdom 44, United States and Canada 1, United Arab Emirates 971, Kuwait 965. Remove the leading 0 from the local number before adding the code.</p></section>''',
-    faq=[
-        ('Do I need WhatsApp Business?', 'No. The link and QR code work with a normal WhatsApp account as well as WhatsApp Business.'),
-        ('Will people see my phone number?', 'Yes. The chat opens with your number, so only use a number you are happy to share.'),
-        ('Can customers message me without saving my number?', 'Yes. Scanning the code or tapping the link opens a chat directly.'),
-        ('Why does my link not open the right chat?', 'The number must include the country code and have no plus sign, spaces or leading zero. The tool shows a warning if the number starts with 0.'),
-        ('Does the code expire?', 'No. It is a static code that holds the link. It works for as long as the number is active on WhatsApp.'),
-    ],
-    related=['qr-code-generator', 'vcard-qr-code-generator', 'wifi-qr-code-generator', 'qr-code-scanner', 'barcode-generator'])
+    related=['qr-code-generator', 'whatsapp-link-generator', 'vcard-qr-code-generator', 'qr-code-scanner', 'barcode-generator'])
 
 PAGES['qr-code-scanner'] = dict(
     title='QR Code Scanner Online: Scan From Image or Camera',
@@ -406,7 +373,7 @@ PAGES['qr-code-scanner'] = dict(
         ('Why does the camera not start?', 'The browser needs your permission, and the page must be opened over a secure connection. Allow camera access in your browser settings, or upload an image instead.'),
         ('Is it safe to open a link from a QR code?', 'Only if you trust where it came from. Read the address first. This tool never opens a link for you.'),
     ],
-    related=['qr-code-generator', 'barcode-generator', 'wifi-qr-code-generator', 'whatsapp-qr-code-generator', 'vcard-qr-code-generator'])
+    related=['qr-code-generator', 'barcode-generator', 'wifi-qr-code-generator', 'whatsapp-link-generator', 'vcard-qr-code-generator'])
 
 
 PAGES['remove-background'] = dict(
@@ -448,7 +415,7 @@ PAGES['remove-background'] = dict(
         ('Does it work for logos?', 'Yes, and it works best for them. Logos on a plain background are cleaned exactly, without the AI model.'),
         ('Which model does the AI cutout use?', 'The open-source U2-Net model, in its small version, running through ONNX Runtime Web in your browser.'),
     ],
-    related=['qr-code-generator', 'barcode-generator', 'wifi-qr-code-generator', 'qr-code-scanner', 'whatsapp-qr-code-generator'])
+    related=['qr-code-generator', 'barcode-generator', 'wifi-qr-code-generator', 'qr-code-scanner', 'whatsapp-link-generator'])
 
 # ------------------------------------------------------------------ build pages
 def schema_nodes(slug, p):
@@ -521,8 +488,72 @@ def load_new_tools():
             NAMES[i['slug']] = i['nav']
         PAGES[i['slug']] = mod.PAGE
 
+# Short "how to use" steps for the detailed view of the tools page. Tools without an entry use their page lead.
+HOWTO = {
+    'qr-code-generator': ['Pick what the code should open: a link, WiFi, WhatsApp, a contact and more.', 'Type the details, then add a logo and colours if you like.', 'Download the code as PNG or SVG and print or share it.'],
+    'remove-background': ['Add a photo or a logo.', 'Wait a moment while the background is removed on your device.', 'Download the cut-out as a transparent PNG.'],
+    'video-compressor': ['Add a video.', 'Pick a target size or quality, and trim it if you want.', 'Download the smaller video.'],
+    'qr-code-scanner': ['Open a photo or screenshot of a code, or use your camera.', 'The result appears at once.', 'Copy it or open the link.'],
+    'wifi-qr-code-generator': ['Type your network name and password.', 'Pick a style for the sign.', 'Download it and put it on the wall so guests can scan and join.'],
+    'second-screen-presenter': ['Open the presenter and connect a TV or projector set to extend.', 'Add songs, Bible passages, photos, videos and countdowns to your service.', 'Click a song or double-click anything else to show it on the screen.'],
+    'audio-mastering': ['Open the studio and drop in audio files, or add a MIDI track.', 'Edit, mix and add plugins, or repair noise in the spectral view.', 'Pick a loudness target in Mastering and export WAV or MP3.'],
+    'invoice-generator': ['Pick an invoice design from the gallery.', 'Fill in your business, your customer and the items.', 'Check the live preview, then download the PDF.'],
+    'receipt-generator': ['Pick a receipt design, including festive ones.', 'Fill in your business and what was paid for.', 'Download or print the receipt.'],
+    'pdf-converter': ['Choose To PDF, From PDF or Edit PDF.', 'Add your files with the plus button.', 'Press the main button and download the result.'],
+    'whatsapp-link-generator': ['Pick your country and type your number.', 'Choose a ready message or write your own.', 'Copy the link or download the QR code.'],
+    'video-converter': ['Add a video or an audio file.', 'Pick the format you want, such as MP4, MP3 or a video from your song.', 'Download the converted file.'],
+}
+
+VIEW_SCRIPT = """<script>
+(function () {
+  var root = document.getElementById('tl'), grid = document.getElementById('tl-grid'), q = document.getElementById('tl-q'), cats = document.getElementById('tl-cats'), none = document.getElementById('tl-none'), cat = 'all';
+  function save(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function load(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function setView(v) {
+    if (['tiles', 'list', 'detail'].indexOf(v) < 0) v = 'tiles';
+    grid.className = 'tl-grid tl-' + v;
+    [].forEach.call(root.querySelectorAll('[data-view]'), function (b) { b.setAttribute('aria-pressed', b.dataset.view === v); });
+    save('tools_view', v);
+  }
+  function filter() {
+    var t = q.value.trim().toLowerCase(), shown = 0;
+    [].forEach.call(grid.children, function (c) {
+      var ok = (cat === 'all' || c.dataset.k === cat) && (!t || c.dataset.q.indexOf(t) >= 0);
+      c.hidden = !ok; if (ok) shown++;
+    });
+    none.hidden = shown > 0;
+  }
+  root.addEventListener('click', function (e) {
+    var v = e.target.closest('[data-view]'); if (v) { setView(v.dataset.view); return; }
+    var c = e.target.closest('[data-cat]'); if (c) { cat = c.dataset.cat; [].forEach.call(cats.children, function (x) { x.setAttribute('aria-pressed', x === c); }); filter(); }
+  });
+  q.addEventListener('input', filter);
+  setView(load('tools_view') || 'tiles');
+})();
+</script>"""
+
 def build_hub():
-    tiles = ''.join('<a class="tile" href="/tools/%s/"><i>%s</i><b>%s</b><span>%s</span></a>' % (s, e(k), e(t), e(d)) for s, k, t, d, n in CARDS)
+    cats = []
+    for s, k, t, d, n in CARDS:
+        if k not in cats:
+            cats.append(k)
+    def card(s, k, t, d):
+        how = HOWTO.get(s)
+        if not how and s in PAGES:
+            how = [PAGES[s].get('lead', '')]
+        steps = ''.join('<li>%s</li>' % e(x) for x in (how or []))
+        return ('<a class="tile" href="/tools/%s/" data-k="%s" data-q="%s"><i>%s</i><b>%s</b><span>%s</span>'
+                '<span class="tl-how"><em>How to use</em><ol>%s</ol><u>Open the tool</u></span></a>') % (
+            s, e(k), e((t + ' ' + d + ' ' + k).lower()), e(k), e(t), e(d), steps)
+    tiles = ''.join(card(s, k, t, d) for s, k, t, d, n in CARDS)
+    bar = ('<div class="tl-bar">'
+           '<input type="search" id="tl-q" placeholder="Search the tools" aria-label="Search the tools">'
+           '<div class="tl-views" role="group" aria-label="View">'
+           '<button type="button" data-view="tiles" aria-pressed="true">Tiles</button>'
+           '<button type="button" data-view="list" aria-pressed="false">List</button>'
+           '<button type="button" data-view="detail" aria-pressed="false">Detailed</button></div></div>'
+           '<div class="tl-cats" id="tl-cats" role="group" aria-label="Category"><button type="button" data-cat="all" aria-pressed="true">All</button>%s</div>') % ''.join(
+        '<button type="button" data-cat="%s" aria-pressed="false">%s</button>' % (e(c), e(c)) for c in cats)
     url = SITE + '/tools/'
     nodes = [
         {'@type': 'CollectionPage', '@id': url + '#page', 'url': url, 'name': HUB['title'], 'description': HUB['desc'], 'isPartOf': {'@id': SITE + '/#website'}, 'author': {'@id': SITE + '/#person'}},
@@ -538,11 +569,12 @@ def build_hub():
   <h1>Free tools that work for you</h1>
   <p class="lead">I built these so you can get real work done for free, as much as possible. Shrink a video, cut out a background, make a QR code or send an invoice, right here in your browser.</p>
 </section>
-<section class="block"><div class="grid">%s</div></section>
+<section class="block" id="tl">%s<div class="tl-grid tl-tiles" id="tl-grid">%s</div><p class="help" id="tl-none" hidden>No tool matches that. Try another word.</p></section>
 <div class="narrow">%s</div>
 </div>
 </main>
-%s''' % (tiles, faq_html(HUB['faq']), FOOTER)
+%s
+%s''' % (bar, tiles, faq_html(HUB['faq']), VIEW_SCRIPT, FOOTER)
     d = os.path.join(ROOT, 'tools')
     os.makedirs(d, exist_ok=True)
     open(os.path.join(d, 'index.html'), 'w', encoding='utf-8', newline='\n').write(h + body + '\n</body>\n</html>\n')

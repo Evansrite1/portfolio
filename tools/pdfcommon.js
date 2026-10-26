@@ -1,4 +1,4 @@
-/* Shared helpers for the PDF tools (image to PDF, merge PDF, split PDF).
+/* Shared helpers for the PDF converter.
    Everything runs in the browser. Files are never uploaded. */
 
 export const $ = (id) => document.getElementById(id);
@@ -263,7 +263,8 @@ export function renderResults(box, outputs, zipName) {
     });
     btns.append(zbtn);
   } else {
-    const b = el('button', { type: 'button', class: 'btn primary', text: 'Download PDF' });
+    const ext = (/\.([a-z0-9]+)$/i.exec(outputs[0].name) || [])[1];
+    const b = el('button', { type: 'button', class: 'btn primary', text: 'Download ' + (ext ? ext.toUpperCase() : 'file') });
     b.addEventListener('click', () => saveBlob(outputs[0].blob, outputs[0].name));
     btns.append(b);
   }
@@ -310,6 +311,9 @@ const ICONS = {
   rotl: '<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>',
   trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
   check: '<path d="m5 12.5 4.5 4.5L19 7"/>',
+  left: '<path d="m15 6-6 6 6 6"/>',
+  right: '<path d="m9 6 6 6-6 6"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
   grip: '<circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/>'
 };
 export function icon(name) {

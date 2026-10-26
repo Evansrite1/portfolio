@@ -88,4 +88,4 @@ PAGE = dict(
         ('Will it change the size of my photo?', 'No. The output has the same width and height as the original. Choose PNG for the sharpest result or JPG for a smaller file.'),
         ('Does it change the original file?', 'No. Your original stays as it is. You download new files with -watermarked added to the name.'),
     ],
-    related=['image-converter', 'remove-background', 'color-picker', 'image-to-pdf', 'qr-code-generator'])
+    related=['image-converter', 'remove-background', 'color-picker', 'pdf-converter', 'qr-code-generator'])

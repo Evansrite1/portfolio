@@ -87,4 +87,4 @@ PAGE = dict(
         ('Are my songs saved?', 'Songs you save, your Media library, your song background and the Bible versions you add stay in this browser on this computer. Clearing your browser data removes them, so keep your lyrics somewhere safe too.'),
         ('Who made this and how can I reach them?', 'Evans Ademilua in Lagos, Nigeria. Use Contact the builder inside the presenter to send a message, ask for a feature or say thank you.'),
     ],
-    related=['video-editor', 'video-compressor', 'image-to-pdf', 'screen-recorder', 'qr-code-generator'])
+    related=['video-editor', 'video-compressor', 'pdf-converter', 'screen-recorder', 'qr-code-generator'])

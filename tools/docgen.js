@@ -1,1062 +1,762 @@
 /* docgen.js : shared engine for the free invoice generator and receipt generator.
-   One layout engine builds a list of drawing items in millimetres. The live preview draws them as SVG
-   and the PDF draws the very same items with pdf-lib, so what you see is what you download.
+   Each design is an HTML and CSS template. The live preview shows the template with your data.
+   For the PDF and PNG, the finished document is measured in the browser and every box, line,
+   word and picture is drawn again with pdf-lib (real, selectable text) or on a canvas.
    Everything runs in the browser. Nothing is uploaded. */
 (function () {
 'use strict';
 
-/* ------------------------------------------------------------------ basics */
-const PT = 25.4 / 72;                     // one point in millimetres
 const $ = (id) => document.getElementById(id);
+const SVGNS = 'http://www.w3.org/2000/svg';
+const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const num = (v) => { const n = parseFloat(String(v == null ? '' : v).replace(/,/g, '')); return isFinite(n) ? n : 0; };
 const FONT_FILES = { 400: '/tools/vendor/fonts/NotoSans-400Regular.subset.ttf', 700: '/tools/vendor/fonts/NotoSans-700Bold.subset.ttf' };
 // code point ranges that exist in the vendored font subset
 const OK_RANGES = [[0x20, 0x7e], [0xa0, 0x24f], [0x370, 0x3ff], [0x400, 0x4ff], [0x1e00, 0x1eff], [0x2000, 0x206f], [0x20a0, 0x20cf],
   [0x2100, 0x214f], [0x2190, 0x2193], [0x2212, 0x2212], [0x2215, 0x2215], [0x221e, 0x221e], [0x2248, 0x2248], [0x2260, 0x2260],
   [0x2264, 0x2265], [0x25cf, 0x25cf]];
 const okCp = (cp) => OK_RANGES.some((r) => cp >= r[0] && cp <= r[1]);
-let replacedChars = false;
 
-function clean(s) {
-  s = String(s == null ? '' : s).normalize('NFC').replace(/\r\n?/g, '\n').replace(/\t/g, ' ')
-    .replace(/[\u2012-\u2015]/g, '-')
-    .replace(/[\u00ad\u200b-\u200f\u2028-\u202e\u2060-\u206f\ufeff]/g, '');
-  let out = '';
-  for (const ch of s) {
-    const cp = ch.codePointAt(0);
-    if (cp === 10) out += ch;
-    else if (cp < 32) continue;
-    else if (okCp(cp)) out += ch;
-    else { out += '?'; replacedChars = true; }
-  }
-  return out;
+/* ------------------------------------------------------------------ money */
+// code, symbol, decimals, name
+const CURRENCIES = [
+  ['NGN', '\u20a6', 2, 'Nigerian naira'], ['USD', '$', 2, 'US dollar'], ['GBP', '\u00a3', 2, 'British pound'], ['EUR', '\u20ac', 2, 'Euro'],
+  ['KES', 'KSh ', 2, 'Kenyan shilling'], ['GHS', 'GH\u20b5', 2, 'Ghanaian cedi'], ['ZAR', 'R ', 2, 'South African rand'],
+  ['XOF', 'CFA ', 0, 'West African CFA franc'], ['XAF', 'FCFA ', 0, 'Central African CFA franc'], ['UGX', 'USh ', 0, 'Ugandan shilling'],
+  ['TZS', 'TSh ', 0, 'Tanzanian shilling'], ['RWF', 'FRw ', 0, 'Rwandan franc'], ['EGP', 'E\u00a3', 2, 'Egyptian pound'],
+  ['MAD', 'MAD ', 2, 'Moroccan dirham'], ['AED', 'AED ', 2, 'UAE dirham'], ['SAR', 'SAR ', 2, 'Saudi riyal'], ['QAR', 'QAR ', 2, 'Qatari riyal'],
+  ['KWD', 'KD ', 3, 'Kuwaiti dinar'], ['INR', '\u20b9', 2, 'Indian rupee'], ['CAD', 'CA$', 2, 'Canadian dollar'], ['AUD', 'A$', 2, 'Australian dollar'],
+  ['JPY', '\u00a5', 0, 'Japanese yen'], ['CNY', 'CN\u00a5', 2, 'Chinese yuan'], ['CHF', 'CHF ', 2, 'Swiss franc'], ['BRL', 'R$', 2, 'Brazilian real']];
+const curOf = (code) => CURRENCIES.find((c) => c[0] === code) || CURRENCIES[0];
+const nfCache = {};
+function money(n, code) {
+  const c = curOf(code), dec = c[2];
+  const nf = nfCache[dec] || (nfCache[dec] = new Intl.NumberFormat('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }));
+  return (n < 0 ? '-' : '') + c[1] + nf.format(Math.abs(n));
 }
-const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-const r3 = (n) => Math.round(n * 1000) / 1000;
+function calc(d) {
+  const dec = curOf(d.currency)[2], f = Math.pow(10, dec);
+  const rd = (x) => Math.round((x + (x >= 0 ? 1 : -1) * Number.EPSILON) * f) / f;
+  const lines = d.items.map((it) => rd(num(it.qty) * num(it.price)));
+  const sub = rd(lines.reduce((a, b) => a + b, 0));
+  let disc = d.discType === 'fixed' ? rd(num(d.discount)) : rd(sub * num(d.discount) / 100);
+  disc = Math.min(Math.max(disc, 0), Math.max(sub, 0));
+  const taxable = rd(sub - disc), taxRate = Math.max(0, num(d.taxRate));
+  const tax = rd(taxable * taxRate / 100), total = rd(taxable + tax);
+  const paidEmpty = String(d.paid == null ? '' : d.paid).trim() === '';
+  const paid = paidEmpty ? (d.kind === 'receipt' ? total : 0) : rd(Math.max(0, num(d.paid)));
+  return { lines, sub, disc, taxable, tax, taxRate, total, paid, paidEmpty, balance: rd(Math.max(total - paid, 0)), change: rd(Math.max(paid - total, 0)) };
+}
 
-/* ------------------------------------------------------------------ fonts and text measuring */
-let fontsReady = null;
-function loadFonts() {
-  if (fontsReady) return fontsReady;
-  fontsReady = Promise.all(Object.keys(FONT_FILES).map((w) =>
-    new FontFace('DocSans', 'url(' + FONT_FILES[w] + ')', { weight: String(w) }).load().then((f) => { document.fonts.add(f); })
-  ));
-  return fontsReady;
+/* ------------------------------------------------------------------ dates and numbers */
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+function ymd(dt) { return dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0'); }
+function fdate(s) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || '');
+  return m ? (+m[3]) + ' ' + MONTHS[+m[2] - 1] + ' ' + m[1] : (s || '');
 }
-const mctx = document.createElement('canvas').getContext('2d');
-if ('fontKerning' in mctx) mctx.fontKerning = 'none';
-const mcache = new Map();
-function tw(s, size, bold) {
-  const key = (bold ? 'b' : 'r') + s;
-  let w = mcache.get(key);
-  if (w === undefined) {
-    mctx.font = (bold ? '700' : '400') + ' 100px DocSans';
-    w = mctx.measureText(s).width / 100;
-    mcache.set(key, w);
-  }
-  return w * size * PT;
-}
-function wrap(s, w, size, bold) {
-  const out = [];
-  String(s).split('\n').forEach((par) => {
-    if (par === '') { out.push(''); return; }
-    let line = '';
-    par.split(' ').forEach((wd) => {
-      const t = line ? line + ' ' + wd : wd;
-      if (tw(t, size, bold) <= w) { line = t; return; }
-      if (line) { out.push(line); line = ''; }
-      if (tw(wd, size, bold) <= w) { line = wd; return; }
-      let chunk = '';
-      for (const ch of wd) {
-        if (chunk && tw(chunk + ch, size, bold) > w) { out.push(chunk); chunk = ch; } else chunk += ch;
-      }
-      line = chunk;
-    });
-    out.push(line);
-  });
-  return out;
-}
-function fit(s, w, size, bold) {
-  s = String(s).replace(/\n/g, ' ');
-  if (tw(s, size, bold) <= w) return s;
-  while (s.length > 1 && tw(s + '...', size, bold) > w) s = s.slice(0, -1);
-  return s + '...';
+function addDays(s, n) { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || ''); if (!m) return ''; return ymd(new Date(+m[1], +m[2] - 1, +m[3] + n)); }
+function nextNo(s) {
+  s = String(s || '');
+  const m = /^(.*?)(\d+)(\D*)$/.exec(s);
+  if (!m) return s ? s + '-2' : '';
+  const n = String(+m[2] + 1);
+  return m[1] + (n.length < m[2].length ? '0'.repeat(m[2].length - n.length) + n : n) + m[3];
 }
 
 /* ------------------------------------------------------------------ colours */
-function hex2rgb(h) {
-  h = String(h || '#000000').replace('#', '');
-  if (h.length === 3) h = h.split('').map((c) => c + c).join('');
-  const n = parseInt(h, 16) || 0;
-  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-}
-const toHex = (a) => '#' + a.map((v) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('');
-function lum(h) {
-  const c = hex2rgb(h).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
-  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
-}
-function inkOn(h) { const L = lum(h); return (1.05 / (L + 0.05)) >= ((L + 0.05) / 0.05) ? '#ffffff' : '#111418'; }
-function mixHex(h, other, t) { const a = hex2rgb(h), b = hex2rgb(other); return toHex(a.map((v, i) => v + (b[i] - v) * t)); }
-function readable(h) { let k = 0; while ((1.05 / (lum(h) + 0.05)) < 4.5 && k < 12) { h = mixHex(h, '#000000', 0.12); k++; } return h; }
-
-/* ------------------------------------------------------------------ money and totals */
-const CURRENCY_FALLBACK = 'NGN USD EUR GBP KES GHS ZAR AED KWD CAD AUD INR EGP SAR QAR BHD OMR JOD MAD TZS UGX RWF XOF XAF ETB ZMW BWP NAD MUR PKR BDT LKR NPR CNY JPY KRW SGD MYR IDR THB PHP VND HKD NZD CHF SEK NOK DKK PLN CZK HUF RON TRY BRL MXN ARS CLP COP PEN ILS UAH RUB'.split(' ');
-const POPULAR = ['NGN', 'USD', 'EUR', 'GBP', 'KES', 'GHS', 'ZAR', 'AED', 'KWD', 'CAD', 'AUD', 'INR', 'EGP'];
-
-function makeFmt(cur, useCode) {
-  const mk = (display, extra) => new Intl.NumberFormat('en', Object.assign({ style: 'currency', currency: cur, currencyDisplay: display }, extra || {}));
-  let nf, nfc, rf, rfc, dec = 2;
-  try {
-    nf = mk(useCode ? 'code' : 'narrowSymbol');
-    nfc = mk('code');
-    dec = nf.resolvedOptions().maximumFractionDigits;
-    rf = mk(useCode ? 'code' : 'narrowSymbol', { minimumFractionDigits: dec, maximumFractionDigits: Math.max(dec, 4) });
-    rfc = mk('code', { minimumFractionDigits: dec, maximumFractionDigits: Math.max(dec, 4) });
-  } catch (e) {
-    const plain = { format: (n) => cur + ' ' + n.toFixed(2) };
-    nf = nfc = rf = rfc = plain;
-  }
-  const safe = (s) => { for (const ch of s) if (!okCp(ch.codePointAt(0))) return false; return true; };
-  const k = Math.pow(10, dec);
-  const f = (minor) => { const a = nf.format(minor / k); return safe(a) ? a : nfc.format(minor / k); };
-  const fr = (major) => { const a = rf.format(major); return safe(a) ? a : rfc.format(major); };
-  return { dec: dec, k: k, money: f, rate: fr };
-}
-const rnd = (x) => Math.round(+x.toPrecision(12));       // round half up, safe against 1.005 style float noise
-const numOk = (n) => typeof n === 'number' && isFinite(n);
-const trimNum = (n) => String(+(+n).toFixed(3));
-
-function calc(M, fm) {
-  const k = fm.k;
-  const lines = [];
-  M.items.forEach((it) => {
-    const qty = numOk(it.qty) ? it.qty : 0, rate = numOk(it.rate) ? it.rate : 0;
-    const taxPct = numOk(it.tax) && it.tax > 0 ? it.tax : 0;
-    if (!it.desc && !(qty && rate)) return;
-    lines.push({ desc: it.desc, qty: qty, rate: rate, taxPct: taxPct, amt: rnd(qty * rate * k), ph: !!it.ph });
-  });
-  const subtotal = lines.reduce((s, l) => s + l.amt, 0);
-  let discount = 0;
-  const dv = numOk(M.disc.val) ? M.disc.val : 0;
-  if (M.disc.type === 'pct') discount = rnd(subtotal * Math.min(Math.max(dv, 0), 100) / 100);
-  else discount = Math.min(Math.max(rnd(dv * k), 0), Math.max(subtotal, 0));
-  const f = subtotal > 0 ? (subtotal - discount) / subtotal : 1;
-  const groups = {};
-  let lineTax = 0;
-  lines.forEach((l) => {
-    l.tax = l.taxPct ? rnd(l.amt * f * l.taxPct / 100) : 0;
-    lineTax += l.tax;
-    if (l.taxPct) groups[l.taxPct] = (groups[l.taxPct] || 0) + l.tax;
-  });
-  const taxGroups = Object.keys(groups).map((r) => ({ rate: +r, amt: groups[r] })).sort((a, b) => a.rate - b.rate);
-  const pct = numOk(M.taxPct) && M.taxPct > 0 ? M.taxPct : 0;
-  const overallTax = pct ? rnd((subtotal - discount) * pct / 100) : 0;
-  const shipping = numOk(M.shipping) ? rnd(M.shipping * k) : 0;
-  const total = subtotal - discount + lineTax + overallTax + shipping;
-  const out = { dec: fm.dec, lines: lines, subtotal: subtotal, discount: discount, taxGroups: taxGroups, lineTax: lineTax, overallTax: overallTax, shipping: shipping, total: total };
-  if (M.kind === 'receipt') {
-    out.received = numOk(M.paid) ? rnd(M.paid * k) : total;
-    out.change = Math.max(0, out.received - total);
-    out.owing = Math.max(0, total - out.received);
-  } else {
-    out.paid = numOk(M.paid) ? rnd(M.paid * k) : 0;
-    out.balance = Math.max(0, total - out.paid);
-    out.over = Math.max(0, out.paid - total);
-  }
-  return out;
+function hexRgb(h) { h = String(h || '').replace('#', ''); if (h.length === 3) h = h.replace(/./g, '$&$&'); const v = parseInt(h, 16); return isNaN(v) ? [30, 58, 138] : [v >> 16 & 255, v >> 8 & 255, v & 255]; }
+function rgbHex(a) { return '#' + a.map((v) => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, '0')).join(''); }
+function mix(h, o, t) { const a = hexRgb(h), b = hexRgb(o); return rgbHex(a.map((v, i) => v + (b[i] - v) * t)); }
+function accentVars(h) { return '--ac:' + h + ';--ac1:' + mix(h, '#ffffff', 0.9) + ';--ac2:' + mix(h, '#ffffff', 0.75) + ';--acd:' + mix(h, '#000000', 0.35) + ';'; }
+function parseColor(s) {
+  if (!s || s === 'transparent') return null;
+  let m = /rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)(?:[\s,/]+([\d.]+%?))?\s*\)/.exec(s);
+  if (!m) { m = /color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+%?))?\)/.exec(s); if (m) { m = [m[0], m[1] * 255, m[2] * 255, m[3] * 255, m[4]]; } }
+  if (!m) return null;
+  let a = m[4] == null ? 1 : String(m[4]).endsWith('%') ? parseFloat(m[4]) / 100 : parseFloat(m[4]);
+  if (!(a > 0)) return null;
+  return { r: +m[1] / 255, g: +m[2] / 255, b: +m[3] / 255, a: a };
 }
 
-/* ------------------------------------------------------------------ dates */
-function fdate(s) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(s || '')) return '';
-  const p = s.split('-').map(Number);
-  const d = new Date(p[0], p[1] - 1, p[2]);
-  try { return new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(d).replace(/\u202f/g, ' '); } catch (e) { return s; }
-}
-function ymd(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
-function addDays(s, n) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(s || '')) return '';
-  const p = s.split('-').map(Number);
-  return ymd(new Date(p[0], p[1] - 1, p[2] + n));
-}
-function nextNo(s) {
-  s = String(s || '').trim();
-  const m = /^(.*?)(\d+)(\D*)$/.exec(s);
-  if (!m) return (s || 'INV') + '-2';
-  const n = String(parseInt(m[2], 10) + 1).padStart(m[2].length, '0');
-  return m[1] + n + m[3];
-}
+/* ------------------------------------------------------------------ path helpers */
+function getP(o, k) { return k.split('.').reduce((a, p) => (a == null ? a : a[p]), o); }
+function setP(o, k, v) { const ps = k.split('.'); let a = o; for (let i = 0; i < ps.length - 1; i++) { if (a[ps[i]] == null) a[ps[i]] = {}; a = a[ps[i]]; } a[ps[ps.length - 1]] = v; }
 
-/* ------------------------------------------------------------------ layout builder */
-const PAPERS = { a4: { w: 210, h: 297 }, letter: { w: 215.9, h: 279.4 }, a5: { w: 148, h: 210 }, thermal: { w: 80, h: 0 } };
-const GRAY = '#555b63', GRAY2 = '#9aa0a8', INK = '#15181d', HAIR = '#d5d8dd';
-
-class Builder {
-  constructor(W, H, m, auto) { this.W = W; this.H = H; this.m = m; this.auto = auto; this.cw = W - 2 * m; this.pages = [{ items: [] }]; this.y = m; }
-  get items() { return this.pages[this.pages.length - 1].items; }
-  limit() { return this.auto ? 1e9 : this.H - this.m - 4; }
-  fits(h) { return this.y + h <= this.limit(); }
-  newPage() { this.pages.push({ items: [] }); this.y = this.m; }
-  rect(x, y, w, h, fill) { this.items.push({ t: 'r', x: x, y: y, w: w, h: h, fill: fill }); }
-  line(x1, y1, x2, y2, w, color, dash) { this.items.push({ t: 'l', x1: x1, y1: y1, x2: x2, y2: y2, w: w, color: color, dash: dash }); }
-  img(x, y, w, h, src) { this.items.push({ t: 'i', x: x, y: y, w: w, h: h, src: src }); }
-  text(x, top, s, o) {
-    if (s === '' || s == null) return;
+/* ------------------------------------------------------------------ template helpers */
+// mode: 'edit' (preview, editable, placeholders), 'thumb' (gallery), 'export' (PDF, PNG, print)
+function helpers(d, mode, kind) {
+  const T = calc(d), ed = mode === 'edit';
+  const H = { d, T, mode, kind, esc, money: (n) => money(n, d.currency), fdate };
+  const nl = (s) => esc(s).replace(/\n/g, '<br>');
+  // editable text. o: {ml: multi line, n: number}
+  H.t = function (key, ph, o) {
     o = o || {};
-    const size = o.size || 9.3, em = size * PT, lh = em * (o.lh || 1.4);
-    const base = top + (lh - em * 1.362) / 2 + em * 1.069;
-    const w = tw(s, size, o.bold);
-    const ax = o.align === 'r' ? x - w : (o.align === 'c' ? x - w / 2 : x);
-    this.items.push({ t: 't', x: ax, y: base, s: s, size: size, bold: !!o.bold, color: o.color || INK });
-  }
-  // wrapped paragraph, returns its height
-  para(x, y, str, w, o) {
+    const v = getP(d, key);
+    const s = v == null ? '' : String(v);
+    if (!ed) return nl(s);
+    const a = ' contenteditable="true" spellcheck="false" data-k="' + key + '"' + (o.ml ? ' data-ml="1"' : '') + (o.n ? ' data-n="1"' : '');
+    if (!s.trim() && ph) return '<span class="ek is-ph"' + a + '>' + esc(ph) + '</span>';
+    return '<span class="ek"' + a + '>' + nl(s) + '</span>';
+  };
+  H.has = (key) => ed || String(getP(d, key) == null ? '' : getP(d, key)).trim() !== '';
+  // a line only when there is something to show (always in edit mode, with a placeholder)
+  H.line = (key, ph, cls, o) => H.has(key) ? '<div class="' + (cls || '') + '">' + H.t(key, ph, o) + '</div>' : '';
+  H.title = (def) => { if (!String(d.title || '').trim() && !ed) return esc(def); return H.t('title', def); };
+  H.logo = (cls) => d.biz.logo ? '<img class="logo ' + (cls || '') + '" src="' + d.biz.logo + '" alt="">' : '';
+  H.initials = () => { const w = String(d.biz.name || 'Your Business').trim().split(/\s+/).filter(Boolean); return esc(((w[0] || '')[0] || '') + ((w[1] || '')[0] || '')).toUpperCase(); };
+  H.mark = (cls) => d.biz.logo ? H.logo(cls) : '<div class="mono ' + (cls || '') + '">' + H.initials() + '</div>';
+  H.bizName = (ph) => H.t('biz.name', ph || 'Your business name');
+  H.biz = function (o) {
     o = o || {};
-    const size = o.size || 9.3, lh = size * PT * (o.lh || 1.4);
-    const ls = wrap(str, w, size, o.bold);
-    ls.forEach((l, i) => { if (l) this.text(x, y + i * lh, l, o); });
-    return ls.length * lh;
-  }
-}
-const lineH = (size, k) => size * PT * (k || 1.4);
-function fitImg(im, maxW, maxH) { const s = Math.min(maxW / im.w, maxH / im.h); return { w: im.w * s, h: im.h * s }; }
-
-/* ------------------------------------------------------------------ page layout (invoice, A4, Letter, A5 receipt) */
-function layoutPage(M) {
-  const P = PAPERS[M.paper] || PAPERS.a4;
-  const S = P.w < 160 ? 0.9 : 1;
-  const b = new Builder(P.w, P.h, P.w < 160 ? 12 : 15, false);
-  const W = b.W, m = b.m, cw = b.cw, c = M.calc, fmt = M.fmt.money, isR = M.kind === 'receipt', tpl = M.tpl;
-  const acc = M.accent, accT = readable(acc), accOn = inkOn(acc);
-  const F = { b: 9.3 * S, s: 8.2 * S, xs: 7.1 * S };
-  const bizPh = !M.biz.name;
-  const metaRows = isR
-    ? [['Receipt no.', M.no], ['Date', fdate(M.issue)], ['Time', M.time], ['Cashier', M.cashier]]
-    : [['Invoice no.', M.no], ['Issue date', fdate(M.issue)], ['Due date', fdate(M.due)]];
-  const meta = metaRows.filter((r) => r[1]);
-  const title = tpl === 'minimal' ? (isR ? 'Receipt' : 'Invoice') : (isR ? 'RECEIPT' : 'INVOICE');
-
-  const bizLines = [M.biz.addr, M.biz.email, M.biz.phone, M.biz.tax ? 'Tax ID: ' + M.biz.tax : ''].filter(Boolean);
-
-  function metaBlock(x, y, w) {
-    const rh = lineH(F.s, 1.5);
-    meta.forEach((r, i) => {
-      b.text(x, y + i * rh, r[0], { size: F.s, color: GRAY });
-      b.text(x + w, y + i * rh, fit(r[1], w - 26, F.s, true), { size: F.s, bold: true, align: 'r' });
+    return '<div class="biz">' + (o.noName ? '' : '<div class="bn">' + H.bizName() + '</div>') +
+      H.line('biz.addr', 'Address', 'ba', { ml: 1 }) + H.line('biz.phone', 'Phone', 'bp') + H.line('biz.email', 'Email', 'be') + '</div>';
+  };
+  H.cust = function (label) {
+    if (!ed && !String(d.cust.name || '').trim() && !String(d.cust.contact || '').trim()) return '';
+    return '<div class="cust">' + (label ? '<div class="lbl">' + esc(label) + '</div>' : '') +
+      H.line('cust.name', kind === 'invoice' ? 'Customer name' : 'Customer name (optional)', 'cn') + H.line('cust.contact', 'Phone or email', 'cc') + '</div>';
+  };
+  H.noLabel = kind === 'invoice' ? 'Invoice no.' : 'Receipt no.';
+  H.metaRows = function () {
+    const r = [[H.noLabel, H.t('no', kind === 'invoice' ? 'INV-0001' : 'RCT-0001')], ['Date', esc(fdate(d.date))]];
+    if (kind === 'invoice') { if (d.due) r.push(['Due date', esc(fdate(d.due))]); }
+    else { if (d.time) r.push(['Time', esc(d.time)]); if (d.method) r.push(['Paid by', esc(d.method)]); }
+    return r;
+  };
+  H.meta = (cls) => '<div class="meta ' + (cls || '') + '">' + H.metaRows().map((r) => '<div class="mr"><span class="ml">' + r[0] + '</span><span class="mv">' + r[1] + '</span></div>').join('') + '</div>';
+  // rows that are shown: in export mode, empty rows are left out
+  H.rows = function () {
+    const out = [];
+    d.items.forEach((it, i) => {
+      const empty = !String(it.desc || '').trim() && !T.lines[i];
+      if (empty && !ed) return;
+      out.push({ i, it, amt: T.lines[i] });
     });
-    return meta.length * rh;
-  }
-
-  /* ---- header: returns the y below it */
-  function header() {
-    if (tpl === 'bold') {
-      let tx = W - m, plateW = 0, plateH = 0, logo = null;
-      if (M.biz.logo) { logo = fitImg(M.biz.logo, 34, 18); plateW = logo.w + 5; plateH = logo.h + 5; tx = W - m - plateW - 5; }
-      const nameSize = 13 * S, lw = cw * 0.5;
-      const nameLines = wrap(M.biz.name || 'Your business name', lw, nameSize, true);
-      let th = nameLines.length * lineH(nameSize, 1.3);
-      const det = [];
-      bizLines.forEach((l) => wrap(l, lw, F.s).forEach((x) => det.push(x)));
-      th += det.length * lineH(F.s, 1.4) + 1;
-      const bandH = Math.max(36 * S, th + 14, plateH + 12);
-      b.rect(0, 0, W, bandH, acc);
-      b.text(m, 9, title, { size: 26 * S, bold: true, color: accOn });
-      if (M.no) b.text(m, 9 + lineH(26 * S, 1.2) + 1, '# ' + M.no, { size: F.b, color: accOn });
-      let ty = (bandH - th) / 2;
-      nameLines.forEach((l, i) => b.text(tx, ty + i * lineH(nameSize, 1.3), l, { size: nameSize, bold: true, color: accOn, align: 'r' }));
-      ty += nameLines.length * lineH(nameSize, 1.3) + 1;
-      det.forEach((l, i) => b.text(tx, ty + i * lineH(F.s, 1.4), l, { size: F.s, color: accOn, align: 'r' }));
-      if (logo) {
-        const px = W - m - plateW, py = (bandH - plateH) / 2;
-        b.rect(px, py, plateW, plateH, '#ffffff');
-        b.img(px + 2.5, py + 2.5, logo.w, logo.h, M.biz.logo.dataUrl);
-      }
-      return bandH + 9;
-    }
-    if (tpl === 'minimal') {
-      let y = m, ly = y;
-      if (M.biz.logo) { const d = fitImg(M.biz.logo, 36, 14); b.img(m, ly, d.w, d.h, M.biz.logo.dataUrl); ly += d.h + 3; }
-      ly += b.para(m, ly, M.biz.name || 'Your business name', cw * 0.6, { size: 11.5 * S, bold: true, color: bizPh ? GRAY2 : INK }) + 0.5;
-      b.text(W - m, y, title, { size: 11.5 * S, align: 'r', color: GRAY });
-      b.line(m, ly + 3, W - m, ly + 3, 0.25, INK);
-      b.line(m, ly + 3, m + 14, ly + 3, 0.9, acc);
-      return ly + 10;
-    }
-    // clean
-    const y = m, lw = cw * 0.54;
-    let ly = y;
-    if (M.biz.logo) { const d = fitImg(M.biz.logo, 46, 17 * S); b.img(m, ly, d.w, d.h, M.biz.logo.dataUrl); ly += d.h + 3; }
-    ly += b.para(m, ly, M.biz.name || 'Your business name', lw, { size: 14.5 * S, bold: true, color: bizPh ? GRAY2 : INK }) + 0.6;
-    bizLines.forEach((l) => { ly += b.para(m, ly, l, lw, { size: F.s, color: GRAY }); });
-    b.text(W - m, y, title, { size: 25 * S, bold: true, color: accT, align: 'r' });
-    const ry = y + lineH(25 * S, 1.25) + 2;
-    const mh = metaBlock(W - m - 62, ry, 62);
-    return Math.max(ly, ry + mh) + 8;
-  }
-
-  /* ---- bill to / figure */
-  function parties(y) {
-    const colW = cw * 0.5;
-    const showC = !isR || M.client.name || M.client.addr || M.client.email;
-    let hh = 0;
-    if (showC) {
-      b.text(m, y, isR ? 'RECEIVED FROM' : 'BILL TO', { size: F.xs, bold: true, color: GRAY });
-      let cy = y + lineH(F.xs, 1.4) + 0.6;
-      cy += b.para(m, cy, M.client.name || (isR ? '' : 'Client name'), colW, { size: 10.5 * S, bold: true, color: M.client.name ? INK : GRAY2 }) + 0.4;
-      if (M.client.addr) cy += b.para(m, cy, M.client.addr, colW, { size: F.s, color: GRAY });
-      if (M.client.email) cy += b.para(m, cy, M.client.email, colW, { size: F.s, color: GRAY });
-      hh = cy - y;
-    }
-    if (tpl === 'clean') {
-      const x = W - m;
-      b.text(x, y, isR ? 'AMOUNT PAID' : 'BALANCE DUE', { size: F.xs, bold: true, color: GRAY, align: 'r' });
-      b.text(x, y + lineH(F.xs, 1.4) + 0.4, fmt(isR ? c.received : c.balance), { size: 18 * S, bold: true, color: accT, align: 'r' });
-      let sub = '';
-      if (isR) sub = M.method ? 'Paid by ' + M.method : '';
-      else if (M.due) sub = 'Due ' + fdate(M.due);
-      if (sub) b.text(x, y + lineH(F.xs, 1.4) + 0.4 + lineH(18 * S, 1.25) + 0.5, sub, { size: F.s, color: GRAY, align: 'r' });
-      hh = Math.max(hh, lineH(F.xs, 1.4) + lineH(18 * S, 1.25) + 6);
-    } else {
-      const mw = Math.min(70, cw * 0.46);
-      hh = Math.max(hh, metaBlock(W - m - mw, y, mw));
-    }
-    return y + hh + 9;
-  }
-
-  /* ---- items table */
-  const hasTax = !isR && c.lines.some((l) => l.taxPct > 0);
-  const pad = tpl === 'bold' ? 2.5 : 0;
-  const amtW = 30 * S, rateW = 27 * S, qtyW = 13 * S, taxW = 13 * S, gap = 2;
-  const eAmt = W - m - pad;
-  const eTax = eAmt - amtW - gap;
-  const eRate = hasTax ? eTax - taxW - gap : eTax;
-  const eQty = eRate - rateW - gap;
-  const dX = m + pad, dW = eQty - qtyW - gap - dX - 1;
-
-  function thead(y) {
-    const hh = 8.2 * S;
-    const col = tpl === 'bold' ? accOn : (tpl === 'minimal' ? GRAY : accT);
-    if (tpl === 'bold') b.rect(m, y, cw, hh, acc);
-    const o = { size: F.xs, bold: true, color: col };
-    const ty = y + (hh - lineH(F.xs, 1.4)) / 2;
-    b.text(dX, ty, isR ? 'ITEM' : 'DESCRIPTION', o);
-    b.text(eQty, ty, 'QTY', Object.assign({ align: 'r' }, o));
-    b.text(eRate, ty, isR ? 'PRICE' : 'RATE', Object.assign({ align: 'r' }, o));
-    if (hasTax) b.text(eTax, ty, 'TAX', Object.assign({ align: 'r' }, o));
-    b.text(eAmt, ty, 'AMOUNT', Object.assign({ align: 'r' }, o));
-    if (tpl === 'clean') b.line(m, y + hh, W - m, y + hh, 0.5, acc);
-    if (tpl === 'minimal') b.line(m, y + hh, W - m, y + hh, 0.25, INK);
-    return hh;
-  }
-
-  function table() {
-    b.y += thead(b.y);
-    const items = c.lines.length ? c.lines : [{ desc: isR ? 'Item name' : 'Item description', qty: 1, rate: 0, amt: 0, taxPct: 0, ph: true }];
-    items.forEach((l, i) => {
-      const dl = wrap(l.desc, dW, F.b);
-      const rh = Math.max(dl.length, 1) * lineH(F.b, 1.35) + 4.4;
-      if (!b.fits(rh)) { b.newPage(); b.y += thead(b.y); }
-      const y = b.y;
-      if (tpl === 'bold' && i % 2 === 1) b.rect(m, y, cw, rh, mixHex(acc, '#ffffff', 0.93));
-      const ty = y + 2.2, col = l.ph ? GRAY2 : INK;
-      dl.forEach((t, j) => b.text(dX, ty + j * lineH(F.b, 1.35), t, { size: F.b, lh: 1.35, color: col }));
-      const nq = { size: F.b, lh: 1.35, align: 'r', color: col };
-      b.text(eQty, ty, trimNum(l.qty), nq);
-      b.text(eRate, ty, M.fmt.rate(l.rate), nq);
-      if (hasTax) b.text(eTax, ty, l.taxPct ? trimNum(l.taxPct) + '%' : '-', { size: F.b, lh: 1.35, align: 'r', color: l.taxPct ? col : GRAY2 });
-      b.text(eAmt, ty, fmt(l.amt), { size: F.b, lh: 1.35, align: 'r', bold: true, color: col });
-      if (tpl !== 'bold') b.line(m, y + rh, W - m, y + rh, 0.2, HAIR);
-      b.y += rh;
+    return out;
+  };
+  H.desc = (r) => H.t('items.' + r.i + '.desc', 'Item description');
+  // numbers show formatted, and switch to the plain number while they are being edited
+  const numEd = (key, shown) => '<span class="ek" contenteditable="true" spellcheck="false" inputmode="decimal" data-k="' + key + '" data-n="1" data-raw="' + esc(getP(d, key) == null ? '' : getP(d, key)) + '">' + esc(shown) + '</span>';
+  H.qty = (r) => ed ? numEd('items.' + r.i + '.qty', fmtQty(r.it.qty)) : esc(fmtQty(r.it.qty));
+  H.price = (r) => ed ? numEd('items.' + r.i + '.price', H.money(num(r.it.price))) : esc(H.money(num(r.it.price)));
+  H.amt = (r) => esc(H.money(r.amt));
+  // a normal items table. o: {num: row numbers, heads: [desc, qty, price, amount]}
+  H.items = function (o) {
+    o = o || {};
+    const hd = o.heads || ['Description', 'Qty', kind === 'invoice' ? 'Rate' : 'Price', 'Amount'];
+    let s = '<table class="it"><thead><tr>' + (o.num ? '<th class="c-n">#</th>' : '') + '<th class="c-d">' + hd[0] + '</th><th class="c-q r">' + hd[1] + '</th><th class="c-p r">' + hd[2] + '</th><th class="c-a r">' + hd[3] + '</th></tr></thead><tbody>';
+    H.rows().forEach((r, k) => {
+      s += '<tr class="pb">' + (o.num ? '<td class="c-n">' + (k + 1) + '</td>' : '') + '<td class="c-d">' + H.desc(r) + '</td><td class="c-q r">' + H.qty(r) + '</td><td class="c-p r">' + H.price(r) + '</td><td class="c-a r">' + H.amt(r) + '</td></tr>';
     });
-    b.y += 5;
-  }
-
-  /* ---- totals and side notes */
-  function totalsRows() {
-    const r = [];
-    r.push({ l: 'Subtotal', v: fmt(c.subtotal) });
-    if (c.discount) r.push({ l: 'Discount' + (M.disc.type === 'pct' && M.disc.val ? ' (' + trimNum(M.disc.val) + '%)' : ''), v: '-' + fmt(c.discount) });
-    c.taxGroups.forEach((g) => r.push({ l: 'Tax (' + trimNum(g.rate) + '%)', v: fmt(g.amt) }));
-    if (M.taxPct > 0) r.push({ l: (M.taxName || 'Tax') + ' (' + trimNum(M.taxPct) + '%)', v: fmt(c.overallTax) });
-    if (c.shipping) r.push({ l: 'Shipping', v: fmt(c.shipping) });
-    r.push({ l: 'Total', v: fmt(c.total), bold: true, top: true, size: F.b + 1.2 });
-    if (isR) {
-      r.push({ l: 'Amount received', v: fmt(c.received) });
-      if (c.change > 0) r.push({ l: 'Change', v: fmt(c.change), bold: true });
-      else if (c.owing > 0) r.push({ l: 'Balance owing', v: fmt(c.owing), final: true });
+    return s + '</tbody></table>';
+  };
+  // receipt style list: description, then "2 x 1,500.00" and the amount
+  H.list = function () {
+    return '<div class="il">' + H.rows().map((r) => '<div class="ir pb"><div class="id">' + H.desc(r) + '</div><div class="iq"><span>' + H.qty(r) + ' x ' + H.price(r) + '</span><span class="ia">' + H.amt(r) + '</span></div></div>').join('') + '</div>';
+  };
+  H.taxLabel = () => esc(String(d.taxName || 'Tax').trim() || 'Tax') + ' (' + fmtQty(T.taxRate) + '%)';
+  H.totalRows = function () {
+    const r = [['Subtotal', H.money(T.sub)]];
+    if (T.disc > 0) r.push(['Discount' + (d.discType === 'fixed' ? '' : ' (' + fmtQty(num(d.discount)) + '%)'), '-' + H.money(T.disc)]);
+    if (T.taxRate > 0) r.push([H.taxLabel(), H.money(T.tax)]);
+    if (kind === 'invoice') {
+      if (T.paid > 0) { r.push(['Total', H.money(T.total)]); r.push(['Paid', '-' + H.money(T.paid)]); r.push([d.dueLabel || 'Balance due', H.money(T.balance), 'g']); }
+      else r.push([d.dueLabel || 'Total due', H.money(T.total), 'g']);
     } else {
-      if (c.paid) r.push({ l: 'Amount paid', v: '-' + fmt(c.paid) });
-      r.push({ l: 'Balance due', v: fmt(c.balance), final: true });
+      r.push(['Total', H.money(T.total), 'g']);
+      r.push(['Paid' + (d.method ? ' (' + esc(d.method) + ')' : ''), H.money(T.paid)]);
+      if (T.change > 0) r.push(['Change', H.money(T.change)]);
+      if (T.balance > 0) r.push(['Balance owing', H.money(T.balance), 'w']);
     }
     return r;
-  }
-
-  function leftContent(w) {
-    const out = [];
-    const add = (label, text) => {
-      out.push({ s: label, size: F.xs, bold: true, color: GRAY, gap: out.length ? 3.5 : 0 });
-      wrap(text, w, F.s).forEach((l) => out.push({ s: l, size: F.s, color: INK }));
-    };
-    if (isR) {
-      if (M.method) add('PAYMENT METHOD', M.method);
-      if (M.notes) add('NOTES', M.notes);
-    } else {
-      const pay = [];
-      if (M.pay.bank) pay.push('Bank: ' + M.pay.bank);
-      if (M.pay.name) pay.push('Account name: ' + M.pay.name);
-      if (M.pay.no) pay.push('Account number: ' + M.pay.no);
-      if (M.pay.link) pay.push(M.pay.link);
-      if (pay.length) add('PAYMENT DETAILS', pay.join('\n'));
-      if (M.notes) add('NOTES', M.notes);
-    }
-    return out;
-  }
-
-  function totalsBlock() {
-    const tW = 78 * S, x0 = W - m - tW;
-    const rows = totalsRows();
-    const stack = (cw - tW - 8) < 42;
-    const lw = stack ? cw : cw - tW - 8;
-    const left = leftContent(lw);
-    const rh = (r) => lineH(r.size || F.b, 1.35) + (r.final ? 4 : (r.top ? 3.2 : 1.6));
-    let th = rows.reduce((s, r) => s + rh(r), 0);
-    const lh = left.reduce((s, l) => s + lineH(l.size, 1.4) + (l.gap || 0), 0);
-    let total = stack ? th + (lh ? lh + 6 : 0) : Math.max(th, lh);
-    if (!b.fits(total)) b.newPage();
-    let y = b.y, ly = y;
-    rows.forEach((r) => {
-      const h = rh(r);
-      let size = r.size || F.b, col = INK, lcol = GRAY, bold = !!r.bold;
-      if (r.top && tpl !== 'bold') b.line(x0, y + 0.4, W - m, y + 0.4, tpl === 'minimal' ? 0.3 : 0.3, INK);
-      if (r.final) {
-        if (tpl === 'bold') { b.rect(x0 - 2, y, tW + 4, h, acc); col = accOn; lcol = accOn; }
-        else { b.line(x0, y + 0.4, W - m, y + 0.4, 0.5, tpl === 'minimal' ? INK : acc); col = tpl === 'minimal' ? INK : accT; lcol = col; }
-        bold = true; size = F.b + 2.2;
-      }
-      const ty = y + (h - lineH(size, 1.35)) / 2 + (r.top ? 0.8 : 0) - (r.final ? 0.3 : 0);
-      b.text(x0 + (r.final && tpl === 'bold' ? 0.5 : 0), ty, r.l, { size: size, lh: 1.35, bold: bold, color: lcol });
-      b.text(W - m - (r.final && tpl === 'bold' ? 0.5 : 0), ty, r.v, { size: size, lh: 1.35, bold: bold || !!r.bold, color: col, align: 'r' });
-      y += h;
-    });
-    if (stack) ly = y + 6;
-    left.forEach((l) => { ly += (l.gap || 0); b.text(m, ly, l.s, { size: l.size, bold: l.bold, color: l.color }); ly += lineH(l.size, 1.4); });
-    b.y = Math.max(y, ly) + 6;
-  }
-
-  function signature() {
-    if (isR) return;
-    if (!M.sig) return;
-    const d = fitImg(M.sig, 50, 17);
-    const need = d.h + 12;
-    if (!b.fits(need)) b.newPage();
-    const x = W - m - 56, y = b.y + 2;
-    b.img(x + (56 - d.w) / 2, y, d.w, d.h, M.sig.dataUrl);
-    b.line(x, y + d.h + 1.5, W - m, y + d.h + 1.5, 0.3, INK);
-    b.text(x, y + d.h + 2.5, 'Authorised signature', { size: F.xs, color: GRAY });
-    b.y = y + d.h + 2.5 + lineH(F.xs, 1.4) + 3;
-  }
-
-  function thanks() {
-    if (!isR || !M.thanks) return;
-    const h = wrap(M.thanks, cw, 10 * S).length * lineH(10 * S, 1.4);
-    if (!b.fits(h + 6)) b.newPage();
-    b.y += 4;
-    b.para(W / 2, b.y, M.thanks, cw, { size: 10 * S, color: GRAY, align: 'c' });
-    b.y += h;
-  }
-
-  let y = header();
-  y = parties(y);
-  b.y = y;
-  table();
-  totalsBlock();
-  signature();
-  thanks();
-  if (b.pages.length > 1) {
-    b.pages.forEach((p, i) => {
-      const s = 'Page ' + (i + 1) + ' of ' + b.pages.length;
-      p.items.push({ t: 't', x: W / 2 - tw(s, 7.5, false) / 2, y: P.h - 8, s: s, size: 7.5, bold: false, color: GRAY2 });
-    });
-  }
-  return { W: W, H: P.h, pages: b.pages };
-}
-
-/* ------------------------------------------------------------------ thermal receipt (80 mm) */
-function layoutThermal(M) {
-  const b = new Builder(80, 0, 4, true);
-  const W = 80, m = 4, cw = 72, c = M.calc, fmt = M.fmt.money;
-  const B = 8, SM = 7.2;
-  let y = m;
-  const center = (str, o) => { const h = b.para(W / 2, y, str, cw, Object.assign({ align: 'c' }, o)); y += h; };
-  const sep = () => { y += 1; b.line(m, y, W - m, y, 0.25, INK, [0.9, 0.9]); y += 2.2; };
-  const kv = (l, v, o) => {
-    o = o || {};
-    const size = o.size || SM;
-    b.text(m, y, l, { size: size, color: o.lc || GRAY, bold: o.bold });
-    b.text(W - m, y, fit(v, cw - tw(l, size, o.bold) - 2, size, o.bold), { size: size, bold: o.vb !== undefined ? o.vb : o.bold, align: 'r', color: o.vc || INK });
-    y += lineH(size, 1.45);
   };
-  if (M.biz.logo) { const d = fitImg(M.biz.logo, 38, 18); b.img((W - d.w) / 2, y, d.w, d.h, M.biz.logo.dataUrl); y += d.h + 2; }
-  center(M.biz.name || 'Your business name', { size: 11, bold: true, color: M.biz.name ? INK : GRAY2, lh: 1.3 });
-  [M.biz.addr, M.biz.phone, M.biz.email, M.biz.tax ? 'Tax ID: ' + M.biz.tax : ''].filter(Boolean).forEach((l) => center(l, { size: SM, color: GRAY, lh: 1.35 }));
-  sep();
-  center('RECEIPT', { size: 9.5, bold: true });
-  y += 0.8;
-  if (M.no) kv('Receipt no.', M.no);
-  if (M.issue) kv('Date', fdate(M.issue));
-  if (M.time) kv('Time', M.time);
-  if (M.cashier) kv('Cashier', M.cashier);
-  if (M.client.name) kv('Customer', M.client.name);
-  if (M.client.email) kv('Contact', M.client.email);
-  sep();
-  b.text(m, y, 'ITEM', { size: 6.6, bold: true, color: GRAY });
-  b.text(W - m, y, 'AMOUNT', { size: 6.6, bold: true, color: GRAY, align: 'r' });
-  y += lineH(6.6, 1.5) + 0.6;
-  const items = c.lines.length ? c.lines : [{ desc: 'Item name', qty: 1, rate: 0, amt: 0, ph: true }];
-  items.forEach((l) => {
-    const col = l.ph ? GRAY2 : INK;
-    y += b.para(m, y, l.desc, cw, { size: B, bold: true, color: col, lh: 1.3 });
-    b.text(m, y, trimNum(l.qty) + ' x ' + M.fmt.rate(l.rate), { size: SM, color: GRAY });
-    b.text(W - m, y, fmt(l.amt), { size: B, align: 'r', color: col });
-    y += lineH(B, 1.4) + 1.2;
-  });
-  sep();
-  kv('Subtotal', fmt(c.subtotal), { size: B });
-  if (c.discount) kv('Discount' + (M.disc.type === 'pct' && M.disc.val ? ' (' + trimNum(M.disc.val) + '%)' : ''), '-' + fmt(c.discount), { size: B });
-  if (M.taxPct > 0) kv((M.taxName || 'Tax') + ' (' + trimNum(M.taxPct) + '%)', fmt(c.overallTax), { size: B });
-  y += 1;
-  b.line(m, y, W - m, y, 0.4, INK);
-  y += 1.6;
-  kv('TOTAL', fmt(c.total), { size: 11, bold: true, lc: INK });
-  sep();
-  if (M.method) kv('Paid by', M.method, { size: B });
-  kv('Amount received', fmt(c.received), { size: B });
-  if (c.change > 0) kv('Change', fmt(c.change), { size: B, bold: true, lc: INK });
-  else if (c.owing > 0) kv('Balance owing', fmt(c.owing), { size: B, bold: true, lc: INK });
-  if (M.thanks) { sep(); y += 0.5; center(M.thanks, { size: B, color: GRAY, lh: 1.4 }); }
-  y += m;
-  return { W: W, H: Math.ceil(y), pages: b.pages };
+  H.totals = (cls) => '<div class="tot pb ' + (cls || '') + '">' + H.totalRows().map((r) => '<div class="tr' + (r[2] ? ' ' + r[2] : '') + '"><span>' + r[0] + '</span><span>' + esc(r[1]) + '</span></div>').join('') + '</div>';
+  H.dueAmount = () => H.money(kind === 'invoice' ? T.balance : T.total);
+  H.notes = function (label) {
+    if (!H.has('notes')) return '';
+    return '<div class="notes pb"><div class="lbl">' + esc(label || (kind === 'invoice' ? 'Payment details' : 'Note')) + '</div><div class="nt">' + H.t('notes', kind === 'invoice' ? 'Bank name, account name and account number, or any note' : 'Any note, for example your return policy', { ml: 1 }) + '</div></div>';
+  };
+  H.thanks = (cls) => H.has('thanks') ? '<div class="thx pb ' + (cls || '') + '">' + H.t('thanks', kind === 'invoice' ? 'Thank you for your business.' : 'Thank you for your purchase.') + '</div>' : '';
+  H.barcode = function (w, h, color) {
+    // a decorative barcode made from the document number (not a scannable code)
+    const s = String(d.no || 'RCT-0001'); let x = 0, seed = 7, bars = '';
+    for (let i = 0; i < s.length * 6 && x < w; i++) { seed = (seed * 31 + s.charCodeAt(i % s.length) + i) % 997; const bw = 1 + seed % 3; if (i % 2 === 0) bars += '<rect x="' + x + '" y="0" width="' + bw + '" height="' + h + '"/>'; x += bw + 1; }
+    return '<svg class="bar" xmlns="' + SVGNS + '" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" fill="' + (color || '#111') + '">' + bars + '</svg>';
+  };
+  return H;
 }
+const txtOf = (el) => (typeof el.innerText === 'string' ? el.innerText : el.textContent);
+function fmtQty(q) { const n = num(q); return String(Math.round(n * 1000) / 1000); }
 
-function layout(M) { return M.paper === 'thermal' ? layoutThermal(M) : layoutPage(M); }
-
-/* ------------------------------------------------------------------ SVG preview and print */
-function svgOf(L, p, sized) {
-  let s = '<svg class="dg-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + r3(L.W) + ' ' + r3(L.H) + '"' + (sized ? ' style="width:' + r3(L.W) + 'mm;height:' + r3(L.H) + 'mm"' : '') + '>';
-  s += '<rect x="0" y="0" width="' + r3(L.W) + '" height="' + r3(L.H) + '" fill="#ffffff"/>';
-  p.items.forEach((it) => {
-    if (it.t === 'r') s += '<rect x="' + r3(it.x) + '" y="' + r3(it.y) + '" width="' + r3(it.w) + '" height="' + r3(it.h) + '" fill="' + it.fill + '"/>';
-    else if (it.t === 'l') s += '<line x1="' + r3(it.x1) + '" y1="' + r3(it.y1) + '" x2="' + r3(it.x2) + '" y2="' + r3(it.y2) + '" stroke="' + it.color + '" stroke-width="' + it.w + '"' + (it.dash ? ' stroke-dasharray="' + it.dash.join(' ') + '"' : '') + '/>';
-    else if (it.t === 'i') s += '<image x="' + r3(it.x) + '" y="' + r3(it.y) + '" width="' + r3(it.w) + '" height="' + r3(it.h) + '" href="' + it.src + '" preserveAspectRatio="xMidYMid meet"/>';
-    else s += '<text x="' + r3(it.x) + '" y="' + r3(it.y) + '" font-family="DocSans, sans-serif" font-size="' + r3(it.size * PT) + '" font-weight="' + (it.bold ? 700 : 400) + '" fill="' + it.color + '" style="white-space:pre;font-kerning:none">' + esc(it.s) + '</text>';
-  });
-  return s + '</svg>';
+/* ------------------------------------------------------------------ measuring the finished document */
+const mctx = (function () { try { return document.createElement('canvas').getContext('2d'); } catch (e) { return null; } })();
+const fmCache = {};
+function fontMetrics(font, size) {
+  if (fmCache[font] === undefined) {
+    let a = 0.8, dd = 0.2;
+    try {
+      mctx.font = font.replace('{s}', '100');
+      const m = mctx.measureText('Hg');
+      if (m.fontBoundingBoxAscent) { a = m.fontBoundingBoxAscent / 100; dd = m.fontBoundingBoxDescent / 100; }
+    } catch (e) { /* defaults */ }
+    fmCache[font] = [a, dd];
+  }
+  return [fmCache[font][0] * size, fmCache[font][1] * size];
 }
-
-/* ------------------------------------------------------------------ PDF */
-const scriptPromises = {};
-function loadScript(src, globalName) {
-  if (globalName && window[globalName]) return Promise.resolve();
-  if (scriptPromises[src]) return scriptPromises[src];
-  scriptPromises[src] = new Promise((res, rej) => {
-    const s = document.createElement('script');
-    s.src = src; s.onload = () => res(); s.onerror = () => { delete scriptPromises[src]; rej(new Error('could not load ' + src)); };
-    document.head.appendChild(s);
-  });
-  return scriptPromises[src];
+function radii(cs, w, h) {
+  const one = (v) => { v = String(v || '0').split(' ')[0]; const n = parseFloat(v) || 0; return Math.min(v.endsWith('%') ? n / 100 * Math.min(w, h) : n, w / 2, h / 2); };
+  const r = [one(cs.borderTopLeftRadius), one(cs.borderTopRightRadius), one(cs.borderBottomRightRadius), one(cs.borderBottomLeftRadius)];
+  return r.some((v) => v > 0.2) ? r : null;
 }
-async function bytesOf(url) { const r = await fetch(url); if (!r.ok) throw new Error('could not load ' + url); return new Uint8Array(await r.arrayBuffer()); }
-
-async function buildPdf(L, meta) {
-  await Promise.all([loadScript('/tools/vendor/pdf-lib/pdf-lib.min.js', 'PDFLib'), loadScript('/tools/vendor/fontkit/fontkit.umd.min.js', 'fontkit')]);
-  const { PDFDocument, rgb } = window.PDFLib;
-  const pdf = await PDFDocument.create();
-  pdf.registerFontkit(window.fontkit);
-  const [rb, bb] = await Promise.all([bytesOf(FONT_FILES[400]), bytesOf(FONT_FILES[700])]);
-  const fonts = { r: await pdf.embedFont(rb, { subset: true }), b: await pdf.embedFont(bb, { subset: true }) };
-  const col = (h) => { const a = hex2rgb(h); return rgb(a[0] / 255, a[1] / 255, a[2] / 255); };
-  const pt = (mm) => mm / PT;
-  const imgs = {};
-  async function image(src) {
-    if (!imgs[src]) {
-      const bytes = new Uint8Array(await (await fetch(src)).arrayBuffer());
-      imgs[src] = /^data:image\/png/.test(src) ? await pdf.embedPng(bytes) : await pdf.embedJpg(bytes);
-    }
-    return imgs[src];
-  }
-  const ph = pt(L.H);
-  for (const pg of L.pages) {
-    const page = pdf.addPage([pt(L.W), ph]);
-    for (const it of pg.items) {
-      if (it.t === 'r') page.drawRectangle({ x: pt(it.x), y: ph - pt(it.y + it.h), width: pt(it.w), height: pt(it.h), color: col(it.fill) });
-      else if (it.t === 'l') page.drawLine({ start: { x: pt(it.x1), y: ph - pt(it.y1) }, end: { x: pt(it.x2), y: ph - pt(it.y2) }, thickness: pt(it.w), color: col(it.color), dashArray: it.dash ? it.dash.map(pt) : undefined });
-      else if (it.t === 'i') page.drawImage(await image(it.src), { x: pt(it.x), y: ph - pt(it.y + it.h), width: pt(it.w), height: pt(it.h) });
-      else if (it.s.trim()) page.drawText(it.s, { x: pt(it.x), y: ph - pt(it.y), size: it.size, font: it.bold ? fonts.b : fonts.r, color: col(it.color) });
-    }
-  }
-  pdf.setTitle(meta.title); pdf.setAuthor(meta.author || ''); pdf.setSubject(meta.title);
-  pdf.setCreator('Free invoice and receipt generator'); pdf.setProducer('pdf-lib'); pdf.setCreationDate(new Date());
-  return pdf.save();
-}
-
-/* ------------------------------------------------------------------ the tool (form, preview, actions) */
-const LS_KEY = 'lt-docgen-v1';
-const lsGet = () => { try { return JSON.parse(localStorage.getItem(LS_KEY) || 'null'); } catch (e) { return null; } };
-const lsSet = (o) => { try { localStorage.setItem(LS_KEY, JSON.stringify(o)); return true; } catch (e) { return false; } };
-const lsDel = () => { try { localStorage.removeItem(LS_KEY); } catch (e) { /* ignore */ } };
-const SAVE_IDS = ['dg-biz-name', 'dg-biz-addr', 'dg-biz-email', 'dg-biz-phone', 'dg-biz-tax', 'dg-cur', 'dg-curcode', 'dg-bank', 'dg-acct-name', 'dg-acct-no', 'dg-paylink',
-  'dg-notes', 'dg-thanks', 'dg-taxname', 'dg-taxpct', 'dg-accent', 'dg-tpl', 'dg-paper', 'dg-cashier'];
-const KIND_IDS = ['dg-tpl', 'dg-paper', 'dg-notes'];
-
-function guessCurrency() {
-  const tz = (function () { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { return ''; } })();
-  const map = { 'Africa/Lagos': 'NGN', 'Africa/Accra': 'GHS', 'Africa/Nairobi': 'KES', 'Africa/Johannesburg': 'ZAR', 'Asia/Dubai': 'AED', 'Asia/Kuwait': 'KWD', 'Africa/Cairo': 'EGP', 'Europe/London': 'GBP', 'Asia/Kolkata': 'INR', 'Asia/Calcutta': 'INR' };
-  if (map[tz]) return map[tz];
-  if (/^Australia\//.test(tz)) return 'AUD';
-  if (/^America\/(Toronto|Vancouver|Edmonton|Winnipeg|Halifax|Regina)/.test(tz)) return 'CAD';
-  if (/^Europe\//.test(tz) && tz !== 'Europe/London') return 'EUR';
-  return 'USD';
-}
-
-function init(cfg) {
-  const root = $('dg-tool');
-  if (!root) return;
-  const kind = cfg.kind, isR = kind === 'receipt';
-  const st = { logo: null, sig: null, drawn: false };
-  let L = null, lastM = null, timer = 0, saveTimer = 0, resetTimer = 0;
-  const view = $('dg-pages');
-  const say = (msg, bad) => { const e = $('dg-status'); e.textContent = msg || ''; e.className = 'help' + (bad ? ' err' : ''); };
-  const val = (id) => { const e = $(id); return e ? e.value : ''; };
-  const numv = (id) => { const e = $(id); if (!e || e.value.trim() === '') return NaN; const n = Number(e.value); return isFinite(n) ? n : NaN; };
-
-  /* currency list */
-  (function fillCurrencies() {
-    let codes = [];
-    try { codes = Intl.supportedValuesOf('currency'); } catch (e) { codes = CURRENCY_FALLBACK.slice(); }
-    let dn = null;
-    try { dn = new Intl.DisplayNames(['en'], { type: 'currency' }); } catch (e) { dn = null; }
-    const label = (c) => { let n = ''; try { n = dn ? dn.of(c) : ''; } catch (e) { n = ''; } return c + (n && n !== c ? ' - ' + n : ''); };
-    const sel = $('dg-cur');
-    const pop = POPULAR.filter((c) => codes.indexOf(c) >= 0 || CURRENCY_FALLBACK.indexOf(c) >= 0);
-    const g1 = document.createElement('optgroup'); g1.label = 'Popular';
-    pop.forEach((c) => { const o = document.createElement('option'); o.value = c; o.textContent = label(c); g1.appendChild(o); });
-    const g2 = document.createElement('optgroup'); g2.label = 'All currencies';
-    codes.filter((c) => /^[A-Z]{3}$/.test(c)).sort().forEach((c) => { const o = document.createElement('option'); o.value = c; o.textContent = label(c); g2.appendChild(o); });
-    sel.appendChild(g1); sel.appendChild(g2);
-    sel.value = guessCurrency();
-    if (sel.value !== guessCurrency()) sel.value = 'USD';
-  })();
-
-  /* line items */
-  const itemsEl = $('dg-items');
-  let itemCount = 0;
-  function addItem(d) {
-    d = d || {};
-    itemCount++;
-    const n = itemCount;
-    const row = document.createElement('div');
-    row.className = 'dg-item';
-    const taxCell = isR ? '' : '<div class="dg-c-t"><label class="dg-sm" for="dg-i' + n + '-tax">Tax %</label><input type="number" id="dg-i' + n + '-tax" data-f="tax" min="0" max="100" step="any" inputmode="decimal" placeholder="0"></div>';
-    row.innerHTML = '<div class="dg-c-d"><label class="dg-sm" for="dg-i' + n + '-desc">' + (isR ? 'Item' : 'Description') + '</label><input type="text" id="dg-i' + n + '-desc" data-f="desc" maxlength="200" autocomplete="off" placeholder="' + (isR ? 'Item name' : 'What you did or sold') + '"></div>'
-      + '<div class="dg-c-q"><label class="dg-sm" for="dg-i' + n + '-qty">Qty</label><input type="number" id="dg-i' + n + '-qty" data-f="qty" min="0" step="any" inputmode="decimal" value="1"></div>'
-      + '<div class="dg-c-r"><label class="dg-sm" for="dg-i' + n + '-rate">' + (isR ? 'Price' : 'Rate') + '</label><input type="number" id="dg-i' + n + '-rate" data-f="rate" step="any" inputmode="decimal" placeholder="0.00"></div>'
-      + taxCell
-      + '<div class="dg-c-x"><button type="button" class="btn dg-x" aria-label="Remove this item" title="Remove this item">&times;</button></div>';
-    if (isR) row.classList.add('dg-item-r');
-    itemsEl.appendChild(row);
-    if (d.desc != null) row.querySelector('[data-f=desc]').value = d.desc;
-    if (d.qty != null) row.querySelector('[data-f=qty]').value = d.qty;
-    if (d.rate != null) row.querySelector('[data-f=rate]').value = d.rate;
-    if (d.tax != null && !isR) row.querySelector('[data-f=tax]').value = d.tax;
-    renumber();
-    return row;
-  }
-  function renumber() {
-    const rows = itemsEl.querySelectorAll('.dg-item');
-    rows.forEach((r, i) => {
-      r.querySelectorAll('input').forEach((inp) => { const f = inp.getAttribute('data-f'); inp.setAttribute('aria-label', 'Item ' + (i + 1) + ' ' + ({ desc: 'description', qty: 'quantity', rate: isR ? 'price' : 'rate', tax: 'tax percent' }[f])); });
-      r.querySelector('.dg-x').disabled = rows.length === 1;
-    });
-  }
-  itemsEl.addEventListener('click', (e) => {
-    const x = e.target.closest('.dg-x');
-    if (!x || x.disabled) return;
-    x.closest('.dg-item').remove(); renumber(); schedule(); scheduleSave();
-  });
-  $('dg-add').addEventListener('click', () => { const r = addItem(); r.querySelector('[data-f=desc]').focus(); schedule(); });
-
-  /* model */
-  function readModel() {
-    replacedChars = false;
-    const cur = val('dg-cur') || 'USD';
-    const fm = makeFmt(cur, !!($('dg-curcode') && $('dg-curcode').checked));
-    const M = {
-      kind: kind, cur: cur, fm: fm, fmt: fm,
-      biz: { name: clean(val('dg-biz-name').trim()), addr: clean(val('dg-biz-addr').trim()), email: clean(val('dg-biz-email').trim()), phone: clean(val('dg-biz-phone').trim()), tax: clean(val('dg-biz-tax').trim()), logo: st.logo },
-      client: { name: clean(val('dg-cl-name').trim()), addr: clean(val('dg-cl-addr').trim()), email: clean(val('dg-cl-email').trim()) },
-      no: clean(val('dg-no').trim()), issue: val('dg-issue'), due: val('dg-due'), time: val('dg-time'),
-      method: isR ? (val('dg-method') === 'Other' ? clean(val('dg-method-other').trim()) || 'Other' : val('dg-method')) : '',
-      cashier: clean(val('dg-cashier').trim()),
-      items: [], disc: { type: val('dg-disc-type') === 'fixed' ? 'fixed' : 'pct', val: numv('dg-disc') },
-      shipping: numv('dg-ship'), taxPct: numv('dg-taxpct'), taxName: clean(val('dg-taxname').trim()),
-      paid: numv('dg-paid'), notes: clean(val('dg-notes').trim()), thanks: clean(val('dg-thanks').trim()),
-      pay: { bank: clean(val('dg-bank').trim()), name: clean(val('dg-acct-name').trim()), no: clean(val('dg-acct-no').trim()), link: clean(val('dg-paylink').trim()) },
-      sig: isR ? null : (val('dg-sig-mode') === 'none' ? null : st.sig),
-      tpl: val('dg-tpl') || 'clean', accent: /^#[0-9a-f]{6}$/i.test(val('dg-accent')) ? val('dg-accent') : '#2563eb', paper: val('dg-paper') || (isR ? 'thermal' : 'a4')
-    };
-    itemsEl.querySelectorAll('.dg-item').forEach((r, i) => {
-      const g = (f) => { const e = r.querySelector('[data-f=' + f + ']'); return e ? e.value : ''; };
-      const q = g('qty').trim() === '' ? NaN : Number(g('qty')), rt = g('rate').trim() === '' ? NaN : Number(g('rate')), tx = g('tax').trim() === '' ? 0 : Number(g('tax'));
-      M.items.push({ n: i + 1, desc: clean(g('desc').trim()), qty: q, rate: rt, tax: tx });
-    });
-    M.hasReal = M.items.some((it) => it.desc || numOk(it.rate));
-    if (!M.hasReal) M.items = [];
-    M.calc = calc(M, fm);
-    M.replaced = replacedChars;
-    return M;
-  }
-
-  function validate(M) {
-    const errs = [], warns = [];
-    const add = (id, msg) => errs.push({ id: id, msg: msg });
-    if (!M.biz.name) add('dg-biz-name', 'Enter your business name.');
-    if (!isR && !M.client.name) add('dg-cl-name', 'Enter the client name.');
-    let any = false;
-    M.items.forEach((it) => {
-      if (!it.desc && !numOk(it.rate)) return;
-      any = true;
-      const row = itemsEl.querySelectorAll('.dg-item')[it.n - 1];
-      if (!it.desc) add(row.querySelector('[data-f=desc]').id, 'Item ' + it.n + ' needs a description.');
-      if (!numOk(it.qty) || it.qty <= 0) add(row.querySelector('[data-f=qty]').id, 'Item ' + it.n + ' needs a quantity above 0.');
-      if (!numOk(it.rate)) add(row.querySelector('[data-f=rate]').id, 'Item ' + it.n + ' needs a ' + (isR ? 'price' : 'rate') + '.');
-      if (numOk(it.tax) && (it.tax < 0 || it.tax > 100)) add(row.querySelector('[data-f=tax]').id, 'Item ' + it.n + ' tax must be between 0 and 100.');
-    });
-    if (!any) add(itemsEl.querySelector('[data-f=desc]').id, 'Add at least one item with a ' + (isR ? 'price' : 'rate') + '.');
-    if (!isNaN(M.disc.val) && M.disc.val < 0) add('dg-disc', 'Discount cannot be negative.');
-    if (M.disc.type === 'pct' && M.disc.val > 100) add('dg-disc', 'A percent discount cannot be more than 100.');
-    if (!isNaN(M.taxPct) && (M.taxPct < 0 || M.taxPct > 100)) add('dg-taxpct', 'Tax percent must be between 0 and 100.');
-    if (!isNaN(M.shipping) && M.shipping < 0) add('dg-ship', 'Shipping cannot be negative.');
-    if (!isNaN(M.paid) && M.paid < 0) add('dg-paid', 'The amount cannot be negative.');
-    ['dg-biz-email', 'dg-cl-email'].forEach((id) => { const e = $(id); if (e && e.value && e.type === 'email' && !e.checkValidity()) add(id, 'That email address does not look right.'); });
-    if (!isR && M.issue && M.due && M.due < M.issue) warns.push('The due date is before the issue date.');
-    if (!isR && M.calc.over > 0) warns.push('The amount paid is more than the total, so the balance due shows as zero.');
-    if (isR && M.calc.owing > 0) warns.push('The amount received is less than the total. The receipt will show the balance owing.');
-    if (M.replaced) warns.push('Some characters (for example emoji or some non-Latin scripts) are not in the PDF font and show as ?.');
-    return { errs: errs, warns: warns };
-  }
-
-  /* preview */
-  function showWarns(v) {
-    const w = $('dg-warn');
-    w.textContent = v.warns.join(' ');
-    w.hidden = !v.warns.length;
-  }
-  async function render() {
-    try { await loadFonts(); } catch (e) { view.innerHTML = '<p class="help err">The preview font could not be loaded. Reload the page and try again.</p>'; return; }
-    const M = readModel();
-    lastM = M; L = layout(M);
-    view.style.maxWidth = M.paper === 'thermal' ? '360px' : '';
-    view.innerHTML = L.pages.map((p, i) => '<div class="dg-page" role="img" aria-label="' + (isR ? 'Receipt' : 'Invoice') + ' preview, page ' + (i + 1) + ' of ' + L.pages.length + '">' + svgOf(L, p) + '</div>').join('');
-    showWarns(validate(M));
-  }
-  function schedule() { clearTimeout(timer); timer = setTimeout(render, 70); }
-
-  /* saving business details */
-  function saveNow() {
-    if (!$('dg-remember').checked) return;
-    const old = lsGet() || {};
-    const o = { f: old.f || {}, last: old.last || {}, logo: st.logo, sig: st.sig, sigMode: val('dg-sig-mode'), sigText: val('dg-sig-text') };
-    SAVE_IDS.forEach((id) => {
-      const e = $(id); if (!e) return;
-      const key = KIND_IDS.indexOf(id) >= 0 ? id + '@' + kind : id;
-      o.f[key] = e.type === 'checkbox' ? e.checked : e.value;
-    });
-    const ok = lsSet(o);
-    $('dg-remember-note').textContent = ok ? 'Saved in this browser only.' : 'Your browser blocked saving, so nothing was stored.';
-  }
-  function scheduleSave() { clearTimeout(saveTimer); saveTimer = setTimeout(saveNow, 400); }
-  function rememberNumber() {
-    if (!$('dg-remember').checked) return;
-    const o = lsGet() || { f: {}, last: {} };
-    o.last = o.last || {}; o.last[kind] = val('dg-no');
-    lsSet(o);
-  }
-  function applySaved(o) {
-    SAVE_IDS.forEach((id) => {
-      const e = $(id); if (!e) return;
-      const key = KIND_IDS.indexOf(id) >= 0 ? id + '@' + kind : id;
-      if (o.f && o.f[key] !== undefined) { if (e.type === 'checkbox') e.checked = !!o.f[key]; else e.value = o.f[key]; }
-    });
-    if (o.logo && o.logo.dataUrl) st.logo = o.logo;
-    updateLogoUi();
-    if (!isR && o.sig && o.sig.dataUrl) {
-      st.sig = o.sig;
-      $('dg-sig-mode').value = o.sigMode || 'none';
-      $('dg-sig-text').value = o.sigText || '';
-      if (o.sigMode === 'draw') {
-        st.drawn = true;
-        const im = new Image();
-        im.onload = () => { const cv = $('dg-sig-canvas'), s = Math.min(1, (cv.width - 20) / im.width, (cv.height - 20) / im.height); cv.getContext('2d').drawImage(im, 10, 10, im.width * s, im.height * s); };
-        im.src = o.sig.dataUrl;
+function collect(root) {
+  const R = root.getBoundingClientRect(), ox = R.left, oy = R.top, ops = [];
+  function side(x, y, w, h, color, style, horiz) {
+    if (style === 'dashed' || style === 'dotted') {
+      const t = horiz ? h : w, len = horiz ? w : h;
+      const dash = style === 'dotted' ? t : Math.max(3 * t, 4), gap = style === 'dotted' ? t : Math.max(2 * t, 3);
+      for (let p = 0; p < len; p += dash + gap) {
+        const l = Math.min(dash, len - p);
+        ops.push(horiz ? { t: 'rect', x: x + p, y, w: l, h, fill: color } : { t: 'rect', x, y: y + p, w, h: l, fill: color });
       }
-      sigUi();
+    } else if (style === 'double' && (horiz ? h : w) >= 3) {
+      const t = (horiz ? h : w) / 3;
+      if (horiz) { ops.push({ t: 'rect', x, y, w, h: t, fill: color }); ops.push({ t: 'rect', x, y: y + 2 * t, w, h: t, fill: color }); }
+      else { ops.push({ t: 'rect', x, y, w: t, h, fill: color }); ops.push({ t: 'rect', x: x + 2 * t, y, w: t, h, fill: color }); }
+    } else ops.push({ t: 'rect', x, y, w, h, fill: color });
+  }
+  function text(node, cs) {
+    const s = node.data;
+    if (!s || !s.trim()) return;
+    const color = parseColor(cs.color);
+    if (!color) return;
+    const size = parseFloat(cs.fontSize) || 12, weight = parseInt(cs.fontWeight, 10) || 400;
+    const fam = cs.fontFamily || 'sans-serif', italic = cs.fontStyle === 'italic', tt = cs.textTransform;
+    const ls = parseFloat(cs.letterSpacing) || 0;
+    const font = (italic ? 'italic ' : '') + weight + ' {s}px ' + fam;
+    const tx = (w) => tt === 'uppercase' ? w.toUpperCase() : tt === 'lowercase' ? w.toLowerCase() : w;
+    const re = /\S+/g; let m;
+    const range = document.createRange();
+    const push = (str, rc) => {
+      if (!rc || rc.width <= 0) return;
+      const fm = fontMetrics(font, size);
+      const base = rc.top - oy + (rc.height - fm[0] - fm[1]) / 2 + fm[0];
+      ops.push({ t: 'text', x: rc.left - ox, y: base, top: rc.top - oy, h: rc.height, w: rc.width, str, size, weight, fam, italic, color });
+    };
+    while ((m = re.exec(s))) {
+      range.setStart(node, m.index); range.setEnd(node, m.index + m[0].length);
+      const rects = range.getClientRects();
+      if (rects.length === 1 && !ls) { push(tx(m[0]), rects[0]); continue; }
+      // letter spacing or a word broken over two lines: one character at a time
+      let i = 0;
+      for (const ch of m[0]) {
+        range.setStart(node, m.index + i); range.setEnd(node, m.index + i + ch.length);
+        push(tx(ch), range.getClientRects()[0]);
+        i += ch.length;
+      }
     }
   }
+  (function walk(el) {
+    if (el.hasAttribute && el.hasAttribute('data-noexport')) return;
+    const cs = getComputedStyle(el);
+    if (cs.display === 'none') return;
+    const vis = cs.visibility !== 'hidden';
+    const r = el.getBoundingClientRect(), x = r.left - ox, y = r.top - oy, w = r.width, h = r.height;
+    if (el.namespaceURI === SVGNS) { if (vis && w > 0 && h > 0) ops.push({ t: 'svg', x, y, w, h, el, color: cs.color }); return; }
+    if (vis && w > 0 && h > 0) {
+      const rad = radii(cs, w, h), bg = parseColor(cs.backgroundColor);
+      if (bg) ops.push({ t: 'rect', x, y, w, h, fill: bg, rad });
+      const sd = ['Top', 'Right', 'Bottom', 'Left'].map((k) => ({ w: parseFloat(cs['border' + k + 'Width']) || 0, s: cs['border' + k + 'Style'], c: parseColor(cs['border' + k + 'Color']) }))
+        .map((b) => (b.w > 0 && b.c && b.s !== 'none' && b.s !== 'hidden') ? b : null);
+      const same = sd.every((b) => b && b.w === sd[0].w && b.s === 'solid' && sd[0].s === 'solid' && b.c.r === sd[0].c.r && b.c.g === sd[0].c.g && b.c.b === sd[0].c.b);
+      if (rad && same) ops.push({ t: 'rect', x, y, w, h, stroke: sd[0].c, sw: sd[0].w, rad });
+      else {
+        if (sd[0]) side(x, y, w, sd[0].w, sd[0].c, sd[0].s, true);
+        if (sd[2]) side(x, y + h - sd[2].w, w, sd[2].w, sd[2].c, sd[2].s, true);
+        if (sd[3]) side(x, y, sd[3].w, h, sd[3].c, sd[3].s, false);
+        if (sd[1]) side(x + w - sd[1].w, y, sd[1].w, h, sd[1].c, sd[1].s, false);
+      }
+    }
+    if (el.tagName === 'IMG') { if (vis && w > 0 && h > 0 && el.src) ops.push({ t: 'img', x, y, w, h, src: el.src }); return; }
+    for (const n of el.childNodes) {
+      if (n.nodeType === 1) walk(n);
+      else if (n.nodeType === 3 && vis) text(n, cs);
+    }
+  })(root);
+  return ops;
+}
+
+// move rows and blocks that cross a page edge onto the next page (A4 invoices)
+function paginate(doc, pageH, scale) {
+  const M = 48;
+  doc.querySelectorAll('.dg-sp').forEach((n) => n.remove());
+  doc.querySelectorAll('[data-pushed]').forEach((n) => { n.style.marginTop = ''; n.removeAttribute('data-pushed'); });
+  doc.style.minHeight = '';
+  const top0 = () => doc.getBoundingClientRect().top;
+  doc.querySelectorAll('.pb').forEach((el) => {
+    const r = el.getBoundingClientRect(), t0 = top0();
+    const t = (r.top - t0) / scale, b = (r.bottom - t0) / scale;
+    if (b - t <= 0 || b - t > pageH - 2 * M) return;
+    const p = Math.floor(t / pageH);
+    if (b <= (p + 1) * pageH - M) return;
+    const push = (p + 1) * pageH + M - t;
+    if (el.tagName === 'TR') {
+      const sp = document.createElement('tr'); sp.className = 'dg-sp';
+      sp.innerHTML = '<td colspan="9" style="height:' + push + 'px;padding:0;border:0;background:transparent"></td>';
+      el.parentNode.insertBefore(sp, el);
+    } else {
+      el.setAttribute('data-pushed', '1');
+      el.style.marginTop = ((parseFloat(getComputedStyle(el).marginTop) || 0) + push) + 'px';
+    }
+  });
+  const h = doc.offsetHeight, pages = Math.max(1, Math.ceil(h / pageH - 0.002));
+  doc.style.minHeight = (pages * pageH) + 'px';
+  return pages;
+}
+
+/* ------------------------------------------------------------------ pictures */
+function loadImg(src) {
+  return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error('image')); im.src = src; });
+}
+function svgSrc(op) {
+  const c = op.el.cloneNode(true);
+  c.setAttribute('xmlns', SVGNS); c.setAttribute('width', op.w); c.setAttribute('height', op.h);
+  c.removeAttribute('class'); c.removeAttribute('style');
+  let s = new XMLSerializer().serializeToString(c).replace(/currentColor/g, op.color || '#000');
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(s);
+}
+async function opImage(op) {
+  if (!op.im) op.im = await loadImg(op.t === 'svg' ? svgSrc(op) : op.src);
+  return op.im;
+}
+function canvasPng(im, w, h) {
+  const cv = document.createElement('canvas'); cv.width = Math.max(1, Math.round(w)); cv.height = Math.max(1, Math.round(h));
+  cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height);
+  return new Promise((res) => cv.toBlob((b) => b.arrayBuffer().then((a) => res(new Uint8Array(a))), 'image/png'));
+}
+function rrPath(w, h, r) {
+  const [a, b, c, d] = r;
+  return 'M' + a + ',0 H' + (w - b) + ' A' + b + ',' + b + ' 0 0 1 ' + w + ',' + b + ' V' + (h - c) + ' A' + c + ',' + c + ' 0 0 1 ' + (w - c) + ',' + h +
+    ' H' + d + ' A' + d + ',' + d + ' 0 0 1 0,' + (h - d) + ' V' + a + ' A' + a + ',' + a + ' 0 0 1 ' + a + ',0 Z';
+}
+
+/* ------------------------------------------------------------------ PDF with pdf-lib */
+const loaded = {};
+function loadScript(src, name) {
+  if (window[name]) return Promise.resolve();
+  if (!loaded[src]) loaded[src] = new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error('Could not load ' + src)); document.head.appendChild(s); });
+  return loaded[src];
+}
+async function bytesOf(url) { const r = await fetch(url); if (!r.ok) throw new Error('Could not load ' + url); return new Uint8Array(await r.arrayBuffer()); }
+function cleanText(s) { let o = ''; for (const ch of s) o += okCp(ch.codePointAt(0)) ? ch : '?'; return o; }
+
+async function buildPdf(ops, W, H, pageH, title) {
+  await Promise.all([loadScript('/tools/vendor/pdf-lib/pdf-lib.min.js', 'PDFLib'), loadScript('/tools/vendor/fontkit/fontkit.umd.min.js', 'fontkit')]);
+  const L = window.PDFLib, pdf = await L.PDFDocument.create();
+  pdf.registerFontkit(window.fontkit);
+  const fb = await Promise.all([bytesOf(FONT_FILES[400]), bytesOf(FONT_FILES[700])]);
+  const noto = [await pdf.embedFont(fb[0], { subset: true }), await pdf.embedFont(fb[1], { subset: true })];
+  const std = {};
+  const stdFont = async (n) => std[n] || (std[n] = await pdf.embedFont(L.StandardFonts[n]));
+  const k = 0.75, ph = pageH || H, pages = Math.max(1, Math.round(H / ph));
+  const col = (c) => L.rgb(c.r, c.g, c.b);
+  const imgs = new Map();
+  async function embed(op) {
+    const key = op.t === 'svg' ? op : op.src;
+    if (imgs.has(key)) return imgs.get(key);
+    const im = await opImage(op);
+    const sc = op.t === 'svg' ? 4 : Math.min(3, Math.max(1, (im.naturalWidth || op.w) / op.w));
+    const e = await pdf.embedPng(await canvasPng(im, op.w * sc, op.h * sc));
+    imgs.set(key, e);
+    return e;
+  }
+  async function fontFor(op) {
+    const first = op.fam.split(',')[0].replace(/["']/g, '').trim().toLowerCase();
+    const bold = op.weight >= 600;
+    let f = null;
+    if (/georgia|times|garamond|serif/.test(first) && first !== 'sans-serif') f = await stdFont(bold ? 'TimesRomanBold' : 'TimesRoman');
+    else if (/courier|mono/.test(first)) f = await stdFont(bold ? 'CourierBold' : 'Courier');
+    if (f) { try { f.encodeText(op.str); return f; } catch (e) { /* not in WinAnsi, use Noto */ } }
+    return noto[bold ? 1 : 0];
+  }
+  for (let p = 0; p < pages; p++) {
+    const page = pdf.addPage([W * k, ph * k]), off = p * ph;
+    for (const op of ops) {
+      const top = op.t === 'text' ? op.top : op.y, hh = op.h;
+      if (top > off + ph || top + hh < off) continue;
+      const y = op.y - off;
+      if (op.t === 'rect') {
+        if (op.rad) {
+          const o = { x: op.x * k, y: (ph - y) * k, scale: k };
+          if (op.fill) { o.color = col(op.fill); o.opacity = op.fill.a; }
+          if (op.stroke) {
+            const s = op.sw, rr = op.rad.map((v) => Math.max(0, v - s / 2));
+            page.drawSvgPath(rrPath(op.w - s, op.h - s, rr), { x: (op.x + s / 2) * k, y: (ph - y - s / 2) * k, scale: k, borderColor: col(op.stroke), borderWidth: s, borderOpacity: op.stroke.a });
+          } else page.drawSvgPath(rrPath(op.w, op.h, op.rad), o);
+        } else page.drawRectangle({ x: op.x * k, y: (ph - y - op.h) * k, width: op.w * k, height: op.h * k, color: col(op.fill), opacity: op.fill.a });
+      } else if (op.t === 'text') {
+        const f = await fontFor(op);
+        const str = f === noto[0] || f === noto[1] ? cleanText(op.str) : op.str;
+        page.drawText(str, { x: op.x * k, y: (ph - y) * k, size: op.size * k, font: f, color: col(op.color), opacity: op.color.a });
+      } else {
+        try { const e = await embed(op); page.drawImage(e, { x: op.x * k, y: (ph - y - op.h) * k, width: op.w * k, height: op.h * k }); } catch (e) { /* skip a picture that will not load */ }
+      }
+    }
+  }
+  pdf.setTitle(title); pdf.setCreator('Large Technologies free tools'); pdf.setProducer('pdf-lib');
+  return new Blob([await pdf.save()], { type: 'application/pdf' });
+}
+
+/* ------------------------------------------------------------------ PNG on a canvas */
+async function buildPng(ops, W, H) {
+  const s = Math.min(2, 16000 / H, 16000 / W);
+  const cv = document.createElement('canvas'); cv.width = Math.round(W * s); cv.height = Math.round(H * s);
+  const c = cv.getContext('2d');
+  c.fillStyle = '#ffffff'; c.fillRect(0, 0, cv.width, cv.height); c.scale(s, s);
+  for (const op of ops) { if (op.t === 'img' || op.t === 'svg') { try { await opImage(op); } catch (e) { op.bad = 1; } } }
+  const css = (q) => 'rgba(' + Math.round(q.r * 255) + ',' + Math.round(q.g * 255) + ',' + Math.round(q.b * 255) + ',' + q.a + ')';
+  const path = (op, x, y, w, h, r) => { c.beginPath(); if (r && c.roundRect) c.roundRect(x, y, w, h, r); else c.rect(x, y, w, h); };
+  for (const op of ops) {
+    if (op.t === 'rect') {
+      if (op.fill) { c.fillStyle = css(op.fill); path(op, op.x, op.y, op.w, op.h, op.rad); c.fill(); }
+      if (op.stroke) { c.strokeStyle = css(op.stroke); c.lineWidth = op.sw; path(op, op.x + op.sw / 2, op.y + op.sw / 2, op.w - op.sw, op.h - op.sw, op.rad && op.rad.map((v) => Math.max(0, v - op.sw / 2))); c.stroke(); }
+    } else if (op.t === 'text') {
+      c.font = (op.italic ? 'italic ' : '') + op.weight + ' ' + op.size + 'px ' + op.fam;
+      c.fillStyle = css(op.color); c.textBaseline = 'alphabetic'; c.fillText(op.str, op.x, op.y);
+    } else if (!op.bad) c.drawImage(op.im, op.x, op.y, op.w, op.h);
+  }
+  return new Promise((res) => cv.toBlob(res, 'image/png'));
+}
+function download(blob, name) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+}
+function fontsReady() {
+  if (!document.fonts || !document.fonts.load) return Promise.resolve();
+  return Promise.all([document.fonts.load('400 12px DGNoto'), document.fonts.load('700 12px DGNoto')]).catch(() => {});
+}
+
+/* ------------------------------------------------------------------ storage */
+const BIZ_KEY = 'lt-docs-business-v2';
+const lsGet = (k) => { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } };
+const lsSet = (k, o) => { try { localStorage.setItem(k, JSON.stringify(o)); return true; } catch (e) { return false; } };
+const lsDel = (k) => { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } };
+
+/* ------------------------------------------------------------------ the tool */
+function init(cfg) {
+  const root = $('dg');
+  if (!root) return;
+  const kind = cfg.kind, TPLS = cfg.templates, DOCKEY = 'lt-docs-' + kind + '-v2';
+  const prefix = kind === 'invoice' ? 'INV-0001' : 'RCT-0001';
+  const now = new Date();
+  const S = {
+    kind, tpl: TPLS[0].id, accent: '', title: '',
+    biz: { name: '', addr: '', phone: '', email: '', logo: '' }, cust: { name: '', contact: '' },
+    no: prefix, date: ymd(now), due: kind === 'invoice' ? addDays(ymd(now), 14) : '', time: kind === 'receipt' ? String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') : '',
+    method: kind === 'receipt' ? 'Cash' : '', currency: 'NGN', taxName: 'VAT', taxRate: '', discount: '', discType: 'pct', paid: '',
+    notes: '', thanks: kind === 'invoice' ? 'Thank you for your business.' : 'Thank you for your purchase.',
+    items: [{ desc: '', qty: '1', price: '' }],
+  };
+  const BIZ_FIELDS = ['biz.name', 'biz.addr', 'biz.phone', 'biz.email', 'biz.logo', 'currency', 'taxName', 'taxRate'];
+  const DOC_FIELDS = kind === 'invoice' ? ['tpl', 'accent', 'notes', 'thanks'] : ['tpl', 'accent', 'notes', 'thanks', 'method'];
+
+  /* saved details */
+  let lastNo = '';
+  (function restore() {
+    let b = lsGet(BIZ_KEY);
+    if (!b) {
+      // details saved by the older version of this tool
+      const old = lsGet('lt-docgen-v1');
+      if (old && old.f) b = { 'biz.name': old.f['dg-biz-name'] || '', 'biz.addr': old.f['dg-biz-addr'] || '', 'biz.phone': old.f['dg-biz-phone'] || '', 'biz.email': old.f['dg-biz-email'] || '', 'biz.logo': (old.logo && old.logo.dataUrl) || '', currency: old.f['dg-cur'] || '' };
+    }
+    if (b) BIZ_FIELDS.forEach((k) => { if (b[k] != null && b[k] !== '') setP(S, k, b[k]); });
+    const o = lsGet(DOCKEY);
+    if (o) { DOC_FIELDS.forEach((k) => { if (o[k] != null) setP(S, k, o[k]); }); lastNo = o.lastNo || ''; }
+    if (!TPLS.some((t) => t.id === S.tpl)) S.tpl = TPLS[0].id;
+    if (!CURRENCIES.some((c) => c[0] === S.currency)) S.currency = 'NGN';
+    if (lastNo) S.no = nextNo(lastNo);
+  })();
+  let saveTimer = 0;
+  function saveNow() {
+    const b = {}; BIZ_FIELDS.forEach((k) => { b[k] = getP(S, k); });
+    const o = { lastNo }; DOC_FIELDS.forEach((k) => { o[k] = getP(S, k); });
+    let ok = lsSet(BIZ_KEY, b);
+    if (!ok && b['biz.logo']) { b['biz.logo'] = ''; ok = lsSet(BIZ_KEY, b); note('Your logo is too big to remember, so only the text was saved.'); }
+    lsSet(DOCKEY, o);
+  }
+  const save = () => { clearTimeout(saveTimer); saveTimer = setTimeout(saveNow, 300); };
+  const note = (s) => { const n = $('dg-status'); if (n) n.textContent = s; };
+
+  const tplOf = (id) => TPLS.find((t) => t.id === id) || TPLS[0];
+  const WIDTH = { a4: 794, a5: 559, thermal: 302 };
+  function docHtml(tp, d, mode) {
+    const H = helpers(d, mode, kind);
+    return '<div class="dt t-' + tp.id + ' p-' + tp.paper + (mode === 'edit' ? ' is-edit' : '') + '" style="' + accentVars((mode !== 'thumb' && d.accent) || tp.accent) + '">' + tp.render(d, H) + '</div>';
+  }
+
+  /* gallery */
+  const gal = $('dg-gal');
+  function buildGallery() {
+    const sample = Object.assign({}, S, cfg.sample, { kind, accent: '' });
+    sample.biz = cfg.sample.biz; sample.cust = cfg.sample.cust; sample.items = cfg.sample.items;
+    gal.innerHTML = TPLS.map((t) => '<div class="dg-tc" role="button" tabindex="0" data-id="' + t.id + '" data-group="' + (t.group || 'everyday') + '" aria-pressed="' + (t.id === S.tpl) + '" aria-label="Use the ' + esc(t.name) + ' design">' +
+      '<div class="dg-tb p-' + t.paper + '"><div class="dg-ts" style="width:' + WIDTH[t.paper] + 'px">' + docHtml(t, sample, 'thumb') + '</div></div>' +
+      '<div class="dg-tn"><b>' + esc(t.name) + '</b>' + (t.group === 'festive' ? '<i>Festive</i>' : '') + '</div></div>').join('');
+    const cnt = $('dg-count'); if (cnt) cnt.textContent = TPLS.length + ' designs';
+    fitThumbs();
+  }
+  function fitThumbs() {
+    gal.querySelectorAll('.dg-tb').forEach((b) => {
+      const s = b.firstElementChild, t = tplOf(b.parentNode.dataset.id), w = b.clientWidth, dw = WIDTH[t.paper];
+      if (!w) return;
+      const sc = t.paper === 'thermal' ? Math.min(w * 0.78 / dw, 1) : w / dw;
+      s.style.transform = 'scale(' + sc + ')';
+      s.style.left = t.paper === 'thermal' ? ((w - dw * sc) / 2) + 'px' : '0';
+    });
+  }
+  function pick(id, scroll) {
+    S.tpl = id;
+    gal.querySelectorAll('.dg-tc').forEach((c) => c.setAttribute('aria-pressed', c.dataset.id === id));
+    $('dg-tpl').value = id;
+    syncAccentInput();
+    render(); save();
+    if (scroll) { const ed = $('dg-editor'); if (ed && ed.scrollIntoView) ed.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  }
+  gal.addEventListener('click', (e) => { const c = e.target.closest('.dg-tc'); if (c) pick(c.dataset.id, true); });
+  gal.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('dg-tc')) { e.preventDefault(); pick(e.target.dataset.id, true); } });
+  const chips = $('dg-filter');
+  if (chips) chips.addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-g]'); if (!b) return;
+    chips.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b));
+    gal.querySelectorAll('.dg-tc').forEach((c) => { c.hidden = b.dataset.g !== 'all' && c.dataset.group !== b.dataset.g; });
+    fitThumbs();
+  });
+
+  /* design picker beside the preview */
+  const tsel = $('dg-tpl');
+  tsel.innerHTML = TPLS.map((t) => '<option value="' + t.id + '">' + esc(t.name) + '</option>').join('');
+  tsel.addEventListener('change', () => pick(tsel.value));
+  const step = (k) => { const i = TPLS.findIndex((t) => t.id === S.tpl); pick(TPLS[(i + k + TPLS.length) % TPLS.length].id); };
+  $('dg-prev').addEventListener('click', () => step(-1));
+  $('dg-next').addEventListener('click', () => step(1));
+  const gotoGal = $('dg-gallery-link'); if (gotoGal) gotoGal.addEventListener('click', () => { const g = $('dg-gallery'); if (g && g.scrollIntoView) g.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+
+  /* form */
+  const form = $('dg-form');
+  const cs = $('dg-cur');
+  cs.innerHTML = CURRENCIES.map((c) => '<option value="' + c[0] + '">' + c[0] + ' (' + esc(c[1].trim()) + ') ' + esc(c[3]) + '</option>').join('');
+  function fillForm() {
+    form.querySelectorAll('[data-f]').forEach((el) => {
+      const v = getP(S, el.dataset.f);
+      if (el.type === 'file') return;
+      el.value = v == null ? '' : v;
+    });
+    buildItems(); syncAccentInput(); logoUi();
+  }
+  function buildItems() {
+    const box = $('dg-items');
+    box.innerHTML = S.items.map((it, i) => '<div class="dg-item">' +
+      '<input type="text" data-f="items.' + i + '.desc" aria-label="Item ' + (i + 1) + ' description" placeholder="Item or service" maxlength="160" value="' + esc(it.desc) + '">' +
+      '<input type="text" inputmode="decimal" data-f="items.' + i + '.qty" aria-label="Item ' + (i + 1) + ' quantity" placeholder="1" value="' + esc(it.qty) + '">' +
+      '<input type="text" inputmode="decimal" data-f="items.' + i + '.price" aria-label="Item ' + (i + 1) + ' price" placeholder="0.00" value="' + esc(it.price) + '">' +
+      '<button type="button" class="dg-rm" data-rm="' + i + '" aria-label="Remove item ' + (i + 1) + '" title="Remove">&times;</button></div>').join('');
+  }
+  form.addEventListener('input', (e) => {
+    const el = e.target, k = el.dataset && el.dataset.f;
+    if (!k) return;
+    setP(S, k, el.value);
+    if (k === 'date' && kind === 'invoice' && $('dg-due').dataset.auto !== '0') { S.due = addDays(S.date, 14); $('dg-due').value = S.due; }
+    if (k === 'due') el.dataset.auto = '0';
+    schedule(); save();
+  });
+  form.addEventListener('change', (e) => { if (e.target.dataset && e.target.dataset.f) { setP(S, e.target.dataset.f, e.target.value); render(); save(); } });
+  $('dg-items').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-rm]'); if (!b) return;
+    S.items.splice(+b.dataset.rm, 1);
+    if (!S.items.length) S.items.push({ desc: '', qty: '1', price: '' });
+    buildItems(); render();
+  });
+  $('dg-add').addEventListener('click', () => {
+    S.items.push({ desc: '', qty: '1', price: '' });
+    buildItems(); render();
+    const ins = $('dg-items').querySelectorAll('input[data-f$=".desc"]'); ins[ins.length - 1].focus();
+  });
+
+  /* colour */
+  const acc = $('dg-accent');
+  function syncAccentInput() { acc.value = S.accent || tplOf(S.tpl).accent; }
+  acc.addEventListener('input', () => { S.accent = acc.value; schedule(); save(); });
+  $('dg-accent-reset').addEventListener('click', () => { S.accent = ''; syncAccentInput(); render(); save(); });
 
   /* logo */
-  function updateLogoUi() {
-    $('dg-logo-clear').hidden = !st.logo;
-    $('dg-logo-note').textContent = st.logo ? 'Logo added. It is resized in your browser and never uploaded.' : 'Optional. PNG, JPG, WebP or SVG. It stays in your browser.';
+  const logoIn = $('dg-logo');
+  function logoUi() { $('dg-logo-clear').hidden = !S.biz.logo; $('dg-logo-note').textContent = S.biz.logo ? 'Logo added. It stays in your browser.' : 'Optional. PNG, JPG, WebP or SVG.'; }
+  logoIn.addEventListener('change', () => {
+    const f = logoIn.files && logoIn.files[0]; if (!f) return;
+    const rd = new FileReader();
+    rd.onload = () => loadImg(rd.result).then((im) => {
+      const max = 600, w0 = im.naturalWidth || im.width || max, h0 = im.naturalHeight || im.height || max / 2, s = Math.min(1, max / Math.max(w0, h0));
+      const cv = document.createElement('canvas'); cv.width = Math.max(1, Math.round(w0 * s)); cv.height = Math.max(1, Math.round(h0 * s));
+      cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height);
+      S.biz.logo = cv.toDataURL('image/png'); logoUi(); render(); save();
+    }).catch(() => { $('dg-logo-note').textContent = 'That file could not be read as a picture. Try a PNG or JPG.'; });
+    rd.readAsDataURL(f);
+  });
+  $('dg-logo-clear').addEventListener('click', () => { S.biz.logo = ''; logoIn.value = ''; logoUi(); render(); save(); });
+
+  /* forget and new */
+  $('dg-forget').addEventListener('click', () => {
+    lsDel(BIZ_KEY); lsDel(DOCKEY); lastNo = '';
+    S.biz = { name: '', addr: '', phone: '', email: '', logo: '' }; S.currency = 'NGN'; S.taxRate = ''; S.taxName = 'VAT'; S.notes = ''; S.no = prefix;
+    fillForm(); render();
+    note('Your saved details were deleted from this browser.');
+    clearTimeout(saveTimer);
+  });
+  $('dg-new').addEventListener('click', () => {
+    lastNo = S.no; S.no = nextNo(S.no);
+    S.cust = { name: '', contact: '' }; S.items = [{ desc: '', qty: '1', price: '' }]; S.paid = ''; S.discount = ''; S.date = ymd(new Date());
+    if (kind === 'invoice') { S.due = addDays(S.date, 14); $('dg-due').dataset.auto = '1'; }
+    fillForm(); render(); save();
+    note('Started a new ' + kind + ', number ' + S.no + '.');
+  });
+
+  /* preview */
+  const stage = $('dg-stage'), sheet = $('dg-sheet');
+  let editing = false, timer = 0;
+  const schedule = () => { clearTimeout(timer); timer = setTimeout(render, 60); };
+  function render() {
+    if (editing) return;
+    const tp = tplOf(S.tpl);
+    sheet.style.width = WIDTH[tp.paper] + 'px';
+    sheet.innerHTML = docHtml(tp, S, 'edit');
+    fitPreview();
+    const nm = $('dg-tname'); if (nm) nm.textContent = tp.name;
   }
-  $('dg-logo').addEventListener('change', (e) => {
-    const f = e.target.files && e.target.files[0];
-    if (!f) return;
-    if (!/^image\//.test(f.type)) { say('Choose an image file for the logo.', true); return; }
-    if (f.size > 12 * 1048576) { say('That image is too large. Choose one under 12 MB.', true); return; }
-    const url = URL.createObjectURL(f), img = new Image();
-    img.onload = () => {
-      const nw = img.naturalWidth || 300, nh = img.naturalHeight || 300, sc = Math.min(1, 500 / Math.max(nw, nh));
-      const cv = document.createElement('canvas'); cv.width = Math.max(1, Math.round(nw * sc)); cv.height = Math.max(1, Math.round(nh * sc));
-      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
-      let data = cv.toDataURL('image/png');
-      if (data.length > 450000) {
-        const c2 = document.createElement('canvas'); c2.width = cv.width; c2.height = cv.height; const x = c2.getContext('2d');
-        x.fillStyle = '#fff'; x.fillRect(0, 0, c2.width, c2.height); x.drawImage(cv, 0, 0); data = c2.toDataURL('image/jpeg', 0.88);
+  function fitPreview() {
+    const tp = tplOf(S.tpl), dw = WIDTH[tp.paper], w = stage.clientWidth, doc = sheet.firstElementChild;
+    if (!doc) return;
+    const sc = w ? Math.min(1, w / dw) : 1;
+    sheet.style.transform = 'scale(' + sc + ')';
+    sheet.style.left = w > dw * sc ? ((w - dw * sc) / 2) + 'px' : '0';
+    sheet.querySelectorAll('.dg-pbreak').forEach((n) => n.remove());
+    if (tp.paper === 'a4' && w) {
+      const pages = paginate(doc, 1123, sc);
+      for (let p = 1; p < pages; p++) { const l = document.createElement('div'); l.className = 'dg-pbreak'; l.setAttribute('data-noexport', ''); l.style.top = (p * 1123) + 'px'; l.innerHTML = '<span>Page ' + (p + 1) + '</span>'; doc.appendChild(l); }
+    }
+    stage.style.height = Math.ceil(doc.offsetHeight * sc) + 'px';
+  }
+  // click text on the document to change it
+  sheet.addEventListener('focusin', (e) => {
+    const el = e.target.closest('.ek'); if (!el) return;
+    editing = true;
+    if (el.classList.contains('is-ph')) { el.textContent = ''; el.classList.remove('is-ph'); }
+    if (el.dataset.n) el.textContent = el.dataset.raw || '';
+  });
+  sheet.addEventListener('input', (e) => {
+    const el = e.target.closest('.ek'); if (!el || el.dataset.n) return;
+    const v = txtOf(el).replace(/\u00a0/g, ' ').replace(/\n$/, '');
+    setP(S, el.dataset.k, el.dataset.ml ? v : v.replace(/\n/g, ' '));
+    const f = form.querySelector('[data-f="' + el.dataset.k + '"]'); if (f) f.value = getP(S, el.dataset.k);
+    save();
+  });
+  sheet.addEventListener('keydown', (e) => {
+    const el = e.target.closest('.ek'); if (!el) return;
+    if (e.key === 'Enter' && !el.dataset.ml) { e.preventDefault(); el.blur(); }
+    if (e.key === 'Escape') el.blur();
+  });
+  sheet.addEventListener('paste', (e) => {
+    const el = e.target.closest('.ek'); if (!el) return;
+    e.preventDefault();
+    const t = (e.clipboardData || window.clipboardData).getData('text') || '';
+    document.execCommand('insertText', false, el.dataset.ml ? t : t.replace(/\s*\n\s*/g, ' '));
+  });
+  sheet.addEventListener('focusout', (e) => {
+    const el = e.target.closest('.ek'); if (!el) return;
+    if (el.dataset.n) {
+      const v = txtOf(el).replace(/[^\d.,-]/g, '').replace(/,/g, '');
+      setP(S, el.dataset.k, v);
+      const f = form.querySelector('[data-f="' + el.dataset.k + '"]'); if (f) f.value = v;
+      save();
+    }
+    editing = false;
+    setTimeout(() => { if (!editing) render(); }, 0);
+  });
+
+  /* export */
+  async function prepare() {
+    await fontsReady();
+    const tp = tplOf(S.tpl);
+    let host = $('dg-host');
+    if (!host) { host = document.createElement('div'); host.id = 'dg-host'; host.className = 'dg-host'; host.setAttribute('aria-hidden', 'true'); document.body.appendChild(host); }
+    host.innerHTML = docHtml(tp, S, 'export');
+    const doc = host.firstElementChild;
+    await Promise.all([].map.call(doc.querySelectorAll('img'), (im) => im.complete ? null : new Promise((r) => { im.onload = im.onerror = r; })));
+    const pageH = tp.paper === 'a4' ? 1123 : 0;
+    const pages = pageH ? paginate(doc, pageH, 1) : 1;
+    return { tp, host, doc, pageH, pages, W: doc.offsetWidth, H: doc.offsetHeight };
+  }
+  const fname = (ext) => kind + '-' + (String(S.no || '').trim().replace(/[^\w.-]+/g, '-').replace(/^-+|-+$/g, '') || (kind === 'invoice' ? 'INV' : 'RCT')) + '.' + ext;
+  function used() { lastNo = S.no; save(); }
+  async function run(fn) {
+    const all = root.querySelectorAll('.dg-actions .btn');
+    all.forEach((b) => { b.disabled = true; });
+    try { await fn(); } catch (err) { note('Sorry, that did not work: ' + (err && err.message ? err.message : err) + '. Try again, or use Print and choose Save as PDF.'); }
+    all.forEach((b) => { b.disabled = false; });
+  }
+  $('dg-pdf').addEventListener('click', () => run(async () => {
+    note('Making your PDF...');
+    const P = await prepare();
+    const blob = await buildPdf(collect(P.doc), P.W, P.H, P.pageH, (kind === 'invoice' ? 'Invoice ' : 'Receipt ') + S.no);
+    P.host.innerHTML = '';
+    download(blob, fname('pdf')); used();
+    note('Saved ' + fname('pdf') + (P.pages > 1 ? ', ' + P.pages + ' pages.' : '.'));
+  }));
+  $('dg-png').addEventListener('click', () => run(async () => {
+    note('Making your image...');
+    const P = await prepare();
+    const blob = await buildPng(collect(P.doc), P.W, P.H);
+    P.host.innerHTML = '';
+    download(blob, fname('png')); used();
+    note('Saved ' + fname('png') + '.');
+  }));
+  $('dg-print').addEventListener('click', () => run(async () => {
+    const P = await prepare();
+    const ps = $('print-sheet') || document.body.appendChild(Object.assign(document.createElement('div'), { id: 'print-sheet' }));
+    // fix the size of each picture so the site print styles do not resize them
+    P.doc.querySelectorAll('svg, img').forEach((n) => { const r = n.getBoundingClientRect(); n.style.width = r.width + 'px'; n.style.height = r.height + 'px'; });
+    ps.className = 'dg-print'; ps.innerHTML = '';
+    let st = $('dg-page-style'); if (!st) { st = document.createElement('style'); st.id = 'dg-page-style'; document.head.appendChild(st); }
+    if (P.pageH) {
+      st.textContent = '@page { size: A4; margin: 0; }';
+      for (let p = 0; p < P.pages; p++) {
+        const pg = document.createElement('div'); pg.className = 'dg-ppage';
+        const c = P.doc.cloneNode(true); c.style.marginTop = (-p * P.pageH) + 'px';
+        pg.appendChild(c); ps.appendChild(pg);
       }
-      st.logo = { dataUrl: data, w: cv.width, h: cv.height };
-      URL.revokeObjectURL(url); updateLogoUi(); say(''); schedule(); scheduleSave();
-    };
-    img.onerror = () => { URL.revokeObjectURL(url); say('That image could not be read.', true); };
-    img.src = url;
-  });
-  $('dg-logo-clear').addEventListener('click', () => { st.logo = null; $('dg-logo').value = ''; updateLogoUi(); schedule(); scheduleSave(); });
-
-  /* signature (invoice only) */
-  function trimCanvas(cv) {
-    const ctx = cv.getContext('2d'), w = cv.width, h = cv.height, d = ctx.getImageData(0, 0, w, h).data;
-    let x0 = w, y0 = h, x1 = -1, y1 = -1;
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (d[(y * w + x) * 4 + 3] > 8) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
-    if (x1 < 0) return null;
-    const pad = 6; x0 = Math.max(0, x0 - pad); y0 = Math.max(0, y0 - pad); x1 = Math.min(w - 1, x1 + pad); y1 = Math.min(h - 1, y1 + pad);
-    const o = document.createElement('canvas'); o.width = x1 - x0 + 1; o.height = y1 - y0 + 1;
-    o.getContext('2d').drawImage(cv, x0, y0, o.width, o.height, 0, 0, o.width, o.height);
-    return { dataUrl: o.toDataURL('image/png'), w: o.width, h: o.height };
-  }
-  function typedSig() {
-    const text = val('dg-sig-text').trim();
-    if (!text) { st.sig = null; return; }
-    const cv = document.createElement('canvas'), ctx = cv.getContext('2d');
-    const font = 'italic 72px "Segoe Script","Snell Roundhand","Brush Script MT","Lucida Handwriting","Apple Chancery",cursive';
-    ctx.font = font;
-    cv.width = Math.min(1600, Math.ceil(ctx.measureText(text).width) + 40); cv.height = 140;
-    ctx.font = font; ctx.fillStyle = '#1b2a4a'; ctx.fillText(text, 20, 95);
-    st.sig = trimCanvas(cv);
-  }
-  function sigUi() {
-    if (isR) return;
-    const mode = val('dg-sig-mode');
-    $('dg-sig-type-box').hidden = mode !== 'type';
-    $('dg-sig-draw-box').hidden = mode !== 'draw';
-    if (mode === 'type') typedSig();
-    else if (mode === 'draw') { if (!st.drawn) st.sig = null; }
-    else st.sig = st.sig; // keep the last one in memory but it is not used
-  }
-  if (!isR) {
-    const cv = $('dg-sig-canvas'), ctx = cv.getContext('2d');
-    ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#1b2a4a';
-    let down = false, last = null;
-    const pos = (e) => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * cv.width / r.width, y: (e.clientY - r.top) * cv.height / r.height }; };
-    cv.addEventListener('pointerdown', (e) => { down = true; last = pos(e); cv.setPointerCapture(e.pointerId); ctx.beginPath(); ctx.arc(last.x, last.y, 1.4, 0, 6.3); ctx.fillStyle = '#1b2a4a'; ctx.fill(); e.preventDefault(); });
-    cv.addEventListener('pointermove', (e) => { if (!down) return; const p = pos(e); ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke(); last = p; });
-    const up = () => { if (!down) return; down = false; st.drawn = true; st.sig = trimCanvas(cv); schedule(); scheduleSave(); };
-    cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
-    $('dg-sig-clear').addEventListener('click', () => { ctx.clearRect(0, 0, cv.width, cv.height); st.drawn = false; st.sig = null; schedule(); scheduleSave(); });
-    $('dg-sig-mode').addEventListener('change', () => { sigUi(); schedule(); scheduleSave(); });
-    $('dg-sig-text').addEventListener('input', () => { typedSig(); schedule(); scheduleSave(); });
-  }
-
-  /* accent swatches */
-  document.querySelectorAll('.dg-sw').forEach((b) => b.addEventListener('click', () => { $('dg-accent').value = b.getAttribute('data-c'); schedule(); scheduleSave(); }));
-
-  /* terms and due date */
-  function applyTerms() {
-    if (isR) return;
-    const t = val('dg-terms'), due = $('dg-due');
-    if (t === 'custom') { due.disabled = false; return; }
-    due.disabled = true;
-    due.value = addDays(val('dg-issue'), parseInt(t, 10) || 0);
-  }
-  $('dg-terms') && $('dg-terms').addEventListener('change', applyTerms);
-  $('dg-issue').addEventListener('input', applyTerms);
-  $('dg-no-next') && $('dg-no-next').addEventListener('click', () => { $('dg-no').value = nextNo(val('dg-no')); schedule(); });
-  const method = $('dg-method');
-  if (method) method.addEventListener('change', () => { $('dg-method-other-box').hidden = method.value !== 'Other'; });
-
-  /* generic listeners */
-  root.addEventListener('input', () => { schedule(); scheduleSave(); });
-  root.addEventListener('change', () => { schedule(); scheduleSave(); });
-  $('dg-remember').addEventListener('change', () => {
-    if ($('dg-remember').checked) { saveNow(); rememberNumber(); }
-    else { lsDel(); $('dg-remember-note').textContent = 'Saved details were deleted from this browser.'; }
-  });
-
-  /* actions */
-  function check() {
-    const M = readModel(), v = validate(M);
-    showWarns(v);
-    if (v.errs.length) {
-      const box = $('dg-errors');
-      box.innerHTML = '<b>Fix these first:</b><ul>' + v.errs.map((e) => '<li><a href="#' + e.id + '">' + esc(e.msg) + '</a></li>').join('') + '</ul>';
-      box.hidden = false;
-      document.querySelectorAll('[aria-invalid=true]').forEach((e) => e.removeAttribute('aria-invalid'));
-      v.errs.forEach((e) => { const el = $(e.id); if (el) el.setAttribute('aria-invalid', 'true'); });
-      const first = $(v.errs[0].id); if (first) first.focus();
-      say('');
-      return null;
-    }
-    $('dg-errors').hidden = true;
-    document.querySelectorAll('[aria-invalid=true]').forEach((e) => e.removeAttribute('aria-invalid'));
-    return M;
-  }
-  $('dg-errors').addEventListener('click', (e) => {
-    const a = e.target.closest('a'); if (!a) return;
-    e.preventDefault(); const t = $(a.getAttribute('href').slice(1)); if (t) t.focus();
-  });
-  const fname = (M) => (isR ? 'receipt' : 'invoice') + '-' + (M.no || 'draft').replace(/[^A-Za-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) + '.pdf';
-
-  async function makePdf(M) {
-    await loadFonts();
-    const LL = layout(M);
-    return buildPdf(LL, { title: (isR ? 'Receipt ' : 'Invoice ') + (M.no || ''), author: M.biz.name });
-  }
-  $('dg-pdf').addEventListener('click', async () => {
-    const M = check(); if (!M) return;
-    const btn = $('dg-pdf'); btn.disabled = true; say('Building your PDF...');
-    try {
-      const bytes = await makePdf(M);
-      const blob = new Blob([bytes], { type: 'application/pdf' });
-      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fname(M); document.body.appendChild(a); a.click();
-      setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
-      say('Downloaded ' + fname(M) + ' (' + Math.max(1, Math.round(bytes.length / 1024)) + ' KB). The text in it can be selected and searched.');
-      rememberNumber();
-    } catch (err) {
-      say('The PDF could not be built here (' + err.message + '). Use Print and choose Save as PDF instead.', true);
-    } finally { btn.disabled = false; }
-  });
-
-  let printStyle = null;
-  $('dg-print').addEventListener('click', async () => {
-    const M = check(); if (!M) return;
-    await loadFonts();
-    const LL = layout(M), sheet = $('print-sheet');
-    sheet.className = 'dg-print';
-    sheet.innerHTML = LL.pages.map((p) => '<div class="dg-pg" style="width:' + r3(LL.W) + 'mm;height:' + r3(LL.H) + 'mm">' + svgOf(LL, p, false) + '</div>').join('');
-    if (!printStyle) { printStyle = document.createElement('style'); document.head.appendChild(printStyle); }
-    printStyle.textContent = '@page{size:' + r3(LL.W) + 'mm ' + r3(LL.H) + 'mm;margin:0}';
-    rememberNumber();
-    const done = () => { sheet.innerHTML = ''; sheet.className = ''; window.removeEventListener('afterprint', done); };
-    window.addEventListener('afterprint', done);
-    setTimeout(() => window.print(), 50);
-  });
-
-  function waText(M) {
-    const c = M.calc, f = M.fmt.money, r = M.fmt.rate, o = [];
-    o.push('*' + (isR ? 'Receipt' : 'Invoice') + (M.no ? ' ' + M.no : '') + '* from ' + M.biz.name);
-    if (M.client.name) o.push((isR ? 'Customer: ' : 'To: ') + M.client.name);
-    if (M.issue) o.push('Date: ' + fdate(M.issue) + (isR && M.time ? ', ' + M.time : ''));
-    if (!isR && M.due) o.push('Due: ' + fdate(M.due));
-    o.push('');
-    c.lines.forEach((l, i) => o.push((i + 1) + '. ' + l.desc + ' - ' + trimNum(l.qty) + ' x ' + r(l.rate) + ' = ' + f(l.amt)));
-    o.push('');
-    o.push('Subtotal: ' + f(c.subtotal));
-    if (c.discount) o.push('Discount' + (M.disc.type === 'pct' && M.disc.val ? ' (' + trimNum(M.disc.val) + '%)' : '') + ': -' + f(c.discount));
-    c.taxGroups.forEach((g) => o.push('Tax (' + trimNum(g.rate) + '%): ' + f(g.amt)));
-    if (M.taxPct > 0) o.push((M.taxName || 'Tax') + ' (' + trimNum(M.taxPct) + '%): ' + f(c.overallTax));
-    if (c.shipping) o.push('Shipping: ' + f(c.shipping));
-    o.push('*Total: ' + f(c.total) + '*');
-    if (isR) {
-      if (M.method) o.push('Paid by: ' + M.method);
-      o.push('Amount received: ' + f(c.received));
-      if (c.change > 0) o.push('Change: ' + f(c.change));
-      if (c.owing > 0) o.push('*Balance owing: ' + f(c.owing) + '*');
-      if (M.thanks) { o.push(''); o.push(M.thanks); }
     } else {
-      if (c.paid) o.push('Paid so far: ' + f(c.paid));
-      o.push('*Balance due: ' + f(c.balance) + '*');
-      const pay = [];
-      if (M.pay.bank) pay.push('Bank: ' + M.pay.bank);
-      if (M.pay.name) pay.push('Account name: ' + M.pay.name);
-      if (M.pay.no) pay.push('Account number: ' + M.pay.no);
-      if (M.pay.link) pay.push(M.pay.link);
-      if (pay.length) { o.push(''); o.push('*Payment details*'); pay.forEach((p) => o.push(p)); }
-      if (M.notes) { o.push(''); o.push(M.notes); }
+      st.textContent = '@page { size: ' + (P.W * 25.4 / 96).toFixed(1) + 'mm ' + (Math.ceil(P.H) * 25.4 / 96 + 1).toFixed(1) + 'mm; margin: 0; }';
+      ps.appendChild(P.doc.cloneNode(true));
     }
-    return o.join('\n');
-  }
-  $('dg-wa').addEventListener('click', async () => {
-    const M = check(); if (!M) return;
-    const text = waText(M), box = $('dg-wa-box');
-    let ok = false;
-    try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {
-      try { box.hidden = false; box.value = text; box.select(); ok = document.execCommand('copy'); } catch (e2) { ok = false; }
-    }
-    if (ok) { say('Copied. Paste it into a WhatsApp chat.'); box.hidden = true; rememberNumber(); }
-    else { box.hidden = false; box.value = text; box.select(); say('Your browser blocked copying. Select the text below and copy it.', true); }
-  });
+    P.host.innerHTML = '';
+    used();
+    const done = () => { ps.innerHTML = ''; ps.className = ''; st.textContent = ''; window.removeEventListener('afterprint', done); };
+    window.addEventListener('afterprint', done);
+    window.print();
+    note('If the print window did not open, press Ctrl and P.');
+  }));
 
-  $('dg-reset').addEventListener('click', () => {
-    const b = $('dg-reset');
-    if (!b.dataset.armed) {
-      b.dataset.armed = '1'; b.textContent = 'Click again to clear';
-      resetTimer = setTimeout(() => { delete b.dataset.armed; b.textContent = 'Reset'; }, 4000);
-      return;
-    }
-    clearTimeout(resetTimer); delete b.dataset.armed; b.textContent = 'Reset';
-    resetForm();
-  });
-
-  function resetForm() {
-    const keep = $('dg-remember').checked ? lsGet() : null;
-    root.querySelectorAll('input[type=text],input[type=email],input[type=tel],input[type=number],textarea').forEach((e) => { if (!e.closest('.dg-item')) e.value = ''; });
-    itemsEl.innerHTML = ''; itemCount = 0; addItem();
-    st.logo = null; st.sig = null; st.drawn = false; $('dg-logo').value = '';
-    if (!isR) { const cv = $('dg-sig-canvas'); cv.getContext('2d').clearRect(0, 0, cv.width, cv.height); $('dg-sig-mode').value = 'none'; }
-    defaults();
-    if (keep) { applySaved(keep); }
-    else { $('dg-remember').checked = false; }
-    $('dg-errors').hidden = true; $('dg-wa-box').hidden = true;
-    document.querySelectorAll('[aria-invalid=true]').forEach((e) => e.removeAttribute('aria-invalid'));
-    suggestNumber(keep);
-    sigUi(); updateLogoUi(); applyTerms();
-    say(keep ? 'Cleared. Your saved business details were kept. Untick Remember my business details to delete them.' : 'Cleared.');
-    schedule();
-  }
-
-  function defaults() {
-    const now = new Date();
-    $('dg-issue').value = ymd(now);
-    if (isR) { $('dg-time').value = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0'); $('dg-method').value = 'Cash'; $('dg-method-other-box').hidden = true; $('dg-thanks').value = 'Thank you for your purchase.'; $('dg-paper').value = 'thermal'; }
-    else { $('dg-terms').value = '14'; $('dg-paper').value = 'a4'; }
-    $('dg-cur').value = guessCurrency(); if ($('dg-cur').value !== guessCurrency()) $('dg-cur').value = 'USD';
-    $('dg-tpl').value = 'clean'; $('dg-accent').value = '#2563eb'; $('dg-disc-type').value = 'pct'; $('dg-taxname').value = 'VAT';
-    $('dg-curcode').checked = false;
-    const q = itemsEl.querySelector('[data-f=qty]'); if (q && !q.value) q.value = '1';
-  }
-  function suggestNumber(saved) {
-    const prefix = isR ? 'RCT-' : 'INV-';
-    const last = saved && saved.last && saved.last[kind];
-    $('dg-no').value = last ? nextNo(last) : prefix + '0001';
-  }
-
-  /* start up */
-  addItem();
-  defaults();
-  const saved = lsGet();
-  if (saved && saved.f) { $('dg-remember').checked = true; applySaved(saved); $('dg-remember-note').textContent = 'Your saved details were loaded from this browser.'; }
-  suggestNumber(saved);
-  sigUi(); updateLogoUi(); applyTerms();
-  loadFonts().then(render, render);
-  window.DocGen.live = { readModel: readModel, validate: validate, layout: layout, makePdf: makePdf, waText: waText, state: st, getLayout: () => L, render: render, addItem: addItem };
+  /* start */
+  buildGallery();
+  fillForm();
+  tsel.value = S.tpl;
+  render();
+  if (window.ResizeObserver) { const ro = new ResizeObserver(() => { fitPreview(); fitThumbs(); }); ro.observe(stage); ro.observe(gal); }
+  else window.addEventListener('resize', () => { fitPreview(); fitThumbs(); });
+  fontsReady().then(() => { fitPreview(); });
+  window.DocGen._state = S; // for tests
+  window.DocGen._render = render;
 }
 
-window.DocGen = { init: init, calc: calc, makeFmt: makeFmt, wrap: wrap, tw: tw, clean: clean, nextNo: nextNo, loadFonts: loadFonts, buildPdf: buildPdf, layout: layout, svgOf: svgOf, addDays: addDays, rnd: rnd };
+window.DocGen = { init, calc, money, nextNo, fdate, CURRENCIES, svgNS: SVGNS, _buildPdf: buildPdf };
 })();

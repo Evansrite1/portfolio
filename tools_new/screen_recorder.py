@@ -77,4 +77,4 @@ PAGE = dict(
         ('Does it work on a phone?', 'No. Browsers on phones do not allow web pages to record the screen. Use a laptop or desktop computer with Chrome, Edge or Firefox.'),
         ('Why does the recording have no length in some players?', 'The browser writes a WebM recording as a stream, so the total length is often missing. Convert to MP4 to fix it.')
     ],
-    related=['video-compressor', 'video-trimmer', 'video-to-mp3', 'video-converter', 'audio-editor'])
+    related=['video-compressor', 'video-trimmer', 'video-converter', 'audio-mastering'])

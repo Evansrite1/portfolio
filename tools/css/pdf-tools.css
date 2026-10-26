@@ -1,4 +1,4 @@
-/* Shared styles for image to PDF, merge PDF and split PDF. Colors come from tools.css variables. */
+/* Styles for the PDF converter. Colors come from tools.css variables. */
 .tool.pdf-tool { grid-template-columns: minmax(0, 1fr); }
 .pdf-tool .card { min-width: 0; }
 .pdf-tool .err, .pdf-tool .help.err { color: var(--accent); }
@@ -90,3 +90,53 @@
 .pdf-grid.nosel .pdf-pg.sel .tick { display: none; }
 .pdf-grid.nosel .pdf-pg.sel .n { color: var(--soft); font-weight: 400; }
 .pdf-grid .pdf-pg:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- PDF converter ---------- */
+.pc-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding: 5px; margin: 0 0 16px; border: 1px solid var(--line2); border-radius: 14px; background: var(--paper); }
+.pc-tabs button { font: inherit; color: var(--soft); background: transparent; border: 0; border-radius: 10px; padding: 10px 8px; cursor: pointer; text-align: center; display: grid; gap: 2px; transition: background 0.15s, color 0.15s; }
+.pc-tabs button b { font-size: 0.98rem; color: inherit; }
+.pc-tabs button small { font-size: 0.74rem; opacity: 0.8; }
+.pc-tabs button:hover { color: var(--ink); background: var(--raised); }
+.pc-tabs button[aria-selected="true"] { background: var(--ink); color: var(--paper); }
+@media (max-width: 480px) { .pc-tabs button small { display: none; } .pc-tabs button { padding: 10px 4px; } }
+
+.pc-drop { position: relative; padding: 22px 16px 18px; }
+.pc-drop .pc-drop-t { margin: 10px 0 12px; color: var(--ink); }
+.pc-plus { width: 56px; height: 56px; border-radius: 50%; border: 0; background: var(--accent); color: var(--accent-ink); display: inline-grid; place-items: center; cursor: pointer; transition: transform 0.15s; }
+.pc-plus:hover { transform: scale(1.06); }
+.pc-plus svg { width: 26px; height: 26px; }
+.pc-drop .help { max-width: 620px; margin-left: auto; margin-right: auto; }
+.pc-private { font-size: 0.78rem; }
+.pc-tool [role="tabpanel"] { margin-top: 18px; }
+.pc-tool [role="tabpanel"] > div:not([hidden]) { display: block; }
+.pc-go { margin-top: 16px; }
+.pc-tool .check { margin-top: 10px; }
+
+.pc-badge { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; padding: 6px 7px; border-radius: 6px; background: var(--ink); color: var(--paper); }
+.pc-b-docx { background: #2b579a; color: #fff; }
+.pc-b-xlsx, .pc-b-csv { background: #217346; color: #fff; }
+.pc-b-pptx { background: #c43e1c; color: #fff; }
+.pdf-thumb canvas { transition: transform 0.15s; }
+.pdf-item.pc-noreorder { grid-template-columns: 64px minmax(0, 1fr) auto; }
+@media (max-width: 560px) { .pdf-item.pc-noreorder { grid-template-columns: 56px minmax(0, 1fr) auto; } .pdf-item.pc-noreorder .pdf-acts { grid-column: auto; } }
+
+.pc-lab { font-size: 0.82rem; font-weight: 600; margin: 18px 0 8px; }
+.pc-fmt { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 6px; }
+.pc-fmt button { font: inherit; font-size: 0.86rem; color: var(--ink); background: var(--paper); border: 1px solid var(--line2); border-radius: 10px; padding: 10px 8px; cursor: pointer; transition: border-color 0.15s; }
+.pc-fmt button:hover { border-color: var(--ink); }
+.pc-fmt button[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--paper)); font-weight: 600; }
+
+.pc-files { list-style: none; margin: 0; padding: 0; font-size: 0.86rem; color: var(--soft); display: grid; gap: 2px; min-width: 0; }
+.pc-files li { word-break: break-all; }
+.pc-toolbar { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; }
+.pc-toolbar .btn { padding: 7px 12px; font-size: 0.8rem; }
+.pc-grid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); }
+.pc-pgli { position: relative; list-style: none; }
+.pc-pgli.dragging { opacity: 0.45; }
+.pc-pgli.over-before .pdf-pg { box-shadow: -4px 0 0 var(--accent); }
+.pc-pgli.over-after .pdf-pg { box-shadow: 4px 0 0 var(--accent); }
+.pc-pgacts { display: flex; justify-content: center; gap: 4px; margin-top: 4px; }
+.pc-pgacts .pdf-ib { width: 28px; height: 28px; border-radius: 7px; }
+.pc-pgacts .pdf-ib svg { width: 14px; height: 14px; }
+.pc-grid .pdf-pg .n { white-space: pre; overflow: hidden; text-overflow: ellipsis; }
+.pdf-result .help { margin-top: 10px; }

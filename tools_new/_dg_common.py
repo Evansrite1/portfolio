@@ -1,84 +1,73 @@
-"""Shared form pieces for the invoice and receipt generators (not a tool page itself)."""
+"""Shared HTML for the invoice and receipt generators (not a tool page itself).
+Used only by invoice_generator.py and receipt_generator.py."""
 import html
 
 e = lambda s: html.escape(s, quote=True)
 
 
-def f(id_, label, kind='text', ph='', extra='', help_=''):
-    h = '<p class="help">%s</p>' % help_ if help_ else ''
+def f(key, label, kind='text', ph='', extra='', id_=None):
+    i = id_ or 'dg-' + key.replace('.', '-')
     if kind == 'textarea':
-        return '<div class="field"><label for="%s">%s</label><textarea id="%s" placeholder="%s" maxlength="500" rows="3"%s></textarea>%s</div>' % (id_, label, id_, e(ph), extra, h)
-    return '<div class="field"><label for="%s">%s</label><input type="%s" id="%s" placeholder="%s" autocomplete="off"%s>%s</div>' % (id_, label, kind, id_, e(ph), extra, h)
+        return '<div class="field"><label for="%s">%s</label><textarea id="%s" data-f="%s" placeholder="%s" rows="2" maxlength="400"%s></textarea></div>' % (i, label, i, key, e(ph), extra)
+    return '<div class="field"><label for="%s">%s</label><input type="%s" id="%s" data-f="%s" placeholder="%s" autocomplete="off"%s></div>' % (i, label, kind, i, key, e(ph), extra)
 
 
-def sel(id_, label, options, help_=''):
-    h = '<p class="help">%s</p>' % help_ if help_ else ''
-    return '<div class="field"><label for="%s">%s</label><select id="%s">%s</select>%s</div>' % (
-        id_, label, id_, ''.join('<option value="%s">%s</option>' % (v, t) for v, t in options), h)
+def sel(key, label, options, id_=None):
+    i = id_ or 'dg-' + key.replace('.', '-')
+    return '<div class="field"><label for="%s">%s</label><select id="%s" data-f="%s">%s</select></div>' % (
+        i, label, i, key, ''.join('<option value="%s">%s</option>' % (e(v), e(t)) for v, t in options))
 
 
-def group(title, body, open_=True):
-    return '<details class="opts"%s><summary>%s</summary>%s</details>' % (' open' if open_ else '', title, body)
+NUM = ' inputmode="decimal"'
 
 
-SWATCHES = ['#2563eb', '#15803d', '#c8312b', '#1f2937', '#d97706', '#7c3aed', '#0f766e']
-
-
-def design(kind):
-    if kind == 'invoice':
-        paper = sel('dg-paper', 'Paper size', [('a4', 'A4'), ('letter', 'US Letter')])
-        tpl_help = ''
+def tool(kind):
+    inv = kind == 'invoice'
+    word = 'invoice' if inv else 'receipt'
+    business = ('<h3>Your business</h3>' + f('biz.name', 'Business name', 'text', 'Your business name', ' maxlength="100"') +
+                '<div class="field"><label for="dg-logo">Logo (optional)</label><input type="file" id="dg-logo" accept="image/*">'
+                '<p class="help" id="dg-logo-note">Optional. PNG, JPG, WebP or SVG.</p><button type="button" class="btn" id="dg-logo-clear" hidden style="margin-top:6px">Remove logo</button></div>' +
+                f('biz.addr', 'Address', 'textarea', 'Street, city, country') +
+                '<div class="row2">' + f('biz.phone', 'Phone', 'tel', '+234 803 123 4567', ' maxlength="40"') + f('biz.email', 'Email', 'email', 'you@example.com', ' maxlength="100"') + '</div>')
+    customer = ('<h3>%s</h3>' % ('Customer' if inv else 'Customer (optional)') +
+                '<div class="row2">' + f('cust.name', 'Customer name', 'text', 'Customer or company', ' maxlength="100"') + f('cust.contact', 'Phone or email', 'text', '', ' maxlength="100"') + '</div>')
+    items = ('<h3>Items</h3><div class="dg-ihead" aria-hidden="true"><span>Description</span><span>Qty</span><span>Price</span><span></span></div>'
+             '<div id="dg-items"></div><button type="button" class="btn" id="dg-add">Add an item</button>')
+    money = ('<h3>Money</h3><div class="row2"><div class="field"><label for="dg-cur">Currency</label><select id="dg-cur" data-f="currency"></select></div>' +
+             f('taxRate', 'Tax rate, %', 'text', '0', NUM + ' maxlength="6"') + '</div>'
+             '<div class="row2">' + f('discount', 'Discount', 'text', '0', NUM + ' maxlength="14"') +
+             sel('discType', 'Discount type', [('pct', 'Percent (%)'), ('fixed', 'Fixed amount')]) + '</div>' +
+             f('paid', 'Amount paid so far' if inv else 'Amount received', 'text', '0' if inv else 'Leave empty if paid exactly', NUM + ' maxlength="14"'))
+    if inv:
+        details = ('<h3>Invoice details</h3><div class="dg-row3">' + f('no', 'Invoice number', 'text', 'INV-0001', ' maxlength="30"') +
+                   f('date', 'Date', 'date') + f('due', 'Due date', 'date') + '</div>' +
+                   f('notes', 'Payment details or note', 'textarea', 'Bank name, account name and account number'))
     else:
-        paper = sel('dg-paper', 'Layout', [('thermal', 'Thermal receipt, 80 mm wide'), ('a5', 'A5 page'), ('a4', 'A4 page')])
-        tpl_help = 'The template applies to the A5 and A4 layouts. The thermal layout has one plain style.'
-    sw = ''.join('<button type="button" class="dg-sw" data-c="%s" style="background:%s" aria-label="Use colour %s"></button>' % (c, c, c) for c in SWATCHES)
-    return group('Design', '<div class="row2">' + paper + sel('dg-tpl', 'Template', [('clean', 'Clean'), ('bold', 'Bold'), ('minimal', 'Minimal')], tpl_help) + '</div>'
-                 '<div class="field"><label for="dg-accent">Accent colour</label><div class="dg-accent-row"><input type="color" id="dg-accent" value="#2563eb"><div class="dg-sws" style="margin-top:0">' + sw + '</div></div></div>')
-
-
-def business():
-    return group('Your business',
-                 f('dg-biz-name', 'Business name', 'text', 'Your business name', ' maxlength="100"') +
-                 f('dg-biz-addr', 'Address', 'textarea', 'Street, city, country') +
-                 '<div class="row2">' + f('dg-biz-email', 'Email', 'email', 'you@example.com', ' maxlength="100"') + f('dg-biz-phone', 'Phone', 'tel', '+234 701 234 5678', ' maxlength="40"') + '</div>' +
-                 f('dg-biz-tax', 'Tax ID or VAT number (optional)', 'text', '', ' maxlength="40"') +
-                 '<div class="field"><label for="dg-logo">Logo (optional)</label><input type="file" id="dg-logo" accept="image/*"><p class="help" id="dg-logo-note">Optional. PNG, JPG, WebP or SVG. It stays in your browser.</p>'
-                 '<button type="button" class="btn" id="dg-logo-clear" hidden style="margin-top:8px">Remove logo</button></div>')
-
-
-def money_adjust(kind):
-    ship = f('dg-ship', 'Shipping or delivery', 'number', '0.00', ' min="0" step="any" inputmode="decimal"') if kind == 'invoice' else ''
-    paid_label = 'Amount paid so far' if kind == 'invoice' else 'Amount received'
-    paid_help = 'Leave empty if nothing has been paid yet.' if kind == 'invoice' else 'Leave empty if the customer paid the exact total. The change is worked out for you.'
-    return group('Discount, tax and payments',
-                 '<div class="row2"><div class="field"><label for="dg-disc-type">Discount type</label><select id="dg-disc-type"><option value="pct">Percent (%)</option><option value="fixed">Fixed amount</option></select></div>'
-                 + f('dg-disc', 'Discount', 'number', '0', ' min="0" step="any" inputmode="decimal"') + '</div>' +
-                 '<div class="row2">' + f('dg-taxname', 'Tax name', 'text', 'VAT', ' maxlength="20"', 'For example VAT, GST or Sales tax.') +
-                 f('dg-taxpct', 'Tax rate (%)', 'number', '0', ' min="0" max="100" step="any" inputmode="decimal"', 'Applied to the total after the discount.') + '</div>' +
-                 ship + f('dg-paid', paid_label, 'number', '0.00', ' min="0" step="any" inputmode="decimal"', paid_help))
-
-
-def items(kind):
-    head = 'Items' if kind == 'receipt' else 'Line items'
-    note = '' if kind == 'receipt' else '<p class="help">Tax % on a line is optional. It is added on top of that line, after any discount.</p>'
-    return group(head, '<div id="dg-items"></div><button type="button" class="btn" id="dg-add" style="margin-top:4px">Add an item</button>' + note)
-
-
-def remember():
-    return ('<div class="dg-remember"><label class="check" style="margin-top:14px"><input type="checkbox" id="dg-remember"> Remember my business details in this browser</label>'
-            '<p class="help" id="dg-remember-note">Optional. Saves your business details, payment details, currency and design on this device only. Untick to delete them.</p></div>')
-
-
-def actions(pdf_label='Download PDF'):
-    return ('<div class="btns dg-actions"><button type="button" class="btn primary" id="dg-pdf">%s</button>'
-            '<button type="button" class="btn" id="dg-print">Print</button>'
-            '<button type="button" class="btn" id="dg-wa">Copy WhatsApp text</button>'
-            '<button type="button" class="btn" id="dg-reset">Reset</button></div>'
-            '<p class="help" id="dg-status" role="status" aria-live="polite"></p>'
-            '<div class="dg-errors" id="dg-errors" role="alert" hidden></div>'
-            '<p class="dg-warn" id="dg-warn" role="status" hidden></p>'
-            '<textarea class="dg-wa-box" id="dg-wa-box" readonly hidden aria-label="Text to copy"></textarea>') % pdf_label
-
-
-def preview():
-    return actions() + '<div class="dg-pages" id="dg-pages"><p class="help" style="text-align:center">Loading the preview...</p></div>'
+        details = ('<h3>Receipt details</h3><div class="dg-row3">' + f('no', 'Receipt number', 'text', 'RCT-0001', ' maxlength="30"') +
+                   f('date', 'Date', 'date') + f('time', 'Time', 'time') + '</div>' +
+                   sel('method', 'Paid by', [(m, m) for m in ('Cash', 'Bank transfer', 'POS', 'Card', 'Mobile money', 'Cheque', 'Other')]) +
+                   f('notes', 'Note (optional)', 'textarea', 'For example: Goods sold cannot be returned after 7 days.'))
+    more = ('<details class="opts"><summary>More options</summary>' +
+            '<div class="row2">' + f('thanks', 'Closing line', 'text', '', ' maxlength="120"') + f('taxName', 'Tax name', 'text', 'VAT', ' maxlength="20"') + '</div>' +
+            '<div class="row2">' + f('title', 'Title on the %s' % word, 'text', 'Invoice' if inv else 'Receipt', ' maxlength="40"') +
+            '<div class="field"><label for="dg-accent">Main colour</label><div class="dg-inline"><input type="color" id="dg-accent" value="#1e3a8a">'
+            '<button type="button" class="btn" id="dg-accent-reset">Use the design colour</button></div></div></div></details>')
+    form = ('<div class="card dg-form" id="dg-form">' + business + customer + items + money + details + more +
+            '<p class="dg-save">Your business details are saved in this browser only, so the next %s is filled in for you. '
+            '<button type="button" class="dg-link" id="dg-forget">Forget my details</button></p></div>').replace('%s', word)
+    pv = ('<div class="card preview dg-pv"><div class="dg-bar"><button type="button" class="btn" id="dg-prev" aria-label="Previous design">&lsaquo;</button>'
+          '<select id="dg-tpl" aria-label="Design"></select><button type="button" class="btn" id="dg-next" aria-label="Next design">&rsaquo;</button>'
+          '<button type="button" class="btn" id="dg-gallery-link">All designs</button></div>'
+          '<div class="dg-stage" id="dg-stage"><div class="dg-sheet" id="dg-sheet"></div></div>'
+          '<p class="help">Click any text on the %s to change it. Your changes go into the form too.</p>'
+          '<div class="btns dg-actions"><button type="button" class="btn primary" id="dg-pdf">Download PDF</button>'
+          '<button type="button" class="btn" id="dg-print">Print</button><button type="button" class="btn" id="dg-png">Download PNG</button>'
+          '<button type="button" class="btn" id="dg-new">New %s</button></div>'
+          '<p class="help" id="dg-status" role="status" aria-live="polite"></p></div>') % (word, word)
+    chips = ('<div class="dg-filter" id="dg-filter" role="group" aria-label="Show designs"><button type="button" data-g="all" aria-pressed="true">All</button>'
+             '<button type="button" data-g="everyday" aria-pressed="false">Everyday</button><button type="button" data-g="festive" aria-pressed="false">Festive</button></div>') if not inv else ''
+    return ('<div class="dg" id="dg" data-kind="kind">'
+            '<section class="dg-step" id="dg-gallery"><div class="dg-head"><span class="dg-n">1</span><h2>Choose a design</h2><p class="help" id="dg-count"></p></div>%s'
+            '<div class="dg-gal" id="dg-gal"><noscript>This tool needs JavaScript to show the designs.</noscript></div></section>'
+            '<section class="dg-step" id="dg-editor"><div class="dg-head"><span class="dg-n">2</span><h2>Add your details</h2><p class="help">Everything stays in your browser. Nothing is uploaded.</p></div>'
+            '<div class="tool dg-tool">{form}{pv}</div></section></div>').replace('%s', chips, 1).replace('{form}', form).replace('{pv}', pv).replace('data-kind="kind"', 'data-kind="' + kind + '"')

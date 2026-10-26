@@ -76,4 +76,4 @@ PAGE = dict(
         ('What happens to transparent areas when I save a JPG?', 'JPG cannot be transparent, so those areas are filled with the background color you choose. White is the default. Choose PNG or WebP to keep transparency.'),
         ('Why is AVIF missing from the format list?', 'Only some browsers can save AVIF images. If yours cannot, the option is hidden. You can still add AVIF files and convert them to other formats.'),
     ],
-    related=['remove-background', 'watermark-maker', 'image-to-pdf', 'color-picker', 'video-compressor'])
+    related=['remove-background', 'watermark-maker', 'pdf-converter', 'color-picker', 'video-compressor'])

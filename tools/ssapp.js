@@ -1310,6 +1310,7 @@
       { label: 'Put the previewed item over a camera or photo', icon: 'camera', off: !(get(selId) && get(selId).slides && !get(selId).slides[0].img), fn: function () { combineMenu(selId); } },
       { sep: true },
       { hdr: 'Screens' },
+      { label: 'Check screens and fix the TV', icon: 'monitor', fn: function () { if ('getScreenDetails' in window && !screenDetails) loadScreens(true).then(function () { showScreens(); }); else showScreens(); } },
       { label: 'Show which screen is which', icon: 'monitor', fn: function () { send({ type: 'identify' }); } },
       { label: 'Open the stage display', icon: 'monitor', fn: openStage },
       { label: 'Open this web page in its own window', icon: 'link', off: !web, fn: function () {
@@ -1393,6 +1394,8 @@
     var t = targetScreen(); sel.value = keep !== '' && list[+keep] ? keep : String(list.indexOf(t) >= 0 ? list.indexOf(t) : 0);
     sel.hidden = list.length < 2; $('move').hidden = list.length < 2;
     if (list.length < 2) say('Only one screen was found. Connect your TV or projector and set it to extend (not mirror) your desktop.', true);
+    else if (popup && !popup.closed && fillScreens.last === 1) { placePopup(popup); toast('A second screen was found. The TV screen moved there.'); }
+    fillScreens.last = list.length;
   }
   function loadScreens(prompt) {
     if (!('getScreenDetails' in window)) return Promise.resolve(null);
@@ -1410,22 +1413,64 @@
     var s = targetScreen(); if (!w || w.closed || !s) return false;
     try { w.moveTo(s.availLeft, s.availTop); w.resizeTo(s.availWidth, s.availHeight); return true; } catch (e) { return false; }
   }
-  function openDisplay() {
+  /* finding the TV or projector: ask the browser for the screen list first (that needs the click),
+     then open the window there; if the computer itself sees only one screen, explain how to fix it */
+  var screenAsked = false;
+  function screenCount() {
+    if (screenDetails) return screenDetails.screens.length;
+    if (window.screen && window.screen.isExtended === true) return 2;
+    if (window.screen && window.screen.isExtended === false) return 1;
+    return 0;
+  }
+  function showScreens(note) {
+    var n = screenCount(), list = screenDetails ? screenDetails.screens : null, h = '';
+    if (note) h += '<p style="margin:0;color:var(--amber)">' + esc(note) + '</p>';
+    h += '<p style="margin:0"><b>' + (n === 0 ? 'This browser cannot tell how many screens are connected.' : n === 1 ? 'Your computer can only see one screen right now.' : 'Your computer can see ' + n + ' screens.') + '</b></p>';
+    if (list) h += '<ul class="list">' + list.map(function (s, i) { return '<li><span>' + esc(s.label || ('Screen ' + (i + 1))) + ' (' + s.width + ' x ' + s.height + ')' + (s === screenDetails.currentScreen ? ', this laptop screen' : '') + '</span></li>'; }).join('') + '</ul>';
+    if (n < 2) h += '<p class="help" style="margin:0">If a TV or projector is plugged in, it is either copying this screen (mirror) or the computer has not noticed it. A web page can only use a screen that the computer itself can see. Try these, one at a time:</p>' +
+      '<ol class="steps">' +
+      '<li><b>Windows:</b> press the Windows key and P together, then choose <b>Extend</b>. If the TV is not listed, open Settings, System, Display, and press <b>Detect</b> under Multiple displays.</li>' +
+      '<li><b>Mac:</b> open System Settings, Displays. If the TV shows as a mirror, change it to <b>Extended display</b>.</li>' +
+      '<li><b>HDMI to VGA adapter:</b> a VGA projector needs an active adapter (a small box, often with a USB power lead). Plug in its power, then pick the input called <b>VGA</b>, <b>PC</b> or <b>Computer</b> on the projector.</li>' +
+      '<li>Turn the projector on first, then plug the cable in, wait about 5 seconds and press <b>Detect again</b> below.</li>' +
+      '<li>If it still does not appear, try another cable, another adapter or another port. When the computer sees the screen, this page will too.</li></ol>';
+    else h += '<p class="help" style="margin:0">Press Open TV screen. It opens on the other screen. Click it once there to make it full screen.</p>';
+    if (!('getScreenDetails' in window)) h += '<p class="help" style="margin:0">This browser cannot place windows on another screen by itself. Use Chrome or Edge for that, or drag the TV screen window across and click it once.</p>';
+    $('scr-body').innerHTML = h;
+    openDlg($('dlg-screens'));
+  }
+  function doOpen(afterPrompt) {
     var s = targetScreen(), name = Object.keys(alive(displays)).length ? 'ae_second_screen_' + Date.now() : 'ae_second_screen';
     popup = openOnScreen(BASE + 'display/', name);
-    if (!popup) { say('Your browser blocked the display window. Allow pop-ups for this site, then press Open display screen again.', true); return; }
-    if (s) { say('The display opened on ' + (s.label || 'your second screen') + '. Click it once to make it full screen.'); return; }
-    if ('getScreenDetails' in window) {
-      say('Allow this site to use your screens so the display can open on the TV or projector.');
-      loadScreens(true).then(function (d) {
-        if (d && placePopup(popup)) say('The display moved to your second screen. Click it once to make it full screen.');
-        else if (d && d.screens.length > 1) say('Choose the screen at the top and press Move display.');
-        else say('Drag the display window onto your TV or projector, then click it once to make it full screen.');
-      });
-    } else say('Drag the display window onto your TV or projector, then click it once to make it full screen.');
+    if (!popup) {
+      if (afterPrompt) showScreens('The browser needs one more click to open the window. Press Open TV screen below.');
+      else say('Your browser blocked the TV screen window. Allow pop-ups for this site, then press Open TV screen again.', true);
+      return;
+    }
+    closeDlg($('dlg-screens'));
+    if (s) { setTimeout(function () { placePopup(popup); }, 300); say('The TV screen opened on ' + (s.label || 'your second screen') + '. Click it once there to make it full screen.'); return; }
+    say('Drag the TV screen window onto your TV or projector, then click it once to make it full screen.');
   }
-  $('open').onclick = openDisplay;
-  $('p-disp').onclick = openDisplay;
+  function openDisplay(force) {
+    if (force !== true && !screenDetails && window.screen && window.screen.isExtended === false) { showScreens(); return; }
+    if (force !== true && !screenDetails && 'getScreenDetails' in window && !screenAsked) {
+      screenAsked = true;
+      say('Allow this site to use your screens, so the TV screen can open on the TV or projector.');
+      loadScreens(true).then(function (d) {
+        if (d && d.screens.length < 2) { showScreens(); return; }
+        doOpen(true);
+      });
+      return;
+    }
+    doOpen(false);
+  }
+  if (window.screen && window.screen.addEventListener) window.screen.addEventListener('change', function () {
+    if (window.screen.isExtended) { toast('A second screen was connected.'); loadScreens(false).then(function () { if (popup && !popup.closed) placePopup(popup); }); }
+  });
+  $('scr-detect').onclick = function () { loadScreens(true).then(function () { showScreens(); }); };
+  $('scr-open').onclick = function () { doOpen(false); };
+  $('open').onclick = function () { openDisplay(); };
+  $('p-disp').onclick = function () { openDisplay(); };
   $('p-stage').onclick = openStage;
   $('move').onclick = function () { if (popup && !popup.closed) say(placePopup(popup) ? 'Moved. Click the display once to make it full screen.' : 'The display could not be moved. Drag it to the screen yourself.'); else say('Open the display screen first.', true); };
   loadScreens(false);

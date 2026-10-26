@@ -92,4 +92,4 @@ PAGE = dict(
         ('What does Exact cut (re-encode) do?', 'It decodes and re-encodes the video so the cut lands on the exact frame you chose. It takes longer and the video is compressed again, so it is slightly different from the original.'),
         ('Can I split a video into two parts?', 'Yes. Choose Split into two parts and move the split point. You get two files, one before the point and one after it.'),
         ('Which files and browsers work?', 'You can add MP4, MOV, MKV and WebM videos. Use Chrome, Edge or another up to date Chromium browser on a computer. The result keeps the same file type when possible.')],
-    related=['video-compressor', 'video-converter', 'video-to-mp3', 'screen-recorder', 'remove-background'])
+    related=['video-compressor', 'video-converter', 'screen-recorder', 'remove-background'])

@@ -62,4 +62,4 @@ PAGE = dict(
         ('Why does exporting take a while?', 'Your own device does the work, so a long or high resolution video takes a few minutes. A faster computer with a graphics card is quicker.'),
         ('What file types can I use?', 'MP4, MOV, WebM and other video your browser can play, plus JPG, PNG and WebP photos and MP3, WAV and M4A audio. The finished video is saved as MP4.'),
     ],
-    related=['video-trimmer', 'video-compressor', 'video-converter', 'video-to-mp3', 'screen-recorder', 'audio-editor'])
+    related=['video-trimmer', 'video-compressor', 'video-converter', 'screen-recorder', 'audio-mastering'])

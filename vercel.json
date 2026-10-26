@@ -1,8 +1,84 @@
 {
   "redirects": [
-    { "source": "/tools/barcode-generator", "destination": "/tools/", "permanent": true },
-    { "source": "/tools/barcode-generator/", "destination": "/tools/", "permanent": true },
-    { "source": "/tools/vcard-qr-code-generator", "destination": "/tools/qr-code-generator/", "permanent": true },
-    { "source": "/tools/vcard-qr-code-generator/", "destination": "/tools/qr-code-generator/", "permanent": true }
+    {
+      "source": "/tools/barcode-generator",
+      "destination": "/tools/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/barcode-generator/",
+      "destination": "/tools/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/vcard-qr-code-generator",
+      "destination": "/tools/qr-code-generator/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/vcard-qr-code-generator/",
+      "destination": "/tools/qr-code-generator/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/audio-editor",
+      "destination": "/tools/audio-mastering/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/audio-editor/",
+      "destination": "/tools/audio-mastering/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/video-to-mp3",
+      "destination": "/tools/video-converter/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/video-to-mp3/",
+      "destination": "/tools/video-converter/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/whatsapp-qr-code-generator",
+      "destination": "/tools/whatsapp-link-generator/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/whatsapp-qr-code-generator/",
+      "destination": "/tools/whatsapp-link-generator/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/image-to-pdf",
+      "destination": "/tools/pdf-converter/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/image-to-pdf/",
+      "destination": "/tools/pdf-converter/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/merge-pdf",
+      "destination": "/tools/pdf-converter/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/merge-pdf/",
+      "destination": "/tools/pdf-converter/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/split-pdf",
+      "destination": "/tools/pdf-converter/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/split-pdf/",
+      "destination": "/tools/pdf-converter/",
+      "permanent": true
+    }
   ]
 }

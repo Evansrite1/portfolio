@@ -246,3 +246,31 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 
 .narrow { max-width: 760px; margin: 0 auto; }
 .narrow h2 { text-align: center; }
+
+/* ---- tools page views: tiles, list, detailed ---- */
+.tl-bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 8px 0 10px; }
+.tl-bar input { flex: 1 1 220px; min-width: 0; background: var(--raised); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; color: inherit; font: inherit; }
+.tl-views, .tl-cats { display: flex; gap: 6px; flex-wrap: wrap; }
+.tl-views button, .tl-cats button { border: 1px solid var(--line); background: var(--raised); color: var(--soft); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
+.tl-views button[aria-pressed=true], .tl-cats button[aria-pressed=true] { border-color: var(--accent); color: var(--ink, inherit); }
+.tl-cats { margin: 0 0 14px; }
+.tl-grid { display: grid; gap: 14px; }
+.tl-grid .tile[hidden] { display: none; }
+.tl-how { display: none !important; }
+.tl-tiles { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 860px) { .tl-tiles { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .tl-tiles { grid-template-columns: 1fr; } }
+.tl-list { grid-template-columns: 1fr; gap: 6px; }
+.tl-list .tile { display: grid; grid-template-columns: 130px 220px 1fr; align-items: baseline; gap: 12px; text-align: left; padding: 11px 16px; border-radius: 10px; }
+.tl-list .tile i { margin: 0; }
+.tl-list .tile b { margin: 0; }
+@media (max-width: 700px) { .tl-list .tile { grid-template-columns: 1fr; gap: 2px; } }
+.tl-detail { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 760px) { .tl-detail { grid-template-columns: 1fr; } }
+.tl-detail .tile { text-align: left; padding: 20px 22px; }
+.tl-detail .tile i { display: inline-block; }
+.tl-detail .tile b { font-size: 1.15rem; }
+.tl-detail .tl-how { display: block !important; margin-top: 12px; border-top: 1px solid var(--line); padding-top: 10px; }
+.tl-how em { font-style: normal; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.tl-how ol { margin: 6px 0 10px; padding-left: 20px; display: grid; gap: 4px; font-size: 0.88rem; }
+.tl-how u { text-decoration: none; font-weight: 700; color: var(--accent); font-size: 0.88rem; }

@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Audio mastering</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0e0e10">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<style>
+:root{--bg:#0e0e10;--p:#161618;--h:#1f1f23;--p2:#1b1b1e;--line:#2b2b30;--line2:#3a3a41;--ink:#f1f1f3;--soft:#b6b6bd;--faint:#7c7c85;--acc:#ff5b52;--ok:#2fbf71;--blue:#4c8dff;--amber:#f5a524;--purple:#a56bff;--cyan:#27c4d6;--hw:268px;--th:76px;--dockh:260px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:13px/1.35 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+svg.i.sm{width:15px;height:15px}
+svg.i.xs{width:13px;height:13px}
+.app{display:grid;grid-template-rows:auto auto minmax(0,1fr) auto auto;height:100vh;height:100dvh}
+
+/* top bar and menus */
+.top{display:flex;align-items:center;gap:4px;padding:4px 8px;background:var(--h);border-bottom:1px solid var(--line)}
+.top .back{width:28px;height:28px;display:grid;place-items:center;border-radius:7px;color:var(--ink);text-decoration:none}
+.top .back:hover{background:var(--line)}
+.top h1{margin:0 10px 0 2px;font-size:.9rem;font-weight:700;white-space:nowrap}
+.mb{border:0;background:transparent;border-radius:6px;padding:4px 9px;font-size:.8rem;color:var(--soft)}
+.mb:hover,.mb[aria-expanded=true]{background:var(--line);color:var(--ink)}
+.sp{flex:1}
+.b{border:1px solid var(--line2);background:var(--p2);border-radius:7px;padding:5px 10px;font-weight:600;font-size:.78rem;display:inline-flex;align-items:center;justify-content:center;gap:6px;line-height:1.2;text-decoration:none;color:var(--ink);white-space:nowrap}
+.b:hover:not(:disabled){border-color:var(--ink)}
+.b:disabled{opacity:.4;cursor:default}
+.b.pri{background:var(--acc);border-color:var(--acc);color:#1a0a09}
+.b.ok{background:var(--ok);border-color:var(--ok);color:#06210f}
+.b.sm{padding:3px 8px;font-size:.72rem}
+.b.on,.b[aria-pressed=true]{background:var(--ink);color:#111;border-color:var(--ink)}
+.ib{width:30px;height:28px;border-radius:7px;border:1px solid var(--line2);background:var(--p2);display:inline-grid;place-items:center;color:var(--soft);padding:0;flex:none}
+.ib:hover:not(:disabled){color:var(--ink);border-color:var(--ink)}
+.ib:disabled{opacity:.35;cursor:default}
+.ib[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#111}
+.ib.rec{color:var(--acc)}
+.ib.rec[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#1a0a09}
+.ib.flat{border-color:transparent;background:transparent}
+.ib.xs{width:24px;height:22px;border-radius:6px}
+
+/* transport */
+.tp{display:flex;align-items:center;gap:5px;padding:5px 8px;background:var(--p);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tp .dv{width:1px;height:20px;background:var(--line2);margin:0 3px}
+.tp label{font-size:.7rem;color:var(--faint);font-weight:700;letter-spacing:.04em}
+.tp input[type=number]{width:58px;background:var(--p2);border:1px solid var(--line2);border-radius:6px;padding:4px 6px}
+.tp select{background:var(--p2);border:1px solid var(--line2);border-radius:6px;padding:4px 4px}
+.clock{display:flex;gap:10px;align-items:baseline;background:#0a0a0c;border:1px solid var(--line2);border-radius:7px;padding:3px 10px;font:600 .86rem ui-monospace,Consolas,monospace;min-width:210px}
+.clock b{color:var(--ok);font-weight:700}
+.clock span{color:var(--soft);font-size:.78rem}
+.tmeter{display:grid;gap:2px;width:120px}
+.tmeter div{height:5px;border-radius:2px;background:linear-gradient(90deg,var(--ok) 0 70%,var(--amber) 70% 88%,var(--acc) 88%);position:relative;overflow:hidden}
+.tmeter i{position:absolute;top:0;right:0;bottom:0;background:#2a2a30;width:100%}
+.recdot{font:700 .72rem ui-monospace,Consolas,monospace;color:var(--acc)}
+
+/* arrange view */
+.arr{position:relative;display:grid;grid-template-columns:var(--hw) minmax(0,1fr);grid-template-rows:26px minmax(0,1fr) 12px;min-height:0;background:var(--bg)}
+.corner{display:flex;align-items:center;gap:4px;padding:0 6px;background:var(--h);border-bottom:1px solid var(--line);border-right:1px solid var(--line);font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.corner .sp{flex:1}
+.rulerw{position:relative;background:var(--h);border-bottom:1px solid var(--line);min-width:0;overflow:hidden}
+.rulerw canvas{display:block;cursor:pointer}
+.vs{grid-column:1 / 3;display:grid;grid-template-columns:var(--hw) minmax(0,1fr);overflow-y:auto;overflow-x:hidden;align-items:start;min-height:0}
+.heads{border-right:1px solid var(--line);background:var(--p);min-height:100%}
+.lanesw{position:relative;min-width:0;overflow:hidden}
+.lanesw canvas{display:block}
+.hsl{background:var(--h);border-right:1px solid var(--line);border-top:1px solid var(--line)}
+.hs{overflow-x:scroll;overflow-y:hidden;background:var(--h);border-top:1px solid var(--line);scrollbar-width:thin}
+.hs div{height:1px}
+.ph{position:absolute;top:0;bottom:12px;left:var(--hw);width:1px;background:var(--acc);pointer-events:none;z-index:5;will-change:transform}
+.ph::before{content:"";position:absolute;top:0;left:-5px;border:5px solid transparent;border-top:7px solid var(--acc)}
+
+/* track header */
+.th{position:relative;height:var(--th);padding:5px 6px 5px 13px;border-bottom:1px solid var(--line);display:grid;grid-template-rows:22px 22px 18px;gap:2px;background:var(--p);cursor:default}
+.th.sel{background:#222229}
+.th .tc{position:absolute;left:0;top:0;bottom:0;width:7px;border:0;padding:0;background:var(--c,#555)}
+.th .r1,.th .r2,.th .r3{display:flex;align-items:center;gap:4px;min-width:0}
+.th .tn{font:700 .66rem ui-monospace,Consolas,monospace;color:var(--faint);width:16px;text-align:right;flex:none}
+.th .nm{flex:1;min-width:0;background:transparent;border:1px solid transparent;border-radius:5px;padding:2px 5px;font-weight:600;font-size:.8rem}
+.th .nm:hover{border-color:var(--line2)}
+.th .nm:focus{outline:none;border-color:var(--acc);background:var(--p2)}
+.th .kind{font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-left:auto}
+.tg{width:24px;height:20px;border-radius:5px;border:1px solid var(--line2);background:var(--p2);font:800 .66rem ui-monospace,Consolas,monospace;color:var(--soft);padding:0;flex:none}
+.tg:hover{border-color:var(--ink)}
+.tg.m[aria-pressed=true]{background:var(--amber);border-color:var(--amber);color:#1d1300}
+.tg.s[aria-pressed=true]{background:var(--ok);border-color:var(--ok);color:#06210f}
+.tg.r[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#1a0a09}
+.fxb{height:20px;border-radius:5px;border:1px solid var(--line2);background:var(--p2);font:800 .64rem system-ui,sans-serif;letter-spacing:.04em;color:var(--soft);padding:0 6px;flex:none}
+.fxb:hover{border-color:var(--ink);color:var(--ink)}
+.fxb.has{border-color:var(--blue);color:#a9c6ff}
+.th select.ins{flex:1;min-width:0;background:var(--p2);border:1px solid var(--line2);border-radius:5px;padding:1px 3px;font-size:.72rem;height:20px}
+.th input[type=range]{height:14px;margin:0;accent-color:var(--soft)}
+.th .vol{flex:1;min-width:0}
+.th .pan{width:58px;flex:none}
+.th .vv{font:600 .64rem ui-monospace,Consolas,monospace;color:var(--faint);width:46px;text-align:right;flex:none}
+
+/* empty project and drop overlay */
+.empty-state{position:absolute;left:var(--hw);right:0;top:26px;bottom:12px;display:grid;place-items:center;pointer-events:none;z-index:4}
+.empty-state .box{pointer-events:auto;background:var(--p);border:1px dashed var(--line2);border-radius:12px;padding:20px 24px;text-align:center;display:grid;gap:10px;max-width:440px}
+.empty-state p{margin:0;color:var(--soft)}
+.empty-state small{color:var(--faint)}
+.empty-state .row{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.drop{position:fixed;inset:8px;border:2px dashed var(--acc);border-radius:14px;background:rgba(14,14,16,.82);z-index:160;display:grid;place-items:center;font-weight:700;font-size:1rem;pointer-events:none}
+
+/* dock */
+.dock{position:relative;height:var(--dockh);display:flex;flex-direction:column;background:var(--p);border-top:1px solid var(--line);min-height:0}
+.dock.shut{height:auto}
+.dock.shut .dpanes{display:none}
+.grip{position:absolute;left:0;right:0;top:-4px;height:8px;cursor:ns-resize;z-index:6}
+.dtabs{display:flex;align-items:center;background:var(--h);border-bottom:1px solid var(--line);padding-right:4px}
+.dtabs button.t{border:0;background:transparent;padding:7px 12px;color:var(--faint);font-size:.74rem;font-weight:700;border-bottom:2px solid transparent}
+.dtabs button.t[aria-selected=true]{color:var(--ink);border-bottom-color:var(--acc)}
+.dpanes{flex:1;min-height:0;position:relative}
+.pane{position:absolute;inset:0;overflow:auto}
+.host{position:absolute;inset:0}
+.pempty{display:grid;place-items:center;height:100%;padding:16px;text-align:center}
+.pempty .box{display:grid;gap:8px;justify-items:center;max-width:460px;color:var(--soft)}
+.pempty b{color:var(--ink)}
+
+/* mixer */
+.mixer{display:flex;gap:6px;padding:8px;height:100%;align-items:stretch;min-width:min-content}
+.ms{width:96px;flex:none;display:grid;grid-template-rows:auto minmax(0,1fr) auto minmax(60px,2fr) auto auto 4px;gap:4px;background:var(--p2);border:1px solid var(--line);border-radius:8px;padding:5px;min-height:0}
+.ms.sel{border-color:var(--line2);background:#212127}
+.ms.master{width:112px;border-color:#3b2a2a}
+.ms .mn{font-size:.72rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.ms .mcol{border-radius:2px;background:var(--c,#555)}
+.slots{display:grid;gap:2px;align-content:start;overflow:auto;min-height:0;background:#141416;border:1px solid var(--line);border-radius:5px;padding:2px}
+.slot{display:flex;align-items:center;gap:2px;background:var(--p);border-radius:4px;padding:1px 2px;font-size:.64rem}
+.slot.off .sn{color:var(--faint);text-decoration:line-through}
+.slot .sn{flex:1;min-width:0;border:0;background:transparent;text-align:left;padding:1px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
+.slot .sx{width:14px;height:14px;border:0;background:transparent;padding:0;color:var(--faint);display:grid;place-items:center}
+.slot .sx:hover{color:var(--ink)}
+.slot .pw{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:var(--ok);flex:none}
+.slot.off .pw{background:#555}
+.addslot{border:1px dashed var(--line2);background:transparent;border-radius:4px;font-size:.64rem;color:var(--faint);padding:2px}
+.addslot:hover{color:var(--ink);border-color:var(--ink)}
+.ms .pan{width:100%;margin:0;accent-color:var(--soft)}
+.ms .mid{display:flex;gap:6px;justify-content:center;min-height:0}
+.meter{display:flex;gap:2px;width:16px}
+.meter div{flex:1;border-radius:2px;background:linear-gradient(0deg,var(--ok) 0 70%,var(--amber) 70% 88%,var(--acc) 88%);position:relative;overflow:hidden}
+.meter i{position:absolute;left:0;right:0;top:0;height:100%;background:#26262b}
+.fad{writing-mode:vertical-lr;direction:rtl;width:20px;margin:0;accent-color:var(--ink);min-height:0}
+.ms .mdb{font:600 .64rem ui-monospace,Consolas,monospace;color:var(--soft);text-align:center}
+.ms .mbt{display:flex;gap:3px;justify-content:center}
+
+/* plugin rack */
+.note{margin:0;font-size:.74rem;color:var(--faint);border-left:3px solid var(--blue);padding:2px 0 2px 8px}
+.rack{display:grid;gap:6px;align-content:start}
+.rk-empty{padding:14px;text-align:center;color:var(--faint);font-size:.8rem;border:1px dashed var(--line2);border-radius:9px}
+.unit{border:1px solid var(--line2);border-radius:9px;background:linear-gradient(#232329,#1b1b1f);overflow:hidden}
+.unit.off{opacity:.6}
+.unit.over{border-color:var(--acc)}
+.uh{display:flex;align-items:center;gap:6px;padding:4px 6px;background:#18181c;border-bottom:1px solid var(--line)}
+.uh .gr{cursor:grab;color:var(--faint);padding:0 2px;display:grid;place-items:center}
+.uh .un{flex:1;min-width:0;font-weight:700;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uh .un small{color:var(--faint);font-weight:600;margin-left:6px}
+.pwr{width:22px;height:22px;border-radius:50%;border:1px solid var(--line2);background:#111;color:var(--faint);display:grid;place-items:center;padding:0}
+.pwr[aria-pressed=true]{color:var(--ok);border-color:var(--ok)}
+.ub{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:4px 14px;padding:7px 10px 9px}
+.pr{display:grid;grid-template-columns:76px minmax(0,1fr) 62px;gap:6px;align-items:center;font-size:.72rem}
+.pr span{color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr output{font:600 .68rem ui-monospace,Consolas,monospace;color:var(--ink);text-align:right;white-space:nowrap}
+.pr input{width:100%;margin:0;accent-color:var(--blue)}
+.instbox{border:1px solid var(--line2);border-radius:9px;background:var(--p2)}
+.instbox .uh select{background:var(--p);border:1px solid var(--line2);border-radius:5px;padding:2px 4px;font-size:.76rem}
+
+/* mastering */
+.mast{display:grid;grid-template-columns:minmax(260px,1.4fr) minmax(220px,1fr) minmax(200px,.8fr);gap:8px;padding:8px;min-height:100%;align-items:start}
+.card{background:var(--p2);border:1px solid var(--line);border-radius:9px;padding:8px 10px;display:grid;gap:8px;align-content:start;min-width:0}
+.card h3{margin:0;font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);display:flex;align-items:center;gap:6px}
+.card h3 .sp{flex:1}
+.presets{display:flex;flex-wrap:wrap;gap:4px}
+.frow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.76rem;color:var(--soft)}
+.frow input[type=number]{width:66px;background:var(--p);border:1px solid var(--line2);border-radius:6px;padding:3px 6px}
+.loud{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.loud div{background:#0d0d0f;border:1px solid var(--line);border-radius:7px;padding:5px 6px;text-align:center}
+.loud b{display:block;font:700 .95rem ui-monospace,Consolas,monospace}
+.loud small{display:block;font-size:.6rem;color:var(--faint);text-transform:uppercase;letter-spacing:.06em}
+.help{color:var(--faint);font-size:.74rem;margin:0}
+.ebtn{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+
+/* popover menu and dialogs */
+.menu{position:fixed;z-index:140;background:var(--h);border:1px solid var(--line2);border-radius:9px;padding:4px;min-width:220px;box-shadow:0 12px 36px rgba(0,0,0,.55);display:grid;max-height:80vh;overflow:auto}
+.menu button{display:flex;align-items:center;gap:9px;border:0;background:transparent;text-align:left;padding:6px 9px;border-radius:6px;font-size:.8rem;color:var(--ink)}
+.menu button:hover:not(:disabled){background:var(--line)}
+.menu button:disabled{opacity:.4;cursor:default}
+.menu button kbd{margin-left:auto;font:600 .68rem ui-monospace,Consolas,monospace;color:var(--faint);padding-left:14px}
+.menu button .ck{margin-left:auto;color:var(--ok)}
+.menu hr{border:0;border-top:1px solid var(--line);margin:3px 0;width:100%}
+.menu .ml{padding:5px 9px 2px;font-size:.64rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+dialog{background:var(--h);color:var(--ink);border:1px solid var(--line2);border-radius:13px;padding:0;width:min(480px,94vw);max-height:92dvh}
+dialog.wide{width:min(820px,96vw)}
+dialog::backdrop{background:rgba(0,0,0,.62)}
+.dlg{display:flex;flex-direction:column;max-height:92dvh}
+.dlg .dt{display:flex;align-items:center;gap:9px;padding:11px 14px;border-bottom:1px solid var(--line);font-weight:800;font-size:.95rem}
+.dlg .dt .sp{flex:1}
+.dlg .dbody{padding:12px 14px;overflow:auto;display:grid;gap:10px;align-content:start}
+.dlg .dfoot{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;padding:10px 14px;border-top:1px solid var(--line)}
+.f{display:grid;gap:4px}
+.f label{font-size:.72rem;color:var(--soft);font-weight:600}
+.f input,.f select{width:100%;background:var(--p2);border:1px solid var(--line2);border-radius:7px;padding:6px 8px;min-width:0}
+.f input:focus,.f select:focus{outline:2px solid var(--acc);outline-offset:-1px;border-color:transparent}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.keys{width:100%;border-collapse:collapse;font-size:.8rem}
+.keys td{padding:4px 6px;border-bottom:1px solid var(--line)}
+.keys td:first-child{font:600 .74rem ui-monospace,Consolas,monospace;color:var(--soft);white-space:nowrap;width:150px}
+.busy{font-weight:600}
+.busy small{display:block;color:var(--faint);font-weight:400;margin-top:4px}
+
+/* status line */
+.bot{display:flex;gap:12px;align-items:center;padding:4px 10px;background:var(--h);border-top:1px solid var(--line);font-size:.72rem;color:var(--faint);white-space:nowrap;overflow:hidden}
+.msg{color:var(--soft);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.msg.err{color:#ff9d96}
+.saved{color:var(--soft)}
+.saved.ok{color:#7fe0aa}
+
+/* start screen, notes, errors, toast */
+.gate{position:fixed;inset:0;z-index:150;background:radial-gradient(1200px 600px at 50% -10%,#2a1c1b,#0e0e10 60%);display:grid;place-items:center;padding:20px}
+.gate .box{max-width:470px;text-align:center;display:grid;gap:13px;justify-items:center}
+.gate .logo{width:72px;height:72px;border-radius:18px;background:#1f1f23;border:1px solid var(--line2);display:grid;place-items:center;color:var(--acc)}
+.gate .logo svg{width:38px;height:38px}
+.gate h2{margin:0;font-size:1.6rem}
+.gate p{margin:0;color:var(--soft)}
+.gate .b{padding:8px 16px;font-size:.86rem}
+.gate small{color:var(--faint)}
+.phone{background:#2a2414;border:1px solid #5a4a20;color:#f5d58a;border-radius:9px;padding:8px 12px;font-size:.8rem}
+.banner{display:flex;align-items:center;gap:8px;padding:5px 10px;background:#2a2414;border-bottom:1px solid #5a4a20;color:#f5d58a;font-size:.76rem}
+.fatal{position:fixed;inset:0;z-index:300;background:var(--bg);display:grid;place-items:center;padding:20px}
+.fatal .box{max-width:480px;display:grid;gap:10px;text-align:center;background:var(--p);border:1px solid #5a2a28;border-radius:12px;padding:22px}
+.fatal h2{margin:0;font-size:1.1rem;color:#ff9d96}
+.fatal p{margin:0;color:var(--soft)}
+.toast{position:fixed;left:50%;bottom:48px;transform:translateX(-50%);background:#fff;color:#111;font-weight:600;padding:7px 15px;border-radius:99px;opacity:0;pointer-events:none;z-index:200;font-size:.8rem;max-width:90vw;text-align:center}
+.toast.on{opacity:1}
+.toast.bad{background:#ffd9d6;color:#3a0b08}
+
+@media (max-width:900px){
+  :root{--hw:200px}
+  .top h1{display:none}
+  .clock{min-width:0}
+  .tmeter{display:none}
+  .mast{grid-template-columns:1fr}
+  .th .pan{width:40px}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6.5" y="5" width="4" height="14" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="4" height="14" rx="1" fill="currentColor"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="2" fill="currentColor"/></symbol>
+  <symbol id="i-rec" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-start" viewBox="0 0 24 24"><path d="M6 5v14"/><path d="M18 5v14l-10-7z" fill="currentColor"/></symbol>
+  <symbol id="i-loop" viewBox="0 0 24 24"><path d="M17 3l3 3-3 3"/><path d="M4 12V9a3 3 0 0 1 3-3h13"/><path d="M7 21l-3-3 3-3"/><path d="M20 12v3a3 3 0 0 1-3 3H4"/></symbol>
+  <symbol id="i-metro" viewBox="0 0 24 24"><path d="M9 3h6l4 18H5z"/><path d="M12 15l5-8"/><path d="M7.5 15h9"/></symbol>
+  <symbol id="i-magnet" viewBox="0 0 24 24"><path d="M5 4h4v8a3 3 0 0 0 6 0V4h4v8a7 7 0 0 1-14 0z"/><path d="M5 8h4M15 8h4"/></symbol>
+  <symbol id="i-zin" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2M8 11h6M11 8v6"/></symbol>
+  <symbol id="i-zout" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2M8 11h6"/></symbol>
+  <symbol id="i-fit" viewBox="0 0 24 24"><path d="M4 12h16M7 9l-3 3 3 3M17 9l3 3-3 3M4 5v14M20 5v14"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+  <symbol id="i-power" viewBox="0 0 24 24"><path d="M12 3v8"/><path d="M6.4 6.6a8 8 0 1 0 11.2 0"/></symbol>
+  <symbol id="i-grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="9" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="9" cy="18" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="18" r="1.3" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-keys" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 5v14M13 5v14M18 5v14"/><path d="M6.5 5v8M11 5v8M16 5v8" stroke-width="3"/></symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M3 12h2M7 8v8M11 4v16M15 7v10M19 10v4M21 12h0"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.4a4.3 4.3 0 0 1 7.5 2.4C19.5 15.4 12 20 12 20z"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17h0"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-6"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></symbol>
+</svg>
+
+<div class="gate" id="gate" hidden>
+  <div class="box">
+    <div class="logo"><svg class="i"><use href="#i-wave"/></svg></div>
+    <h2>Audio mastering</h2>
+    <p>Record, arrange, mix and master songs and podcasts with audio and MIDI tracks, built-in plugins and a loudness meter.</p>
+    <div class="phone" id="gate-phone" hidden>This tool is built for a computer with a mouse and keyboard. You can still open it here, but some parts will be hard to use on a small screen.</div>
+    <button class="b pri" id="gate-fs" type="button">Start in full screen</button>
+    <button class="b" id="gate-win" type="button">Use in this window</button>
+    <small>Everything runs on this computer and nothing is uploaded. Press Esc to leave full screen.</small>
+  </div>
+</div>
+
+<div class="fatal" id="fatal" hidden>
+  <div class="box">
+    <h2>The workstation could not start</h2>
+    <p id="fatal-msg">The audio engine did not load.</p>
+    <div><button class="b pri" type="button" onclick="location.reload()">Reload the page</button></div>
+  </div>
+</div>
+
+<div class="app" id="app">
+  <header class="top">
+    <a class="back" href="/tools/audio-mastering/" aria-label="Back"><svg class="i"><use href="#i-arrow" transform="rotate(180 12 12)"/></svg></a>
+    <h1>Audio mastering</h1>
+    <button class="mb" type="button" data-menu="file" aria-haspopup="menu" aria-expanded="false">File</button>
+    <button class="mb" type="button" data-menu="edit" aria-haspopup="menu" aria-expanded="false">Edit</button>
+    <button class="mb" type="button" data-menu="track" aria-haspopup="menu" aria-expanded="false">Track</button>
+    <button class="mb" type="button" data-menu="view" aria-haspopup="menu" aria-expanded="false">View</button>
+    <span class="sp"></span>
+    <button class="ib flat" id="b-help" type="button" title="Keyboard shortcuts" aria-label="Keyboard shortcuts"><svg class="i sm"><use href="#i-help"/></svg></button>
+    <a class="b sm" id="contact" href="/tools/second-screen-presenter/contact/" target="_blank" rel="noopener" title="Message the builder"><svg class="i sm"><use href="#i-heart"/></svg>Contact the builder</a>
+  </header>
+
+  <div>
+    <div class="banner" id="small-banner" hidden><span class="sp">Built for a computer with a mouse and keyboard. It still works here, but a bigger screen is easier.</span><button class="ib xs flat" type="button" id="small-x" aria-label="Hide this note"><svg class="i xs"><use href="#i-x"/></svg></button></div>
+    <div class="tp" id="transport">
+      <button class="ib" id="t-start" type="button" title="Go to start (Home)" aria-label="Go to start"><svg class="i sm"><use href="#i-start"/></svg></button>
+      <button class="ib" id="t-play" type="button" title="Play or pause (Space)" aria-label="Play"><svg class="i sm"><use href="#i-play"/></svg></button>
+      <button class="ib" id="t-stop" type="button" title="Stop" aria-label="Stop"><svg class="i sm"><use href="#i-stop"/></svg></button>
+      <button class="ib rec" id="t-rec" type="button" title="Record (R)" aria-label="Record" aria-pressed="false"><svg class="i sm"><use href="#i-rec"/></svg></button>
+      <span class="dv"></span>
+      <button class="ib" id="t-loop" type="button" title="Loop (L). Drag on the ruler to set the loop." aria-label="Loop" aria-pressed="false"><svg class="i sm"><use href="#i-loop"/></svg></button>
+      <button class="ib" id="t-metro" type="button" title="Metronome click (M)" aria-label="Metronome" aria-pressed="false"><svg class="i sm"><use href="#i-metro"/></svg></button>
+      <span class="dv"></span>
+      <label for="t-bpm">BPM</label><input type="number" id="t-bpm" min="20" max="300" step="1" value="120" title="Tempo in beats per minute">
+      <label for="t-sig">TIME</label>
+      <select id="t-sig" title="Time signature">
+        <option value="2/4">2/4</option><option value="3/4">3/4</option><option value="4/4">4/4</option><option value="5/4">5/4</option><option value="6/8">6/8</option><option value="7/8">7/8</option><option value="12/8">12/8</option>
+      </select>
+      <div class="clock" title="Playhead position in bars.beats and minutes:seconds"><b id="t-bars">1.1.00</b><span id="t-secs">0:00.000</span></div>
+      <span class="recdot" id="t-recinfo" hidden>REC</span>
+      <span class="dv"></span>
+      <button class="ib" id="t-snap" type="button" title="Snap to the beat grid (hold Alt while dragging to skip it)" aria-label="Snap to grid" aria-pressed="true"><svg class="i sm"><use href="#i-magnet"/></svg></button>
+      <button class="ib" id="t-zout" type="button" title="Zoom out (-)" aria-label="Zoom out"><svg class="i sm"><use href="#i-zout"/></svg></button>
+      <button class="ib" id="t-zin" type="button" title="Zoom in (+)" aria-label="Zoom in"><svg class="i sm"><use href="#i-zin"/></svg></button>
+      <button class="ib" id="t-fit" type="button" title="Fit the whole project" aria-label="Fit project"><svg class="i sm"><use href="#i-fit"/></svg></button>
+      <span class="sp"></span>
+      <div class="tmeter" title="Master level"><div><i id="tm-l"></i></div><div><i id="tm-r"></i></div></div>
+    </div>
+  </div>
+
+  <section class="arr" id="arr">
+    <div class="corner">Tracks<span class="sp"></span>
+      <button class="ib xs" id="c-add-a" type="button" title="Add audio track" aria-label="Add audio track"><svg class="i xs"><use href="#i-wave"/></svg></button>
+      <button class="ib xs" id="c-add-m" type="button" title="Add MIDI track" aria-label="Add MIDI track"><svg class="i xs"><use href="#i-keys"/></svg></button>
+    </div>
+    <div class="rulerw" id="rulerw"><canvas id="ruler" height="26"></canvas></div>
+    <div class="vs" id="vs">
+      <div class="heads" id="heads"></div>
+      <div class="lanesw" id="lanesw"><canvas id="lanes"></canvas></div>
+    </div>
+    <div class="hsl"></div>
+    <div class="hs" id="hs"><div id="hs-in"></div></div>
+    <div class="ph" id="ph"></div>
+    <div class="empty-state" id="empty" hidden>
+      <div class="box">
+        <p>Drop audio or MIDI files here, or</p>
+        <div class="row">
+          <button class="b pri" type="button" id="e-audio"><svg class="i sm"><use href="#i-file"/></svg>Add audio files</button>
+          <button class="b" type="button" id="e-midi"><svg class="i sm"><use href="#i-keys"/></svg>Add MIDI track</button>
+          <button class="b" type="button" id="e-rec"><svg class="i sm"><use href="#i-mic"/></svg>Record</button>
+        </div>
+        <small>Your work is kept on this computer only. Nothing is uploaded.</small>
+      </div>
+    </div>
+  </section>
+
+  <section class="dock" id="dock">
+    <div class="grip" id="grip" title="Drag to resize"></div>
+    <div class="dtabs" role="tablist">
+      <button class="t" type="button" role="tab" data-tab="mixer" aria-selected="true">Mixer</button>
+      <button class="t" type="button" role="tab" data-tab="piano" aria-selected="false">Piano roll</button>
+      <button class="t" type="button" role="tab" data-tab="spectral" aria-selected="false">Spectral</button>
+      <button class="t" type="button" role="tab" data-tab="master" aria-selected="false">Mastering</button>
+      <span class="sp"></span>
+      <button class="ib xs flat" type="button" id="dock-toggle" title="Hide or show this panel" aria-label="Hide or show the bottom panel"><svg class="i xs"><use href="#i-chev"/></svg></button>
+    </div>
+    <div class="dpanes">
+      <div class="pane" id="pane-mixer"><div class="mixer" id="mixer"></div></div>
+      <div class="pane" id="pane-piano" hidden>
+        <div class="host" id="pr-host" hidden></div>
+        <div class="pempty" id="pr-empty"><div class="box"><b id="pr-empty-t">No MIDI clip open</b><span id="pr-empty-d">Add a MIDI track, then double click its lane to make a clip.</span><button class="b sm" type="button" id="pr-make">Make a MIDI clip</button></div></div>
+      </div>
+      <div class="pane" id="pane-spectral" hidden>
+        <div class="host" id="sp-host" hidden></div>
+        <div class="pempty" id="sp-empty"><div class="box"><b id="sp-empty-t">No audio clip open</b><span id="sp-empty-d">Double click an audio clip to see its sound as a picture and repair noise, hum and clicks.</span></div></div>
+      </div>
+      <div class="pane" id="pane-master" hidden>
+        <div class="mast">
+          <div class="card">
+            <h3>Master plugins<span class="sp"></span><button class="b sm" type="button" id="ms-add"><svg class="i xs"><use href="#i-plus"/></svg>Add plugin</button></h3>
+            <div class="rack" id="ms-rack"></div>
+          </div>
+          <div class="card">
+            <h3>Loudness</h3>
+            <div class="presets" id="ms-presets"></div>
+            <div class="frow"><label for="ms-target">Target</label><input type="number" id="ms-target" step="0.5" min="-30" max="-5" value="-14"> LUFS
+              <label for="ms-ceil">Peak limit</label><input type="number" id="ms-ceil" step="0.1" min="-6" max="0" value="-1"> dB</div>
+            <div><button class="b" type="button" id="ms-measure"><svg class="i sm"><use href="#i-gauge"/></svg>Measure loudness</button></div>
+            <div class="loud">
+              <div><b id="ld-lufs">--</b><small>LUFS</small></div>
+              <div><b id="ld-peak">--</b><small>Peak dB</small></div>
+              <div><b id="ld-tp">--</b><small>True peak</small></div>
+              <div><b id="ld-lra">--</b><small>Range LU</small></div>
+            </div>
+            <p class="help" id="ld-note">Measure to see how loud the whole mix is compared with the target.</p>
+          </div>
+          <div class="card">
+            <h3>Export</h3>
+            <label class="frow"><input type="checkbox" id="ms-match"> Match loudness on export</label>
+            <div class="ebtn">
+              <button class="b" type="button" data-export="wav16">WAV 16 bit</button>
+              <button class="b" type="button" data-export="wav24">WAV 24 bit</button>
+              <button class="b" type="button" data-export="mp3192">MP3 192</button>
+              <button class="b" type="button" data-export="mp3320">MP3 320</button>
+            </div>
+            <p class="help">The file is made on this computer and saved to your downloads. Nothing is uploaded.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bot">
+    <span class="msg" id="st-msg">Starting...</span>
+    <span id="st-info"></span>
+    <span class="saved" id="st-save"></span>
+  </footer>
+</div>
+
+<div class="drop" id="drop" hidden>Drop to add to the project</div>
+<input type="file" id="f-audio" accept="audio/*,video/*,.mid,.midi" multiple hidden>
+<input type="file" id="f-midi" accept=".mid,.midi,audio/midi,audio/x-midi" multiple hidden>
+<input type="color" id="f-color" hidden>
+
+<dialog id="dlg-fx" class="wide"><div class="dlg">
+  <div class="dt"><svg class="i"><use href="#i-sliders"/></svg><span id="fx-title">Plugins</span><span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="dbody">
+    <p class="note">VST and AU plugins are programs for your computer and cannot run inside a web page, so these built-in plugins run here instead.</p>
+    <div id="fx-inst"></div>
+    <div class="rack" id="fx-rack"></div>
+  </div>
+  <div class="dfoot"><button class="b pri" type="button" id="fx-add"><svg class="i sm"><use href="#i-plus"/></svg>Add plugin</button><span class="sp"></span><button class="b" type="button" data-close>Done</button></div>
+</div></dialog>
+
+<dialog id="dlg-stretch"><div class="dlg">
+  <div class="dt">Time stretch<span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="dbody">
+    <p class="help">Makes the clip longer or shorter and keeps the pitch the same. Your original audio is kept, so you can undo.</p>
+    <div class="r2">
+      <div class="f"><label for="ts-factor">Length factor (0.5 to 2)</label><input type="number" id="ts-factor" min="0.5" max="2" step="0.01" value="1"></div>
+      <div class="f"><label for="ts-len">New length in seconds</label><input type="number" id="ts-len" min="0.01" step="0.01"></div>
+    </div>
+    <p class="help" id="ts-info"></p>
+  </div>
+  <div class="dfoot"><button class="b" type="button" data-close>Cancel</button><button class="b pri" type="button" id="ts-go">Stretch</button></div>
+</div></dialog>
+
+<dialog id="dlg-rename"><div class="dlg">
+  <div class="dt" id="rn-title">Rename<span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="dbody"><div class="f"><label for="rn-input">Name</label><input type="text" id="rn-input" maxlength="80" spellcheck="false"></div></div>
+  <div class="dfoot"><button class="b" type="button" data-close>Cancel</button><button class="b pri" type="button" id="rn-go">Save</button></div>
+</div></dialog>
+
+<dialog id="dlg-busy"><div class="dlg">
+  <div class="dt" id="bz-title">Working</div>
+  <div class="dbody"><div class="busy" id="bz-text">Please wait...<small></small></div></div>
+  <div class="dfoot" id="bz-foot" hidden><button class="b" type="button" data-close>Close</button></div>
+</div></dialog>
+
+<dialog id="dlg-rec"><div class="dlg">
+  <div class="dt"><svg class="i"><use href="#i-mic"/></svg>Record<span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="dbody">
+    <div class="f"><label for="rec-dev">Input</label><select id="rec-dev"><option value="">Default microphone</option></select></div>
+    <p class="help" id="rec-info">Recording goes into the armed track (the red R), or the selected audio track, or a new track. It starts at the playhead while the other tracks play. Use headphones so the speakers are not recorded too.</p>
+  </div>
+  <div class="dfoot"><button class="b" type="button" data-close>Cancel</button><button class="b pri" type="button" id="rec-go"><svg class="i sm"><use href="#i-rec"/></svg>Start recording</button></div>
+</div></dialog>
+
+<dialog id="dlg-keys"><div class="dlg">
+  <div class="dt">Keyboard shortcuts<span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="dbody">
+    <table class="keys"><tbody>
+      <tr><td>Space</td><td>Play or pause</td></tr>
+      <tr><td>Enter or Home</td><td>Go to the start</td></tr>
+      <tr><td>R</td><td>Start or stop recording</td></tr>
+      <tr><td>L</td><td>Loop on or off</td></tr>
+      <tr><td>M</td><td>Metronome on or off</td></tr>
+      <tr><td>S</td><td>Split the selected clip at the playhead</td></tr>
+      <tr><td>Delete</td><td>Remove the selected clips</td></tr>
+      <tr><td>Ctrl + D</td><td>Duplicate the selected clips</td></tr>
+      <tr><td>Ctrl + A</td><td>Select all clips</td></tr>
+      <tr><td>Ctrl + Z</td><td>Undo</td></tr>
+      <tr><td>Ctrl + Shift + Z or Ctrl + Y</td><td>Redo</td></tr>
+      <tr><td>Ctrl + S</td><td>Save now</td></tr>
+      <tr><td>+ and -</td><td>Zoom in and out</td></tr>
+      <tr><td>Ctrl + mouse wheel</td><td>Zoom around the mouse</td></tr>
+      <tr><td>Shift + mouse wheel</td><td>Scroll left and right</td></tr>
+      <tr><td>Alt while dragging</td><td>Move freely without snapping</td></tr>
+      <tr><td>Double click</td><td>Open a clip in the piano roll or spectral view, or make a MIDI clip on an empty MIDI lane</td></tr>
+      <tr><td>Right click</td><td>Clip menu</td></tr>
+    </tbody></table>
+  </div>
+</div></dialog>
+
+<div class="toast" id="toast"></div>
+<script src="/tools/am/engine.js"></script>
+<script src="/tools/am/midi.js"></script>
+<script src="/tools/am/spectral.js"></script>
+<script src="/tools/am/ui.js"></script>
+</body>
+</html>

@@ -11,25 +11,21 @@
 - [QR code generator](https://evansademilua.vercel.app/tools/qr-code-generator/): Links, text, WiFi, WhatsApp, email, phone, SMS, location and contact cards. Add a logo and colors.
 - [Second screen presenter](https://evansademilua.vercel.app/tools/second-screen-presenter/): Bible verses, lyrics, PDFs, videos, cameras and countdowns on a TV or projector, with a stage display and phone remote.
 - [Background remover](https://evansademilua.vercel.app/tools/remove-background/): Remove the background from any image. Exact for logos, AI cutout for photos. Transparent PNG.
+- [Audio mastering](https://evansademilua.vercel.app/tools/audio-mastering/): A free music workstation in your browser: unlimited tracks, MIDI, plugins, spectral repair, noise removal and loudness mastering.
 - [Video compressor](https://evansademilua.vercel.app/tools/video-compressor/): Shrink a big video, like 2 GB down to 500 MB. Trim it or cut it into two parts.
-- [WhatsApp QR code and link](https://evansademilua.vercel.app/tools/whatsapp-qr-code-generator/): A click-to-chat link and QR code with an optional message already typed.
 - [QR code scanner](https://evansademilua.vercel.app/tools/qr-code-scanner/): Read a code from a photo, a screenshot or your camera. Nothing is uploaded.
 - [WiFi QR code generator](https://evansademilua.vercel.app/tools/wifi-qr-code-generator/): Let guests join your network with one scan. Print a clean sign for your wall.
-- [Audio editor and recorder](https://evansademilua.vercel.app/tools/audio-editor/): Multi-track audio editor. Import stems, edit, record over them and export WAV, MP3 or a ZIP.
 - [Color picker](https://evansademilua.vercel.app/tools/color-picker/): Pick a color, copy HEX, RGB, HSL and CMYK, pull a palette from a photo, check contrast.
 - [Currency calculator](https://evansademilua.vercel.app/tools/currency-calculator/): Convert between about 160 currencies with live reference rates, a margin option and a pinned table.
 - [Image converter and compressor](https://evansademilua.vercel.app/tools/image-converter/): Convert HEIC, PNG, WebP, AVIF and more to JPG, PNG or WebP. Shrink images in batches.
-- [Image to PDF](https://evansademilua.vercel.app/tools/image-to-pdf/): Turn JPG, PNG and WebP images into one PDF. Reorder, rotate, pick page size.
-- [Invoice generator](https://evansademilua.vercel.app/tools/invoice-generator/): Make a clean invoice with your logo, VAT and bank details. Download a PDF or send it on WhatsApp.
-- [Merge PDF](https://evansademilua.vercel.app/tools/merge-pdf/): Combine several PDFs into one. Reorder files and pick page ranges. Nothing is uploaded.
-- [Receipt generator](https://evansademilua.vercel.app/tools/receipt-generator/): Make a sales receipt for a till roll (80 mm) or an A5 or A4 page. PDF, print or WhatsApp.
+- [Invoice generator](https://evansademilua.vercel.app/tools/invoice-generator/): Pick one of 10 invoice designs, add your logo and items, and download a PDF or image.
+- [PDF converter](https://evansademilua.vercel.app/tools/pdf-converter/): Turn Word, Excel, PowerPoint, images and text into PDF, or PDF into JPG, Word, Excel and more. Merge, split and compress.
+- [Receipt generator](https://evansademilua.vercel.app/tools/receipt-generator/): 25 receipt designs, from till roll to Christmas, Eid and Independence Day. PDF, PNG or print.
 - [Screen recorder](https://evansademilua.vercel.app/tools/screen-recorder/): Record your screen, a window or a tab with sound and a webcam circle. Save WebM or MP4.
-- [Split PDF](https://evansademilua.vercel.app/tools/split-pdf/): Extract, delete or rotate pages, or split a PDF by ranges or every N pages. Private.
-- [Video converter](https://evansademilua.vercel.app/tools/video-converter/): Convert video between MP4, WebM, MKV and MOV, or save the audio as MP3 or WAV.
-- [Video to MP3](https://evansademilua.vercel.app/tools/video-to-mp3/): Pull the sound out of any video and save it as MP3 or WAV. Choose the bitrate, trim if you like.
+- [Video converter](https://evansademilua.vercel.app/tools/video-converter/): Video to anything and anything to video: MP4, WebM, MOV, MKV, MP3, WAV, M4A, OGG and GIF, or turn a song into a video.
 - [Video trimmer](https://evansademilua.vercel.app/tools/video-trimmer/): Cut a video in seconds without re-encoding. Keep a selection or split it into two parts.
 - [Watermark maker](https://evansademilua.vercel.app/tools/watermark-maker/): Add a text or logo watermark to one or many photos. Tile it or place it, then download a ZIP.
-- [WhatsApp link generator](https://evansademilua.vercel.app/tools/whatsapp-link-generator/): Make a wa.me click-to-chat link with a ready message, plus a QR code. Copy as a link or button.
+- [WhatsApp link and QR code generator](https://evansademilua.vercel.app/tools/whatsapp-link-generator/): Make a wa.me chat link with a ready message, a QR code and printable QR cards for your shop or table.
 - [Solutions](https://evansademilua.vercel.app/solutions.html): nine systems he builds, what each does and how it benefits the owner
 - [CV](https://evansademilua.vercel.app/cv.html): curriculum vitae, skills, experience, education
 - [CareTRAC case study](https://evansademilua.vercel.app/work/caretrac.html): field and client coordination portal (FastAPI, React)
