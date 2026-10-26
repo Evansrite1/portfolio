@@ -1,0 +1,26 @@
+[
+ {
+  "id": "kjv",
+  "name": "King James Version",
+  "abbr": "KJV",
+  "license": "1769 text, public domain"
+ },
+ {
+  "id": "web",
+  "name": "World English Bible",
+  "abbr": "WEB",
+  "license": "Public domain"
+ },
+ {
+  "id": "bsb",
+  "name": "Berean Standard Bible",
+  "abbr": "BSB",
+  "license": "Dedicated to the public domain by its translators"
+ },
+ {
+  "id": "asv",
+  "name": "American Standard Version",
+  "abbr": "ASV",
+  "license": "1901, public domain"
+ }
+]

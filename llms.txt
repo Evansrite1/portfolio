@@ -9,7 +9,7 @@
 - [Free online tools](https://evansademilua.vercel.app/tools/): video, audio, PDF, image and QR code tools that run in the browser
 - [Video editor](https://evansademilua.vercel.app/tools/video-editor/): Cut, add auto captions, text, music and filters, then export an MP4. Works on your phone.
 - [QR code generator](https://evansademilua.vercel.app/tools/qr-code-generator/): Links, text, WiFi, WhatsApp, email, phone, SMS, location and contact cards. Add a logo and colors.
-- [Second screen presenter](https://evansademilua.vercel.app/tools/second-screen-presenter/): Show photos, videos, YouTube links and text on a TV or projector, controlled from your laptop.
+- [Second screen presenter](https://evansademilua.vercel.app/tools/second-screen-presenter/): Bible verses, lyrics, PDFs, videos, cameras and countdowns on a TV or projector, with a stage display and phone remote.
 - [Background remover](https://evansademilua.vercel.app/tools/remove-background/): Remove the background from any image. Exact for logos, AI cutout for photos. Transparent PNG.
 - [Video compressor](https://evansademilua.vercel.app/tools/video-compressor/): Shrink a big video, like 2 GB down to 500 MB. Trim it or cut it into two parts.
 - [WhatsApp QR code and link](https://evansademilua.vercel.app/tools/whatsapp-qr-code-generator/): A click-to-chat link and QR code with an optional message already typed.

@@ -1,0 +1,1 @@
+Public domain Bible texts (KJV, WEB, BSB, ASV) from eBible.org. Format: books[book][chapter][verse] = text.

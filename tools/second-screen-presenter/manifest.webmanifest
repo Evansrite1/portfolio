@@ -1,0 +1,15 @@
+{
+  "name": "Presenter by Evans Ademilua",
+  "short_name": "Presenter",
+  "description": "Show Bible verses, song lyrics, photos, videos and countdowns on a TV or projector.",
+  "start_url": "/tools/second-screen-presenter/app/",
+  "scope": "/tools/second-screen-presenter/",
+  "display": "standalone",
+  "display_override": ["fullscreen", "standalone"],
+  "background_color": "#0e0e10",
+  "theme_color": "#0e0e10",
+  "icons": [
+    { "src": "/tools/second-screen-presenter/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/tools/second-screen-presenter/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stage display</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<style>
+  html, body { margin: 0; height: 100%; background: #000; color: #fff; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; overflow: hidden; }
+  .wrap { height: 100%; display: grid; grid-template-rows: auto auto 1fr auto; gap: 1.6vh; padding: 2.4vh 3vw; box-sizing: border-box; }
+  .top { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; }
+  .clock { font-size: clamp(28px, 7vh, 90px); font-weight: 800; font-variant-numeric: tabular-nums; }
+  .timer { text-align: right; }
+  .timer small { display: block; color: #aaa; font-size: clamp(12px, 2.2vh, 26px); }
+  .timer b { font-size: clamp(28px, 7vh, 90px); color: #ffd23f; font-variant-numeric: tabular-nums; }
+  .msg { display: none; background: #e8453c; color: #fff; font-weight: 800; font-size: clamp(20px, 5vh, 64px); padding: 1.4vh 2vw; border-radius: 12px; text-align: center; animation: flash 1.2s ease-in-out infinite alternate; }
+  .msg.on { display: block; }
+  @keyframes flash { to { background: #b8261e; } }
+  .now { border: 2px solid #2fbf71; border-radius: 16px; padding: 2vh 2.4vw; overflow: hidden; display: flex; flex-direction: column; min-height: 0; }
+  .lab { font-size: clamp(12px, 2.3vh, 26px); color: #8fe0b4; text-transform: uppercase; letter-spacing: .1em; font-weight: 700; margin-bottom: 1vh; }
+  .now .text { flex: 1; font-size: clamp(22px, 7.5vh, 110px); font-weight: 800; line-height: 1.15; white-space: pre-wrap; overflow: hidden; }
+  .now .ref { color: #ccc; font-size: clamp(14px, 3vh, 36px); margin-top: 1vh; }
+  .next { border: 2px solid #333; border-radius: 16px; padding: 1.6vh 2.4vw; max-height: 26vh; overflow: hidden; }
+  .next .lab { color: #aaa; }
+  .next .text { font-size: clamp(16px, 4.2vh, 60px); font-weight: 600; color: #ddd; line-height: 1.2; white-space: pre-wrap; }
+  .black { color: #ff8a80; font-weight: 700; }
+  .wait { color: #888; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><div class="clock" id="clock">--:--</div><div class="timer" id="timer"></div></div>
+  <div class="msg" id="msg"></div>
+  <div class="now"><div class="lab" id="nowLab">Now</div><div class="text" id="nowText"><span class="wait">Waiting for the presenter...</span></div><div class="ref" id="nowRef"></div></div>
+  <div class="next"><div class="lab" id="nextLab">Next</div><div class="text" id="nextText"></div></div>
+</div>
+<script>
+(function () {
+  'use strict';
+  var bc = new BroadcastChannel('ae-second-screen'), id = 'st' + Math.random().toString(36).slice(2, 9), st = null;
+  var $ = function (i) { return document.getElementById(i); };
+  function fmt(s) { var h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, x = s % 60; return (h ? h + ':' + (m < 10 ? '0' : '') : '') + m + ':' + (x < 10 ? '0' : '') + x; }
+  function fit(el, max) {
+    var lo = 12, hi = max;
+    for (var i = 0; i < 12; i++) { var mid = (lo + hi) / 2; el.style.fontSize = mid + 'px'; if (el.scrollHeight <= el.clientHeight + 2 && el.scrollWidth <= el.clientWidth + 2) lo = mid; else hi = mid; }
+    el.style.fontSize = lo + 'px';
+  }
+  function draw() {
+    if (!st) return;
+    var n = st.now, x = st.next;
+    $('nowLab').innerHTML = ''; $('nowLab').textContent = (st.black ? 'Black screen. ' : '') + 'Now' + (n && n.label ? ': ' + n.label : '');
+    $('nowLab').className = 'lab' + (st.black ? ' black' : '');
+    $('nowText').textContent = n ? n.text : 'Nothing on screen';
+    $('nowRef').textContent = n && n.ref ? n.ref : '';
+    $('nextLab').textContent = 'Next' + (x && x.label ? ': ' + x.label : '');
+    $('nextText').textContent = x ? x.text : 'End of the service order';
+    $('msg').textContent = st.msg || ''; $('msg').classList.toggle('on', !!st.msg);
+    fit($('nowText'), Math.round(window.innerHeight * 0.12));
+  }
+  function tick() {
+    var d = new Date(); $('clock').textContent = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    if (st && st.timer && st.timer.end) {
+      var left = Math.ceil((st.timer.end - Date.now()) / 1000);
+      $('timer').innerHTML = '<small></small><b></b>'; $('timer').firstChild.textContent = st.timer.label || 'Countdown'; $('timer').lastChild.textContent = left > 0 ? fmt(left) : '0:00';
+    } else $('timer').innerHTML = '';
+  }
+  bc.onmessage = function (e) { var m = e.data || {}; if (m.type === 'stage' && (!m.to || m.to === id)) { st = m.state; draw(); tick(); } };
+  bc.postMessage({ type: 'stage-hello', id: id });
+  setInterval(function () { bc.postMessage({ type: 'stage-beat', id: id }); }, 2000);
+  setInterval(tick, 500); tick();
+  window.addEventListener('resize', draw);
+  window.addEventListener('pagehide', function () { bc.postMessage({ type: 'bye', id: id }); });
+  document.addEventListener('click', function () { if (!document.fullscreenElement && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function () {}); });
+  window.__stage = { get state() { return st; } };
+})();
+</script>
+</body>
+</html>

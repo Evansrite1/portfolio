@@ -20,6 +20,18 @@
   .txt.light { background: #fff; color: #111; }
   .txt.dark { background: #000; color: #fff; }
   .txt.coral { background: linear-gradient(135deg, #14213d, #e8453c); color: #fff; }
+  .txt { position: relative; }
+  .txt .bgl { position: absolute; inset: 0; z-index: 0; overflow: hidden; background: #000; }
+  .txt .bgl img, .txt .bgl video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .txt .bgl::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.4); }
+  .txt.hasbg { color: #fff; background: #000; }
+  .txt.hasbg .inner { text-shadow: 0 3px 16px rgba(0,0,0,.75); }
+  .txt .inner { position: relative; z-index: 1; }
+  .cam { width: 100%; height: 100%; object-fit: contain; background: #000; display: block; }
+  .txt .inner { display: flex; flex-direction: column; align-items: center; gap: 3vh; max-width: 100%; }
+  .txt .ref { font-weight: 600; font-size: clamp(16px, 3.2vh, 40px); opacity: .8; white-space: normal; letter-spacing: .02em; }
+  .txt .tlabel { font-weight: 600; font-size: clamp(18px, 5vh, 64px); opacity: .9; white-space: normal; }
+  .txt .digits { font-weight: 800; font-size: clamp(60px, 26vh, 320px); line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
   #black { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; transition: opacity .35s; z-index: 5; }
   #black.on { opacity: 1; }
   #wait { position: absolute; inset: 0; display: grid; place-items: center; z-index: 6; text-align: center; }
@@ -68,7 +80,8 @@
   function slidesEmbed(u) { var m = String(u).match(/docs\.google\.com\/presentation\/d\/([A-Za-z0-9_-]+)/); return m ? 'https://docs.google.com/presentation/d/' + m[1] + '/embed?start=false&loop=false' : null; }
 
   function fitText(box) {
-    var el = box.firstChild, lo = 10, hi = 400, W = box.clientWidth * 0.84, H = box.clientHeight * 0.8;
+    var el = box.querySelector('.main') || box.firstChild, ref = box.querySelector('.ref');
+    var lo = 10, hi = 400, W = box.clientWidth * 0.84, H = box.clientHeight * 0.8 - (ref ? ref.offsetHeight + box.clientHeight * 0.03 : 0);
     for (var i = 0; i < 14; i++) {
       var mid = (lo + hi) / 2; el.style.fontSize = mid + 'px';
       if (el.scrollWidth <= W && el.scrollHeight <= H) lo = mid; else hi = mid;
@@ -76,9 +89,40 @@
     el.style.fontSize = lo + 'px';
   }
 
+  var countdown = null, urlSink = [];
+  function keepUrl(f) { var u = URL.createObjectURL(f); urlSink.push(u); return u; }
+  /* camera, capture card and screen pictures arrive from the presenter over a local WebRTC link */
+  var pcs = {}, streams = {}, waiters = {}, opId = null, pendingIce = {};
+  function attachStream(key, el) {
+    if (!key) return;
+    if (streams[key]) { el.srcObject = streams[key]; el.play && el.play().catch(function () {}); }
+    else (waiters[key] = waiters[key] || []).push(el);
+  }
+  function handleOffer(m) {
+    opId = m.from || opId;
+    var key = m.key; if (pcs[key]) { try { pcs[key].close(); } catch (e) {} }
+    var pc = new RTCPeerConnection({ iceServers: [] }); pcs[key] = pc;
+    pc.onicecandidate = function (e) { if (e.candidate) send({ type: 'stream-ice', to: opId, key: key, cand: e.candidate.toJSON() }); };
+    pc.ontrack = function (e) {
+      streams[key] = e.streams[0];
+      (waiters[key] || []).forEach(function (el) { el.srcObject = streams[key]; el.play && el.play().catch(function () {}); });
+      waiters[key] = [];
+    };
+    pc.setRemoteDescription(m.sdp).then(function () { return pc.createAnswer(); }).then(function (a) { return pc.setLocalDescription(a); }).then(function () {
+      send({ type: 'stream-answer', to: opId, key: key, sdp: { type: pc.localDescription.type, sdp: pc.localDescription.sdp } });
+      (pendingIce[key] || []).forEach(function (c) { pc.addIceCandidate(c).catch(function () {}); }); pendingIce[key] = [];
+    }).catch(function () { /* the presenter will retry */ });
+  }
+  function handleIce(m) {
+    var pc = pcs[m.key];
+    if (pc && pc.remoteDescription) pc.addIceCandidate(m.cand).catch(function () {});
+    else (pendingIce[m.key] = pendingIce[m.key] || []).push(m.cand);
+  }
   function clearLayer(L) {
-    var v = L.querySelector('video'); if (v) { try { v.pause(); } catch (e) {} v.removeAttribute('src'); v.load(); }
+    if (L.querySelector('.digits')) { clearInterval(countdown); countdown = null; }
+    L.querySelectorAll('video').forEach(function (v) { try { v.pause(); } catch (e) {} if (v.srcObject) v.srcObject = null; else { v.removeAttribute('src'); v.load(); } });
     L.innerHTML = '';
+    if (L._urls) { L._urls.forEach(function (u) { URL.revokeObjectURL(u); }); L._urls = null; }
   }
 
   function show(item, opts) {
@@ -86,7 +130,7 @@
     document.documentElement.style.setProperty('--fade', opts.fade === false ? '0s' : '.5s');
     document.getElementById('wait').style.display = 'none';
     var back = layers[1 - front], old = layers[front];
-    clearLayer(back);
+    clearLayer(back); urlSink = [];
     back.classList.toggle('fill', opts.fit === 'cover');
     media = null; frame = null; frameKind = ''; ytInfo = null; needSound = false;
     var oldUrls = urls; urls = [];
@@ -102,6 +146,39 @@
       ['play', 'pause', 'ended', 'loadedmetadata', 'seeked'].forEach(function (ev) { v.addEventListener(ev, function () { status(); }); });
       back.appendChild(v); media = v;
       if (opts.autoplay !== false) playWithSound(v);
+    } else if (item.kind === 'slide') {
+      var sb = document.createElement('div'); sb.className = 'txt ' + (item.style || 'dark'); if (item.color) sb.style.color = item.color;
+      var inner = document.createElement('div'); inner.className = 'inner';
+      var mt = document.createElement('div'); mt.className = 'main'; mt.textContent = item.text || ''; inner.appendChild(mt);
+      if (item.ref) { var rf = document.createElement('div'); rf.className = 'ref'; rf.textContent = item.ref; inner.appendChild(rf); }
+      if (item.bg) {
+        sb.classList.add('hasbg');
+        var bl = document.createElement('div'); bl.className = 'bgl';
+        if (item.bg.type === 'image') { var bi = new Image(); bi.alt = ''; bi.src = item.bg.file ? keepUrl(item.bg.file) : item.bg.url; bl.appendChild(bi); }
+        else if (item.bg.type === 'video') { var bv = document.createElement('video'); bv.muted = true; bv.loop = true; bv.autoplay = true; bv.playsInline = true; bv.src = item.bg.file ? keepUrl(item.bg.file) : item.bg.url; bl.appendChild(bv); bv.play().catch(function () {}); }
+        else if (item.bg.type === 'camera') { var bc2 = document.createElement('video'); bc2.muted = true; bc2.autoplay = true; bc2.playsInline = true; bc2.style.objectFit = 'cover'; bl.appendChild(bc2); attachStream(item.bg.key, bc2); }
+        sb.appendChild(bl);
+      }
+      sb.appendChild(inner); back.appendChild(sb);
+      setTimeout(function () { fitText(sb); }, 30);
+    } else if (item.kind === 'camera' || item.kind === 'screen') {
+      var cv = document.createElement('video'); cv.className = 'cam'; cv.muted = true; cv.autoplay = true; cv.playsInline = true;
+      if (opts.fit === 'cover') cv.style.objectFit = 'cover';
+      back.appendChild(cv); attachStream(item.key, cv);
+    } else if (item.kind === 'timer') {
+      var tb = document.createElement('div'); tb.className = 'txt ' + (item.style || 'dark');
+      var ti = document.createElement('div'); ti.className = 'inner';
+      var tl = document.createElement('div'); tl.className = 'tlabel'; tl.textContent = item.label || '';
+      var dg = document.createElement('div'); dg.className = 'digits';
+      ti.appendChild(tl); ti.appendChild(dg); tb.appendChild(ti); back.appendChild(tb);
+      clearInterval(countdown);
+      var tick = function () {
+        if (item.mode === 'clock') { dg.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }); tl.style.display = item.label ? '' : 'none'; return; }
+        var left = Math.ceil((item.end - Date.now()) / 1000);
+        if (left > 0) { var h = Math.floor(left / 3600), m = Math.floor(left / 60) % 60, x = left % 60; dg.textContent = (h ? h + ':' + (m < 10 ? '0' : '') : '') + m + ':' + (x < 10 ? '0' : '') + x; tl.style.display = ''; }
+        else { dg.textContent = item.endText || '0:00'; tl.style.display = item.endText ? 'none' : ''; dg.style.fontSize = item.endText ? 'clamp(40px, 14vh, 200px)' : ''; }
+      };
+      tick(); countdown = setInterval(tick, 250);
     } else if (item.kind === 'text') {
       var box = document.createElement('div'); box.className = 'txt ' + (item.style || 'dark');
       var d = document.createElement('div'); d.textContent = item.text || ''; box.appendChild(d); back.appendChild(box);
@@ -126,6 +203,7 @@
       }
       back.appendChild(f); frame = f;
     }
+    back._urls = urlSink; urlSink = [];
     back.classList.add('on'); old.classList.remove('on');
     front = 1 - front;
     cur = item;
@@ -194,7 +272,10 @@
   bc.onmessage = function (e) {
     var m = e.data || {};
     if (m.to && m.to !== id) return;
-    if (m.type === 'show') show(m.item, m.opts);
+    if (m.type === 'stream-offer') handleOffer(m);
+    else if (m.type === 'stream-ice') handleIce(m);
+    else if (m.type === 'stream-close') { if (pcs[m.key]) { try { pcs[m.key].close(); } catch (e) {} delete pcs[m.key]; delete streams[m.key]; } }
+    else if (m.type === 'show') show(m.item, m.opts);
     else if (m.type === 'black') { document.getElementById('black').classList.toggle('on', !!m.on); status(); }
     else if (m.type === 'control') control(m);
     else if (m.type === 'fit') { layers.forEach(function (L) { L.classList.toggle('fill', m.value === 'cover'); }); }
@@ -221,7 +302,7 @@
   var idle;
   function wake() { document.body.classList.remove('idle'); clearTimeout(idle); idle = setTimeout(function () { document.body.classList.add('idle'); }, 2500); }
   document.addEventListener('mousemove', wake); wake();
-  window.addEventListener('resize', function () { var t = document.querySelector('.layer.on .txt'); if (t) fitText(t); });
+  window.addEventListener('resize', function () { var t = document.querySelector('.layer.on .txt'); if (t && !t.querySelector('.digits')) fitText(t); });
 
   send({ type: 'hello' });
   setInterval(function () { send({ type: 'beat', fs: !!document.fullscreenElement }); }, 2000);

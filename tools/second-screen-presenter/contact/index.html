@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact the builder | Presenter</title>
+<meta name="description" content="Message Evans Ademilua, the builder of the Presenter, or buy him a coffee.">
+<meta name="robots" content="noindex, follow">
+<meta name="theme-color" content="#0e0e10">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<style>
+:root{--bg:#0e0e10;--p:#161618;--h:#1f1f23;--line:#2b2b30;--line2:#3a3a41;--ink:#f1f1f3;--soft:#b6b6bd;--faint:#7c7c85;--acc:#ff5b52;--ok:#2fbf71}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--acc)}
+.wrap{max-width:880px;margin:0 auto;padding:18px 18px 60px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}
+.top a.back{color:var(--ink);text-decoration:none;font-weight:600;display:inline-flex;gap:8px;align-items:center}
+.hero{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;margin-bottom:26px}
+.hero img{width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid var(--line2)}
+h1{margin:0 0 6px;font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.1}
+.hero p{margin:0;color:var(--soft)}
+.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;align-items:start}
+.card{background:var(--p);border:1px solid var(--line);border-radius:16px;padding:20px}
+.card h2{margin:0 0 6px;font-size:1.1rem}
+.card p.sub{margin:0 0 14px;color:var(--soft);font-size:.9rem}
+label{display:block;font-size:.78rem;font-weight:700;color:var(--soft);margin:12px 0 5px}
+input,textarea,select{width:100%;background:var(--h);border:1px solid var(--line2);border-radius:10px;padding:11px 12px;color:var(--ink);font:inherit}
+textarea{min-height:130px;resize:vertical}
+input:focus,textarea:focus{outline:2px solid var(--acc);outline-offset:-1px;border-color:transparent}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:4px}
+.chip{border:1px solid var(--line2);background:var(--h);border-radius:999px;padding:6px 12px;color:var(--soft);font:inherit;font-size:.82rem;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--ink);color:#111;border-color:var(--ink)}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line2);background:var(--h);color:var(--ink);border-radius:10px;padding:11px 18px;font:inherit;font-weight:700;text-decoration:none;cursor:pointer}
+.btn:hover:not(:disabled){border-color:var(--ink)}
+.btn.pri{background:var(--ok);border-color:var(--ok);color:#06210f}
+.btn.coral{background:var(--acc);border-color:var(--acc);color:#1a0a09}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.links{display:grid;gap:8px;margin-top:6px}
+.links a{display:flex;justify-content:space-between;gap:10px;padding:11px 14px;border:1px solid var(--line2);background:var(--h);border-radius:10px;color:var(--ink);text-decoration:none;font-weight:600}
+.links a:hover{border-color:var(--ink)}
+.links small{color:var(--faint);font-weight:400}
+.amts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.amts button{border:1px solid var(--line2);background:var(--h);border-radius:12px;padding:12px 6px;color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+.amts button[aria-pressed=true]{border-color:var(--acc);background:rgba(255,91,82,.12)}
+.soon{display:inline-block;background:rgba(245,165,36,.15);border:1px solid rgba(245,165,36,.5);color:#f5c26b;border-radius:999px;padding:3px 10px;font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-left:8px;vertical-align:middle}
+.note{font-size:.8rem;color:var(--faint);margin:10px 0 0}
+.ok{color:var(--ok);font-weight:600;min-height:1.4em;margin-top:10px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.hero{grid-template-columns:1fr;text-align:left}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="/tools/second-screen-presenter/">&larr; Back to the presenter</a><a href="/">evansademilua.vercel.app</a></div>
+
+  <div class="hero">
+    <img src="/images/evans-headshot.jpg" alt="Evans Ademilua" width="96" height="96">
+    <div>
+      <h1>Contact the builder</h1>
+      <p>I am Evans Ademilua, a software developer in Lagos and the CEO of Large Technologies. I built this presenter. Tell me what works, what does not, or what you want added. I read every message.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <section class="card" aria-labelledby="msg-h">
+      <h2 id="msg-h">Send me a message</h2>
+      <p class="sub">Pick a topic, write your message, then choose how to send it. It opens in WhatsApp or your email app, so nothing is stored on this page.</p>
+      <div class="chips" id="topics" role="group" aria-label="Topic">
+        <button class="chip" type="button" aria-pressed="true" data-t="I have a question about the Presenter">Question</button>
+        <button class="chip" type="button" aria-pressed="false" data-t="I found a problem in the Presenter">Report a problem</button>
+        <button class="chip" type="button" aria-pressed="false" data-t="I would like a feature added to the Presenter">Request a feature</button>
+        <button class="chip" type="button" aria-pressed="false" data-t="I would like a website or app built for my church or business">Build me something</button>
+      </div>
+      <label for="name">Your name</label>
+      <input id="name" type="text" autocomplete="name" placeholder="Your name">
+      <label for="msg">Your message</label>
+      <textarea id="msg" placeholder="Write here..."></textarea>
+      <div class="btns">
+        <a class="btn pri" id="wa" href="#" target="_blank" rel="noopener">Send on WhatsApp</a>
+        <a class="btn" id="mail" href="#">Send by email</a>
+      </div>
+      <div class="ok" id="ok" role="status"></div>
+    </section>
+
+    <aside>
+      <section class="card" aria-labelledby="coffee-h" style="margin-bottom:16px">
+        <h2 id="coffee-h">Buy me a coffee <span class="soon">Coming soon</span></h2>
+        <p class="sub">The Presenter is free. If it helps your church or event and you would like to say thank you, you will be able to give here.</p>
+        <div class="amts" id="amts" role="group" aria-label="Amount">
+          <button type="button" aria-pressed="false" data-a="1000">&#8358;1,000</button>
+          <button type="button" aria-pressed="true" data-a="2000">&#8358;2,000</button>
+          <button type="button" aria-pressed="false" data-a="5000">&#8358;5,000</button>
+        </div>
+        <label for="custom">Or any amount (naira)</label>
+        <input id="custom" type="number" min="100" step="100" inputmode="numeric" placeholder="For example 3000">
+        <div class="btns"><button class="btn coral" id="pay" type="button" disabled>Pay with Paystack</button></div>
+        <p class="note">Card, bank transfer and USSD payments with Paystack are being connected. Until then, message me and I will gladly share a way to give.</p>
+        <div class="btns"><a class="btn" id="wa2" href="#" target="_blank" rel="noopener">Ask how to give now</a></div>
+      </section>
+
+      <section class="card" aria-labelledby="find-h">
+        <h2 id="find-h">Find me</h2>
+        <div class="links">
+          <a href="https://wa.me/2347035940200" target="_blank" rel="noopener"><span>WhatsApp</span><small>0703 594 0200</small></a>
+          <a href="mailto:ademiluaolufemi2@gmail.com"><span>Email</span><small>ademiluaolufemi2@gmail.com</small></a>
+          <a href="https://www.linkedin.com/in/evansademilua/" target="_blank" rel="noopener"><span>LinkedIn</span><small>evansademilua</small></a>
+          <a href="/" ><span>My portfolio</span><small>See what else I build</small></a>
+        </div>
+      </section>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var WA = 'https://wa.me/2347035940200', MAIL = 'ademiluaolufemi2@gmail.com', topic = $('topics').querySelector('[aria-pressed="true"]').dataset.t, amount = 2000;
+  function text() {
+    var n = $('name').value.trim(), m = $('msg').value.trim();
+    return 'Hello Evans' + (n ? ', this is ' + n : '') + '. ' + topic + '.' + (m ? '\n\n' + m : '');
+  }
+  function refresh() {
+    $('wa').href = WA + '?text=' + encodeURIComponent(text());
+    $('mail').href = 'mailto:' + MAIL + '?subject=' + encodeURIComponent('Presenter: ' + topic.replace(/^I /, '')) + '&body=' + encodeURIComponent(text());
+    var a = +$('custom').value || amount;
+    $('wa2').href = WA + '?text=' + encodeURIComponent('Hello Evans, I would like to support the Presenter with N' + a.toLocaleString('en-NG') + '. How can I give?');
+  }
+  $('topics').addEventListener('click', function (e) { var b = e.target.closest('[data-t]'); if (!b) return; topic = b.dataset.t; [].forEach.call($('topics').children, function (x) { x.setAttribute('aria-pressed', x === b); }); refresh(); });
+  $('amts').addEventListener('click', function (e) { var b = e.target.closest('[data-a]'); if (!b) return; amount = +b.dataset.a; $('custom').value = ''; [].forEach.call($('amts').children, function (x) { x.setAttribute('aria-pressed', x === b); }); refresh(); });
+  $('custom').addEventListener('input', function () { if (this.value) [].forEach.call($('amts').children, function (x) { x.setAttribute('aria-pressed', 'false'); }); refresh(); });
+  ['name', 'msg'].forEach(function (id) { $(id).addEventListener('input', refresh); });
+  [$('wa'), $('mail')].forEach(function (a) { a.addEventListener('click', function (e) { if (!$('msg').value.trim()) { e.preventDefault(); $('ok').textContent = 'Write a short message first, then send.'; $('msg').focus(); } else $('ok').textContent = 'Opening your message...'; }); });
+  refresh();
+})();
+</script>
+</body>
+</html>

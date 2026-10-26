@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Presenter</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0e0e10">
+<link rel="manifest" href="/tools/second-screen-presenter/manifest.webmanifest">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="/tools/second-screen-presenter/icon-192.png">
+<style>
+:root{--bg:#0e0e10;--p:#161618;--h:#1f1f23;--p2:#1b1b1e;--line:#2b2b30;--line2:#3a3a41;--ink:#f1f1f3;--soft:#b6b6bd;--faint:#7c7c85;--acc:#ff5b52;--ok:#2fbf71;--blue:#4c8dff;--amber:#f5a524;--purple:#a56bff;--cyan:#27c4d6}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:13.5px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+svg.i.sm{width:15px;height:15px}
+svg.i.lg{width:24px;height:24px}
+.app{display:grid;grid-template-rows:auto 1fr auto;height:100vh;height:100dvh}
+
+/* top bar */
+.top{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--h);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.top .back{width:30px;height:30px;display:grid;place-items:center;border-radius:8px;color:var(--ink);text-decoration:none}
+.top .back:hover{background:var(--line)}
+.top h1{margin:0 6px 0 0;font-size:.95rem;font-weight:700;letter-spacing:.01em}
+.sp{flex:1}
+.pill{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line2);background:var(--p);border-radius:999px;padding:5px 11px;font-size:.78rem;color:var(--soft)}
+.pill i{width:8px;height:8px;border-radius:50%;background:#555;flex:none}
+.pill.on i{background:var(--ok);box-shadow:0 0 0 3px rgba(47,191,113,.2)}
+.pill.on{color:var(--ink)}
+.b{border:1px solid var(--line2);background:var(--p2);border-radius:8px;padding:6px 12px;font-weight:600;font-size:.8rem;display:inline-flex;align-items:center;justify-content:center;gap:7px;line-height:1.2;text-decoration:none;color:var(--ink);white-space:nowrap}
+.b:hover:not(:disabled){border-color:var(--ink)}
+.b:disabled{opacity:.4;cursor:default}
+.b.pri{background:var(--acc);border-color:var(--acc);color:#1a0a09}
+.b.ok{background:var(--ok);border-color:var(--ok);color:#06210f}
+.b.sm{padding:4px 9px;font-size:.74rem}
+.b.full{width:100%}
+.b.on,.b[aria-pressed=true]{background:var(--ink);color:#111;border-color:var(--ink)}
+.ib{width:32px;height:32px;border-radius:8px;border:1px solid var(--line2);background:var(--p2);display:inline-grid;place-items:center;color:var(--soft);padding:0}
+.ib:hover:not(:disabled){color:var(--ink);border-color:var(--ink)}
+.ib:disabled{opacity:.35;cursor:default}
+.ib.on{background:var(--acc);border-color:var(--acc);color:#1a0a09}
+.ib.flat{border-color:transparent;background:transparent}
+
+
+/* docks: library | service | show */
+.main{display:grid;grid-template-columns:340px 270px minmax(0,1fr);gap:6px;padding:6px;min-height:0}
+.dock{background:var(--p);border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden;position:relative}
+.dh{display:flex;align-items:center;gap:8px;padding:6px 8px 6px 10px;background:var(--h);border-bottom:1px solid var(--line);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);min-height:38px}
+.db{flex:1;overflow:auto;min-height:0}
+.help{color:var(--faint);font-size:.78rem;margin:0}
+.empty{padding:22px 16px;text-align:center;color:var(--faint);font-size:.82rem}
+
+/* service list */
+.svc{list-style:none;margin:0;padding:6px;display:grid;gap:4px;align-content:start}
+.si{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:6px 4px 6px 8px;border:1px solid transparent;border-left:4px solid var(--c,#555);border-radius:7px;background:var(--p2);cursor:pointer}
+.si:hover{background:#222226}
+.si.sel{border-color:var(--ok);border-left-color:var(--c);background:#1d2a22}
+.si.live{border-color:var(--acc);border-left-color:var(--c);background:#2a1c1b}
+.si.drag{opacity:.4}
+.si .n{font:600 .72rem ui-monospace,Consolas,monospace;color:var(--faint);width:16px;text-align:right}
+.si b{display:block;font-size:.84rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.si small{display:block;color:var(--faint);font-size:.7rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.si .tag{font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--c)}
+.si .at{color:var(--ok);font-weight:700}
+.si .ib{width:26px;height:26px}
+.k-song{--c:var(--blue)}.k-bible{--c:var(--ok)}.k-image{--c:var(--amber)}.k-video{--c:var(--purple)}.k-pdf{--c:var(--amber)}.k-link{--c:var(--cyan)}.k-camera,.k-screen{--c:#ff7ad9}.k-timer{--c:var(--acc)}
+.autobar{display:flex;align-items:center;gap:8px;padding:7px 10px;border-bottom:1px solid var(--line);font-size:.74rem;color:var(--soft);background:#1a1d1b}
+.autobar.on{background:#14261c;color:#bfeed3}
+.autobar i{width:8px;height:8px;border-radius:50%;background:#555}
+.autobar.on i{background:var(--ok)}
+
+/* show: preview, live, controls, slides */
+.center{display:grid;grid-template-rows:auto minmax(0,1fr);gap:6px;min-height:0;min-width:0}
+.mons{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;padding:8px;align-items:center}
+.mon{min-width:0}
+.mlab{display:flex;justify-content:space-between;align-items:center;font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px;gap:6px}
+.mlab.pre{color:var(--ok)}.mlab.live{color:var(--acc)}
+.mlab span.cap{font-weight:500;letter-spacing:0;text-transform:none;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;text-align:right}
+.scr{aspect-ratio:16/9;background:#000;border-radius:7px;overflow:hidden;position:relative;border:2px solid var(--line2);container-type:inline-size;display:grid;place-items:center;color:#777;font-size:.8rem}
+.scr.pre{border-color:var(--ok)}.scr.live{border-color:var(--acc)}
+.scr.blk::after{content:"BLACK";position:absolute;inset:0;background:rgba(0,0,0,.86);display:grid;place-items:center;color:#ddd;font-weight:800;letter-spacing:.2em;font-size:.9rem;z-index:5}
+.scr>img,.scr>video{width:100%;height:100%;object-fit:contain;display:block}
+.sl{width:100%;height:100%;display:grid;place-items:center;padding:6cqw 8cqw;text-align:center;box-sizing:border-box;overflow:hidden;position:relative}
+.sl>div{font-weight:800;line-height:1.18;white-space:pre-wrap;font-size:6.4cqw;max-width:100%;position:relative;z-index:1}
+.sl small{display:block;font-size:3.2cqw;font-weight:600;opacity:.8;margin-top:2cqw}
+.mons .sl>div{font-size:5.4cqw}
+.sl.dark{background:#000;color:#fff}.sl.light{background:#fff;color:#111}.sl.coral{background:linear-gradient(135deg,#14213d,#e8453c);color:#fff}
+.sl.cd>div{font-size:15cqw}.sl.cd small{font-size:5cqw;margin:0 0 1cqw}
+.sl .bgl{position:absolute;inset:0;z-index:0}
+.sl .bgl img,.sl .bgl video{width:100%;height:100%;object-fit:cover;display:block}
+.sl .bgl::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.4)}
+.sl.hasbg{background:#000;color:#fff}
+.sl.hasbg>div{text-shadow:0 2px 10px rgba(0,0,0,.7)}
+.pg{width:100%;height:100%}
+.pg img{width:100%;height:100%;object-fit:contain}
+.link{position:absolute;inset:auto 0 0 0;background:rgba(0,0,0,.72);color:#fff;padding:2cqw 3cqw;font-size:3cqw;word-break:break-all;text-align:left}
+.gocol{display:grid;gap:8px;justify-items:center}
+.go{width:68px;height:52px;border-radius:9px;border:1px solid var(--ok);background:var(--ok);color:#06210f;font-weight:800;font-size:.76rem;display:grid;place-items:center;gap:0;padding:4px}
+.go svg{width:16px;height:16px;margin:0 auto}
+.go:disabled{opacity:.35;cursor:default;background:transparent;color:var(--faint);border-color:var(--line2)}
+
+.ctrl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px}
+.ctrl .grp{display:flex;gap:6px;align-items:center}
+.ctrl .div{width:1px;height:22px;background:var(--line2)}
+.ctrl .big{padding:5px 12px;font-size:.8rem}
+.media{display:flex;gap:8px;align-items:center;flex:1 1 280px;min-width:240px}
+.media input[type=range]{flex:1;min-width:60px;accent-color:var(--acc)}
+.media .t{font:600 .74rem ui-monospace,Consolas,monospace;color:var(--soft);white-space:nowrap}
+.rectime{font:700 .74rem ui-monospace,Consolas,monospace;color:var(--acc)}
+.slides .db{padding:10px}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px;align-content:start}
+.card{position:relative;border:2px solid var(--line2);border-radius:8px;overflow:hidden;background:#000;cursor:pointer;text-align:left;padding:0;display:block}
+.card:hover{border-color:var(--ink)}
+.card.pre{border-color:var(--ok)}
+.card.live{border-color:var(--acc);box-shadow:0 0 0 2px rgba(255,91,82,.35)}
+.card .scr{border:0;border-radius:0}
+.card .sl>div{font-size:5.2cqw;line-height:1.15}
+.card .sl{padding:7cqw 6cqw 5cqw}
+.card .lab{position:absolute;left:0;top:0;padding:2px 8px;font-size:.62rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--c,#555);border-radius:0 0 7px 0;z-index:2;max-width:92%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .num{position:absolute;right:6px;bottom:4px;font:700 .62rem ui-monospace,Consolas,monospace;color:#fff;background:rgba(0,0,0,.6);padding:1px 6px;border-radius:5px;z-index:2}
+.card .badge{position:absolute;right:0;top:0;padding:2px 8px;font-size:.6rem;font-weight:800;letter-spacing:.08em;color:#fff;background:var(--acc);border-radius:0 0 0 7px;z-index:2}
+.card .tap{position:absolute;left:0;right:0;bottom:0;padding:3px 6px;font-size:.62rem;font-weight:700;text-align:center;background:rgba(47,191,113,.92);color:#06210f;z-index:2}
+.sec-verse{--c:#3a6fd8}.sec-chorus{--c:#d9433a}.sec-bridge{--c:#8a52e0}.sec-prechorus{--c:#d98a1c}.sec-intro{--c:#4a8f6a}.sec-other{--c:#5a5a64}.sec-bible{--c:#23975a}.sec-page{--c:#c98a16}
+.one{max-width:340px}
+.hint{padding:30px 20px;text-align:center;color:var(--faint)}
+
+/* library */
+.tabs{display:flex;background:var(--h);border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:none;border:0;background:transparent;padding:9px 11px;color:var(--faint);font-size:.76rem;font-weight:700;border-bottom:2px solid transparent}
+.tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--acc)}
+.libdock .db{display:flex;flex-direction:column;overflow:hidden}
+.pane{padding:10px;display:grid;gap:9px;align-content:start;flex:1;overflow:auto;min-height:0}
+.pane.col{display:flex;flex-direction:column;padding:0;gap:0;overflow:hidden}
+.pscroll{flex:1;overflow:auto;padding:10px;display:grid;gap:9px;align-content:start;min-height:0}
+.f{display:grid;gap:4px}
+.f label,.lbl{font-size:.72rem;color:var(--soft);font-weight:600}
+.f input,.f select,.f textarea,.inp{width:100%;background:var(--p2);border:1px solid var(--line2);border-radius:7px;padding:7px 9px;min-width:0}
+.f textarea{resize:vertical;min-height:70px}
+.f input:focus,.f select:focus,.f textarea:focus,.inp:focus{outline:2px solid var(--acc);outline-offset:-1px;border-color:transparent}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.row{display:flex;gap:6px;align-items:center}
+.row>input{flex:1;min-width:0}
+.row.wrap{flex-wrap:wrap}
+.seg{display:flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden}
+.seg button{flex:1;border:0;background:var(--p2);padding:7px 4px;font-weight:700;font-size:.78rem;color:var(--soft);border-right:1px solid var(--line2)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed=true]{background:var(--ink);color:#111}
+.list{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.list li{display:flex;align-items:center;gap:6px;padding:5px 6px 5px 10px;border:1px solid var(--line);border-radius:7px;background:var(--p2)}
+.list li span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.82rem}
+.list li:hover{border-color:var(--line2)}
+.hits{display:grid;gap:4px;max-height:50vh;overflow:auto}
+.hit{text-align:left;background:var(--p2);border:1px solid var(--line);border-radius:7px;padding:6px 8px;color:var(--soft);font-size:.78rem}
+.hit:hover{border-color:var(--ok)}.hit b{color:var(--ink)}
+.sug{display:flex;flex-wrap:wrap;gap:5px}
+.sug button,.chs button{border:1px solid var(--line2);background:var(--p2);border-radius:7px;padding:4px 9px;font-size:.78rem;font-weight:600;color:var(--ink)}
+.sug button:hover,.chs button:hover{border-color:var(--ok)}
+.chs{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:4px;max-height:132px;overflow:auto}
+.chs button{padding:5px 0;text-align:center}
+.chs button[aria-pressed=true]{background:var(--ok);border-color:var(--ok);color:#06210f}
+.stepl{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin:2px 0 -3px}
+.mic.on{background:var(--acc);border-color:var(--acc);color:#1a0a09}
+.sbtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:7px 12px;border:1px solid var(--line2);border-radius:9px;background:var(--p2);font-weight:700;font-size:.8rem;color:var(--ink)}
+.sbtn:hover{border-color:var(--ink)}
+.hdr{display:flex;align-items:center;gap:9px;font-weight:800;font-size:.95rem;letter-spacing:.02em}
+.hdr .hi{width:30px;height:30px;border-radius:9px;background:rgba(47,191,113,.14);color:var(--ok);display:grid;place-items:center}
+.iconrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.iconrow .ib2{display:flex;flex-direction:column;align-items:center;gap:4px;padding:7px 4px 6px;border:1px solid var(--line2);border-radius:10px;background:var(--p2);font-size:.68rem;font-weight:700;color:var(--soft)}
+.iconrow .ib2:hover,.iconrow .ib2[aria-expanded=true]{border-color:var(--ink);color:var(--ink)}
+.iconrow .ib2 svg{width:22px;height:22px}
+.opop{background:var(--h);border:1px solid var(--line2);border-radius:10px;padding:10px;display:grid;gap:8px}
+.pcards{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.pcard{display:grid;gap:4px;justify-items:center;padding:7px 2px 5px;border:1px solid var(--line2);border-radius:8px;background:var(--p2);font-weight:700;font-size:.74rem;color:var(--soft)}
+.pcard .ln{display:grid;gap:2px;width:70%}
+.pcard .ln i{display:block;height:3px;border-radius:2px;background:var(--faint)}
+.pcard[aria-pressed=true]{border-color:var(--ok);color:var(--ink)}
+.pcard[aria-pressed=true] .ln i{background:var(--ok)}
+.lcards{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lcard{padding:0;border:2px solid var(--line2);border-radius:8px;overflow:hidden;background:#000;text-align:left;display:block}
+.lcard[aria-pressed=true]{border-color:var(--ok)}
+.lcard .scr{border:0;border-radius:0}
+.lcard .sl>div{font-size:7cqw}
+.lcard span{display:block;padding:3px 7px;font-size:.7rem;font-weight:700;background:var(--p2);color:var(--soft)}
+.gal{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.gal button{aspect-ratio:16/9;border:2px solid var(--line2);border-radius:6px;padding:0;overflow:hidden;background:#000}
+.gal button[aria-pressed=true]{border-color:var(--ok)}
+.gal img{width:100%;height:100%;object-fit:cover;display:block}
+.sw{display:flex;gap:8px;flex-wrap:wrap}
+.sw button{width:32px;height:32px;border-radius:50%;border:2px solid var(--line2);padding:0}
+.sw button[aria-pressed=true]{border-color:var(--ink);box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--acc)}
+.vbar{display:flex;align-items:center;gap:6px;padding:8px 10px;border-top:1px solid var(--line);background:var(--h);flex-wrap:wrap}
+.vbar .vb{position:relative}
+.vbar .vb button.v{border:1px solid var(--line2);background:var(--p2);border-radius:8px;padding:4px 10px;font-weight:800;font-size:.76rem;color:var(--soft)}
+.vbar .vb button.v[aria-pressed=true]{background:var(--ink);color:#111;border-color:var(--ink)}
+.vbar .vb .vx{position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;border:0;background:#55555d;color:#fff;font-size:.6rem;line-height:1;display:none;place-items:center;padding:0}
+.vbar .vb:hover .vx{display:grid}
+.prevtxt{max-height:170px;overflow:auto;background:var(--p2);border:1px solid var(--line);border-radius:8px;padding:0 10px;font-size:.8rem;color:var(--soft)}
+.prevtxt:empty{display:none}
+.prevtxt b{display:block;color:var(--ink);padding:8px 0 3px;position:sticky;top:0;background:var(--p2)}
+.prevtxt p{margin:0 0 6px}.prevtxt sup{color:var(--ok);font-weight:700}
+.bgpick{display:grid;gap:6px}
+.bgpick .seg button{padding:6px 2px;font-size:.74rem}
+.bgpick .bgname{font-size:.72rem;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bgpick select{background:var(--p2);border:1px solid var(--line2);border-radius:7px;padding:5px 8px}
+
+/* media library */
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line2);background:var(--p2);border-radius:999px;padding:5px 12px;font-size:.76rem;font-weight:700;color:var(--soft)}
+.chip[aria-pressed=true]{background:var(--ink);color:#111;border-color:var(--ink)}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.mt{position:relative;aspect-ratio:1;border:1px solid var(--line2);border-radius:10px;overflow:hidden;background:var(--p2);cursor:pointer;display:grid;place-items:center;padding:0;text-align:left}
+.mt:hover{border-color:var(--ink)}
+.mt img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.mt .k{position:absolute;left:5px;top:5px;background:rgba(0,0,0,.65);color:#fff;border-radius:5px;font-size:.58rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;z-index:2}
+.mt .nm{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(0,0,0,.85));color:#fff;font-size:.66rem;padding:14px 6px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:2}
+.mt .rm{position:absolute;right:4px;top:4px;width:20px;height:20px;border-radius:50%;border:0;background:rgba(0,0,0,.7);color:#fff;display:none;place-items:center;padding:0;z-index:3}
+.mt:hover .rm{display:grid}
+.mt.add{border-style:dashed;color:var(--soft)}
+.mt.add svg{width:30px;height:30px}
+.mt.fileic{color:var(--amber)}
+.mt.fileic svg{width:34px;height:34px}
+
+/* popover menu and dialogs */
+.menu{position:fixed;z-index:140;background:var(--h);border:1px solid var(--line2);border-radius:10px;padding:5px;min-width:210px;box-shadow:0 12px 36px rgba(0,0,0,.55);display:grid}
+.menu button{display:flex;align-items:center;gap:10px;border:0;background:transparent;text-align:left;padding:8px 10px;border-radius:7px;font-size:.82rem;color:var(--ink)}
+.menu button:hover{background:var(--line)}
+.menu button .ck{margin-left:auto;color:var(--ok);width:15px;height:15px}
+.menu hr{border:0;border-top:1px solid var(--line);margin:4px 0;width:100%}
+.menu .ml{padding:6px 10px 2px;font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+dialog{background:var(--h);color:var(--ink);border:1px solid var(--line2);border-radius:14px;padding:0;width:min(560px,94vw);max-height:92dvh}
+dialog.wide{width:min(760px,96vw)}
+dialog::backdrop{background:rgba(0,0,0,.66)}
+.dlg{display:flex;flex-direction:column;max-height:92dvh}
+.dlg .dt{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);font-weight:800;font-size:1rem}
+.dlg .dt .sp{flex:1}
+.dlg .dbody{padding:14px 16px;overflow:auto;display:grid;gap:11px;align-content:start}
+.dlg .dfoot{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--line)}
+.slpv{display:grid;gap:5px;max-height:170px;overflow:auto;background:var(--p2);border:1px solid var(--line);border-radius:8px;padding:6px}
+.slpv:empty{display:none}
+.slpv div{font-size:.74rem;color:var(--soft);padding:4px 6px;border-left:3px solid var(--c,#555);background:var(--p);border-radius:4px;white-space:pre-wrap}
+.slpv div b{display:block;font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;color:var(--c)}
+.vrow{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--p2)}
+.vrow .vi{flex:1;min-width:0}
+.vrow b{display:block;font-size:.84rem}
+.vrow small{display:block;color:var(--faint);font-size:.7rem}
+.vlist{display:grid;gap:6px;max-height:46vh;overflow:auto}
+.lic{display:inline-block;font-size:.6rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:5px;padding:1px 6px;margin-left:6px;vertical-align:middle;background:rgba(47,191,113,.15);color:#7fe0aa}
+.lic.cr{background:rgba(245,165,36,.15);color:#f5c26b}
+.edslide{display:grid;gap:4px}
+.edslide label{font-size:.7rem;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}
+.qr{width:190px;height:190px;background:#fff;border-radius:10px;padding:6px;justify-self:center}
+.qr svg{width:100%;height:100%;display:block}
+.dlg a.lnk{word-break:break-all;font-size:.76rem;color:var(--acc)}
+.steps{margin:0;padding-left:20px;display:grid;gap:6px;color:var(--soft)}
+.plat{display:flex;flex-wrap:wrap;gap:8px}
+.bgprev{aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;display:grid;place-items:center;color:var(--faint);border:1px solid var(--line2)}
+.bgprev img,.bgprev video{width:100%;height:100%;object-fit:cover}
+
+/* bottom bar */
+.bot{display:flex;gap:10px;align-items:center;padding:6px 10px;background:var(--h);border-top:1px solid var(--line);font-size:.74rem;color:var(--faint);flex-wrap:wrap}
+.bot input{background:var(--p);border:1px solid var(--line2);border-radius:6px;padding:4px 8px;width:230px;max-width:100%}
+.msg{color:var(--soft);flex:1 1 200px;min-width:0}
+.msg.err{color:#ff9d96}
+.stagebar{display:flex;gap:6px;align-items:center}
+
+/* start screen */
+.gate{position:fixed;inset:0;z-index:150;background:radial-gradient(1200px 600px at 50% -10%,#2a1c1b,#0e0e10 60%);display:grid;place-items:center;padding:20px}
+.gate .box{max-width:460px;text-align:center;display:grid;gap:14px;justify-items:center}
+.gate img{width:84px;height:84px;border-radius:20px}
+.gate h2{margin:0;font-size:1.7rem}
+.gate p{margin:0;color:var(--soft)}
+.gate .b{padding:9px 18px;font-size:.9rem}
+.gate .links{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.gate small{color:var(--faint)}
+
+.mtabs{display:none}
+.toast{position:fixed;left:50%;bottom:60px;transform:translate(-50%,16px);background:#fff;color:#111;font-weight:600;padding:8px 16px;border-radius:99px;opacity:0;pointer-events:none;z-index:200;font-size:.82rem;max-width:90vw;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:1180px){.main{grid-template-columns:310px 230px minmax(0,1fr)}.go{width:74px;height:74px}}
+@media (max-width:900px){
+  .main{grid-template-columns:1fr;padding:6px 6px 0}
+  .main>.dock,.main>.center{display:none}
+  .app[data-view=service] .main>.svcdock,.app[data-view=lib] .main>.libdock{display:flex}
+  .app[data-view=show] .main>.center{display:grid}
+  .mtabs{display:grid;grid-template-columns:repeat(3,1fr);background:var(--h);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+  .mtabs button{border:0;background:none;padding:11px 4px;color:var(--faint);font-weight:700;font-size:.78rem;border-top:2px solid transparent}
+  .mtabs button[aria-selected=true]{color:var(--ink);border-top-color:var(--acc)}
+  .center{overflow:auto;grid-template-rows:auto minmax(340px,1fr)}
+  .center>.dock:first-child{overflow:visible;min-height:auto}
+  .gocol{grid-column:1 / -1;grid-row:2}
+  .go{width:100%;height:46px;grid-auto-flow:column;gap:8px}
+  .mons{grid-template-columns:1fr 1fr}
+  .bot .keys{display:none}
+  .bot input{width:150px}
+  .top h1{display:none}
+  .sgrid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+}
+@media (max-width:520px){.pill span.t{display:none}.mlab span.cap{display:none}.ctrl .big{padding:8px 12px}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M3 5.6C5.6 4.2 8.6 4.3 12 6.3c3.4-2 6.4-2.1 9-.7V19c-2.6-1.4-5.6-1.3-9 .7-3.4-2-6.4-2.1-9-.7z"/><path d="M12 6.3v13.4"/></symbol>
+  <symbol id="i-rows" viewBox="0 0 24 24"><path d="M4 6h16M4 10.5h16M4 15h10M4 19.5h7"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.3 0 2.1-.9 2.1-1.9 0-.5-.2-.9-.5-1.3-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8H18a3 3 0 0 0 3-3C21 6.7 17 3 12 3z"/><circle cx="7.6" cy="11" r="1.1" fill="currentColor" stroke="none"/><circle cx="10" cy="7.4" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.6" cy="7.4" r="1.1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.7"/><path d="m3.5 17 5-5 4 4 3-3 5 5"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
+  <symbol id="i-rec" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.6" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor"/></symbol>
+  <symbol id="i-broadcast" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M8.6 8.6a5 5 0 0 0 0 6.8M15.4 8.6a5 5 0 0 1 0 6.8M5.7 5.7a9 9 0 0 0 0 12.6M18.3 5.7a9 9 0 0 1 0 12.6"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4.2L19.5 8.7l-4.2-4.2L4 15.8z"/><path d="m13.5 6.3 4.2 4.2"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3l1.6-2.2h6.8L17 8h3v11H4z"/><circle cx="12" cy="13.5" r="3.6"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2.2"/><path d="M11 17.5h2"/></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.6"/><circle cx="17.5" cy="16" r="2.6"/></symbol>
+  <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9h18M3 15h18M8 4v16M16 4v16"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5 14h6l-1 7 8-11h-6z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.4a4.3 4.3 0 0 1 7.5 2.4C19.5 15.4 12 20 12 20z"/></symbol>
+</svg>
+
+<div class="gate" id="gate" hidden>
+  <div class="box">
+    <img src="/tools/second-screen-presenter/icon-192.png" alt="" width="84" height="84">
+    <h2>Presenter</h2>
+    <p>Bible verses, song lyrics, photos, videos and countdowns on your TV or projector.</p>
+    <button class="b pri" id="gate-fs" type="button">Start in full screen</button>
+    <div class="links"><button class="b" id="gate-win" type="button">Use in this window</button><button class="b" id="gate-install" type="button" hidden>Install as an app</button></div>
+    <small>Press Esc any time to leave full screen. Everything runs on this computer and nothing is uploaded.</small>
+  </div>
+</div>
+
+<div class="app" id="app" data-view="show">
+  <header class="top">
+    <a class="back" href="/tools/second-screen-presenter/" aria-label="Back"><svg class="i"><use href="#i-arrow" transform="rotate(180 12 12)"/></svg></a>
+    <h1>Presenter</h1>
+    <button class="pill" id="p-disp" type="button" title="The TV or projector screen your audience sees. Click to open it."><i></i><span class="t">TV screen</span><span id="p-disp-t">not open</span></button>
+    <button class="pill" id="p-stage" type="button" title="A private screen for the worship leader or speaker. Click to open it."><i></i><span class="t">Stage</span><span id="p-stage-t">off</span></button>
+    <button class="pill" id="p-remote" type="button" title="Use your phone as a remote and a live mirror"><i></i><span class="t">Phone</span><span id="p-remote-t">off</span></button>
+    <span class="sp"></span>
+    <select id="screen" hidden aria-label="Screen to show on"></select>
+    <button class="b sm" id="move" type="button" hidden>Move display</button>
+    <button class="ib flat" id="fs" type="button" title="Full screen" aria-label="Full screen"><svg class="i"><use href="#i-expand"/></svg></button>
+    <a class="b sm" id="contact" href="/tools/second-screen-presenter/contact/" target="_blank" rel="noopener" title="Message the builder or buy him a coffee"><svg class="i sm"><use href="#i-heart"/></svg>Contact the builder</a>
+    <button class="b pri" id="open" type="button">Open TV screen</button>
+  </header>
+
+  <div class="main">
+    <section class="dock libdock" aria-label="Library">
+      <div class="dh">Library</div>
+      <div class="tabs" id="tabs" role="tablist">
+        <button type="button" role="tab" data-tab="songs" aria-selected="true">Songs</button>
+        <button type="button" role="tab" data-tab="bible" aria-selected="false">Scripture</button>
+        <button type="button" role="tab" data-tab="media" aria-selected="false">Media</button>
+        <button type="button" role="tab" data-tab="capture" aria-selected="false">Capture</button>
+        <button type="button" role="tab" data-tab="timer" aria-selected="false">Countdown</button>
+      </div>
+      <div class="db">
+        <div class="pane" data-pane="songs">
+          <div class="row"><input id="song-q" class="inp" type="search" placeholder="Search titles and lyrics" aria-label="Search songs by title or lyrics"></div>
+          <div class="row"><button class="b pri" id="song-new" type="button" style="flex:1"><svg class="i sm"><use href="#i-plus"/></svg>New song</button><button class="b" id="song-bg" type="button" style="flex:1" title="One background for all songs"><svg class="i sm"><use href="#i-image"/></svg>Song background</button></div>
+          <ul class="list" id="song-list"></ul>
+          <div class="row"><button class="b sm" id="song-export" type="button" style="flex:1" title="Save a copy of your songs as a file">Back up songs</button><button class="b sm" id="song-import" type="button" style="flex:1" title="Load songs from a backup file">Restore from backup</button></div>
+          <input type="file" id="song-import-file" accept=".json,application/json" hidden aria-label="Choose a songs backup file">
+          <p class="help" id="save-note">Your songs are saved in this browser on this computer, so they are here next time. Use Back up to keep a copy or move them to another computer.</p>
+        </div>
+
+        <div class="pane col" data-pane="bible" hidden>
+          <div class="pscroll">
+            <div class="hdr"><span class="hi"><svg class="i"><use href="#i-book"/></svg></span>Holy Bible</div>
+            <div class="iconrow" role="group" aria-label="Scripture settings">
+              <button class="ib2" type="button" data-set="per" aria-expanded="false"><svg class="i"><use href="#i-rows"/></svg>Verses per slide</button>
+              <button class="ib2" type="button" data-set="color" aria-expanded="false"><svg class="i"><use href="#i-palette"/></svg>Text colour</button>
+              <button class="ib2" type="button" data-set="bg" aria-expanded="false"><svg class="i"><use href="#i-image"/></svg>Background</button>
+            </div>
+            <div class="opop" id="bb-pop" hidden></div>
+            <button class="sbtn" id="bb-words" type="button"><svg class="i"><use href="#i-search"/></svg>Search with words</button>
+            <div class="f"><label for="bb-ref">Passage</label><div class="row"><input id="bb-ref" class="inp" type="text" placeholder="Type J, John 3:16, Ps 23, 1 Cor 13" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="bb-sug"><button class="ib mic" id="bb-mic" type="button" title="Say a passage, for example John 3:16" aria-label="Search by voice"><svg class="i"><use href="#i-mic"/></svg></button><button class="b" id="bb-go" type="button">Find</button></div></div>
+            <div class="sug" id="bb-sug" role="listbox"></div>
+            <div id="bb-chw" hidden><div class="stepl">Chapter</div><div class="chs" id="bb-ch"></div></div>
+            <div id="bb-vsw" hidden><div class="row" style="justify-content:space-between"><div class="stepl">Verses (tap to pick one or more)</div><button class="b sm" id="bb-all" type="button">All</button></div><div class="chs" id="bb-vs"></div></div>
+            <p class="help" id="bb-msg" role="status">Start typing a book. Then pick the chapter and the verses.</p>
+            <div class="prevtxt" id="bb-prev"></div>
+            <div class="row"><button class="b ok" id="bb-show" type="button" style="flex:1" disabled>Show</button><button class="b" id="bb-add" type="button" style="flex:1" disabled>Add to service</button></div>
+          </div>
+          <div class="vbar" id="bb-vbar" role="group" aria-label="Bible versions"></div>
+        </div>
+
+        <div class="pane" data-pane="media" hidden>
+          <div class="chips" id="m-chips" role="group" aria-label="Show"><button class="chip" type="button" data-f="all" aria-pressed="true">All</button><button class="chip" type="button" data-f="image" aria-pressed="false">Photos</button><button class="chip" type="button" data-f="video" aria-pressed="false">Videos</button><button class="chip" type="button" data-f="pdf" aria-pressed="false">PDFs</button><button class="chip" type="button" id="m-link" aria-pressed="false" title="Add a YouTube, Vimeo or Google Slides link"><svg class="i sm"><use href="#i-link"/></svg> Link</button></div>
+          <div class="row" id="m-linkrow" hidden><input id="m-url" class="inp" type="url" inputmode="url" placeholder="YouTube, Vimeo, Google Slides or image link" autocomplete="off"><button class="b" id="m-addurl" type="button">Add</button></div>
+          <div class="mgrid" id="m-grid"></div>
+          <input type="file" id="m-file" accept="image/*,video/*,application/pdf,.pdf,.mov,.mkv,.ppt,.pptx,.key,.odp,.doc,.docx" multiple hidden aria-label="Choose files">
+          <p class="help" id="m-help">Everything you add is kept here on this computer and never uploaded. Click one to add it to the service. PowerPoint, Keynote or Word files must be saved as a PDF first.</p>
+          <div class="f"><span class="lbl">Logo for the Logo button</span><div class="row"><button class="b sm" id="logo-pick" type="button">Choose a logo image</button><span class="help" id="logo-name">No logo chosen</span></div><input type="file" id="logo-file" accept="image/*" hidden aria-label="Choose a logo"></div>
+        </div>
+
+        <div class="pane" data-pane="capture" hidden>
+          <p class="help">Show a camera, a capture card (another laptop or a video mixer connected by HDMI) or any screen or window. A running camera can also be the background of a song or Bible passage.</p>
+          <div class="row wrap"><button class="b pri" id="cap-find" type="button"><svg class="i sm"><use href="#i-camera"/></svg>Find cameras</button><button class="b" id="cap-screen" type="button"><svg class="i sm"><use href="#i-monitor"/></svg>Share a screen or window</button></div>
+          <ul class="list" id="cap-list"></ul>
+          <p class="help" id="cap-msg" role="status"></p>
+        </div>
+
+        <div class="pane" data-pane="timer" hidden>
+          <label class="row"><input type="radio" name="tm-mode" value="for" checked> Count down for <input type="number" id="tm-min" min="0" max="600" value="5" style="width:60px;flex:none" aria-label="Minutes"> min <input type="number" id="tm-sec" min="0" max="59" value="0" style="width:56px;flex:none" aria-label="Seconds"> sec</label>
+          <label class="row"><input type="radio" name="tm-mode" value="until"> Count down to <input type="time" id="tm-until" value="10:00" style="flex:none" aria-label="Time"></label>
+          <div class="f"><label for="tm-label">Words above the clock</label><input id="tm-label" type="text" value="Service starts in"></div>
+          <div class="f"><label for="tm-end">When it reaches zero</label><input id="tm-end" type="text" value="Welcome"></div>
+          <div class="f"><label for="tm-style">Colours</label><select id="tm-style"><option value="coral" selected>Navy and coral</option><option value="dark">White on black</option><option value="light">Black on white</option></select></div>
+          <p class="help">A countdown starts counting the moment you add it, even when it is not on the screen.</p>
+          <div class="row wrap"><button class="b" id="tm-add" type="button">Add to service</button><button class="b ok" id="tm-show" type="button">Add and show</button></div>
+          <div class="f" style="margin-top:6px;border-top:1px solid var(--line);padding-top:10px"><label for="tm-clabel">Or show the time of day</label><div class="row"><input id="tm-clabel" type="text" value="The time is" aria-label="Words above the clock"><button class="b" id="tm-clock" type="button">Add clock</button></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dock svcdock" aria-label="Service order">
+      <div class="dh">Service <span class="sp"></span><button class="ib flat" id="svc-menu" type="button" title="Service options" aria-label="Service options"><svg class="i"><use href="#i-more"/></svg></button></div>
+      <div class="autobar" id="autobar"><i></i><span id="autotxt">Manual. You choose what shows.</span><span class="sp"></span><button class="b sm" id="auto-toggle" type="button"><svg class="i sm"><use href="#i-bolt"/></svg>Run automatically</button></div>
+      <div class="db"><ol class="svc" id="svc"></ol><div class="empty" id="svc-empty">Your service is empty.<br>Add songs, Bible passages, media, a camera or a countdown from the Library.</div></div>
+    </section>
+
+    <section class="center" id="center">
+      <div class="dock">
+        <div class="mons">
+          <div class="mon"><div class="mlab pre">Preview <span class="cap" id="cap-pre"></span></div><div class="scr pre" id="m-pre"><span>Select an item</span></div></div>
+          <div class="gocol"><button class="go" id="go" type="button" disabled><svg class="i lg"><use href="#i-arrow"/></svg>Go live</button></div>
+          <div class="mon"><div class="mlab live">Live <span class="cap" id="cap-live"></span></div><div class="scr live" id="m-live"><span>Nothing on screen</span></div></div>
+        </div>
+        <div class="ctrl">
+          <div class="grp"><button class="b big" id="prev" type="button">&larr; Back</button><button class="b big pri" id="next" type="button">Next &rarr;</button></div>
+          <div class="div"></div>
+          <div class="grp"><button class="b big" id="black" type="button" aria-pressed="false">Black</button><button class="b big" id="logo" type="button" aria-pressed="false">Logo</button></div>
+          <div class="media" id="media" hidden>
+            <button class="b" id="play" type="button">Play</button><button class="ib" id="restart" type="button" title="From the start" aria-label="From the start">&#8634;</button>
+            <input type="range" id="seek" min="0" max="1" step="0.1" value="0" aria-label="Position in the video"><span class="t" id="time">0:00 / 0:00</span>
+            <input type="range" id="vol" min="0" max="100" value="100" style="max-width:90px" aria-label="Volume">
+          </div>
+          <span class="sp"></span>
+          <span class="rectime" id="rectime" hidden>0:00</span>
+          <button class="ib rec" id="rec" type="button" title="Record what is on the screen" aria-label="Record"><svg class="i"><use href="#i-rec"/></svg></button>
+          <button class="ib" id="live-btn" type="button" title="Go live on YouTube, Facebook, Twitch or TikTok" aria-label="Go live online"><svg class="i"><use href="#i-broadcast"/></svg></button>
+          <button class="ib" id="more" type="button" title="More options" aria-label="More options"><svg class="i"><use href="#i-more"/></svg></button>
+        </div>
+      </div>
+      <div class="dock slides">
+        <div class="dh"><span id="sl-title">Slides</span></div>
+        <div class="db"><div class="sgrid" id="sgrid"></div><div class="hint" id="sl-hint">Select an item in the service to see its slides.</div></div>
+      </div>
+    </section>
+  </div>
+
+  <nav class="mtabs" id="mtabs" aria-label="Sections">
+    <button type="button" data-view="lib" aria-selected="false">Library</button>
+    <button type="button" data-view="service" aria-selected="false">Service</button>
+    <button type="button" data-view="show" aria-selected="true">Show</button>
+  </nav>
+
+  <footer class="bot">
+    <span class="stagebar"><input id="st-msg" type="text" placeholder="Message to the stage display" aria-label="Message to the stage display"><button class="b sm" id="st-send" type="button">Send</button><button class="b sm" id="st-clear" type="button">Clear</button></span>
+    <span class="msg" id="msg" role="status"></span>
+    <span class="keys">Arrows: next and back &middot; Enter: go live &middot; B: black &middot; Space: play or pause &middot; Double-click to show anything except a song</span>
+  </footer>
+</div>
+
+<input type="file" id="bg-file" accept="image/*,video/*" hidden aria-label="Choose a background">
+
+<dialog id="dlg-song"><div class="dlg">
+  <div class="dt"><svg class="i"><use href="#i-music"/></svg><span id="sg-head">New song</span><span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="dbody">
+    <div class="f"><label for="sg-title">Title</label><input id="sg-title" type="text" autocomplete="off" placeholder="Amazing Grace"></div>
+    <div class="f"><label for="sg-lyrics">Lyrics</label><textarea id="sg-lyrics" rows="10" placeholder="Verse 1&#10;Amazing grace, how sweet the sound&#10;That saved a wretch like me&#10;&#10;Chorus&#10;My chains are gone&#10;I have been set free"></textarea>
+      <p class="help">Press Enter for a new line. Leave a blank line to start a new slide. Put Verse 1, Chorus or Bridge on its own line to label a section, and type Chorus again later to repeat it.</p></div>
+    <div class="r2"><div class="f"><label for="sg-per">Lines per slide</label><select id="sg-per"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="0">Whole section</option></select></div><div class="f"><label for="sg-style">Colours</label><select id="sg-style"><option value="dark">White on black</option><option value="light">Black on white</option><option value="coral">Navy and coral</option></select></div></div>
+    <div class="f"><span class="lbl" id="sg-count">Slides</span><div class="slpv" id="sg-slides"></div></div>
+  </div>
+  <div class="dfoot"><button class="b sm" id="sg-del" type="button" style="margin-right:auto">Delete song</button><button class="b" id="sg-save" type="button">Save song</button><button class="b pri" id="sg-add" type="button">Save and add to service</button></div>
+</div></dialog>
+
+<dialog id="dlg-sbg"><div class="dlg">
+  <div class="dt"><svg class="i"><use href="#i-image"/></svg>Background for all songs<span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="dbody">
+    <div class="bgprev" id="sbg-prev"><span>No background. Songs show on a plain colour.</span></div>
+    <div class="row wrap"><button class="b" id="sbg-img" type="button"><svg class="i sm"><use href="#i-image"/></svg>Choose a photo</button><button class="b" id="sbg-vid" type="button"><svg class="i sm"><use href="#i-film"/></svg>Choose a video</button><button class="b sm" id="sbg-none" type="button">Remove</button></div>
+    <p class="help">This one background is used behind every song, in the service and on the screen. You can still change a single song from its menu in the service.</p>
+  </div>
+  <div class="dfoot"><button class="b pri" type="button" data-close>Done</button></div>
+</div></dialog>
+
+<dialog id="dlg-words" class="wide"><div class="dlg">
+  <div class="dt"><svg class="i"><use href="#i-search"/></svg>Search the Bible with words<span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="dbody">
+    <div class="row"><input id="bb-q" class="inp" type="search" placeholder="Type words, for example love is patient" autocomplete="off" aria-label="Words to find"><button class="b pri" id="bb-search" type="button">Search</button></div>
+    <p class="help" id="bb-qmsg">Searches the version selected at the bottom of the Scripture tab.</p>
+    <div class="hits" id="bb-res"></div>
+  </div>
+</div></dialog>
+
+<dialog id="dlg-ver"><div class="dlg">
+  <div class="dt"><svg class="i"><use href="#i-book"/></svg>Add a Bible version<span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="dbody">
+    <div class="row"><input id="ver-q" class="inp" type="search" placeholder="Search by name or language, for example Yoruba, French, Message" autocomplete="off" aria-label="Search Bible versions"></div>
+    <p class="help" id="ver-msg">Loading the list of versions...</p>
+    <div class="vlist" id="ver-list"></div>
+    <p class="help">Versions are downloaded once and then kept on this computer. They come from the free Free Use Bible API. Some are public domain; others are free to use with credit. Modern translations such as the NIV and ESV are not available.</p>
+  </div>
+</div></dialog>
+
+<dialog id="dlg-item" class="wide"><div class="dlg">
+  <div class="dt"><svg class="i"><use href="#i-edit"/></svg><span id="it-head">Edit</span><span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="dbody" id="it-body"></div>
+  <div class="dfoot"><button class="b" type="button" data-close>Cancel</button><button class="b pri" id="it-save" type="button">Save changes</button></div>
+</div></dialog>
+
+<dialog id="dlg-live"><div class="dlg">
+  <div class="dt"><svg class="i"><use href="#i-broadcast"/></svg>Go live online<span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="dbody">
+    <p style="margin:0;color:var(--soft)">A web page cannot send video to YouTube, Facebook, Twitch or TikTok on its own. The free program <b>OBS Studio</b> does that, and it can show exactly what this presenter shows.</p>
+    <ol class="steps">
+      <li>Press <b>Open TV screen</b> here so the display window is open.</li>
+      <li>In OBS, press the plus under Sources, choose <b>Window Capture</b> and pick the window named <b>Display screen</b>.</li>
+      <li>In OBS, open Settings, Stream, pick your platform and paste the stream key from its live page.</li>
+      <li>Press <b>Start Streaming</b> in OBS.</li>
+    </ol>
+    <div class="plat"><a class="b" href="https://www.youtube.com/live_dashboard" target="_blank" rel="noopener">YouTube Live</a><a class="b" href="https://www.facebook.com/live/producer" target="_blank" rel="noopener">Facebook Live</a><a class="b" href="https://dashboard.twitch.tv/stream-manager" target="_blank" rel="noopener">Twitch</a><a class="b" href="https://livecenter.tiktok.com/" target="_blank" rel="noopener">TikTok LIVE</a><a class="b" href="https://obsproject.com/" target="_blank" rel="noopener">Get OBS</a></div>
+    <p class="help">To keep a copy instead, use the red record button. It saves a video of what is on the screen to this computer. Direct streaming from the page itself would need a paid relay service, which can be added later.</p>
+  </div>
+</div></dialog>
+
+<dialog id="rm-dialog"><div class="dlg">
+  <div class="dt"><svg class="i"><use href="#i-phone"/></svg>Phone remote and live mirror<span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="dbody" style="justify-items:center;text-align:center">
+    <p class="help" id="rm-st">Starting...</p><div class="qr" id="rm-qr"></div><a class="lnk" id="rm-link" href="#" target="_blank" rel="noopener"></a>
+    <p class="help">Scan the code with your phone camera. Your phone then shows what is on the TV screen, wherever you sit, and lets you change slides, jump through the service and add songs or Bible passages. Both devices need internet.</p>
+  </div>
+</div></dialog>
+
+<div class="toast" id="toast"></div>
+<script src="/tools/vendor/qrcode.js"></script>
+<script src="/tools/ssapp.js"></script>
+</body>
+</html>

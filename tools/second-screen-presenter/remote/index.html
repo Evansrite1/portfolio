@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Phone remote</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0b0c">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; background: #0b0b0c; color: #f4f4f5; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  body { padding: 10px 12px calc(16px + env(safe-area-inset-bottom)); max-width: 600px; margin: 0 auto; }
+  .st { display: flex; align-items: center; gap: 10px; font-size: .85rem; color: #b8b8c0; margin-bottom: 8px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: #555; flex: none; }
+  .dot.on { background: #2fbf71; }
+  .err { color: #ff9d96; }
+  .mir { position: relative; aspect-ratio: 16 / 9; background: #000; border: 2px solid #e8453c; border-radius: 12px; overflow: hidden; display: grid; place-items: center; color: #777; font-size: .85rem; }
+  .mir img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .mir .tag { position: absolute; left: 8px; top: 8px; background: #e8453c; color: #fff; font-size: .62rem; font-weight: 800; letter-spacing: .12em; padding: 2px 8px; border-radius: 6px; }
+  .mir .blk { position: absolute; inset: 0; background: rgba(0,0,0,.85); display: grid; place-items: center; font-weight: 800; letter-spacing: .2em; color: #ddd; }
+  .cap { color: #9a9aa3; font-size: .78rem; margin: 6px 2px 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .msgbar { background: #e8453c; border-radius: 10px; padding: 7px 12px; font-weight: 700; margin-bottom: 8px; font-size: .85rem; }
+  .big { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; margin: 0 0 10px; }
+  .big button { height: 78px; border-radius: 16px; border: 0; font: inherit; font-size: 1.2rem; font-weight: 800; color: #fff; background: #26262b; }
+  .big button.nx { background: #e8453c; }
+  .big button:active { transform: scale(.98); }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .row button, .btn { height: 46px; border-radius: 12px; border: 1px solid #2a2a2e; background: #151517; color: #fff; font: inherit; font-weight: 700; padding: 0 14px; }
+  .row button[aria-pressed=true] { background: #fff; color: #111; }
+  .tabs { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #2a2a2e; margin: 6px 0 10px; }
+  .tabs button { background: none; border: 0; color: #888; font: inherit; font-weight: 800; padding: 12px 0; border-bottom: 3px solid transparent; }
+  .tabs button[aria-selected=true] { color: #fff; border-bottom-color: #e8453c; }
+  .list { display: grid; gap: 6px; }
+  .it { background: #151517; border: 1px solid #2a2a2e; border-radius: 12px; padding: 11px 12px; color: #fff; }
+  .it.live { border-color: #e8453c; }
+  .it b { font-weight: 700; }
+  .it small { color: #888; display: block; font-size: .75rem; }
+  .it .at { color: #2fbf71; font-weight: 700; }
+  .sls { display: flex; gap: 6px; overflow-x: auto; padding: 8px 0 2px; }
+  .sls button { flex: none; background: #222; border: 1px solid #333; color: #ddd; border-radius: 8px; padding: 8px 11px; font: inherit; font-size: .8rem; }
+  .sls button.on { background: #e8453c; border-color: #e8453c; color: #fff; }
+  .send { display: flex; gap: 8px; margin-top: 12px; }
+  .send input, .inp { flex: 1; min-width: 0; background: #151517; border: 1px solid #2a2a2e; border-radius: 12px; color: #fff; padding: 12px; font: inherit; width: 100%; }
+  .send button { border-radius: 12px; border: 0; background: #26262b; color: #fff; font: inherit; font-weight: 700; padding: 0 16px; }
+  .sr { display: flex; align-items: center; gap: 8px; background: #151517; border: 1px solid #2a2a2e; border-radius: 12px; padding: 8px 8px 8px 12px; }
+  .sr span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sr button { height: 38px; border-radius: 10px; border: 1px solid #2a2a2e; background: #26262b; color: #fff; font: inherit; font-weight: 700; padding: 0 12px; }
+  .sr button.go { background: #2fbf71; border-color: #2fbf71; color: #06210f; }
+  h2 { font-size: .75rem; text-transform: uppercase; letter-spacing: .1em; color: #888; margin: 16px 0 8px; }
+  .vers { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+  .vers button { border: 1px solid #2a2a2e; background: #151517; color: #bbb; border-radius: 999px; padding: 6px 12px; font: inherit; font-weight: 700; font-size: .8rem; }
+  .vers button[aria-pressed=true] { background: #fff; color: #111; }
+  .toast { position: fixed; left: 50%; bottom: 20px; transform: translate(-50%, 16px); background: #fff; color: #111; font-weight: 600; padding: 9px 16px; border-radius: 99px; opacity: 0; pointer-events: none; transition: .25s; max-width: 92vw; text-align: center; font-size: .85rem; }
+  .toast.on { opacity: 1; transform: translate(-50%, 0); }
+</style>
+</head>
+<body>
+<div class="st"><span class="dot" id="dot"></span><span id="st">Connecting to the presenter...</span></div>
+<div class="mir" id="mir"><span id="mirwait">Waiting for the screen...</span><img id="mimg" alt="What is on the TV screen right now" hidden><span class="tag">LIVE</span><div class="blk" id="blk" hidden>BLACK</div></div>
+<div class="cap" id="cap"></div>
+<div class="msgbar" id="msgbar" hidden></div>
+<div class="big"><button type="button" id="prev">Back</button><button type="button" class="nx" id="next">Next</button></div>
+<div class="row"><button type="button" id="black" aria-pressed="false">Black screen</button><button type="button" id="play">Play or pause</button></div>
+<div class="tabs" role="tablist"><button type="button" role="tab" id="t-svc" aria-selected="true">Service</button><button type="button" role="tab" id="t-lib" aria-selected="false">Library</button></div>
+
+<section id="p-svc">
+  <div class="list" id="list"></div>
+  <div class="send"><input id="msg" type="text" placeholder="Message to the stage display" aria-label="Message to the stage display"><button type="button" id="send">Send</button></div>
+</section>
+
+<section id="p-lib" hidden>
+  <h2>Bible</h2>
+  <div class="vers" id="vers" role="group" aria-label="Bible version"></div>
+  <input class="inp" id="ref" type="text" placeholder="John 3:16 or Psalm 23" autocomplete="off" aria-label="Bible passage">
+  <div class="row" style="margin-top:8px"><button type="button" id="b-add">Add to service</button><button type="button" id="b-show" style="background:#2fbf71;border-color:#2fbf71;color:#06210f">Show now</button></div>
+  <h2>Songs</h2>
+  <input class="inp" id="sq" type="search" placeholder="Search your songs" aria-label="Search your songs">
+  <div class="list" id="songs" style="margin-top:8px"></div>
+  <p style="color:#777;font-size:.8rem">These are the songs saved on the presenter computer. To add photos, videos or PDFs, use the presenter itself.</p>
+</section>
+<div class="toast" id="toast"></div>
+
+<script src="/tools/vendor/peerjs/peerjs.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (i) { return document.getElementById(i); };
+  var target = decodeURIComponent(location.hash.slice(1)), peer = null, conn = null, st = null, lib = { songs: [], vers: [], ver: '' }, tries = 0;
+  function status(t, on, bad) { $('st').textContent = t; $('dot').className = 'dot' + (on ? ' on' : ''); $('st').className = bad ? 'err' : ''; }
+  function fmt(s) { var h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, x = s % 60; return (h ? h + ':' + (m < 10 ? '0' : '') : '') + m + ':' + (x < 10 ? '0' : '') + x; }
+  function clock(at) { if (!at) return ''; var p = at.split(':'), h = +p[0]; return (h % 12 || 12) + ':' + p[1] + (h < 12 ? ' am' : ' pm'); }
+  function cmd(o) { if (conn && conn.open) conn.send(o); else status('Not connected. Reconnecting...', false, true); if (navigator.vibrate) navigator.vibrate(15); }
+  var tt; function toast(t) { var e = $('toast'); e.textContent = t; e.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { e.classList.remove('on'); }, 2600); }
+  function draw() {
+    if (!st) return;
+    var n = st.now, x = st.next;
+    $('cap').textContent = (st.black ? 'Black screen. ' : '') + (n ? (n.label ? n.label + ': ' : '') + String(n.text || '').split('\n')[0] : 'Nothing on screen') + (x ? '   Next: ' + String(x.text || x.label || '').split('\n')[0] : '');
+    $('blk').hidden = !st.black;
+    $('black').setAttribute('aria-pressed', !!st.black); $('black').textContent = st.black ? 'Show again' : 'Black screen';
+    $('msgbar').textContent = st.msg ? 'Stage message: ' + st.msg : ''; $('msgbar').hidden = !st.msg;
+    var live = st.live || {}, list = $('list'); list.innerHTML = '';
+    st.items.forEach(function (it, i) {
+      var b = document.createElement('div'); b.className = 'it' + (it.id === live.id ? ' live' : '');
+      var name = document.createElement('b'); name.textContent = (i + 1) + '. ' + it.name;
+      var k = document.createElement('small'); k.textContent = it.kind + (it.slides && it.slides.length > 1 ? ', ' + it.slides.length + ' slides' : '');
+      if (it.at) { var a = document.createElement('span'); a.className = 'at'; a.textContent = ' at ' + clock(it.at); k.appendChild(a); }
+      b.appendChild(name); b.appendChild(k);
+      b.onclick = function (e) { if (e.target.closest('.sls')) return; cmd({ cmd: 'go', id: it.id, slide: 0 }); };
+      if (it.id === live.id && it.slides && it.slides.length > 1) {
+        var row = document.createElement('div'); row.className = 'sls';
+        it.slides.forEach(function (s, n) { var sb = document.createElement('button'); sb.type = 'button'; sb.textContent = s || ('Slide ' + (n + 1)); if (n === live.slide) sb.className = 'on'; sb.onclick = function () { cmd({ cmd: 'go', id: it.id, slide: n }); }; row.appendChild(sb); });
+        b.appendChild(row);
+      }
+      list.appendChild(b);
+    });
+  }
+  function drawLib() {
+    var q = $('sq').value.trim().toLowerCase(), box = $('songs'); box.innerHTML = '';
+    lib.songs.filter(function (s) { return !q || s.title.toLowerCase().indexOf(q) >= 0; }).forEach(function (s) {
+      var r = document.createElement('div'); r.className = 'sr'; var t = document.createElement('span'); t.textContent = s.title;
+      var a = document.createElement('button'); a.type = 'button'; a.textContent = 'Add'; a.onclick = function () { cmd({ cmd: 'addsong', i: s.i }); toast('Added to the service'); };
+      var g = document.createElement('button'); g.type = 'button'; g.className = 'go'; g.textContent = 'Show'; g.onclick = function () { cmd({ cmd: 'addsong', i: s.i, show: true }); };
+      r.appendChild(t); r.appendChild(a); r.appendChild(g); box.appendChild(r);
+    });
+    if (!box.children.length) { var e = document.createElement('p'); e.style.color = '#777'; e.textContent = lib.songs.length ? 'No songs match.' : 'No saved songs yet. Add songs in the presenter, in Library, Songs.'; box.appendChild(e); }
+    var vb = $('vers'); vb.innerHTML = '';
+    lib.vers.forEach(function (v) { var b = document.createElement('button'); b.type = 'button'; b.textContent = v.abbr; b.setAttribute('aria-pressed', v.id === lib.ver); b.onclick = function () { lib.ver = v.id; drawLib(); cmd({ cmd: 'ver', id: v.id }); }; vb.appendChild(b); });
+  }
+  function tab(which) { $('p-svc').hidden = which !== 'svc'; $('p-lib').hidden = which !== 'lib'; $('t-svc').setAttribute('aria-selected', which === 'svc'); $('t-lib').setAttribute('aria-selected', which === 'lib'); if (which === 'lib') cmd({ cmd: 'lib' }); }
+  function connect() {
+    if (!target) { status('Open this page by scanning the code on the presenter screen.', false, true); return; }
+    if (!window.Peer) { status('The remote could not load. Check your internet connection.', false, true); return; }
+    if (!peer || peer.destroyed) { peer = new window.Peer({ debug: 0 }); peer.on('error', function (e) { status(e && e.type === 'peer-unavailable' ? 'The presenter is not reachable. Keep the presenter page open, then scan again.' : 'Connection problem: ' + (e && e.type ? e.type : e) + '. Retrying...', false, true); retry(); }); }
+    var go = function () {
+      conn = peer.connect(target, { reliable: true });
+      conn.on('open', function () { tries = 0; status('Connected. Showing the TV screen live.', true); });
+      conn.on('data', function (d) {
+        if (!d) return;
+        if (d.type === 'state') { st = d.state; draw(); }
+        else if (d.type === 'frame' && d.img) { $('mimg').src = d.img; $('mimg').hidden = false; $('mirwait').hidden = true; }
+        else if (d.type === 'lib') { lib = { songs: d.songs || [], vers: d.vers || [], ver: d.ver || '' }; drawLib(); }
+        else if (d.type === 'toast') toast(d.text);
+      });
+      conn.on('close', function () { status('Disconnected. Reconnecting...', false, true); retry(); });
+    };
+    if (peer.open) go(); else peer.once('open', go);
+  }
+  var retryTimer = null;
+  function retry() { clearTimeout(retryTimer); if (tries++ > 20) { status('Could not reconnect. Scan the code again.', false, true); return; } retryTimer = setTimeout(connect, Math.min(8000, 1000 * tries)); }
+  $('next').onclick = function () { cmd({ cmd: 'next' }); };
+  $('prev').onclick = function () { cmd({ cmd: 'prev' }); };
+  $('black').onclick = function () { cmd({ cmd: 'black' }); };
+  $('play').onclick = function () { cmd({ cmd: 'play' }); };
+  $('send').onclick = function () { cmd({ cmd: 'msg', text: $('msg').value.trim() }); };
+  $('msg').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('send').click(); });
+  $('t-svc').onclick = function () { tab('svc'); };
+  $('t-lib').onclick = function () { tab('lib'); };
+  $('sq').addEventListener('input', drawLib);
+  function bible(show) { var r = $('ref').value.trim(); if (!r) { toast('Type a passage first, for example John 3:16'); return; } cmd({ cmd: 'bible', ref: r, show: show, ver: lib.ver }); }
+  $('b-add').onclick = function () { bible(false); };
+  $('b-show').onclick = function () { bible(true); };
+  $('ref').addEventListener('keydown', function (e) { if (e.key === 'Enter') bible(true); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && (!conn || !conn.open)) { tries = 0; connect(); } });
+  connect();
+  window.__remote = { get state() { return st; }, get conn() { return conn; }, get lib() { return lib; } };
+})();
+</script>
+</body>
+</html>
