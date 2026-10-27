@@ -221,6 +221,15 @@ svg.i.lg{width:24px;height:24px}
 .mt .rm{position:absolute;right:4px;top:4px;width:20px;height:20px;border-radius:50%;border:0;background:rgba(0,0,0,.7);color:#fff;display:none;place-items:center;padding:0;z-index:3}
 .mt:hover .rm{display:grid}
 .mt.add{border-style:dashed;color:var(--soft)}
+.mt.sel{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc)}
+.mdet{border:1px solid var(--line2);border-radius:10px;background:var(--p2);padding:10px;display:grid;gap:8px}
+.mdet[hidden]{display:none}
+.mdet .mp{display:flex;gap:10px;align-items:center}
+.mdet .mpic{flex:none;width:96px;aspect-ratio:16/9;border-radius:8px;background:#000;overflow:hidden;display:grid;place-items:center;color:var(--amber)}
+.mdet .mpic img{width:100%;height:100%;object-fit:cover}
+.mdet .mpic svg{width:30px;height:30px}
+.mdet .mi{min-width:0}
+.mdet .mi b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mt.add svg{width:30px;height:30px}
 .mt.fileic{color:var(--amber)}
 .mt.fileic svg{width:34px;height:34px}
@@ -363,7 +372,6 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
     <button class="b sm" id="move" type="button" hidden>Move display</button>
     <button class="ib flat" id="fs" type="button" title="Full screen" aria-label="Full screen"><svg class="i"><use href="#i-expand"/></svg></button>
     <a class="b sm" id="contact" href="/tools/second-screen-presenter/contact/" target="_blank" rel="noopener" title="Message the builder or buy him a coffee"><svg class="i sm"><use href="#i-heart"/></svg>Contact the builder</a>
-    <button class="b pri" id="open" type="button">Open TV screen</button>
   </header>
 
   <div class="main">
@@ -411,8 +419,15 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
           <div class="chips" id="m-chips" role="group" aria-label="Show"><button class="chip" type="button" data-f="all" aria-pressed="true">All</button><button class="chip" type="button" data-f="image" aria-pressed="false">Photos</button><button class="chip" type="button" data-f="video" aria-pressed="false">Videos</button><button class="chip" type="button" data-f="pdf" aria-pressed="false">PDFs</button><button class="chip" type="button" id="m-link" aria-pressed="false" title="Add a YouTube, Vimeo or Google Slides link"><svg class="i sm"><use href="#i-link"/></svg> Link</button></div>
           <div class="row" id="m-linkrow" hidden><input id="m-url" class="inp" type="url" inputmode="url" placeholder="YouTube, Vimeo, Google Slides or image link" autocomplete="off"><button class="b" id="m-addurl" type="button">Add</button></div>
           <div class="mgrid" id="m-grid"></div>
+          <div class="mdet" id="m-det" hidden></div>
+          <div class="mdet" id="m-addbox" hidden>
+            <b>Add to Media</b>
+            <p class="help">Pick what you want to add. Your files stay on this computer and are never uploaded.</p>
+            <div class="row wrap"><button class="b pri" type="button" data-pick="image">Photos</button><button class="b pri" type="button" data-pick="video">Videos</button><button class="b pri" type="button" data-pick="pdf">PDFs</button><button class="b pri" type="button" data-pick="link">A link</button></div>
+            <p class="help">You can also drop files anywhere on this page. PowerPoint, Keynote or Word files must be saved as a PDF first.</p>
+          </div>
           <input type="file" id="m-file" accept="image/*,video/*,application/pdf,.pdf,.mov,.mkv,.ppt,.pptx,.key,.odp,.doc,.docx" multiple hidden aria-label="Choose files">
-          <p class="help" id="m-help">Everything you add is kept here on this computer and never uploaded. Click one to add it to the service. PowerPoint, Keynote or Word files must be saved as a PDF first.</p>
+          <p class="help" id="m-help">Everything you add is kept here on this computer and never uploaded. Click one to see it, then press Add to service. PowerPoint, Keynote or Word files must be saved as a PDF first.</p>
           <div class="f"><span class="lbl">Logo for the Logo button</span><div class="row"><button class="b sm" id="logo-pick" type="button">Choose a logo image</button><span class="help" id="logo-name">No logo chosen</span></div><input type="file" id="logo-file" accept="image/*" hidden aria-label="Choose a logo"></div>
         </div>
 
@@ -545,7 +560,7 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
   <div class="dbody">
     <p style="margin:0;color:var(--soft)">A web page cannot send video to YouTube, Facebook, Twitch or TikTok on its own. The free program <b>OBS Studio</b> does that, and it can show exactly what this presenter shows.</p>
     <ol class="steps">
-      <li>Press <b>Open TV screen</b> here so the display window is open.</li>
+      <li>Make sure the TV screen has opened (it opens by itself when the app starts, or after your first click).</li>
       <li>In OBS, press the plus under Sources, choose <b>Window Capture</b> and pick the window named <b>Display screen</b>.</li>
       <li>In OBS, open Settings, Stream, pick your platform and paste the stream key from its live page.</li>
       <li>Press <b>Start Streaming</b> in OBS.</li>

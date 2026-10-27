@@ -178,9 +178,10 @@
       });
     });
     return work.then(function () {
+      if (added.length) { mSel = added[added.length - 1].id; $('m-addbox').hidden = true; }
       renderMedia();
       if (bad.length) say(bad[0] + (bad.length > 1 ? ' (and ' + (bad.length - 1) + ' more skipped)' : ''), true);
-      else if (added.length) say(added.length + (added.length > 1 ? ' files added to Media.' : ' file added to Media.') + ' Click one to put it in the service. Your files stay on this computer.');
+      else if (added.length) say(added.length + (added.length > 1 ? ' files added to Media.' : ' file added to Media.') + ' Press Add to service below to put it in the service. Your files stay on this computer.');
       return added;
     });
   }
@@ -189,8 +190,8 @@
     if (!li) { say('That does not look like a link. Paste the full address, for example https://youtu.be/...', true); return; }
     $('m-url').value = '';
     var m = { id: mid(), kind: li.kind, sub: li.sub, url: li.url, name: li.name, thumb: li.thumb || '', playable: li.playable, added: Date.now() };
-    media.push(m); saveMedia(m); renderMedia();
-    say('Link added to Media. Click it to put it in the service.' + (li.sub === 'web' ? ' Some websites refuse to be shown inside another page; for those, share the window from the Capture tab.' : ''));
+    media.push(m); saveMedia(m); mSel = m.id; $('m-addbox').hidden = true; renderMedia();
+    say('Link added to Media. Press Add to service below to put it in the service.' + (li.sub === 'web' ? ' Some websites refuse to be shown inside another page; for those, share the window from the Capture tab.' : ''));
   }
   function mediaToItem(m) {
     var it = { mediaId: m.id, kind: m.kind, name: m.name, thumb: m.thumb || '', style: 'dark' };
@@ -200,6 +201,7 @@
     else if (m.url) { it.url = m.url; if (m.kind === 'image') it.thumb = m.url; }
     return it;
   }
+  var mSel = null;
   function addMedia(id) { var m = findMedia(id); if (m) addItem(mediaToItem(m), false); }
   function removeMedia(id) {
     var m = findMedia(id); if (!m) return;
@@ -213,10 +215,27 @@
     h += list.map(function (m) {
       var pic = m.kind === 'image' ? (m.thumbUrl || m.thumb || m.url) : m.thumb;
       var kind = m.kind === 'link' ? ({ youtube: 'YouTube', vimeo: 'Vimeo', slides: 'Slides', web: 'Web' })[m.sub] : KIND[m.kind];
-      return '<div class="mt' + (pic ? '' : ' fileic') + '" role="button" tabindex="0" data-id="' + m.id + '" title="' + esc(m.name) + '">' + (pic ? '<img alt="" src="' + esc(pic) + '">' : ic(m.kind === 'video' ? 'film' : m.kind === 'link' ? 'link' : 'file')) +
+      return '<div class="mt' + (pic ? '' : ' fileic') + (m.id === mSel ? ' sel' : '') + '" role="button" aria-pressed="' + (m.id === mSel) + '" tabindex="0" data-id="' + m.id + '" title="' + esc(m.name) + '">' + (pic ? '<img alt="" src="' + esc(pic) + '">' : ic(m.kind === 'video' ? 'film' : m.kind === 'link' ? 'link' : 'file')) +
         '<span class="k">' + esc(kind) + '</span><span class="nm">' + esc(m.name) + '</span><button type="button" class="rm" data-rm="' + m.id + '" aria-label="Remove ' + esc(m.name) + '">' + ic('x', 'sm') + '</button></div>';
     }).join('');
     $('m-grid').innerHTML = h;
+    renderMDet();
+  }
+  function renderMDet() {
+    var m = mSel && findMedia(mSel), box = $('m-det');
+    if (!m) { mSel = null; box.hidden = true; box.innerHTML = ''; return; }
+    var pic = m.kind === 'image' ? (m.thumbUrl || m.thumb || m.url) : m.thumb;
+    var kind = m.kind === 'link' ? ({ youtube: 'YouTube link', vimeo: 'Vimeo link', slides: 'Google Slides link', web: 'Web link' })[m.sub] : ({ image: 'Photo', video: 'Video', pdf: 'PDF' })[m.kind] || m.kind;
+    var extra = m.kind === 'pdf' && m.slides ? ', ' + m.slides.length + (m.slides.length > 1 ? ' pages' : ' page') : m.kind === 'video' && m.dur ? ', ' + fmt(m.dur) : '';
+    box.hidden = false;
+    box.innerHTML = '<div class="mp"><div class="mpic">' + (pic ? '<img alt="" src="' + esc(pic) + '">' : ic(m.kind === 'video' ? 'film' : m.kind === 'link' ? 'link' : 'file')) + '</div><div class="mi"><b>' + esc(m.name) + '</b><span class="help">' + esc(kind + extra) + '</span></div></div>' +
+      '<div class="row wrap"><button class="b pri" type="button" data-m="add">Add to service</button><button class="b" type="button" data-m="show">Show now</button><button class="b" type="button" data-m="rm">Remove from Media</button></div>';
+  }
+  function pickMedia(t) {
+    $('m-addbox').hidden = true;
+    if (t === 'link') { $('m-linkrow').hidden = false; $('m-link').setAttribute('aria-pressed', 'true'); $('m-url').focus(); return; }
+    $('m-file').accept = t === 'image' ? 'image/*' : t === 'video' ? 'video/*,.mov,.mkv' : 'application/pdf,.pdf';
+    $('m-file').click();
   }
   function loadMedia() {
     return idb.all('media').then(function (rows) {
@@ -437,6 +456,25 @@
       var a = r.v1 || 1, b = Math.min(r.v2 || vs.length, vs.length); if (a > vs.length) return null;
       return { book: r.book, ch: r.ch, verses: range(a, Math.max(a, b)).map(function (n) { return { n: n, t: vs[n - 1] }; }), tr: d.abbr };
     }).catch(function () { return null; });
+  }
+  /* the phone asks for a whole chapter (with the asked verses marked) or a word search, and gets the text back to read first */
+  function chapterLookup(raw, ver) {
+    var r = parseRef(spokenToRef(raw)) || parseRef(raw); if (!r) return Promise.resolve(null);
+    return loadBible(ver || bbVer).then(function (d) {
+      var vs = (d.books[r.book] || [])[r.ch - 1]; if (!vs || !vs.length) return null;
+      var a = r.v1 || 0; if (a > vs.length) return null;
+      return { book: r.book, ch: r.ch, tr: d.abbr, vs: vs, a: a, b: a ? Math.max(a, Math.min(r.v2 || a, vs.length)) : 0 };
+    }).catch(function () { return null; });
+  }
+  function searchVerses(q, ver) {
+    q = q.toLowerCase();
+    return loadBible(ver || bbVer).then(function (d) {
+      var out = [];
+      for (var b = 0; b < d.books.length && out.length < 40; b++) for (var c = 0; c < d.books[b].length && out.length < 40; c++) for (var v = 0; v < d.books[b][c].length; v++) {
+        var t = d.books[b][c][v]; if (t.toLowerCase().indexOf(q) >= 0) { out.push({ r: BOOKS[b] + ' ' + (c + 1) + ':' + (v + 1), t: t.length > 200 ? t.slice(0, 200) + '...' : t }); if (out.length >= 40) break; }
+      }
+      return { tr: d.abbr, list: out };
+    }).catch(function () { return { tr: '', list: [] }; });
   }
   function bibleSearch() {
     var q = $('bb-q').value.trim().toLowerCase(), box = $('bb-res'); if (q.length < 3) { box.innerHTML = '<p class="help">Type at least 3 letters.</p>'; return; }
@@ -1104,7 +1142,7 @@
       now: describe(it, liveSlide), next: nextOf(), black: black, msg: stageMsg,
       timer: it && it.kind === 'timer' ? { end: it.end, label: it.label } : null,
       live: liveId ? { id: liveId, slide: liveSlide } : null,
-      items: items.map(function (x) { return { id: x.id, name: x.name, kind: label(x), at: x.at || '', slides: x.slides ? x.slides.map(function (s) { return s.label || firstLine(s.text); }) : null }; })
+      items: items.map(function (x) { return { id: x.id, name: x.name, kind: label(x), at: x.at || '', slides: x.slides ? x.slides.map(function (s) { return s.label || firstLine(s.text); }) : null, texts: x.slides ? x.slides.map(function (s) { return String(s.text || '').slice(0, 240); }) : null }; })
     };
   }
   function pushState() { var s = state(); send({ type: 'stage', state: s }); remoteSend({ type: 'state', state: s }); }
@@ -1352,7 +1390,6 @@
     $('p-disp-t').textContent = !n ? 'not open' : needs ? 'click it for sound' : any.fs ? 'full screen' : 'click it for full screen';
     $('p-stage-t').textContent = sn ? 'on' : 'off';
     $('p-remote-t').textContent = conns.length ? conns.length + (conns.length > 1 ? ' phones' : ' phone') : 'off';
-    $('open').textContent = n ? 'Open another TV screen' : 'Open TV screen';
   }
   bc.onmessage = function (e) {
     var m = e.data || {};
@@ -1434,7 +1471,7 @@
       '<li><b>HDMI to VGA adapter:</b> a VGA projector needs an active adapter (a small box, often with a USB power lead). Plug in its power, then pick the input called <b>VGA</b>, <b>PC</b> or <b>Computer</b> on the projector.</li>' +
       '<li>Turn the projector on first, then plug the cable in, wait about 5 seconds and press <b>Detect again</b> below.</li>' +
       '<li>If it still does not appear, try another cable, another adapter or another port. When the computer sees the screen, this page will too.</li></ol>';
-    else h += '<p class="help" style="margin:0">Press Open TV screen. It opens on the other screen. Click it once there to make it full screen.</p>';
+    else h += '<p class="help" style="margin:0">The TV screen opens on the other screen by itself. Click it once there to make it full screen.</p>';
     if (!('getScreenDetails' in window)) h += '<p class="help" style="margin:0">This browser cannot place windows on another screen by itself. Use Chrome or Edge for that, or drag the TV screen window across and click it once.</p>';
     $('scr-body').innerHTML = h;
     openDlg($('dlg-screens'));
@@ -1444,7 +1481,7 @@
     popup = openOnScreen(BASE + 'display/', name);
     if (!popup) {
       if (afterPrompt) showScreens('The browser needs one more click to open the window. Press Open TV screen below.');
-      else say('Your browser blocked the TV screen window. Allow pop-ups for this site, then press Open TV screen again.', true);
+      else { armOpen(); say('Click anywhere on this page and the TV screen opens on the TV. To skip this click next time, allow pop-ups for this site.', true); }
       return;
     }
     closeDlg($('dlg-screens'));
@@ -1465,15 +1502,33 @@
     doOpen(false);
   }
   if (window.screen && window.screen.addEventListener) window.screen.addEventListener('change', function () {
-    if (window.screen.isExtended) { toast('A second screen was connected.'); loadScreens(false).then(function () { if (popup && !popup.closed) placePopup(popup); }); }
+    if (window.screen.isExtended) { toast('A second screen was connected.'); loadScreens(false).then(function () { if (popup && !popup.closed) placePopup(popup); else autoOpen(); }); }
   });
+  /* the TV screen opens by itself on the extended screen when the app starts. A browser only lets a page open a
+     window after a click (unless pop-ups are allowed for the site), so a blocked try waits for the first click */
+  var openArmed = false;
+  function armOpen() {
+    if (openArmed) return; openArmed = true;
+    var go = function (e) {
+      if (e.target && e.target.closest && e.target.closest('dialog, #p-disp')) return;
+      openArmed = false; document.removeEventListener('pointerdown', go, true); document.removeEventListener('keydown', go, true);
+      if (!Object.keys(alive(displays)).length) openDisplay();
+    };
+    document.addEventListener('pointerdown', go, true); document.addEventListener('keydown', go, true);
+  }
+  function autoOpen() {
+    if (Object.keys(alive(displays)).length || (popup && !popup.closed)) return;
+    var one = screenDetails ? screenDetails.screens.length < 2 : (window.screen && window.screen.isExtended === false);
+    if (one) { say('Only one screen found. Connect your TV or projector and set it to extend (not mirror). The TV screen opens there by itself.', true); return; }
+    if (screenDetails) doOpen(false);
+    else { armOpen(); say('Click anywhere on this page to send the show to the TV. Your browser asks once to use your screens.'); }
+  }
   $('scr-detect').onclick = function () { loadScreens(true).then(function () { showScreens(); }); };
   $('scr-open').onclick = function () { doOpen(false); };
-  $('open').onclick = function () { openDisplay(); };
   $('p-disp').onclick = function () { openDisplay(); };
   $('p-stage').onclick = openStage;
   $('move').onclick = function () { if (popup && !popup.closed) say(placePopup(popup) ? 'Moved. Click the display once to make it full screen.' : 'The display could not be moved. Drag it to the screen yourself.'); else say('Open the display screen first.', true); };
-  loadScreens(false);
+  loadScreens(false).then(function () { setTimeout(autoOpen, 900); });
 
 
   function refreshPickers() { bbBg.redraw(); }
@@ -1515,9 +1570,21 @@
         else if (d.cmd === 'lib') remoteLib(c);
         else if (d.cmd === 'addsong') { var s = songLib()[+d.i]; if (s) { var it = songRecItem(s); if (it.slides.length) addItem(it, !!d.show); } }
         else if (d.cmd === 'bible') {
-          lookupRef(String(d.ref || ''), d.ver).then(function (f) {
-            if (!f) { try { c.send({ type: 'toast', text: 'Could not find that passage.' }); } catch (e) { /* dropped */ } return; }
+          chapterLookup(String(d.ref || ''), d.ver).then(function (p) {
+            if (!p) { try { c.send({ type: 'toast', text: 'Could not find that passage.' }); } catch (e) { /* dropped */ } return; }
+            var picked = Array.isArray(d.verses) ? d.verses.map(Number).filter(function (n) { return n >= 1 && n <= p.vs.length; }).sort(function (a, b) { return a - b; }) : [];
+            var nums = picked.length ? picked : range(p.a || 1, p.a ? p.b : p.vs.length);
+            var f = { book: p.book, ch: p.ch, verses: nums.map(function (n) { return { n: n, t: p.vs[n - 1] }; }), tr: p.tr };
             addItem(bibleItem(f), !!d.show); try { c.send({ type: 'toast', text: refText(f) + ' ' + f.tr + (d.show ? ' is on the screen.' : ' added to the service.') }); } catch (e) { /* dropped */ }
+          });
+        }
+        else if (d.cmd === 'bq') {
+          var q = String(d.q || '').trim().slice(0, 80); if (!q) return;
+          var reply = function (o) { try { c.send(o); } catch (e) { /* dropped */ } };
+          chapterLookup(q, d.ver).then(function (p) {
+            if (p) { reply({ type: 'bpassage', book: BOOKS[p.book], ch: p.ch, tr: p.tr, verses: p.vs, a: p.a, b: p.b }); return; }
+            if (q.length < 3) { reply({ type: 'bresults', q: q, list: [], tr: '', short: true, nav: !!d.nav }); return; }
+            searchVerses(q, d.ver).then(function (r) { reply({ type: 'bresults', q: q, list: r.list, tr: r.tr, nav: !!d.nav }); });
           });
         }
         else if (d.cmd === 'ver') { if (bbVers.some(function (v) { return v.id === d.id; })) setVersion(d.id); remoteLib(); }
@@ -1547,11 +1614,18 @@
     mFilter = b.dataset.f; [].forEach.call($('m-chips').querySelectorAll('[data-f]'), function (x) { x.setAttribute('aria-pressed', x === b); }); renderMedia();
   });
   $('m-grid').addEventListener('click', function (e) {
-    var rm = e.target.closest('[data-rm]'); if (rm) { e.stopPropagation(); removeMedia(rm.dataset.rm); return; }
-    if (e.target.closest('[data-act="add"]')) { $('m-file').click(); return; }
-    var t = e.target.closest('.mt[data-id]'); if (t) addMedia(t.dataset.id);
+    var rm = e.target.closest('[data-rm]'); if (rm) { e.stopPropagation(); if (mSel === rm.dataset.rm) mSel = null; removeMedia(rm.dataset.rm); return; }
+    if (e.target.closest('[data-act="add"]')) { mSel = null; $('m-addbox').hidden = !$('m-addbox').hidden; renderMedia(); return; }
+    var t = e.target.closest('.mt[data-id]'); if (t) { mSel = t.dataset.id; $('m-addbox').hidden = true; renderMedia(); }
   });
-  $('m-grid').addEventListener('keydown', function (e) { var t = e.target.closest && e.target.closest('.mt[data-id]'); if (t && (e.key === 'Enter' || e.key === ' ') && e.target === t) { e.preventDefault(); addMedia(t.dataset.id); } });
+  $('m-grid').addEventListener('keydown', function (e) { var t = e.target.closest && e.target.closest('.mt[data-id]'); if (t && (e.key === 'Enter' || e.key === ' ') && e.target === t) { e.preventDefault(); mSel = t.dataset.id; $('m-addbox').hidden = true; renderMedia(); var f = $('m-grid').querySelector('.mt.sel'); if (f) f.focus(); } });
+  $('m-det').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-m]'); if (!b || !mSel) return; var m = findMedia(mSel); if (!m) return;
+    if (b.dataset.m === 'add') addItem(mediaToItem(m), false);
+    else if (b.dataset.m === 'show') addItem(mediaToItem(m), true);
+    else if (b.dataset.m === 'rm') { mSel = null; removeMedia(m.id); }
+  });
+  $('m-addbox').addEventListener('click', function (e) { var b = e.target.closest('[data-pick]'); if (b) pickMedia(b.dataset.pick); });
   document.addEventListener('dragover', function (e) { if (!dragId && e.dataTransfer && e.dataTransfer.types && [].indexOf.call(e.dataTransfer.types, 'Files') >= 0) e.preventDefault(); });
   document.addEventListener('drop', function (e) { if (!dragId && e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length && !e.defaultPrevented) { e.preventDefault(); setTab('media'); addFiles(e.dataTransfer.files); } });
   $('m-addurl').onclick = addLink;

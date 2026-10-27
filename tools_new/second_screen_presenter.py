@@ -50,7 +50,7 @@ SECTIONS = '''
 <ol>
 <li><b>Connect the TV or projector.</b> Plug it into your laptop with HDMI and set it to <b>extend</b> your desktop, not mirror it. On Windows press Windows key + P and choose Extend. On a Mac open System Settings, Displays, and turn off mirroring.</li>
 <li><b>Open the presenter.</b> Press Open presenter and choose Start in full screen. You can also install it as an app from the same screen.</li>
-<li><b>Open the TV screen.</b> Press Open TV screen. In Chrome and Edge it can open straight on the TV once you allow the site to use your screens. Otherwise drag the window onto the TV. Click it once to make it full screen.</li>
+<li><b>The TV screen opens by itself.</b> When the app starts it opens on your extended TV or projector. The first time, click anywhere once and allow the site to use your screens and open pop-ups. Otherwise drag the window onto the TV. Click it once to make it full screen.</li>
 <li><b>Build your service and show it.</b> Add songs, passages and media from the Library, then click a song or double-click anything else.</li>
 </ol></section>
 <section class="block prose"><h2>Tips for a smooth show</h2>

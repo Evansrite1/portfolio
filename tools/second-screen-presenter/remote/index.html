@@ -52,6 +52,24 @@
   .vers { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
   .vers button { border: 1px solid #2a2a2e; background: #151517; color: #bbb; border-radius: 999px; padding: 6px 12px; font: inherit; font-weight: 700; font-size: .8rem; }
   .vers button[aria-pressed=true] { background: #fff; color: #111; }
+  .ih { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+  .ih .ht { flex: 1; min-width: 0; }
+  .lv { background: #e8453c; color: #fff; font-size: .62rem; font-weight: 800; letter-spacing: .1em; padding: 2px 7px; border-radius: 6px; flex: none; }
+  .chev { color: #888; font-size: .78rem; flex: none; }
+  .ib { margin-top: 8px; display: grid; gap: 5px; }
+  .sl { background: #0f0f11; border: 1px solid #26262b; border-radius: 10px; padding: 8px 10px; font-size: .85rem; color: #ddd; white-space: pre-wrap; }
+  .sl small { color: #e8453c; font-weight: 800; font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 2px; }
+  .sl.on { border-color: #e8453c; background: #2a1412; color: #fff; }
+  .hit { text-align: left; background: #151517; border: 1px solid #2a2a2e; border-radius: 12px; padding: 10px 12px; color: #ddd; font: inherit; font-size: .85rem; }
+  .hit b { color: #fff; display: block; margin-bottom: 2px; }
+  .ph { display: flex; align-items: center; gap: 8px; margin: 10px 0 6px; }
+  .ph b { flex: 1; min-width: 0; text-align: center; }
+  .ph button { height: 38px; border-radius: 10px; border: 1px solid #2a2a2e; background: #151517; color: #fff; font: inherit; font-weight: 700; padding: 0 12px; }
+  .vl { display: grid; gap: 4px; max-height: 46vh; overflow-y: auto; border: 1px solid #2a2a2e; border-radius: 12px; padding: 6px; background: #0f0f11; position: relative; }
+  .vv { padding: 8px 10px; border-radius: 8px; font-size: .9rem; line-height: 1.35; color: #ccc; }
+  .vv sup { color: #e8453c; font-weight: 800; margin-right: 4px; }
+  .vv.on { background: #2a1412; color: #fff; outline: 1px solid #e8453c; }
+  .hint { color: #888; font-size: .78rem; margin: 6px 2px; }
   .toast { position: fixed; left: 50%; bottom: 20px; transform: translate(-50%, 16px); background: #fff; color: #111; font-weight: 600; padding: 9px 16px; border-radius: 99px; opacity: 0; pointer-events: none; transition: .25s; max-width: 92vw; text-align: center; font-size: .85rem; }
   .toast.on { opacity: 1; transform: translate(-50%, 0); }
 </style>
@@ -73,8 +91,15 @@
 <section id="p-lib" hidden>
   <h2>Bible</h2>
   <div class="vers" id="vers" role="group" aria-label="Bible version"></div>
-  <input class="inp" id="ref" type="text" placeholder="John 3:16 or Psalm 23" autocomplete="off" aria-label="Bible passage">
-  <div class="row" style="margin-top:8px"><button type="button" id="b-add">Add to service</button><button type="button" id="b-show" style="background:#2fbf71;border-color:#2fbf71;color:#06210f">Show now</button></div>
+  <input class="inp" id="ref" type="search" placeholder="Search by words, or type John 3:16" autocomplete="off" aria-label="Search the Bible by words or passage">
+  <p class="hint" id="bq-msg">Type words from a verse (like "good shepherd") or a passage (like Psalm 23).</p>
+  <div class="list" id="bres"></div>
+  <div id="bpass" hidden>
+    <div class="ph"><button type="button" id="bp-prev" aria-label="Previous chapter">&lsaquo; Back</button><b id="bp-title"></b><button type="button" id="bp-next" aria-label="Next chapter">Next &rsaquo;</button></div>
+    <div class="vl" id="bp-verses"></div>
+    <p class="hint" id="bp-hint"></p>
+    <div class="row"><button type="button" id="b-add">Add to service</button><button type="button" id="b-show" style="background:#2fbf71;border-color:#2fbf71;color:#06210f">Show now</button></div>
+  </div>
   <h2>Songs</h2>
   <input class="inp" id="sq" type="search" placeholder="Search your songs" aria-label="Search your songs">
   <div class="list" id="songs" style="margin-top:8px"></div>
@@ -87,7 +112,7 @@
 (function () {
   'use strict';
   var $ = function (i) { return document.getElementById(i); };
-  var target = decodeURIComponent(location.hash.slice(1)), peer = null, conn = null, st = null, lib = { songs: [], vers: [], ver: '' }, tries = 0;
+  var target = decodeURIComponent(location.hash.slice(1)), peer = null, conn = null, st = null, lib = { songs: [], vers: [], ver: '' }, tries = 0, opened = {}, pass = null, bqT = null;
   function status(t, on, bad) { $('st').textContent = t; $('dot').className = 'dot' + (on ? ' on' : ''); $('st').className = bad ? 'err' : ''; }
   function fmt(s) { var h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, x = s % 60; return (h ? h + ':' + (m < 10 ? '0' : '') : '') + m + ':' + (x < 10 ? '0' : '') + x; }
   function clock(at) { if (!at) return ''; var p = at.split(':'), h = +p[0]; return (h % 12 || 12) + ':' + p[1] + (h < 12 ? ' am' : ' pm'); }
@@ -101,17 +126,31 @@
     $('black').setAttribute('aria-pressed', !!st.black); $('black').textContent = st.black ? 'Show again' : 'Black screen';
     $('msgbar').textContent = st.msg ? 'Stage message: ' + st.msg : ''; $('msgbar').hidden = !st.msg;
     var live = st.live || {}, list = $('list'); list.innerHTML = '';
+    if (!st.items.length) { var em = document.createElement('p'); em.style.color = '#777'; em.textContent = 'The service is empty. Add songs or Bible passages from the Library tab.'; list.appendChild(em); }
     st.items.forEach(function (it, i) {
-      var b = document.createElement('div'); b.className = 'it' + (it.id === live.id ? ' live' : '');
+      var isLive = it.id === live.id, isOpen = opened[it.id] !== undefined ? opened[it.id] : isLive;
+      var b = document.createElement('div'); b.className = 'it' + (isLive ? ' live' : '');
+      var head = document.createElement('div'); head.className = 'ih';
+      var tx = document.createElement('div'); tx.className = 'ht';
       var name = document.createElement('b'); name.textContent = (i + 1) + '. ' + it.name;
       var k = document.createElement('small'); k.textContent = it.kind + (it.slides && it.slides.length > 1 ? ', ' + it.slides.length + ' slides' : '');
       if (it.at) { var a = document.createElement('span'); a.className = 'at'; a.textContent = ' at ' + clock(it.at); k.appendChild(a); }
-      b.appendChild(name); b.appendChild(k);
-      b.onclick = function (e) { if (e.target.closest('.sls')) return; cmd({ cmd: 'go', id: it.id, slide: 0 }); };
-      if (it.id === live.id && it.slides && it.slides.length > 1) {
-        var row = document.createElement('div'); row.className = 'sls';
-        it.slides.forEach(function (s, n) { var sb = document.createElement('button'); sb.type = 'button'; sb.textContent = s || ('Slide ' + (n + 1)); if (n === live.slide) sb.className = 'on'; sb.onclick = function () { cmd({ cmd: 'go', id: it.id, slide: n }); }; row.appendChild(sb); });
-        b.appendChild(row);
+      tx.appendChild(name); tx.appendChild(k); head.appendChild(tx);
+      if (isLive) { var lv = document.createElement('span'); lv.className = 'lv'; lv.textContent = 'ON SCREEN'; head.appendChild(lv); }
+      var ch = document.createElement('span'); ch.className = 'chev'; ch.textContent = isOpen ? 'Hide' : 'View'; head.appendChild(ch);
+      head.onclick = function () { opened[it.id] = !isOpen; draw(); };
+      b.appendChild(head);
+      if (isOpen) {
+        var body = document.createElement('div'); body.className = 'ib';
+        if (it.slides && it.slides.length) it.slides.forEach(function (lab, n) {
+          var r = document.createElement('div'); r.className = 'sl' + (isLive && n === live.slide ? ' on' : '');
+          var l = document.createElement('small'); l.style.display = 'block'; l.textContent = lab || ('Slide ' + (n + 1)); r.appendChild(l);
+          r.appendChild(document.createTextNode((it.texts && it.texts[n]) || ''));
+          r.onclick = function () { cmd({ cmd: 'go', id: it.id, slide: n }); };
+          body.appendChild(r);
+        });
+        else { var sb = document.createElement('button'); sb.type = 'button'; sb.className = 'btn'; sb.textContent = 'Show on screen'; sb.onclick = function () { cmd({ cmd: 'go', id: it.id, slide: 0 }); }; body.appendChild(sb); }
+        b.appendChild(body);
       }
       list.appendChild(b);
     });
@@ -126,7 +165,7 @@
     });
     if (!box.children.length) { var e = document.createElement('p'); e.style.color = '#777'; e.textContent = lib.songs.length ? 'No songs match.' : 'No saved songs yet. Add songs in the presenter, in Library, Songs.'; box.appendChild(e); }
     var vb = $('vers'); vb.innerHTML = '';
-    lib.vers.forEach(function (v) { var b = document.createElement('button'); b.type = 'button'; b.textContent = v.abbr; b.setAttribute('aria-pressed', v.id === lib.ver); b.onclick = function () { lib.ver = v.id; drawLib(); cmd({ cmd: 'ver', id: v.id }); }; vb.appendChild(b); });
+    lib.vers.forEach(function (v) { var b = document.createElement('button'); b.type = 'button'; b.textContent = v.abbr; b.setAttribute('aria-pressed', v.id === lib.ver); b.onclick = function () { lib.ver = v.id; drawLib(); cmd({ cmd: 'ver', id: v.id }); if ($('ref').value.trim()) bq(); }; vb.appendChild(b); });
   }
   function tab(which) { $('p-svc').hidden = which !== 'svc'; $('p-lib').hidden = which !== 'lib'; $('t-svc').setAttribute('aria-selected', which === 'svc'); $('t-lib').setAttribute('aria-selected', which === 'lib'); if (which === 'lib') cmd({ cmd: 'lib' }); }
   function connect() {
@@ -141,6 +180,13 @@
         if (d.type === 'state') { st = d.state; draw(); }
         else if (d.type === 'frame' && d.img) { $('mimg').src = d.img; $('mimg').hidden = false; $('mirwait').hidden = true; }
         else if (d.type === 'lib') { lib = { songs: d.songs || [], vers: d.vers || [], ver: d.ver || '' }; drawLib(); }
+        else if (d.type === 'bpassage') {
+          var sel = {}; if (d.a) for (var n = d.a; n <= d.b; n++) sel[n] = true;
+          var same = pass && pass.book === d.book && pass.ch === d.ch;
+          pass = { book: d.book, ch: d.ch, tr: d.tr, verses: d.verses, sel: sel, scrolled: false }; $('bq-msg').textContent = ''; drawPass();
+          if (!d.a && !same) $('bp-verses').scrollTop = 0;
+        }
+        else if (d.type === 'bresults') showResults(d);
         else if (d.type === 'toast') toast(d.text);
       });
       conn.on('close', function () { status('Disconnected. Reconnecting...', false, true); retry(); });
@@ -158,10 +204,50 @@
   $('t-svc').onclick = function () { tab('svc'); };
   $('t-lib').onclick = function () { tab('lib'); };
   $('sq').addEventListener('input', drawLib);
-  function bible(show) { var r = $('ref').value.trim(); if (!r) { toast('Type a passage first, for example John 3:16'); return; } cmd({ cmd: 'bible', ref: r, show: show, ver: lib.ver }); }
-  $('b-add').onclick = function () { bible(false); };
-  $('b-show').onclick = function () { bible(true); };
-  $('ref').addEventListener('keydown', function (e) { if (e.key === 'Enter') bible(true); });
+  function bq(nav, q) {
+    q = q || $('ref').value.trim();
+    if (!q) { $('bres').innerHTML = ''; $('bpass').hidden = true; pass = null; $('bq-msg').textContent = 'Type words from a verse (like "good shepherd") or a passage (like Psalm 23).'; return; }
+    $('bq-msg').textContent = 'Searching...';
+    cmd({ cmd: 'bq', q: q, ver: lib.ver, nav: !!nav });
+  }
+  function showResults(d) {
+    var box = $('bres');
+    if (d.nav && pass) { toast('No more chapters that way.'); $('bq-msg').textContent = ''; return; }
+    box.innerHTML = ''; $('bpass').hidden = true; pass = null;
+    $('bq-msg').textContent = d.short ? 'Type at least 3 letters.' : d.list.length ? d.list.length + (d.list.length >= 40 ? '+' : '') + ' verses found in ' + d.tr + '. Tap one to read it.' : 'Nothing found for "' + d.q + '".';
+    d.list.forEach(function (o) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'hit';
+      var r = document.createElement('b'); r.textContent = o.r; b.appendChild(r); b.appendChild(document.createTextNode(o.t));
+      b.onclick = function () { $('ref').value = o.r; bq(false, o.r); };
+      box.appendChild(b);
+    });
+  }
+  function drawPass() {
+    if (!pass) return;
+    $('bres').innerHTML = ''; $('bpass').hidden = false;
+    $('bp-title').textContent = pass.book + ' ' + pass.ch + ' (' + pass.tr + ')';
+    var box = $('bp-verses'), first = null, keep = box.scrollTop; box.innerHTML = '';
+    pass.verses.forEach(function (t, i) {
+      var n = i + 1, v = document.createElement('div'); v.className = 'vv' + (pass.sel[n] ? ' on' : '');
+      var u = document.createElement('sup'); u.textContent = n; v.appendChild(u); v.appendChild(document.createTextNode(t));
+      v.onclick = function () { if (pass.sel[n]) delete pass.sel[n]; else pass.sel[n] = true; drawPass(); };
+      if (pass.sel[n] && !first) first = v;
+      box.appendChild(v);
+    });
+    var c = Object.keys(pass.sel).length;
+    $('bp-hint').textContent = c ? c + (c > 1 ? ' verses' : ' verse') + ' picked. Tap a verse to pick or unpick it.' : 'Nothing picked, so the whole chapter will be sent. Tap verses to pick some.';
+    if (first && !pass.scrolled) { pass.scrolled = true; box.scrollTop = Math.max(0, first.offsetTop - box.offsetTop - 8); } else box.scrollTop = keep;
+  }
+  function sendBible(show) {
+    if (!pass) return;
+    cmd({ cmd: 'bible', ref: pass.book + ' ' + pass.ch, verses: Object.keys(pass.sel).map(Number), show: show, ver: lib.ver });
+  }
+  $('b-add').onclick = function () { sendBible(false); };
+  $('b-show').onclick = function () { sendBible(true); };
+  $('bp-prev').onclick = function () { if (pass && pass.ch > 1) bq(true, pass.book + ' ' + (pass.ch - 1)); };
+  $('bp-next').onclick = function () { if (pass) bq(true, pass.book + ' ' + (pass.ch + 1)); };
+  $('ref').addEventListener('input', function () { clearTimeout(bqT); bqT = setTimeout(function () { bq(); }, 450); });
+  $('ref').addEventListener('keydown', function (e) { if (e.key === 'Enter') { clearTimeout(bqT); bq(); e.target.blur(); } });
   document.addEventListener('visibilitychange', function () { if (!document.hidden && (!conn || !conn.open)) { tries = 0; connect(); } });
   connect();
   window.__remote = { get state() { return st; }, get conn() { return conn; }, get lib() { return lib; } };
