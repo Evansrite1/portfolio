@@ -164,7 +164,7 @@
     });
   }
 
-  root.KBKey = { Analyzer: Analyzer, estimate: estimate, confidence: confidence, relativeOf: relativeOf, keyName: keyName, scalePcs: scalePcs, noteName: noteName, usesFlats: usesFlats, analyseBuffer: analyseBuffer, rmsOf: rmsOf, SIZE: SIZE };
+  root.KBKey = { makeFFT: makeFFT, Analyzer: Analyzer, estimate: estimate, confidence: confidence, relativeOf: relativeOf, keyName: keyName, scalePcs: scalePcs, noteName: noteName, usesFlats: usesFlats, analyseBuffer: analyseBuffer, rmsOf: rmsOf, SIZE: SIZE };
 })(typeof window !== 'undefined' ? window : globalThis);
 
 (function () {
@@ -629,6 +629,25 @@
     function done() { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy result'; }, 1500); }
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(lastText).then(done, function () {});
   });
+
+  /* lets the song breakdown light up what is playing */
+  window.KBKeys = {
+    setScale: function (t, minor) { scaleState = t === null ? null : { tonic: t, minor: minor }; applyScale(); },
+    setNow: function (o) {
+      var ms = Object.keys(keyEls).map(Number), leadKey = null, bassKey = null;
+      if (o && o.bass !== null && o.bass !== undefined) bassKey = ms.filter(function (m) { return m % 12 === o.bass; })[0];
+      if (o && o.lead !== null && o.lead !== undefined) {
+        var mid = ms[0] + 18;
+        leadKey = ms.filter(function (m) { return m % 12 === o.lead; }).sort(function (a, b) { return Math.abs(a - mid) - Math.abs(b - mid); })[0];
+      }
+      ms.forEach(function (m) {
+        var el = keyEls[m];
+        el.classList.toggle('n-chord', !!(o && o.chord && o.chord.indexOf(m % 12) >= 0));
+        el.classList.toggle('n-bass', m === bassKey);
+        el.classList.toggle('n-lead', m === leadKey);
+      });
+    }
+  };
 
   buildKeys();
 })();

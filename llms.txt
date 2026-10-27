@@ -19,7 +19,7 @@
 - [Currency calculator](https://evansademilua.vercel.app/tools/currency-calculator/): Convert between about 160 currencies with live reference rates, a margin option and a pinned table.
 - [Image converter and compressor](https://evansademilua.vercel.app/tools/image-converter/): Convert HEIC, PNG, WebP, AVIF and more to JPG, PNG or WebP. Shrink images in batches.
 - [Invoice generator](https://evansademilua.vercel.app/tools/invoice-generator/): Pick one of 10 invoice designs, add your logo and items, and download a PDF or image.
-- [Keyboard and song key finder](https://evansademilua.vercel.app/tools/keyboard-key-finder/): Play a keyboard with 5 sounds, and let the tool listen to a song and tell you its key.
+- [Keyboard, key finder and song breakdown](https://evansademilua.vercel.app/tools/keyboard-key-finder/): Play a keyboard with 5 sounds, find the key of a song, and see where the bass, chords, lead line and beat play in any song you upload.
 - [PDF converter](https://evansademilua.vercel.app/tools/pdf-converter/): Turn Word, Excel, PowerPoint, images and text into PDF, or PDF into JPG, Word, Excel and more. Merge, split and compress.
 - [Receipt generator](https://evansademilua.vercel.app/tools/receipt-generator/): 25 receipt designs, from till roll to Christmas, Eid and Independence Day. PDF, PNG or print.
 - [Screen recorder](https://evansademilua.vercel.app/tools/screen-recorder/): Record your screen, a window or a tab with sound and a webcam circle. Save WebM or MP4.
