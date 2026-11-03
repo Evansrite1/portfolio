@@ -6,8 +6,10 @@ TOOL = '''<div class="tool" id="ss-tool" style="grid-template-columns:1fr">
   <div class="card" style="text-align:center;padding:34px 20px">
     <h2 style="margin:0 0 8px">Open the presenter</h2>
     <p class="help" style="max-width:58ch;margin:0 auto 20px">A full-screen workspace like the church and streaming programs. Your library on the left, your service next to it, a preview and a live screen, and every slide below them. It opens on its own without the browser around it, and it works on a laptop and on a phone.</p>
-    <a class="btn primary" href="/tools/second-screen-presenter/app/" style="padding:15px 28px;font-size:1rem">Open presenter</a>
-    <p class="help" style="margin-top:14px">Best in Chrome or Edge on a computer. Nothing is uploaded. <a href="/tools/second-screen-presenter/contact/">Contact the builder</a></p>
+    <a class="btn primary" id="ss-dl" href="https://github.com/Evansrite1/portfolio/releases/latest/download/Presenter-Setup.exe" style="padding:15px 28px;font-size:1rem" download>Download the app</a>
+    <p class="help" id="ss-dl-other" style="margin-top:10px"></p>
+    <p class="help" id="ss-dl-tip" style="max-width:58ch;margin:6px auto 0"></p>
+    <p class="help" style="margin-top:16px">The app opens the TV screen on your second screen by itself and updates itself when you are online. Prefer not to install? <a href="/tools/second-screen-presenter/app/">Open it in the browser</a>. Nothing is uploaded. <a href="/tools/second-screen-presenter/contact/">Contact the builder</a></p>
   </div>
 </div>'''
 
@@ -49,8 +51,8 @@ SECTIONS = '''
 <section class="block prose"><h2>How to show things on a second screen</h2>
 <ol>
 <li><b>Connect the TV or projector.</b> Plug it into your laptop with HDMI and set it to <b>extend</b> your desktop, not mirror it. On Windows press Windows key + P and choose Extend. On a Mac open System Settings, Displays, and turn off mirroring.</li>
-<li><b>Open the presenter.</b> Press Open presenter and choose Start in full screen. You can also install it as an app from the same screen.</li>
-<li><b>The TV screen opens by itself.</b> When the app starts it opens on your extended TV or projector. The first time, click anywhere once and allow the site to use your screens and open pop-ups. Otherwise drag the window onto the TV. Click it once to make it full screen.</li>
+<li><b>Install the app and open it.</b> Press Download, run the file, and open Presenter. The app finds your second screen by itself. In the browser instead, press Open it in the browser and use Start and show on the TV screen.</li>
+<li><b>The show appears on the TV by itself.</b> In the app it goes full screen on your extended TV or projector with no window to drag and no title bar, and moves there by itself if you plug the TV in later. In the browser it takes one click and the first time you must allow the site to use your screens. Press Esc on the TV to leave full screen in the browser.</li>
 <li><b>Build your service and show it.</b> Add songs, passages and media from the Library, then click a song or double-click anything else.</li>
 </ol></section>
 <section class="block prose"><h2>Tips for a smooth show</h2>
@@ -67,7 +69,7 @@ PAGE = dict(
     desc='Free presenter for churches and events. Show Bible verses, song lyrics, PDFs, photos, videos, cameras and countdowns on a TV or projector, with a stage display and phone remote.',
     h1='Second screen presenter', app='Second Screen Presenter',
     lead='A free presenter for church services and events. Show Bible verses, song lyrics, PDFs, photos, videos, a camera or a countdown on a TV or projector, while you control everything from your laptop or phone.',
-    tool=TOOL, vendor=[], own=[], module=[], css=[],
+    tool=TOOL, vendor=[], own=['presenter-download.js', 'presenter-download-page.js'], module=[], css=[],
     sections=SECTIONS,
     faq=[
         ('Is this free?', 'Yes. There is no sign-up, no watermark and no limit.'),

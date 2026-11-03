@@ -5,6 +5,7 @@
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
   var BASE = '/tools/second-screen-presenter/';
+  var DESK = window.presenterDesktop || null; /* set when this page runs inside the Presenter desktop app */
   var bc = new BroadcastChannel('ae-second-screen');
   var opId = 'op' + Math.random().toString(36).slice(2, 9);
 
@@ -1387,7 +1388,7 @@
     var d = alive(displays), n = Object.keys(d).length, any = n ? d[Object.keys(d)[0]] : null, sn = Object.keys(alive(stages)).length;
     var needs = Object.keys(d).some(function (k) { return d[k].needSound; });
     $('p-disp').classList.toggle('on', n > 0); $('p-stage').classList.toggle('on', sn > 0); $('p-remote').classList.toggle('on', conns.length > 0);
-    $('p-disp-t').textContent = !n ? 'not open' : needs ? 'click it for sound' : any.fs ? 'full screen' : 'click it for full screen';
+    $('p-disp-t').textContent = DESK ? (n ? (needs ? 'click it for sound' : 'on the TV screen') : DESK.displays > 1 ? 'starting...' : 'no second screen') : !n ? 'not open' : needs ? 'click it for sound' : (any.fs || tvFull()) ? 'full screen' : tvEl ? 'click it to send to the TV' : 'click it for full screen';
     $('p-stage-t').textContent = sn ? 'on' : 'off';
     $('p-remote-t').textContent = conns.length ? conns.length + (conns.length > 1 ? ' phones' : ' phone') : 'off';
   }
@@ -1399,6 +1400,7 @@
     else if (m.type === 'stage-beat') { stages[m.id] = { last: Date.now() }; }
     else if (m.type === 'hello') {
       displays[m.id] = { last: Date.now(), fs: false };
+      if (tvFull()) send({ type: 'tvfs', on: true, to: m.id });
       var it = get(liveId);
       if (logoOn && logoFile) send({ type: 'show', to: m.id, item: { id: 'logo', kind: 'image', file: logoFile.file }, opts: liveOpts() });
       else if (it) { ensureStream(needKey(it)); send({ type: 'show', to: m.id, item: payload(it, liveSlide), opts: liveOpts() }); }
@@ -1454,6 +1456,7 @@
      then open the window there; if the computer itself sees only one screen, explain how to fix it */
   var screenAsked = false;
   function screenCount() {
+    if (DESK) return DESK.displays;
     if (screenDetails) return screenDetails.screens.length;
     if (window.screen && window.screen.isExtended === true) return 2;
     if (window.screen && window.screen.isExtended === false) return 1;
@@ -1471,7 +1474,7 @@
       '<li><b>HDMI to VGA adapter:</b> a VGA projector needs an active adapter (a small box, often with a USB power lead). Plug in its power, then pick the input called <b>VGA</b>, <b>PC</b> or <b>Computer</b> on the projector.</li>' +
       '<li>Turn the projector on first, then plug the cable in, wait about 5 seconds and press <b>Detect again</b> below.</li>' +
       '<li>If it still does not appear, try another cable, another adapter or another port. When the computer sees the screen, this page will too.</li></ol>';
-    else h += '<p class="help" style="margin:0">The TV screen opens on the other screen by itself. Click it once there to make it full screen.</p>';
+    else h += '<p class="help" style="margin:0">Press the TV screen button and the show goes full screen on the other screen.</p>';
     if (!('getScreenDetails' in window)) h += '<p class="help" style="margin:0">This browser cannot place windows on another screen by itself. Use Chrome or Edge for that, or drag the TV screen window across and click it once.</p>';
     $('scr-body').innerHTML = h;
     openDlg($('dlg-screens'));
@@ -1506,29 +1509,70 @@
   });
   /* the TV screen opens by itself on the extended screen when the app starts. A browser only lets a page open a
      window after a click (unless pop-ups are allowed for the site), so a blocked try waits for the first click */
-  var openArmed = false;
+  var openArmed = false, tvSkip = false;
   function armOpen() {
     if (openArmed) return; openArmed = true;
     var go = function (e) {
-      if (e.target && e.target.closest && e.target.closest('dialog, #p-disp')) return;
+      if (e.target && e.target.closest && e.target.closest('dialog, #p-disp, #gate')) return;
       openArmed = false; document.removeEventListener('pointerdown', go, true); document.removeEventListener('keydown', go, true);
-      if (!Object.keys(alive(displays)).length) openDisplay();
+      if (!tvSkip) startTV();
     };
     document.addEventListener('pointerdown', go, true); document.addEventListener('keydown', go, true);
   }
   function autoOpen() {
-    if (Object.keys(alive(displays)).length || (popup && !popup.closed)) return;
+    if (DESK || tvFull() || (popup && !popup.closed) || tvSkip) return;
     var one = screenDetails ? screenDetails.screens.length < 2 : (window.screen && window.screen.isExtended === false);
-    if (one) { say('Only one screen found. Connect your TV or projector and set it to extend (not mirror). The TV screen opens there by itself.', true); return; }
-    if (screenDetails) doOpen(false);
-    else { armOpen(); say('Click anywhere on this page to send the show to the TV. Your browser asks once to use your screens.'); }
+    if (one) { say('Only one screen found. Connect your TV or projector and set it to extend (not mirror). The show goes there by itself.', true); return; }
+    armOpen(); say('Click anywhere on this page to send the show to the TV screen.');
   }
+
+  /* The TV screen lives inside this page as a hidden frame. One click sends it, full screen and without any window frame,
+     to the extended screen, so nothing has to be dragged. Browsers without screen placement fall back to the pop-up window. */
+  var tvEl = null, tvWas = false;
+  function tvFull() { return !!tvEl && document.fullscreenElement === tvEl; }
+  function ensureTV() {
+    if (tvEl) return tvEl;
+    tvEl = document.createElement('div'); tvEl.id = 'tv-fs';
+    var f = document.createElement('iframe'); f.src = BASE + 'display/?embed=1'; f.title = 'TV screen'; f.setAttribute('allow', 'autoplay; fullscreen; encrypted-media; picture-in-picture');
+    tvEl.appendChild(f); document.body.appendChild(tvEl); return tvEl;
+  }
+  function startTV() {
+    tvSkip = false;
+    if (DESK) {
+      DESK.showTV().then(function (r) { if (r && !r.ok) say('Only one screen found. Connect your TV or projector and set it to extend (not mirror). The show goes there by itself.', true); else say('The TV screen is on your second screen.'); });
+      return;
+    }
+    if (tvFull()) { send({ type: 'unmute' }); say('The TV screen is already showing.'); return; }
+    if (!('getScreenDetails' in window) || !document.documentElement.requestFullscreen) { openDisplay(); return; }
+    (screenDetails ? Promise.resolve(screenDetails) : loadScreens(true)).then(function (dd) {
+      if (!dd) { say('Allow "use your screens" in the browser, then press the TV screen button again.', true); return; }
+      var s = targetScreen();
+      if (!s) { showScreens(); return; }
+      if (popup && !popup.closed) { try { popup.close(); } catch (e) { /* already closed */ } }
+      var el = ensureTV();
+      return el.requestFullscreen({ screen: s }).then(function () { say('The TV screen is on ' + (s.label || 'your second screen') + '. Press Esc there to leave full screen.'); })
+        .catch(function () { armOpen(); say('The browser needs one more click to send the show to the TV. Click anywhere on this page.', true); });
+    });
+  }
+  document.addEventListener('fullscreenchange', function () {
+    var on = tvFull(); send({ type: 'tvfs', on: on });
+    if (tvWas && !on && tvEl) { toast('The TV screen left full screen. Press the TV screen button to send it back.'); armOpen(); }
+    tvWas = on; renderStatus();
+  });
   $('scr-detect').onclick = function () { loadScreens(true).then(function () { showScreens(); }); };
   $('scr-open').onclick = function () { doOpen(false); };
-  $('p-disp').onclick = function () { openDisplay(); };
+  $('p-disp').onclick = function () { startTV(); };
   $('p-stage').onclick = openStage;
   $('move').onclick = function () { if (popup && !popup.closed) say(placePopup(popup) ? 'Moved. Click the display once to make it full screen.' : 'The display could not be moved. Drag it to the screen yourself.'); else say('Open the display screen first.', true); };
   loadScreens(false).then(function () { setTimeout(autoOpen, 900); });
+  if (DESK) {
+    DESK.onDisplays(function (i) { renderStatus(); if (i.displays < 2) say('Only one screen found. Connect your TV or projector and set it to extend (not mirror). The show goes there by itself.', true); else if (i.tvOpen) say('The TV screen is on your second screen.'); });
+    DESK.onUpdate(function (u) {
+      if (u.state === 'ready') toast('A new version of the Presenter app is ready. It installs when you close the app.');
+      else if (u.state === 'manual') say('A new version of the Presenter app is available. Download it from the Presenter website.');
+    });
+  }
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register(BASE + 'sw.js', { scope: BASE }).catch(function () { /* offline copy is optional */ });
 
 
   function refreshPickers() { bbBg.redraw(); }
@@ -1686,18 +1730,21 @@
 
   /* ------------------------------------------------------------------ full screen, install, mobile tabs and keys */
   function inFull() { return !!document.fullscreenElement; }
-  function goFull() { var el = document.documentElement; if (el.requestFullscreen) return el.requestFullscreen().catch(function () { say('Your browser did not allow full screen. Press F11 instead.', true); }); return Promise.resolve(); }
+  function goFull() { if (tvFull()) { say('The TV screen is using full screen. Press F11 to make this window full screen.', true); return Promise.resolve(); } var el = document.documentElement; if (el.requestFullscreen) return el.requestFullscreen().catch(function () { say('Your browser did not allow full screen. Press F11 instead.', true); }); return Promise.resolve(); }
   $('fs').onclick = function () { if (inFull()) document.exitFullscreen(); else goFull(); };
   var installEvt = null;
   window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); installEvt = e; $('gate-install').hidden = false; });
   window.addEventListener('appinstalled', function () { $('gate').hidden = true; });
   $('gate-install').onclick = function () { if (installEvt) { installEvt.prompt(); installEvt = null; $('gate-install').hidden = true; } };
-  $('gate-fs').onclick = function () { $('gate').hidden = true; try { sessionStorage.setItem('ae_ss_gate', '1'); } catch (e) {} goFull(); };
-  $('gate-win').onclick = function () { $('gate').hidden = true; try { sessionStorage.setItem('ae_ss_gate', '1'); } catch (e) {} };
+  $('gate-fs').onclick = function () { $('gate').hidden = true; try { sessionStorage.setItem('ae_ss_gate', '1'); } catch (e) {} startTV(); };
+  $('gate-win').onclick = function () { $('gate').hidden = true; tvSkip = true; try { sessionStorage.setItem('ae_ss_gate', '1'); } catch (e) {} };
   (function gate() {
     var standalone = window.matchMedia && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches);
     var seen = false; try { seen = !!sessionStorage.getItem('ae_ss_gate'); } catch (e) {}
-    if (!standalone && !seen && !inFull() && !/[?&]nogate=1/.test(location.search)) $('gate').hidden = false;
+    if (!DESK && !standalone && !seen && !inFull() && !/[?&]nogate=1/.test(location.search)) {
+      $('gate').hidden = false;
+      if (window.PresenterDownload) { var os = window.PresenterDownload.apply($('gate-dl'), null); $('gate-tip').textContent = window.PresenterDownload.tip(os); }
+    }
   })();
 
   function syncMtabs() { [].forEach.call($('mtabs').children, function (b) { b.setAttribute('aria-selected', b.dataset.view === $('app').dataset.view); }); }

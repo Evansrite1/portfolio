@@ -1,0 +1,87 @@
+{
+  "name": "presenter-app",
+  "productName": "Presenter",
+  "version": "1.0.0",
+  "description": "Presenter by Evans Ademilua: Bible verses, song lyrics, photos, videos and countdowns on a TV or projector.",
+  "author": "Evans Ademilua",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "smoke": "electron . --no-sandbox",
+    "dist:win": "electron-builder --win --x64 --publish never",
+    "dist:mac": "electron-builder --mac --universal --publish never",
+    "release:win": "electron-builder --win --x64 --publish always",
+    "release:mac": "electron-builder --mac --universal --publish always"
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.9"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.evansademilua.presenter",
+    "productName": "Presenter",
+    "copyright": "Evans Ademilua",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "offline.html",
+      "picker.html",
+      "picker-preload.js",
+      "config.json",
+      "package.json"
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Evansrite1",
+        "repo": "portfolio",
+        "releaseType": "release"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "Presenter-Setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false,
+      "shortcutName": "Presenter"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.productivity",
+      "identity": null,
+      "hardenedRuntime": false,
+      "artifactName": "Presenter-mac.${ext}",
+      "extendInfo": {
+        "NSCameraUsageDescription": "Presenter can show a camera on the TV screen.",
+        "NSMicrophoneUsageDescription": "Presenter can use a microphone with a camera or capture card."
+      }
+    },
+    "dmg": {
+      "title": "Presenter"
+    },
+    "electronDist": "node_modules/electron/dist"
+  }
+}

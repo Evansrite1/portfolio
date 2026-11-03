@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Presenter</title>
+<style>
+  html, body { height: 100%; margin: 0; background: #0e0e10; color: #f4f4f5; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  body { display: grid; place-items: center; text-align: center; padding: 24px; }
+  .box { max-width: 460px; display: grid; gap: 14px; justify-items: center; }
+  h1 { margin: 0; font-size: 1.6rem; }
+  p { margin: 0; color: #b8b8c0; line-height: 1.5; }
+  button { background: #ff5a4f; color: #1a0a09; border: 0; border-radius: 10px; padding: 10px 22px; font: inherit; font-weight: 700; cursor: pointer; }
+  small { color: #777; }
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>Presenter needs the internet once</h1>
+  <p>The first time you open the app, it loads the Presenter from the internet. After that it keeps a copy, so it also opens without a connection. Connect to the internet and it will start by itself.</p>
+  <button type="button" id="go">Try again now</button>
+  <small id="st">Trying again every few seconds...</small>
+</div>
+<script>
+  (function () {
+    var tries = 0;
+    function retry() { tries++; document.getElementById('st').textContent = 'Tried ' + tries + (tries === 1 ? ' time' : ' times') + '. Trying again every few seconds...'; if (window.presenterDesktop) window.presenterDesktop.retry(); }
+    document.getElementById('go').onclick = retry;
+    setInterval(retry, 5000);
+  })();
+</script>
+</body>
+</html>

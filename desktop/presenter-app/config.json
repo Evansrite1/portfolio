@@ -1,0 +1,7 @@
+{
+  "site": "https://evansademilua.vercel.app",
+  "appPath": "/tools/second-screen-presenter/app/?desktop=1",
+  "tvPath": "/tools/second-screen-presenter/display/?desktop=1",
+  "downloadPage": "https://evansademilua.vercel.app/tools/second-screen-presenter/",
+  "macSigned": false
+}

@@ -57,6 +57,7 @@
 (function () {
   'use strict';
   var bc = new BroadcastChannel('ae-second-screen');
+  var EMBED = /[?&](embed|desktop)=1/.test(location.search);
   var id = Math.random().toString(36).slice(2, 10);
   var layers = [document.getElementById('la'), document.getElementById('lb')], front = 0;
   var cur = null, media = null, frame = null, frameKind = '', urls = [], needSound = false, lastStatus = 0, ytInfo = null;
@@ -281,6 +282,8 @@
     else if (m.type === 'fit') { layers.forEach(function (L) { L.classList.toggle('fill', m.value === 'cover'); }); }
     else if (m.type === 'clear') { layers.forEach(function (L) { clearLayer(L); L.classList.remove('on'); }); cur = null; media = null; frame = null; ytInfo = null; document.getElementById('wait').style.display = ''; status(); }
     else if (m.type === 'ping') status();
+    else if (m.type === 'tvfs') { document.body.classList.toggle('fs', !!m.on); status(); }
+    else if (m.type === 'unmute') unlockSound();
     else if (m.type === 'identify') {
       var w = document.getElementById('wait'), was = w.style.display;
       w.style.display = ''; w.querySelector('h1').textContent = 'This is the display screen';
@@ -290,6 +293,7 @@
 
   /* ---------- full screen, sound and cursor ---------- */
   function goFull() {
+    if (EMBED) return;
     if (!document.fullscreenElement && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function () {});
   }
   function unlockSound() {
@@ -297,7 +301,7 @@
     needSound = false; document.getElementById('sound').classList.remove('on'); status();
   }
   document.addEventListener('click', function () { goFull(); unlockSound(); });
-  document.addEventListener('dblclick', function () { if (document.fullscreenElement) document.exitFullscreen(); });
+  document.addEventListener('dblclick', function () { if (!EMBED && document.fullscreenElement) document.exitFullscreen(); });
   document.addEventListener('fullscreenchange', function () { document.body.classList.toggle('fs', !!document.fullscreenElement); status(); });
   var idle;
   function wake() { document.body.classList.remove('idle'); clearTimeout(idle); idle = setTimeout(function () { document.body.classList.add('idle'); }, 2500); }

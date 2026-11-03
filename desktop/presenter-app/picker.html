@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'">
+<title>Share a screen or window</title>
+<style>
+  html, body { margin: 0; background: #151517; color: #f4f4f5; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  body { padding: 16px; }
+  h1 { font-size: 1.05rem; margin: 0 0 4px; }
+  p { margin: 0 0 12px; color: #9a9aa3; font-size: .85rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+  button.s { background: #1f1f23; border: 1px solid #2f2f35; border-radius: 12px; padding: 8px; color: #f4f4f5; font: inherit; text-align: left; cursor: pointer; }
+  button.s:hover, button.s:focus-visible { border-color: #ff5a4f; outline: none; }
+  button.s img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: contain; background: #000; border-radius: 8px; }
+  button.s span { display: block; margin-top: 6px; font-size: .78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .foot { margin-top: 14px; display: flex; justify-content: flex-end; }
+  .foot button { background: #26262b; color: #fff; border: 1px solid #2f2f35; border-radius: 10px; padding: 8px 18px; font: inherit; font-weight: 600; cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>Share a screen or window</h1>
+<p>Pick what to show on the TV screen.</p>
+<div class="grid" id="grid"></div>
+<div class="foot"><button type="button" id="cancel">Cancel</button></div>
+<script>
+  (function () {
+    var grid = document.getElementById('grid');
+    window.pickerAPI.onSources(function (list) {
+      grid.textContent = '';
+      list.forEach(function (s) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 's';
+        var i = document.createElement('img'); i.alt = ''; i.src = s.thumb; b.appendChild(i);
+        var n = document.createElement('span'); n.textContent = s.name; n.title = s.name; b.appendChild(n);
+        b.onclick = function () { window.pickerAPI.choose(s.id); };
+        grid.appendChild(b);
+      });
+    });
+    document.getElementById('cancel').onclick = function () { window.pickerAPI.cancel(); };
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') window.pickerAPI.cancel(); });
+  })();
+</script>
+</body>
+</html>

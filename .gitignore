@@ -45,3 +45,6 @@ arete/plan_v*.html
 drafts/maison-gray/preview-desktop.png
 drafts/maison-gray/shot-*.png
 drafts/maison-gray/pitch/*.png
+
+# Presenter desktop app build output
+desktop/presenter-app/dist/
