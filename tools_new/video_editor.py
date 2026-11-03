@@ -16,7 +16,7 @@ SECTIONS = '''
 <ul>
 <li><b>Cut and arrange.</b> Trim the ends of a clip, split it at any point, delete the parts you do not want, and put clips in the order you like.</li>
 <li><b>Add text.</b> Titles in several styles, with your own font, colour, size and position.</li>
-<li><b>Make captions automatically.</b> The editor listens to the speech in your video and writes the words on the timeline, in English and several other languages. Fix any word, pick a style such as Karaoke, and the captions are saved into your video. You can also type captions by hand, import an .srt file, or download your captions as an .srt file.</li>
+<li><b>Make captions automatically.</b> The editor listens to the speech in your video and writes the words on the timeline, in English and several other languages. Fix any word, then pick from 17 looks such as Karaoke, Viral green, Highlighter, Neon glow, Bubble and Breaking news, change the highlight colour, and the captions are saved into your video. You can also type captions by hand, import an .srt file, or download your captions as an .srt file.</li>
 <li><b>Add sound.</b> Put in your own music, record a voiceover, and set the volume of every clip.</li>
 <li><b>Change the look.</b> Filters, brightness, contrast, colour, warmth, dark edges and zoom.</li>
 <li><b>Change the speed.</b> Slow a clip down to a quarter speed or speed it up to four times.</li>

@@ -9,7 +9,7 @@ const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const ADJ0 = { bri: 100, con: 100, sat: 100, temp: 0, vig: 0, zoom: 100 };
 const today = new Date().toISOString().slice(0, 10);
 const st = {
-  name: 'My video', ratio: '16/9', fit: 'blur', clips: [], sel: null, cap: { style: 'classic', size: 6, y: 84 },
+  name: 'My video', ratio: '16/9', fit: 'blur', clips: [], sel: null, cap: { style: 'classic', size: 6, y: 84, accent: '' },
   meta: { title: '', desc: '', author: '', copy: '', tags: '', date: today, place: '', strip: true, cover: 0 }
 };
 const media = new Map();
@@ -112,40 +112,99 @@ function drawText(ctx, W, H, c) {
   });
   ctx.restore();
 }
-function drawCaption(ctx, W, H, c, tt) {
-  const S = st.cap, px = Math.round(S.size / 100 * Math.min(W, H));
-  const text = S.style === 'pop' ? String(c.str).toUpperCase() : String(c.str);
-  const toks = text.split(/\s+/).filter(Boolean); if (!toks.length) return;
+const CF = { arial: 'Arial, Helvetica, sans-serif', impact: 'Impact, "Arial Black", sans-serif', heavy: '"Arial Black", Impact, sans-serif', round: '"Trebuchet MS", "Segoe UI", sans-serif', mono: '"Courier New", monospace', serif: 'Georgia, "Times New Roman", serif', comic: '"Comic Sans MS", "Trebuchet MS", sans-serif' };
+/* One entry per look. n name, f font, w weight, it italic, up/low upper or lower case, sp letter spacing, scale size multiplier,
+   col main colour (mainAcc: the highlight colour replaces it), act colour of the word being spoken, dim opacity of words not yet spoken,
+   line box behind each line, pill rounded white label, wbox box behind the spoken word, stroke outline, hs hard shadow, sh soft shadow,
+   glow glow colour, grad gradient, hollow outline only, type words appear one by one, one only the spoken word. */
+const CAP_DEFS = {
+  classic: { n: 'Classic', f: 'arial', w: 700, line: 'rgba(0,0,0,.68)' },
+  pop: { n: 'Bold pop', f: 'impact', w: 900, up: 1, col: '#ffd23f', mainAcc: 1, stroke: 0.2 },
+  karaoke: { n: 'Karaoke', f: 'arial', w: 700, line: 'rgba(0,0,0,.68)', act: '#ffd23f', dim: 0.5 },
+  minimal: { n: 'Minimal', f: 'arial', w: 700, sh: 0.3 },
+  hormozi: { n: 'Viral green', f: 'heavy', w: 900, up: 1, stroke: 0.2, act: '#2ee06a' },
+  highlight: { n: 'Highlighter', f: 'arial', w: 800, up: 1, stroke: 0.07, wbox: '#ffd23f', actCol: '#111111' },
+  neon: { n: 'Neon glow', f: 'arial', w: 800, up: 1, glow: '#00f0ff' },
+  soft: { n: 'Soft', f: 'round', w: 600, low: 1, sh: 0.35, act: '#ffffff', dim: 0.45 },
+  bubble: { n: 'Bubble', f: 'round', w: 800, pill: '#ffffff', col: '#111111' },
+  hollow: { n: 'Hollow', f: 'heavy', w: 900, up: 1, hollow: 1, act: '#ffd23f' },
+  sunset: { n: 'Sunset', f: 'impact', w: 900, up: 1, grad: ['#ffe259', '#ff512f'], stroke: 0.16 },
+  comic: { n: 'Comic', f: 'comic', w: 900, col: '#ffe600', mainAcc: 1, stroke: 0.18, hs: 0.07 },
+  typewriter: { n: 'Typewriter', f: 'mono', w: 700, line: 'rgba(0,0,0,.75)', col: '#7cff9b', mainAcc: 1, type: 1 },
+  spaced: { n: 'Spaced', f: 'arial', w: 700, up: 1, sp: 0.16, sh: 0.3, act: '#ffd23f', dim: 0.6 },
+  news: { n: 'Breaking news', f: 'arial', w: 800, up: 1, line: '#d90f1d', act: '#ffe600' },
+  aesthetic: { n: 'Aesthetic', f: 'serif', w: 700, it: 1, glow: '#ff7ad9', gl: 0.5 },
+  single: { n: 'One word', f: 'impact', w: 900, up: 1, stroke: 0.2, one: 1, scale: 1.5 }
+};
+const CAP_COLORS = ['#ffd23f', '#2ee06a', '#ff4fb0', '#35c6ff', '#ff8a2a', '#ff3b3b', '#ffffff'];
+function capActive(c, n, tt) {
+  if (c.words && c.words.length === n) { let k = 0; for (let i = 0; i < n; i++) if (tt >= c.words[i].s) k = i; return k; }
+  return Math.min(n - 1, Math.max(0, Math.floor((tt - c.s) / Math.max(0.1, c.d) * n)));
+}
+function capRound(ctx, x, y, w, h, r) {
+  r = Math.min(r, w / 2, h / 2);
+  ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); ctx.fill();
+}
+function drawCaption(ctx, W, H, c, tt, opt) {
+  const S = Object.assign({}, st.cap, opt || {}), D = CAP_DEFS[S.style] || CAP_DEFS.classic;
+  const px = Math.round(S.size / 100 * Math.min(W, H) * (D.scale || 1));
+  let text = String(c.str); if (D.up) text = text.toUpperCase(); else if (D.low) text = text.toLowerCase();
+  let toks = text.split(/\s+/).filter(Boolean); if (!toks.length) return;
+  const idx = capActive(c, toks.length, tt), acc = S.accent || D.act || '', base = D.mainAcc ? (S.accent || D.col) : (D.col || '#ffffff');
+  const glowCol = S.accent || D.glow || '';
+  if (D.one) toks = [toks[idx]];
   ctx.save();
-  ctx.font = (S.style === 'pop' ? '900 ' : '700 ') + px + 'px ' + (S.style === 'pop' ? 'Impact, "Arial Black", sans-serif' : 'Arial, Helvetica, sans-serif');
+  ctx.font = (D.it ? 'italic ' : '') + D.w + ' ' + px + 'px ' + CF[D.f];
+  if ('letterSpacing' in ctx) ctx.letterSpacing = D.sp ? Math.round(px * D.sp) + 'px' : '0px';
   ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
   const sp = ctx.measureText(' ').width, maxW = W * 0.86, lines = [[]]; let lw = 0;
   toks.forEach((tk, i) => {
     const w = ctx.measureText(tk).width, L = lines[lines.length - 1];
     if (L.length && lw + sp + w > maxW) { lines.push([]); lw = 0; }
-    const cur = lines[lines.length - 1]; cur.push({ t: tk, w, i }); lw += (cur.length > 1 ? sp : 0) + w;
+    const cur = lines[lines.length - 1]; cur.push({ t: tk, w, i: D.one ? idx : i }); lw += (cur.length > 1 ? sp : 0) + w;
   });
   const lh = px * 1.28, total = lines.length * lh, top = S.y / 100 * H - total / 2;
-  const kar = S.style === 'karaoke' && c.words && c.words.length === toks.length;
   lines.forEach((L, li) => {
     const width = L.reduce((a, x) => a + x.w, 0) + sp * (L.length - 1), y = top + li * lh + lh / 2;
     let x = (W - width) / 2;
-    if (S.style === 'classic' || S.style === 'karaoke') {
-      const bx = x - px * 0.4, bw = width + px * 0.8, bh = lh * 0.98, by = y - bh / 2, r = px * 0.3;
-      ctx.fillStyle = 'rgba(0,0,0,.68)';
-      ctx.beginPath(); ctx.moveTo(bx + r, by); ctx.arcTo(bx + bw, by, bx + bw, by + bh, r); ctx.arcTo(bx + bw, by + bh, bx, by + bh, r); ctx.arcTo(bx, by + bh, bx, by, r); ctx.arcTo(bx, by, bx + bw, by, r); ctx.closePath(); ctx.fill();
-    }
+    const bx = x - px * 0.4, bw = width + px * 0.8, bh = lh * 0.98, by = y - bh / 2;
+    if (D.line) { ctx.fillStyle = D.line; capRound(ctx, bx, by, bw, bh, px * 0.3); }
+    if (D.pill) { ctx.fillStyle = D.pill; capRound(ctx, bx - px * 0.1, by + bh * 0.04, bw + px * 0.2, bh * 0.92, bh * 0.46); }
     L.forEach((wd) => {
-      let col = '#ffffff';
-      if (S.style === 'pop') col = '#ffd23f';
-      if (kar) { const w = c.words[wd.i]; col = tt >= w.e ? '#ffffff' : tt >= w.s ? '#ffd23f' : 'rgba(255,255,255,.5)'; }
-      if (S.style === 'pop') { ctx.lineWidth = Math.max(3, px * 0.2); ctx.strokeStyle = '#000'; ctx.lineJoin = 'round'; ctx.strokeText(wd.t, x, y); }
-      else if (S.style === 'minimal') { ctx.shadowColor = 'rgba(0,0,0,.8)'; ctx.shadowBlur = px * 0.3; ctx.shadowOffsetY = px * 0.05; }
-      ctx.fillStyle = col; ctx.fillText(wd.t, x, y); ctx.shadowColor = 'transparent';
+      const state = wd.i < idx ? 'past' : wd.i === idx ? 'act' : 'next';
+      if (D.type && state === 'next') { x += wd.w + sp; return; }
+      let col = base;
+      if (state === 'act' && acc && !D.wbox && !D.mainAcc) col = acc;
+      if (D.wbox && state === 'act') { ctx.fillStyle = acc || D.wbox; capRound(ctx, x - px * 0.18, y - lh * 0.46, wd.w + px * 0.36, lh * 0.92, px * 0.22); col = D.actCol; }
+      ctx.globalAlpha = D.dim && state === 'next' ? D.dim : 1;
+      ctx.lineJoin = 'round';
+      if (D.hs) { ctx.fillStyle = '#000'; ctx.fillText(wd.t, x + px * D.hs, y + px * D.hs); }
+      if (D.stroke) { ctx.lineWidth = Math.max(2, px * D.stroke); ctx.strokeStyle = '#000'; ctx.strokeText(wd.t, x, y); }
+      if (D.hollow) {
+        ctx.lineWidth = Math.max(2, px * 0.07); ctx.strokeStyle = state === 'act' ? col : '#ffffff'; ctx.strokeText(wd.t, x, y);
+        if (state === 'act') { ctx.fillStyle = col; ctx.fillText(wd.t, x, y); }
+      } else if (D.glow) {
+        ctx.fillStyle = col; ctx.shadowColor = glowCol;
+        for (const k of [1, 0.55, 0.25]) { ctx.shadowBlur = px * k * 0.9 * (D.gl || 1); ctx.fillText(wd.t, x, y); }
+        ctx.shadowColor = 'transparent'; ctx.fillText(wd.t, x, y);
+      } else {
+        if (D.grad) { const g = ctx.createLinearGradient(0, y - lh * 0.4, 0, y + lh * 0.4); g.addColorStop(0, D.grad[0]); g.addColorStop(1, D.grad[1]); ctx.fillStyle = g; } else ctx.fillStyle = col;
+        if (D.sh) { ctx.shadowColor = 'rgba(0,0,0,.8)'; ctx.shadowBlur = px * D.sh; ctx.shadowOffsetY = px * 0.05; }
+        ctx.fillText(wd.t, x, y);
+      }
+      ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0; ctx.globalAlpha = 1;
       x += wd.w + sp;
     });
   });
   ctx.restore();
+}
+/* small previews for the Look list, drawn with the same code that renders the video */
+function paintCapThumbs() {
+  document.querySelectorAll('canvas[data-ct]').forEach((cv) => {
+    const g = cv.getContext('2d'), W = cv.width, H = cv.height, bg = g.createLinearGradient(0, 0, W, H);
+    bg.addColorStop(0, '#34343c'); bg.addColorStop(1, '#15151a'); g.fillStyle = bg; g.fillRect(0, 0, W, H);
+    drawCaption(g, W, H, { str: 'Make it pop', words: null, s: 0, d: 2 }, 0.9, { style: cv.dataset.ct, size: 21, y: 52 });
+  });
 }
 function renderFrame(ctx, W, H, tt, src) {
   ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
@@ -562,6 +621,7 @@ function openTool(k) {
     setTimeout(fillOrig, 0);
   }
   $('shBody').innerHTML = h;
+  if (k === 'cap') paintCapThumbs();
   requestAnimationFrame(requestDraw);
 }
 function fld(id, label, key, ph, type) { return '<div class="fld"><label for="' + id + '">' + label + '</label><input id="' + id + '" type="' + (type || 'text') + '" data-m="' + key + '" value="' + esc(st.meta[key]) + '" placeholder="' + esc(ph) + '"></div>'; }
@@ -640,7 +700,7 @@ $('shBody').addEventListener('click', (e) => {
 /* ------------------------------------------------------------------ captions */
 const capClips = () => st.clips.filter((c) => c.lane === 'cap').sort((a, b) => a.s - b.s);
 const LANGS = [['', 'Detect automatically'], ['english', 'English'], ['french', 'French'], ['spanish', 'Spanish'], ['portuguese', 'Portuguese'], ['german', 'German'], ['arabic', 'Arabic'], ['yoruba', 'Yoruba'], ['hausa', 'Hausa'], ['swahili', 'Swahili']];
-const CAP_STYLES = [['classic', 'Classic'], ['pop', 'Bold pop'], ['karaoke', 'Karaoke'], ['minimal', 'Minimal']];
+const CAP_STYLES = Object.keys(CAP_DEFS).map((k) => [k, CAP_DEFS[k].n]);
 let capJob = null, capLang = 'english';
 
 function wordsToLines(chunks) {
@@ -703,7 +763,8 @@ function capPanelHtml() {
   h += capJob ? capProgHtml(capJob.msg || 'Working...', capJob.frac == null ? null : capJob.frac) : '<button class="btn pri" id="capGen">' + (caps.length ? 'Make captions again' : 'Make captions automatically') + '</button>';
   h += '<p class="hint">It listens to the speech in your video and voiceover, not the music. The first time, it downloads a 40 MB speech model, then it works from your browser. Clear speech works best, so check the words afterwards. Make captions after you finish cutting, because they do not move when you cut the video.</p>';
   if (caps.length) {
-    h += '<h4>Look</h4><div class="grid g2">' + CAP_STYLES.map((x) => '<div class="card" data-capstyle="' + x[0] + '" aria-pressed="' + (S.style === x[0]) + '">' + x[1] + '</div>').join('') + '</div>';
+    h += '<h4>Look</h4><div class="grid g2">' + CAP_STYLES.map((x) => '<div class="card cs" data-capstyle="' + x[0] + '" aria-pressed="' + (S.style === x[0]) + '"><canvas width="240" height="100" data-ct="' + x[0] + '"></canvas><span>' + x[1] + '</span></div>').join('') + '</div>';
+    h += '<h4>Highlight colour</h4><div class="swatches"><button type="button" class="sw auto" data-capacc="" aria-pressed="' + !S.accent + '" aria-label="Use the look\'s own colour">Auto</button>' + CAP_COLORS.map((x) => '<button type="button" class="sw" data-capacc="' + x + '" aria-pressed="' + (S.accent === x) + '" aria-label="Colour ' + x + '" style="background:' + x + '"></button>').join('') + '</div>';
     h += '<div style="height:12px"></div>' + capSlider('size', 'Size', 3, 12, '', S.size) + capSlider('y', 'Up and down', 15, 95, '%', S.y);
   }
   h += '<h4>Your captions' + (caps.length ? ' (' + caps.length + ')' : '') + '</h4>';
@@ -787,6 +848,7 @@ function capClick(e) {
     if (capJob) { const j = capJob; j.cancelled = true; if (j.worker) j.worker.terminate(); capJob = null; toast('Stopped.'); if (tool === 'cap') openTool('cap'); }
     return true;
   }
+  if ((el = e.target.closest('[data-capacc]'))) { commit(); st.cap.accent = el.dataset.capacc; openTool('cap'); requestDraw(); return true; }
   if ((el = e.target.closest('[data-capstyle]'))) { commit(); st.cap.style = el.dataset.capstyle; openTool('cap'); requestDraw(); return true; }
   if ((el = e.target.closest('[data-seek]'))) { st.sel = el.dataset.cid; seek(+el.dataset.seek + 0.01); drawTL(); updateActs(); $('shBody').querySelectorAll('.capline').forEach((n) => n.classList.toggle('on', n.contains(el))); return true; }
   if ((el = e.target.closest('[data-cdel]'))) { commit(); const c = get(el.dataset.cdel); if (c) st.clips.splice(st.clips.indexOf(c), 1); if (st.sel === el.dataset.cdel) st.sel = null; refresh(); openTool('cap'); return true; }

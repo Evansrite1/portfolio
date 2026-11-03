@@ -67,6 +67,12 @@ svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke
 .card{background:var(--p2);border:1px solid var(--line);border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;font-size:.84rem;min-height:56px;display:grid;place-items:center}
 .card:active,.card:hover{border-color:var(--acc)}
 .card[aria-pressed=true]{outline:2px solid var(--acc);border-color:transparent}
+.card.cs{padding:0;overflow:hidden;gap:0;grid-template-rows:auto auto;place-items:stretch;min-height:0}
+.card.cs canvas{display:block;width:100%;height:auto;background:#1d1d22}
+.card.cs span{padding:5px 0 7px;font-size:.74rem;text-align:center;color:var(--soft)}
+.swatches{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 10px}
+.sw{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);padding:0;cursor:pointer;font-size:.62rem;color:var(--soft);background:var(--p2)}
+.sw[aria-pressed=true]{outline:2px solid var(--acc);outline-offset:2px}
 .thumb{aspect-ratio:16/10;border-radius:10px;border:1px solid var(--line);position:relative;cursor:pointer}
 .thumb span{position:absolute;left:5px;bottom:4px;font-size:.66rem;background:rgba(0,0,0,.55);padding:1px 6px;border-radius:5px}
 .btn{background:var(--p3);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-weight:600;width:100%;display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:8px}
