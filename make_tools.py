@@ -430,6 +430,8 @@ def schema_nodes(slug, p):
         {'@type': 'ListItem', 'position': 3, 'name': p['app'], 'item': url}]}
     return [app, faq, crumbs]
 
+KEYS_PAGES = ['qr-code-generator', 'qr-code-scanner', 'remove-background', 'wifi-qr-code-generator', 'whatsapp-link-generator', 'color-picker', 'currency-calculator', 'image-converter', 'invoice-generator', 'receipt-generator', 'pdf-converter', 'screen-recorder', 'video-compressor', 'video-converter', 'video-trimmer', 'watermark-maker']
+
 def build_page(slug, p):
     h = head(p['title'], p['desc'], '/tools/%s/' % slug, schema_nodes(slug, p), p['vendor'], p['own'])
     body = header() + '''
@@ -447,7 +449,7 @@ def build_page(slug, p):
 </main>
 %s
 %s''' % (e(p['h1']), e(p['lead']), p['tool'], p['sections'],
-         faq_html(p['faq']), related_html(p['related']), FOOTER, scripts(p['vendor'], p['own'], p.get('module', ())))
+         faq_html(p['faq']), related_html(p['related']), FOOTER, scripts(p['vendor'], p['own'] + (['keys.js'] if slug in KEYS_PAGES else []), p.get('module', ())))
     extra = ''.join('<link rel="stylesheet" href="/tools/css/%s">\n' % c for c in p.get('css', ()))
     out = (h + body).replace('</head>', extra + '</head>', 1) + '</body>\n</html>\n'
     d = os.path.join(ROOT, 'tools', slug)
@@ -529,6 +531,17 @@ VIEW_SCRIPT = """<script>
     var c = e.target.closest('[data-cat]'); if (c) { cat = c.dataset.cat; [].forEach.call(cats.children, function (x) { x.setAttribute('aria-pressed', x === c); }); filter(); }
   });
   q.addEventListener('input', filter);
+  document.addEventListener('keydown', function (e) {
+    var t = e.target, typing = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable);
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === '/' && !typing) { e.preventDefault(); q.focus(); q.select(); }
+    else if (e.key === 'Escape' && t === q) { q.value = ''; filter(); q.blur(); }
+    else if (e.key === 'Enter' && t === q) {
+      var first = [].filter.call(grid.children, function (c) { return !c.hidden; })[0];
+      var a = first && (first.matches('a[href]') ? first : first.querySelector('a[href]'));
+      if (a) location.href = a.getAttribute('href');
+    }
+  });
   setView(load('tools_view') || 'tiles');
 })();
 </script>"""
@@ -548,7 +561,7 @@ def build_hub():
             s, e(k), e((t + ' ' + d + ' ' + k).lower()), e(k), e(t), e(d), steps)
     tiles = ''.join(card(s, k, t, d) for s, k, t, d, n in CARDS)
     bar = ('<div class="tl-bar">'
-           '<input type="search" id="tl-q" placeholder="Search the tools" aria-label="Search the tools">'
+           '<input type="search" id="tl-q" placeholder="Search the tools (press /)" aria-label="Search the tools, press slash to jump here">'
            '<div class="tl-views" role="group" aria-label="View">'
            '<button type="button" data-view="tiles" aria-pressed="true">Tiles</button>'
            '<button type="button" data-view="list" aria-pressed="false">List</button>'

@@ -13,7 +13,7 @@
   html, body { margin: 0; background: #0b0b0c; color: #f4f4f5; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
   body { padding: 10px 12px calc(16px + env(safe-area-inset-bottom)); max-width: 600px; margin: 0 auto; }
   .st { display: flex; align-items: center; gap: 10px; font-size: .85rem; color: #b8b8c0; margin-bottom: 8px; }
-  .dot { width: 10px; height: 10px; border-radius: 50%; background: #555; flex: none; }
+  .dot { width: 10px; height: 10px; -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M5 0l5 5-5 5-5-5z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M5 0l5 5-5 5-5-5z'/%3E%3C/svg%3E") center/contain no-repeat; background: #555; flex: none; }
   .dot.on { background: #2fbf71; }
   .err { color: #ff9d96; }
   .mir { position: relative; aspect-ratio: 16 / 9; background: #000; border: 2px solid #e8453c; border-radius: 12px; overflow: hidden; display: grid; place-items: center; color: #777; font-size: .85rem; }

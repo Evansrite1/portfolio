@@ -135,7 +135,7 @@ async function loadFile(file) {
   if (kind === 'gif') meta = [fmtSize(file.size), 'GIF', gif.width + 'x' + gif.height, gif.frames + ' frames'];
   else if (kind === 'video') meta = [fmtSize(file.size), info.width + 'x' + info.height, fmtTime(info.duration), info.fps ? info.fps + ' fps' : null, info.hasAudio ? null : 'no sound'];
   else meta = [fmtSize(file.size), 'audio', fmtTime(info.duration), info.sampleRate ? Math.round(info.sampleRate / 100) / 10 + ' kHz' : null];
-  $('cv-meta').textContent = meta.filter(Boolean).join(' · ');
+  $('cv-meta').textContent = meta.filter(Boolean).join(' | ');
 
   if (kind === 'video') fillSelect('cv-res', resOptions(info.width, info.height), 0);
   $('cv-start').value = ''; $('cv-end').value = '';
@@ -670,7 +670,7 @@ function showResult(blob, note, range) {
   const name = outName(st.file.name, st.target, { trimmed });
   const box = $('cv-parts');
   box.innerHTML = '';
-  const { row, url } = downloadRow(blob, name, T.label + ' · ' + fmtSize(blob.size), true);
+  const { row, url } = downloadRow(blob, name, T.label + ' | ' + fmtSize(blob.size), true);
   st.outUrl = url;
   box.appendChild(row);
   const g = T.group;

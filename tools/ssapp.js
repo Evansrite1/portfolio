@@ -583,9 +583,9 @@
     var more = list.length > 80; list = list.slice(0, 80);
     $('ver-msg').textContent = bbVers.length >= VER_MAX ? 'Your bar is full (' + VER_MAX + ' versions). Remove one with the x on it, then add another.' : (q ? list.length + (more ? '+' : '') + ' versions found.' : bbCatalogue.length + ' versions available. Search by name or language.');
     box.innerHTML = list.length ? list.map(function (t) {
-      return '<div class="vrow"><div class="vi"><b>' + esc(t.name) + (t.pd ? '<span class="lic">Public domain</span>' : '<span class="lic cr">' + (t.credit ? 'Free, credit required' : 'Free to use') + '</span>') + '</b><small>' + esc((t.en && t.en !== t.name ? t.en + ' &middot; ' : '').replace(/&middot;/g, '·')) + esc(t.lang) + (t.n ? ' · ' + t.n.toLocaleString() + ' verses' : '') + (t.url ? ' · <a href="' + esc(t.url) + '" target="_blank" rel="noopener" style="color:inherit">licence</a>' : '') + '</small></div>' +
+      return '<div class="vrow"><div class="vi"><b>' + esc(t.name) + (t.pd ? '<span class="lic">Public domain</span>' : '<span class="lic cr">' + (t.credit ? 'Free, credit required' : 'Free to use') + '</span>') + '</b><small>' + esc((t.en && t.en !== t.name ? t.en + ' | ' : '')) + esc(t.lang) + (t.n ? ' | ' + t.n.toLocaleString() + ' verses' : '') + (t.url ? ' | <a href="' + esc(t.url) + '" target="_blank" rel="noopener" style="color:inherit">licence</a>' : '') + '</small></div>' +
         '<button type="button" class="b sm" data-addver="' + esc(t.id) + '"' + (have[t.id] || bbVers.length >= VER_MAX ? ' disabled' : '') + '>' + (have[t.id] ? 'Added' : 'Add') + '</button></div>';
-    }).join('').replace(/&amp;middot;/g, '·') : '<p class="help">No version matches that.</p>';
+    }).join('') : '<p class="help">No version matches that.</p>';
   }
   function openVersions() {
     openDlg($('dlg-ver'));
@@ -904,8 +904,8 @@
     ol.innerHTML = items.map(function (it, i) {
       var waiting = autoRun && it.at && !autoFired[it.id];
       return '<li class="si k-' + it.kind + (it.id === selId ? ' sel' : '') + (it.id === liveId ? ' live' : '') + '" draggable="true" data-id="' + it.id + '"><span class="n">' + (i + 1) + '</span><span><b>' + esc(it.name) + '</b><small><span class="tag">' + esc(label(it)) + '</span>' +
-        (it.at ? ' &middot; <span class="at">' + (waiting ? 'waiting for ' : '') + clock(it.at) + '</span>' : '') +
-        (it.dur ? ' &middot; ' + fmt(it.dur) : '') + (it.slides && it.slides.length > 1 ? ' &middot; ' + it.slides.length + (it.kind === 'pdf' ? ' pages' : ' slides') : '') + (it.secs ? ' &middot; ' + it.secs + 's each' : '') + (it.ended ? ' &middot; disconnected' : '') + (it.id === liveId ? ' &middot; <span style="color:var(--acc);font-weight:700">LIVE</span>' : '') + '</small></span>' +
+        (it.at ? ' | <span class="at">' + (waiting ? 'waiting for ' : '') + clock(it.at) + '</span>' : '') +
+        (it.dur ? ' | ' + fmt(it.dur) : '') + (it.slides && it.slides.length > 1 ? ' | ' + it.slides.length + (it.kind === 'pdf' ? ' pages' : ' slides') : '') + (it.secs ? ' | ' + it.secs + 's each' : '') + (it.ended ? ' | disconnected' : '') + (it.id === liveId ? ' | <span style="color:var(--acc);font-weight:700">LIVE</span>' : '') + '</small></span>' +
         '<button type="button" class="ib flat" data-act="menu" aria-label="Options for ' + esc(it.name) + '" title="Edit, start time, move, remove">' + ic('more') + '</button></li>';
     }).join('');
   }

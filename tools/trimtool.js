@@ -45,7 +45,7 @@ async function loadFile(file) {
   $('vt-exact').checked = false;
   setMode('keep');
   $('vt-name').textContent = file.name;
-  $('vt-meta').textContent = [fmtSize(file.size), info.width + 'x' + info.height, fmtTime(info.duration), info.fps ? info.fps + ' fps' : null].filter(Boolean).join(' · ');
+  $('vt-meta').textContent = [fmtSize(file.size), info.width + 'x' + info.height, fmtTime(info.duration), info.fps ? info.fps + ' fps' : null].filter(Boolean).join(' | ');
   const v = $('vt-video');
   v.src = st.url; v.currentTime = 0;
   show('vt-drop', false); show('vt-controls', true); show('vt-stage', true); show('vt-empty', false);
@@ -228,7 +228,7 @@ function showResult(note) {
   box.innerHTML = '';
   st.outputs.forEach((o, i) => {
     const name = o.label + '.' + o.ext;
-    const { row, url } = downloadRow(o.blob, name, fmtTime(o.start, true) + ' to ' + fmtTime(o.end, true) + ' · ' + fmtSize(o.blob.size), i === 0);
+    const { row, url } = downloadRow(o.blob, name, fmtTime(o.start, true) + ' to ' + fmtTime(o.end, true) + ' | ' + fmtSize(o.blob.size), i === 0);
     o.url = url;
     if (st.outputs.length > 1) {
       const pv = document.createElement('button');

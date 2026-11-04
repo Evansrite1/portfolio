@@ -303,7 +303,7 @@ async function finish() {
   } catch (e) { /* keep wall clock estimate */ }
 }
 
-function metaText(blob, dur) { return labelOf(extOf(blob.type)) + ' · ' + fmtTime(dur) + ' · ' + fmtSize(blob.size); }
+function metaText(blob, dur) { return labelOf(extOf(blob.type)) + ' | ' + fmtTime(dur) + ' | ' + fmtSize(blob.size); }
 
 async function readDuration(blob) {
   const input = new Input({ source: new BlobSource(blob), formats: ALL_FORMATS });

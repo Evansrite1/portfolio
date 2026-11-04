@@ -290,9 +290,9 @@ function setPlay(p) {
   playing = p;
   $('playIco').innerHTML = p ? '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>' : '<path d="M8 5v14l11-7z"/>';
   if (p) { if (t >= DUR - 0.05) t = 0; last = performance.now(); requestAnimationFrame(loop); }
-  else { pauseAll(); seekMedia(t); }
+  else { pauseAll(); seekMedia(t); updateActs(); }
 }
-function seek(tt) { t = clamp(tt, 0, DUR); if (playing) { pauseAll(); } seekMedia(t); head(); requestDraw(); $('time').textContent = fmt(t) + ' / ' + fmt(DUR); }
+function seek(tt) { t = clamp(tt, 0, DUR); if (playing) { pauseAll(); } seekMedia(t); head(); requestDraw(); $('time').textContent = fmt(t) + ' / ' + fmt(DUR); updateActs(); }
 function follow() { const sc = $('scroll'), x = t * pps; if (x > sc.scrollLeft + sc.clientWidth - 30 || x < sc.scrollLeft) sc.scrollLeft = Math.max(0, x - 30); }
 
 /* ------------------------------------------------------------------ importing media */
@@ -511,12 +511,31 @@ $('toStart').onclick = () => { seek(0); $('scroll').scrollLeft = 0; updateActs()
 $('toEnd').onclick = () => { seek(DUR); updateActs(); };
 addEventListener('keydown', (e) => {
   if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName) && e.target.type !== 'range') return;
+  if (e.target.isContentEditable || tourEl) return;
+  const modal = $('modal');
+  if (modal && modal.classList.contains('on')) { if (e.key === 'Escape' || e.key === '?') { e.preventDefault(); modal.classList.remove('on'); } return; }
+  const onRange = e.target.type === 'range';
+  if (e.ctrlKey || e.metaKey) {
+    if (e.altKey) return;
+    const k = e.key.toLowerCase();
+    if (k === 'z') { e.preventDefault(); e.shiftKey ? redo() : undo(); }
+    else if (k === 'y') { e.preventDefault(); redo(); }
+    else if (k === 'd') { e.preventDefault(); $('dup').click(); }
+    return;
+  }
+  if (e.altKey) return;
   if (e.code === 'Space') { e.preventDefault(); setPlay(!playing); }
   else if (e.key === 's' || e.key === 'S') $('split').click();
-  else if (e.key === 'Delete' || e.key === 'Backspace') $('del').click();
-  else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); e.shiftKey ? redo() : undo(); }
-  else if (e.key === 'ArrowLeft') seek(t - 1 / 30);
-  else if (e.key === 'ArrowRight') seek(t + 1 / 30);
+  else if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); $('del').click(); }
+  else if (e.key === 'Home') { e.preventDefault(); $('toStart').click(); }
+  else if (e.key === 'End') { e.preventDefault(); $('toEnd').click(); }
+  else if (e.key === '?') { e.preventDefault(); $('help').click(); }
+  else if (!onRange && e.key === 'ArrowLeft') { e.preventDefault(); seek(t - (e.shiftKey ? 1 : 1 / 30)); }
+  else if (!onRange && e.key === 'ArrowRight') { e.preventDefault(); seek(t + (e.shiftKey ? 1 : 1 / 30)); }
+});
+/* Space is taken by the editor, so a focused button must not also click when the key is released */
+addEventListener('keyup', (e) => {
+  if (e.code === 'Space' && !/INPUT|SELECT|TEXTAREA/.test(e.target.tagName) && !e.target.isContentEditable && !tourEl) e.preventDefault();
 });
 addEventListener('beforeunload', (e) => { if (mains().length) { e.preventDefault(); e.returnValue = ''; } });
 $('pname').addEventListener('input', (e) => { st.name = e.target.value; });
@@ -1111,7 +1130,7 @@ function openHelp() {
   ];
   box.innerHTML = '<h2>How to make a video</h2><p>Six quick steps. It is easier than it looks.</p><div class="howlist">' +
     steps.map((s, i) => '<div class="how"><span class="hn">' + (i + 1) + '</span><div><b>' + s[0] + '</b><br>' + s[1] + '</div></div>').join('') + '</div>' +
-    '<div class="tips"><b>Good to know</b><ul><li>Make captions last, after you finish cutting.</li><li>Keep this tab open while exporting. 720p is quicker.</li><li>' + (touch ? 'Everything happens on your phone and nothing is uploaded.' : 'Space plays, S splits, Delete removes, Ctrl+Z undoes, and the arrow keys step one frame.') + '</li></ul></div>' +
+    '<div class="tips"><b>Good to know</b><ul><li>Make captions last, after you finish cutting.</li><li>Keep this tab open while exporting. 720p is quicker.</li><li>' + (touch ? 'Everything happens on your phone and nothing is uploaded.' : 'Space plays, S splits, Delete removes, Ctrl+Z undoes and Ctrl+Y redoes. The arrow keys step one frame, and Shift with an arrow steps one second. Home and End jump to the start and the end. Press ? to open this help.') + '</li></ul></div>' +
     '<div style="display:flex;gap:8px;margin-top:14px"><button class="opt" id="hClose" style="justify-content:center;margin:0">Close</button><button class="opt" id="hTour" style="justify-content:center;margin:0;background:var(--acc);border-color:var(--acc);color:#1a0b0a;font-weight:700">Take the tour</button></div>';
   $('modal').classList.add('on');
   $('hClose').onclick = () => $('modal').classList.remove('on');

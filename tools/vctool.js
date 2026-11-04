@@ -61,7 +61,7 @@ async function loadFile(file) {
   $('vc-split').checked = false;
 
   $('vc-name').textContent = file.name;
-  $('vc-meta').textContent = [fmtSize(file.size), st.width + 'x' + st.height, fmtTime(st.duration), st.fps ? st.fps + ' fps' : null].filter(Boolean).join(' · ');
+  $('vc-meta').textContent = [fmtSize(file.size), st.width + 'x' + st.height, fmtTime(st.duration), st.fps ? st.fps + ' fps' : null].filter(Boolean).join(' | ');
   const resSel = $('vc-res');
   resSel.innerHTML = '';
   const opts = [['0', 'Keep original (' + st.height + 'p)']];
@@ -244,7 +244,7 @@ function showResult() {
     const left = document.createElement('span');
     left.innerHTML = '<b></b><small></small>';
     left.querySelector('b').textContent = o.label + '.' + o.ext;
-    left.querySelector('small').textContent = fmtTime(o.start) + ' to ' + fmtTime(o.end) + ' · ' + fmtSize(o.blob.size);
+    left.querySelector('small').textContent = fmtTime(o.start) + ' to ' + fmtTime(o.end) + ' | ' + fmtSize(o.blob.size);
     const a = document.createElement('a');
     a.className = 'btn' + (i === 0 ? ' primary' : '');
     a.href = o.url; a.download = o.label + '.' + o.ext; a.textContent = 'Download';
