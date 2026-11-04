@@ -1,0 +1,62 @@
+[
+ {
+  "id": "kjv",
+  "name": "King James Version",
+  "abbr": "KJV",
+  "license": "1769 text, public domain"
+ },
+ {
+  "id": "bsb",
+  "name": "Berean Standard Bible",
+  "abbr": "BSB",
+  "license": "Dedicated to the public domain by its translators"
+ },
+ {
+  "id": "web",
+  "name": "World English Bible",
+  "abbr": "WEB",
+  "license": "Public domain"
+ },
+ {
+  "id": "asv",
+  "name": "American Standard Version",
+  "abbr": "ASV",
+  "license": "1901, public domain"
+ },
+ {
+  "id": "rv",
+  "name": "Revised Version",
+  "abbr": "RV",
+  "license": "1895, public domain"
+ },
+ {
+  "id": "ylt",
+  "name": "Young's Literal Translation",
+  "abbr": "YLT",
+  "license": "1898, public domain"
+ },
+ {
+  "id": "darby",
+  "name": "Darby Translation",
+  "abbr": "DARBY",
+  "license": "1890, public domain"
+ },
+ {
+  "id": "geneva",
+  "name": "Geneva Bible",
+  "abbr": "GNV",
+  "license": "1599, public domain"
+ },
+ {
+  "id": "dra",
+  "name": "Douay-Rheims Bible",
+  "abbr": "DRA",
+  "license": "1899 American edition, public domain"
+ },
+ {
+  "id": "webster",
+  "name": "Webster Bible",
+  "abbr": "WBT",
+  "license": "1833, public domain"
+ }
+]
