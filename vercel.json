@@ -80,5 +80,25 @@
       "destination": "/tools/pdf-converter/",
       "permanent": true
     }
+  ],
+  "headers": [
+    {
+      "source": "/scout/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/scout",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    }
   ]
 }

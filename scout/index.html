@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IG Scout</title>
+<meta name="description" content="IG Scout finds Instagram businesses by country and website status and saves them as a CSV and a PDF.">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="stylesheet" href="/tools/tools.css">
+<style>
+.sc-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:start;margin:8px 0 28px}
+@media(max-width:860px){.sc-grid{grid-template-columns:1fr}}
+.sc h2{font-size:1.35rem;letter-spacing:-.01em;margin:36px 0 12px}
+.sc h3{font-size:1rem;margin:0 0 6px}
+.sc ol.steps{margin:0;padding:0;list-style:none;counter-reset:s}
+.sc ol.steps li{counter-increment:s;position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.sc ol.steps li:first-child{border-top:0}
+.sc ol.steps li::before{content:counter(s);position:absolute;left:0;top:11px;width:30px;height:30px;border-radius:50%;background:var(--raised);border:1px solid var(--line2);display:grid;place-items:center;font-weight:700;font-size:.85rem}
+.sc ol.steps b{display:block;margin-bottom:2px}
+.sc p,.sc li{color:var(--soft)}
+.sc .meta{font-family:var(--mono);font-size:.78rem;color:var(--faint);margin:10px 0 0}
+.sc .cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;margin:0;padding:0;list-style:none}
+.sc .cols li{background:var(--raised);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:.88rem}
+.sc .cols b{color:var(--ink);display:block;font-size:.84rem}
+.sc .warn{border-left:3px solid var(--accent);padding:4px 0 4px 16px;margin:14px 0}
+.sc code{font-family:var(--mono);font-size:.84em;background:var(--raised);border:1px solid var(--line);border-radius:6px;padding:1px 6px;color:var(--ink)}
+.sc details{border-top:1px solid var(--line);padding:12px 0}
+.sc details:last-of-type{border-bottom:1px solid var(--line)}
+.sc summary{cursor:pointer;font-weight:600;color:var(--ink)}
+.sc details p{margin:8px 0 0}
+.sc .dl{display:flex;flex-direction:column;gap:12px}
+.sc .dl .btn{font-size:1rem;padding:14px 20px}
+.sc ul.notes{margin:8px 0 0;padding-left:20px}
+footer.sc-f{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--faint);font-size:.82rem}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the page</a>
+<header class="th"><div class="wrap top"><a class="brand" href="/" title="Evans Ademilua, portfolio"><img src="/favicon-32.png" width="30" height="30" alt=""><span>Evans Ademilua</span><small>IG Scout</small></a></div></header>
+<main id="main" class="sc">
+<div class="wrap">
+<section class="hero-t">
+  <h1>IG Scout</h1>
+  <p class="lead">A Windows app that finds businesses on Instagram, checks whether they have a real website, and saves the list as a CSV and a PDF. You pick the country and the website filter. It does the searching.</p>
+</section>
+
+<div class="sc-grid">
+  <div class="card dl" id="download">
+    <div>
+      <h3>Download for Windows</h3>
+      <p style="margin:0">One file. No installer, no command window. Works on Windows 10 and 11 with Microsoft Edge or Google Chrome.</p>
+    </div>
+    <a class="btn primary" id="dlbtn" href="#download" aria-disabled="true" style="opacity:.5;pointer-events:none">Download opens soon</a>
+    <p class="meta" id="vmeta">Windows, about 80 MB zip</p>
+    <p class="meta" style="margin-top:0">It updates itself. A banner appears when a new version is ready.</p>
+  </div>
+  <div class="card">
+    <h3>Set it up in four steps</h3>
+    <ol class="steps">
+      <li><b>Download and unzip</b>Right click the zip, choose Extract All, and put <code>IG Scout.exe</code> anywhere you like, for example the Desktop.</li>
+      <li><b>Open it</b>Double click <code>IG Scout.exe</code>. It takes a few seconds to open the first time.</li>
+      <li><b>If Windows warns you</b>You will see "Windows protected your PC" because the app is not signed with a paid certificate. Press <b style="display:inline">More info</b>, then <b style="display:inline">Run anyway</b>. This happens once.</li>
+      <li><b>Log in to Instagram</b>Press the Log in button. A browser window opens and you sign in yourself. The app never sees your password, and you only do this once.</li>
+    </ol>
+  </div>
+</div>
+
+<h2>How to use it</h2>
+<div class="card">
+<ol class="steps">
+  <li><b>Choose a country</b>Pick one, or leave it on Any country.</li>
+  <li><b>Choose the website filter</b>No website finds businesses that only have Instagram, or a link page with no site behind it. Has website finds businesses with a real site. Either takes both.</li>
+  <li><b>Say what kind of business, if you like</b>Type things like <code>tattoo artist, barber, bakery</code>, separated by commas. Leave it empty to search many kinds.</li>
+  <li><b>Set how many leads you want</b>Start with 10 to see how it behaves. Keep the speed on Safe.</li>
+  <li><b>Press Run</b>Leads appear in the table one by one. You can press Stop at any time. Everything found so far is kept.</li>
+  <li><b>Download your results</b>Press <b style="display:inline">Download CSV</b> for a spreadsheet file or <b style="display:inline">Download PDF</b> for a readable list with clickable profile links. <b style="display:inline">Open results folder</b> shows every file the app has saved.</li>
+</ol>
+</div>
+
+<h2>What you get for each business</h2>
+<ul class="cols">
+  <li><b>Handle and Instagram link</b>Opens the profile</li>
+  <li><b>Country</b>With the reason it was decided, such as the bio, a post location or a phone code</li>
+  <li><b>Has website, and detail</b>For example "Yes. Wix, domain.com" or "No. Linktree has only TikTok, YouTube"</li>
+  <li><b>What they do</b>Their category, their city and their follower count</li>
+  <li><b>Track record</b>Posts, posts per month, last post, earliest post seen, best post likes, and whether the account is active</li>
+  <li><b>Contact</b>Email or phone, only when it is public in the bio</li>
+</ul>
+
+<h2>Good to know</h2>
+<div class="warn">
+  <p><b style="color:var(--ink)">Use it gently.</b> Instagram limits accounts that look up too many profiles too fast. Safe mode checks one profile every few seconds and stops at 400 lookups a day. Fast mode checks three at once and stops at 900, and it raises the chance of a limit on your account. If a run stops with a "blocked" message, wait 30 minutes before running again. A spare account is safer than your main one.</p>
+  <p>Using Instagram with automated tools goes against Instagram's terms of use. You use this at your own risk, on your own account.</p>
+</div>
+<ul class="notes">
+  <li>The country is only filled in when something points to it. Otherwise it says Unknown. Nothing is guessed.</li>
+  <li>The earliest post it can see is not the same as the date the account was created, because Instagram does not show that.</li>
+  <li>The PDF shows plain text only, so emoji in bios and names are left out. The CSV keeps everything exactly as found.</li>
+  <li>Some websites block automated checks. Those are marked as live, not broken.</li>
+</ul>
+
+<h2>Where things are saved</h2>
+<ul class="notes">
+  <li>Results: <code>Documents\IG Scout\results</code></li>
+  <li>Handles you already have: put CSV files in <code>Documents\IG Scout\already-have</code> and the app skips those people. The option is on by default.</li>
+  <li>Your Instagram login is stored only on your computer, inside <code>AppData\Local\IGScout</code>. Delete that folder to sign out completely.</li>
+</ul>
+
+<h2>Problems</h2>
+<details><summary>Nothing opens when I double click</summary><p>Wait about 15 seconds on the first start. If still nothing, open <code>AppData\Local\IGScout</code> and look for <code>igscout-crash.log</code>. It says what went wrong.</p></details>
+<details><summary>My antivirus flagged the file</summary><p>Apps built with Python are sometimes flagged by mistake because they are unsigned. The file contains the app and nothing else. Add it to your antivirus exceptions if you trust it.</p></details>
+<details><summary>It says to log in again</summary><p>Press Log in to Instagram. If the sign in window shows a security check, finish it there, then press Run.</p></details>
+<details><summary>It found nothing, or very little</summary><p>The filters may be too tight. Try Either for the website, add the option to keep profiles where the country cannot be told, or lower the minimum followers.</p></details>
+<details><summary>Update did not work</summary><p>Download the zip from this page again and replace the old file. Your results and login are kept.</p></details>
+
+<h2>Version history</h2>
+<div class="card"><div id="changes"><p style="margin:0">Loading</p></div></div>
+</div>
+<footer class="sc-f"><div class="wrap">Private page. Not listed on the site and not indexed by search engines.</div></footer>
+</main>
+<script>
+(function(){
+  fetch('/scout/version.json',{cache:'no-store'}).then(function(r){return r.json()}).then(function(v){
+    if(v.download){var b=document.getElementById('dlbtn');b.href=v.download;b.textContent='Download IG Scout';b.removeAttribute('aria-disabled');b.removeAttribute('style');b.setAttribute('download','')}
+    document.getElementById('vmeta').textContent='Version '+v.version+', Windows, about 80 MB zip';
+    var n=(v.notes||[]).map(function(x){return '<li>'+String(x).replace(/[&<>]/g,'')+'</li>'}).join('');
+    document.getElementById('changes').innerHTML='<h3>Version '+v.version+'</h3><ul class="notes">'+(n||'<li>No notes</li>')+'</ul>';
+  }).catch(function(){document.getElementById('changes').innerHTML='<p style="margin:0">Version information is not available right now.</p>'});
+})();
+</script>
+</body>
+</html>

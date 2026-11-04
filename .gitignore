@@ -48,3 +48,7 @@ drafts/maison-gray/pitch/*.png
 
 # Presenter desktop app build output
 desktop/presenter-app/dist/
+
+# Private tooling
+ig-scout/
+scout/download/
