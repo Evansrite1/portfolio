@@ -51,18 +51,18 @@ footer.sc-f{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px
   <div class="card dl" id="download">
     <div>
       <h3>Download for Windows</h3>
-      <p style="margin:0">One file. No installer, no command window. Works on Windows 10 and 11 with Microsoft Edge or Google Chrome.</p>
+      <p style="margin:0">A normal Windows installer. It installs IG Scout like any other app, with a Start Menu entry and a Desktop shortcut. Works on Windows 10 and 11 with Microsoft Edge or Google Chrome. No administrator password needed.</p>
     </div>
     <a class="btn primary" id="dlbtn" href="#download" aria-disabled="true" style="opacity:.5;pointer-events:none">Download opens soon</a>
-    <p class="meta" id="vmeta">Windows, about 80 MB zip</p>
+    <p class="meta" id="vmeta">Windows installer, about 56 MB</p>
     <p class="meta" style="margin-top:0">It updates itself. A banner appears when a new version is ready.</p>
   </div>
   <div class="card">
-    <h3>Set it up in four steps</h3>
+    <h3>Install it in four steps</h3>
     <ol class="steps">
-      <li><b>Download and unzip</b>Right click the zip, choose Extract All, and put <code>IG Scout.exe</code> anywhere you like, for example the Desktop.</li>
-      <li><b>Open it</b>Double click <code>IG Scout.exe</code>. It takes a few seconds to open the first time.</li>
-      <li><b>If Windows warns you</b>You will see "Windows protected your PC" because the app is not signed with a paid certificate. Press <b style="display:inline">More info</b>, then <b style="display:inline">Run anyway</b>. This happens once.</li>
+      <li><b>Download the installer</b>Press the button above. You get one file, <code>IG-Scout-Setup.exe</code>.</li>
+      <li><b>Run it</b>Double click the file and press Next, then Install. If Windows shows "Windows protected your PC", press <b style="display:inline">More info</b>, then <b style="display:inline">Run anyway</b>. The installer is not signed with a paid certificate, so this happens once.</li>
+      <li><b>Open IG Scout</b>Use the Desktop shortcut or the Start Menu. It opens in its own window.</li>
       <li><b>Log in to Instagram</b>Press the Log in button. A browser window opens and you sign in yourself. The app never sees your password, and you only do this once.</li>
     </ol>
   </div>
@@ -73,6 +73,7 @@ footer.sc-f{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px
 <ol class="steps">
   <li><b>Choose a country</b>Pick one, or leave it on Any country.</li>
   <li><b>Choose the website filter</b>No website finds businesses that only have Instagram, or a link page with no site behind it. Has website finds businesses with a real site. Either takes both.</li>
+  <li><b>Messages are written for you</b>Every lead gets a ready message in your CSV and PDF, built from what the app found: their name when it is a person, what they do, and whether their website is missing, broken or live. If you would rather use your own wording, type it in the box and the app fills in <code>{first_name}</code>, <code>{niche}</code>, <code>{city}</code> and the other fields for each business.</li>
   <li><b>Say what kind of business, if you like</b>Type things like <code>tattoo artist, barber, bakery</code>, separated by commas. Leave it empty to search many kinds.</li>
   <li><b>Set how many leads you want</b>Start with 10 to see how it behaves. Keep the speed on Safe.</li>
   <li><b>Press Run</b>Leads appear in the table one by one. You can press Stop at any time. Everything found so far is kept.</li>
@@ -82,13 +83,15 @@ footer.sc-f{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px
 
 <h2>What you get for each business</h2>
 <ul class="cols">
-  <li><b>Handle and Instagram link</b>Opens the profile</li>
-  <li><b>Country</b>With the reason it was decided, such as the bio, a post location or a phone code</li>
-  <li><b>Has website, and detail</b>For example "Yes. Wix, domain.com" or "No. Linktree has only TikTok, YouTube"</li>
-  <li><b>What they do</b>Their category, their city and their follower count</li>
-  <li><b>Track record</b>Posts, posts per month, last post, earliest post seen, best post likes, and whether the account is active</li>
-  <li><b>Contact</b>Email or phone, only when it is public in the bio</li>
+  <li><b>handle and instagram_link</b>The full profile link, ready to open or copy</li>
+  <li><b>country</b>Decided from the bio, a post location, a phone code or the website domain. Unknown when nothing points anywhere</li>
+  <li><b>has_website and website_detail</b>For example "Yes. Wix, domain.com" or "No. Linktree has only TikTok, YouTube"</li>
+  <li><b>what_they_do</b>Their category, their city and their follower count</li>
+  <li><b>message</b>A ready message for that business, in every row</li>
+  <li><b>website</b>The full website link, when there is one</li>
+  <li><b>last_3_post_dates</b>The dates of the three newest posts, pinned posts left out</li>
 </ul>
+<p style="margin-top:12px">Businesses that are not a fit are left out and counted under "Passed over" on the screen: job boards and recruiters, clothing, fashion and product brands that sell online, hotel chains, and accounts with no clear business.</p>
 
 <h2>Good to know</h2>
 <div class="warn">
@@ -107,6 +110,7 @@ footer.sc-f{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px
   <li>Results: <code>Documents\IG Scout\results</code></li>
   <li>Handles you already have: put CSV files in <code>Documents\IG Scout\already-have</code> and the app skips those people. The option is on by default.</li>
   <li>Your Instagram login is stored only on your computer, inside <code>AppData\Local\IGScout</code>. Delete that folder to sign out completely.</li>
+  <li>To remove the app, use Settings, Apps, Installed apps, IG Scout, Uninstall. Your results and login are kept unless you delete those folders.</li>
 </ul>
 
 <h2>Problems</h2>
@@ -114,7 +118,7 @@ footer.sc-f{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px
 <details><summary>My antivirus flagged the file</summary><p>Apps built with Python are sometimes flagged by mistake because they are unsigned. The file contains the app and nothing else. Add it to your antivirus exceptions if you trust it.</p></details>
 <details><summary>It says to log in again</summary><p>Press Log in to Instagram. If the sign in window shows a security check, finish it there, then press Run.</p></details>
 <details><summary>It found nothing, or very little</summary><p>The filters may be too tight. Try Either for the website, add the option to keep profiles where the country cannot be told, or lower the minimum followers.</p></details>
-<details><summary>Update did not work</summary><p>Download the zip from this page again and replace the old file. Your results and login are kept.</p></details>
+<details><summary>Update did not work</summary><p>Download the installer from this page again and run it. It replaces the old version and keeps your results and login.</p></details>
 
 <h2>Version history</h2>
 <div class="card"><div id="changes"><p style="margin:0">Loading</p></div></div>
@@ -125,7 +129,7 @@ footer.sc-f{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px
 (function(){
   fetch('/scout/version.json',{cache:'no-store'}).then(function(r){return r.json()}).then(function(v){
     if(v.download){var b=document.getElementById('dlbtn');b.href=v.download;b.textContent='Download IG Scout';b.removeAttribute('aria-disabled');b.removeAttribute('style');b.setAttribute('download','')}
-    document.getElementById('vmeta').textContent='Version '+v.version+', Windows, about 80 MB zip';
+    document.getElementById('vmeta').textContent='Version '+v.version+', Windows installer, about 56 MB';
     var n=(v.notes||[]).map(function(x){return '<li>'+String(x).replace(/[&<>]/g,'')+'</li>'}).join('');
     document.getElementById('changes').innerHTML='<h3>Version '+v.version+'</h3><ul class="notes">'+(n||'<li>No notes</li>')+'</ul>';
   }).catch(function(){document.getElementById('changes').innerHTML='<p style="margin:0">Version information is not available right now.</p>'});
