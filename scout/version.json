@@ -8,5 +8,6 @@
     "Pinned posts are left out of the post dates",
     "Job boards, product brands and hotel chains are left out",
     "Installs as a normal Windows app"
-  ]
+  ],
+  "download": "https://github.com/Evansrite1/portfolio/releases/download/scout-v1.1.0/IG-Scout-Setup.exe"
 }
