@@ -38,7 +38,15 @@ jobs:
         run: sudo mdutil -a -i off
         working-directory: .
       - run: npm ci
-      - run: npm run ${{ matrix.script }}
+      - name: Build (the Mac disk image step fails now and then, so it is tried up to four times)
+        shell: bash
+        run: |
+          for i in 1 2 3 4; do
+            rm -rf dist
+            if npm run ${{ matrix.script }}; then exit 0; fi
+            echo "Attempt $i failed, trying again"; sleep 10
+          done
+          exit 1
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
