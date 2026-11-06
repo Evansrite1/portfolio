@@ -409,6 +409,21 @@ async function thumbFor(m) {
     return c.toDataURL('image/jpeg', 0.7);
   } catch (e) { return ''; }
 }
+/* Some files do not say how long they are (recordings made in a browser are the usual case), so the browser reports
+   "Infinity". Work the real length out instead of letting it break the timeline. */
+async function realDuration(el, file) {
+  if (isFinite(el.duration) && el.duration > 0) return el.duration;
+  try {
+    const mb = await import(MB), input = new mb.Input({ source: new mb.BlobSource(file), formats: mb.ALL_FORMATS });
+    const d = await input.computeDuration(); input.dispose && input.dispose();
+    if (isFinite(d) && d > 0) return d;
+  } catch (e) { /* try the next way */ }
+  try {
+    await new Promise((res) => { const f = () => { el.removeEventListener('durationchange', f); el.removeEventListener('timeupdate', f); res(); }; el.addEventListener('durationchange', f); el.addEventListener('timeupdate', f); el.currentTime = 1e9; setTimeout(res, 4000); });
+    el.currentTime = 0;
+  } catch (e) { /* use what we have */ }
+  return isFinite(el.duration) && el.duration > 0 ? el.duration : 5;
+}
 async function importFile(file) {
   const type = file.type.startsWith('video/') ? 'video' : file.type.startsWith('image/') ? 'image' : file.type.startsWith('audio/') ? 'audio' : (/\.(mov|mkv|mp4|m4v|webm)$/i.test(file.name) ? 'video' : null);
   if (!type) throw new Error(file.name + ' is not a video, photo or audio file.');
@@ -419,7 +434,7 @@ async function importFile(file) {
       const el = document.createElement('video'); el.preload = 'auto'; el.playsInline = true; el.src = url;
       await waitFor(el, 'loadedmetadata', 'error');
       if (!el.videoWidth) throw new Error('decode');
-      m.el = el; m.dur = el.duration; m.w = el.videoWidth; m.h = el.videoHeight;
+      m.el = el; m.dur = await realDuration(el, file); m.w = el.videoWidth; m.h = el.videoHeight;
       el.addEventListener('seeked', () => { if (!playing && !exporting) requestDraw(); });
       await waitFor(el, 'loadeddata', 'error').catch(() => {});
     } else if (type === 'image') {
@@ -428,7 +443,7 @@ async function importFile(file) {
     } else {
       const el = new Audio(); el.preload = 'auto'; el.src = url;
       await waitFor(el, 'loadedmetadata', 'error');
-      m.el = el; m.dur = el.duration;
+      m.el = el; m.dur = await realDuration(el, file);
     }
   } catch (e) {
     URL.revokeObjectURL(url);
@@ -471,6 +486,7 @@ async function handleFiles(files) {
   refresh();
   if (errors.length) toast(errors[0]);
   else toast('Added. Your files stay on this device.');
+  if (wasBlank && mains().length) setTimeout(fitZoom, 60);
   if (wasBlank && mains().length && !errors.length) setTimeout(offerTour, 1400);
   if (tool === 'add') openTool('add');
   if (mains().length && !playing) seek(t);
@@ -538,10 +554,11 @@ async function removeSilences(c) {
 const COLORS = { main: 'v', text: 't', cap: 'c', audio: 'a' };
 const LANE_NAMES = { main: 'Video', text: 'Text', cap: 'Captions', audio: 'Sound' };
 function lanesInUse() { return ['main', 'text', 'cap', 'audio'].filter((l) => isDesk() || l === 'main' || st.clips.some((c) => c.lane === l)); }
+const RULER_STEPS = [0.1, 0.25, 0.5, 1, 2, 5, 10, 15, 30, 60, 120, 300, 600];
 function drawTL() {
   $('canvas').style.width = (Math.max(DUR, 10) * pps + 100) + 'px';
-  let r = ''; const step = pps > 45 ? 1 : pps > 24 ? 2 : 5;
-  for (let i = 0; i <= Math.max(DUR, 10); i += step) r += '<span style="left:' + i * pps + 'px">' + fmt(i) + '</span>';
+  let r = ''; const step = RULER_STEPS.find((x) => x * pps >= 70) || 600, span = Math.max(DUR, 10);
+  for (let k = 0; k * step <= span + step; k++) { const i = k * step; r += '<span style="left:' + i * pps + 'px">' + (step < 1 ? fmtp(i) : fmt(i)) + '</span>'; }
   $('ruler').innerHTML = r;
   let h = '';
   for (const lane of lanesInUse()) {
@@ -618,8 +635,28 @@ $('ruler').addEventListener('pointerdown', (e) => {
   const mv = (ev) => seekFromEvent(ev); const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); };
   addEventListener('pointermove', mv); addEventListener('pointerup', up);
 });
-$('zin').onclick = () => { pps = Math.min(90, pps + 10); drawTL(); };
-$('zout').onclick = () => { pps = Math.max(10, pps - 8); drawTL(); };
+/* timeline zoom: the moment under the pointer (or the red line) stays where it is */
+const PPS_MIN = 2, PPS_MAX = 400;
+function syncZoomUI() {
+  const z = $('zslider'); if (z) z.value = Math.round(100 * Math.log(pps / PPS_MIN) / Math.log(PPS_MAX / PPS_MIN));
+  $('zin').disabled = pps >= PPS_MAX - 0.01; $('zout').disabled = pps <= PPS_MIN + 0.01;
+}
+function setZoom(next, anchorX) {
+  const sc = $('scroll'); next = clamp(next, PPS_MIN, PPS_MAX);
+  if (Math.abs(next - pps) < 0.001) { syncZoomUI(); return; }
+  const head = t * pps, ax = anchorX != null ? anchorX : (head >= sc.scrollLeft && head <= sc.scrollLeft + sc.clientWidth ? head - sc.scrollLeft : sc.clientWidth / 2);
+  const timeAt = (sc.scrollLeft + ax) / pps;
+  pps = next; drawTL(); sc.scrollLeft = Math.max(0, timeAt * pps - ax); syncZoomUI();
+}
+function fitZoom() { const sc = $('scroll'); if (!DUR) return; setZoom((sc.clientWidth - 70) / DUR, 0); sc.scrollLeft = 0; }
+$('zin').onclick = () => setZoom(pps * 1.4);
+$('zout').onclick = () => setZoom(pps / 1.4);
+$('zfit').onclick = fitZoom;
+$('zslider').addEventListener('input', (e) => setZoom(PPS_MIN * Math.pow(PPS_MAX / PPS_MIN, +e.target.value / 100)));
+$('scroll').addEventListener('wheel', (e) => {
+  if (!(e.ctrlKey || e.metaKey)) return;
+  e.preventDefault(); setZoom(pps * Math.exp(-e.deltaY * 0.0022), e.clientX - $('scroll').getBoundingClientRect().left);
+}, { passive: false });
 $('undo').onclick = undo; $('redo').onclick = redo;
 $('split').onclick = () => {
   const c = get(st.sel); if (!c || $('split').disabled) return;
@@ -683,6 +720,7 @@ addEventListener('keydown', (e) => {
   else if (e.key === 'g' || e.key === 'G') $('guides').click();
   else if (e.key === '+' || e.key === '=') $('zin').click();
   else if (e.key === '-' || e.key === '_') $('zout').click();
+  else if (e.key === '0') $('zfit').click();
   else if (!onRange && e.key === 'ArrowLeft') { e.preventDefault(); seek(t - (e.shiftKey ? 1 : 1 / 30)); }
   else if (!onRange && e.key === 'ArrowRight') { e.preventDefault(); seek(t + (e.shiftKey ? 1 : 1 / 30)); }
 });
@@ -1237,6 +1275,8 @@ async function buildMix(mb, clips, sr, channels, isCancelled, onProgress) {
   } finally { for (const i of inputs) i.dispose && i.dispose(); }
 }
 const exportAudioClips = () => st.clips.filter((c) => (c.lane === 'main' && media.get(c.mid) && media.get(c.mid).type === 'video') || c.lane === 'audio');
+/* Give the page a breath between frames. A message is not slowed down when the tab is in the background, a timer is. */
+function yieldNow() { return new Promise((r) => { const ch = new MessageChannel(); ch.port1.onmessage = () => r(); ch.port2.postMessage(0); }); }
 async function runExport(W, H, vbitrate, progress) {
   const mb = await import(MB);
   const { Output, Mp4OutputFormat, BufferTarget, CanvasSource, AudioBufferSource, Input, BlobSource, ALL_FORMATS, CanvasSink, canEncodeAudio } = mb;
@@ -1283,13 +1323,28 @@ async function runExport(W, H, vbitrate, progress) {
       tags.images = [{ data: new Uint8Array(await b.arrayBuffer()), mimeType: 'image/jpeg', kind: 'coverFront' }];
     } catch (e) { /* the cover is optional */ }
     output.setMetadataTags(tags);
+    /* Read each clip's frames in order, in one pass. Asking for every frame on its own gets slower and slower, most of all
+       for recordings made in a browser. */
+    const times = new Map();
+    for (let i = 0; i < N; i++) {
+      const tt = i / fps, c = mainAt(tt), m = c && media.get(c.mid);
+      if (m && m.type === 'video') { let a = times.get(c.id); if (!a) times.set(c.id, a = []); a.push(clamp(c.in + (tt - c.s) * c.speed, c.in, Math.max(c.in, c.out - 0.001))); }
+    }
+    const gens = new Map();
+    const nextFrame = async (c) => {
+      let g = gens.get(c.id);
+      if (!g) { g = sinks.get(c.mid).canvasesAtTimestamps(times.get(c.id))[Symbol.asyncIterator](); gens.set(c.id, g); }
+      const r = await g.next();
+      return r.done || !r.value ? null : r.value.canvas;
+    };
     await output.start();
     for (let i = 0; i < N; i++) {
       if (cancelExport) { await output.cancel(); throw new Error('cancelled'); }
       const tt = i / fps, c = mainAt(tt);
-      renderFrame(ctx, W, H, tt, c ? await frameFor(c, tt) : null);
+      const cm = c && media.get(c.mid);
+      renderFrame(ctx, W, H, tt, !cm ? null : cm.type === 'image' ? cm.el : await nextFrame(c));
       await vsrc.add(tt, 1 / fps);
-      if (i % 3 === 0) { progress(0.05 + 0.88 * i / N, 'Making your video...'); await new Promise((r) => setTimeout(r)); }
+      if (i % 3 === 0) { progress(0.05 + 0.88 * i / N, 'Making your video...'); await yieldNow(); }
     }
     if (asrc) { progress(0.95, 'Saving sound...'); await asrc.add(mix); }
     progress(0.98, 'Finishing...');
@@ -1407,7 +1462,7 @@ if (!('VideoEncoder' in window) || !('OffscreenCanvas' in window)) {
 }
 $('guides').onclick = () => { const on = $('stage').classList.toggle('guides'); $('guides').setAttribute('aria-pressed', on); };
 if (/[?&]desktop=1/.test(location.search)) { const bk = document.querySelector('.top .back'); if (bk) bk.hidden = true; }
-applyRatio(); buildToolbar(); updateActs(); draw();
+applyRatio(); buildToolbar(); updateActs(); draw(); syncZoomUI();
 if (isDesk()) openTool('add');
 matchMedia('(min-width:1100px) and (min-height:620px)').addEventListener('change', () => { drawTL(); if (isDesk() && !tool) openTool('add'); });
 window.__ve = { st, media, importFile, handleFiles, addToTimeline, refresh, layout, renderFrame, runExport, seek, setPlay, get DUR() { return DUR; }, get t() { return t; }, undo, redo, dims };
