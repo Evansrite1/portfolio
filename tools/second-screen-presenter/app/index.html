@@ -354,12 +354,12 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
 <div class="gate" id="gate" hidden>
   <div class="box">
     <img src="/tools/second-screen-presenter/icon-192.png" alt="" width="84" height="84">
-    <h2>Get the Presenter app</h2>
-    <p>The app puts the show on your TV or projector by itself, full screen, with nothing to drag. It updates itself whenever you are online.</p>
+    <h2>Install the Presenter app</h2>
+    <p>The Presenter is an app for Windows and Mac. Install it once and it opens from your Start menu or Applications folder. It puts the show on your TV or projector by itself, full screen, and it updates itself when you are online.</p>
     <a class="b pri" id="gate-dl" href="https://github.com/Evansrite1/portfolio/releases/latest/download/Presenter-Setup.exe" download>Download</a>
+    <small id="gate-other"></small>
     <small id="gate-tip"></small>
-    <div class="links"><button class="b" id="gate-fs" type="button">Use in this browser instead</button><button class="b" id="gate-win" type="button">Skip the TV screen</button><button class="b" id="gate-install" type="button" hidden>Install as a web app</button></div>
-    <small>In the browser, the TV screen needs one click each time and works best in Chrome or Edge. Everything runs on this computer and nothing is uploaded.</small>
+    <small>Everything runs on your computer and nothing is uploaded. The phone remote still works in a phone browser once the app is open.</small>
   </div>
 </div>
 
@@ -583,6 +583,7 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
 
 <div class="toast" id="toast"></div>
 <script src="/tools/vendor/qrcode.js"></script>
+<script src="/tools/appdl.js"></script>
 <script src="/tools/presenter-download.js"></script>
 <script src="/tools/ssapp.js"></script>
 </body>

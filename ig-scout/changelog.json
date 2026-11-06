@@ -1,0 +1,25 @@
+[
+  {
+    "version": "1.1.1",
+    "notes": [
+      "IG Scout now installs on Mac as well as Windows",
+      "Open results folder works on Mac"
+    ]
+  },
+  {
+    "version": "1.1.0",
+    "notes": [
+      "A ready message for every lead, written from what the app found, in every CSV and PDF",
+      "The CSV matches your leads sheet, with the website link and the dates of the last three posts added",
+      "Pinned posts are left out of the post dates",
+      "Job boards, product brands and hotel chains are left out",
+      "Installs as a normal Windows app"
+    ]
+  },
+  {
+    "version": "1.0.0",
+    "notes": [
+      "First release"
+    ]
+  }
+]

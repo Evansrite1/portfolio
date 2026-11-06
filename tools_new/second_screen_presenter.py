@@ -9,7 +9,7 @@ TOOL = '''<div class="tool" id="ss-tool" style="grid-template-columns:1fr">
     <a class="btn primary" id="ss-dl" href="https://github.com/Evansrite1/portfolio/releases/latest/download/Presenter-Setup.exe" style="padding:15px 28px;font-size:1rem" download>Download the app</a>
     <p class="help" id="ss-dl-other" style="margin-top:10px"></p>
     <p class="help" id="ss-dl-tip" style="max-width:58ch;margin:6px auto 0"></p>
-    <p class="help" style="margin-top:16px">The app opens the TV screen on your second screen by itself and updates itself when you are online. Prefer not to install? <a href="/tools/second-screen-presenter/app/">Open it in the browser</a>. Nothing is uploaded. <a href="/tools/second-screen-presenter/contact/">Contact the builder</a></p>
+    <p class="help" style="margin-top:16px">The app opens the TV screen on your second screen by itself and updates itself when you are online. Install it once and it opens from your Start menu or Applications folder. Nothing is uploaded. <a href="/tools/second-screen-presenter/contact/">Contact the builder</a></p>
   </div>
 </div>'''
 
@@ -51,8 +51,8 @@ SECTIONS = '''
 <section class="block prose"><h2>How to show things on a second screen</h2>
 <ol>
 <li><b>Connect the TV or projector.</b> Plug it into your laptop with HDMI and set it to <b>extend</b> your desktop, not mirror it. On Windows press Windows key + P and choose Extend. On a Mac open System Settings, Displays, and turn off mirroring.</li>
-<li><b>Install the app and open it.</b> Press Download, run the file, and open Presenter. The app finds your second screen by itself. In the browser instead, press Open it in the browser and use Start and show on the TV screen.</li>
-<li><b>The show appears on the TV by itself.</b> In the app it goes full screen on your extended TV or projector with no window to drag and no title bar, and moves there by itself if you plug the TV in later. In the browser it takes one click and the first time you must allow the site to use your screens. Press Esc on the TV to leave full screen in the browser.</li>
+<li><b>Install the app and open it.</b> Press Download, run the file, and open Presenter. The app finds your second screen by itself.</li>
+<li><b>The show appears on the TV by itself.</b> It goes full screen on your extended TV or projector with no window to drag and no title bar, and moves there by itself if you plug the TV in later. Press Esc on the TV screen to leave full screen.</li>
 <li><b>Build your service and show it.</b> Add songs, passages and media from the Library, then click a song or double-click anything else.</li>
 </ol></section>
 <section class="block prose"><h2>Tips for a smooth show</h2>
@@ -69,7 +69,7 @@ PAGE = dict(
     desc='Free presenter for churches and events. Show Bible verses, song lyrics, PDFs, photos, videos, cameras and countdowns on a TV or projector, with a stage display and phone remote.',
     h1='Second screen presenter', app='Second Screen Presenter',
     lead='A free presenter for church services and events. Show Bible verses, song lyrics, PDFs, photos, videos, a camera or a countdown on a TV or projector, while you control everything from your laptop or phone.',
-    tool=TOOL, vendor=[], own=['presenter-download.js', 'presenter-download-page.js'], module=[], css=[],
+    tool=TOOL, vendor=[], own=['appdl.js', 'presenter-download.js', 'presenter-download-page.js'], module=[], css=[],
     sections=SECTIONS,
     faq=[
         ('Is this free?', 'Yes. There is no sign-up, no watermark and no limit.'),
@@ -81,7 +81,7 @@ PAGE = dict(
         ('Can it open Chrome for me?', 'A website cannot launch or control Chrome on your computer. Instead the Capture tab can share any Chrome window or screen you choose, and links to YouTube, Vimeo and Google Slides can be added in the Media tab.'),
         ('Can the service run by itself?', 'Yes. Give items a start time from their three-dots menu, then press Run automatically in the Service panel. Each item appears on the screen at its time, and songs and passages can move through their slides at a speed you set. Keep the presenter page open on the computer. You can switch back to clicking by hand at any time.'),
         ('Can I go live on YouTube, Facebook, Twitch or TikTok?', 'Not directly from a web page, because browsers cannot send live video to those services. The broadcast button shows how to use the free program OBS Studio to capture the TV screen window and stream it, with links to each platform. The red record button saves a video of the screen to your computer.'),
-        ('How do I run it without the browser around it?', 'Press Open presenter and choose Start in full screen, or install it as an app from the same screen. Press Esc to leave full screen.'),
+        ('How do I run it without the browser around it?', 'It is an installed app, so it opens in its own window with no browser around it. Install it on Windows or Mac, then open it from your Start menu or Applications folder.'),
         ('Why is my TV showing the same thing as my laptop?', 'Your display is set to mirror. Set it to extend instead: Windows key + P then Extend on Windows, or turn off mirroring in Displays settings on a Mac.'),
         ('Why is there no sound?', 'Browsers block sound until you click the page. Click the TV screen once. If you still hear nothing, set your computer sound output to the TV or HDMI.'),
         ('How does the phone connect?', 'Scan the code with your phone. The free PeerJS service helps the phone find your computer, then the two talk directly. Both need internet. The phone shows a small live picture of the TV screen, lets you move through the service and add songs and Bible passages. Your original photos and videos are never sent to the phone.'),

@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IG Scout</title>
+<link rel="icon" href="/favicon.ico">
+<style>
+:root{--bg:#0e1013;--panel:#171a1f;--raised:#1e2228;--line:#2a2f37;--ink:#eef1f5;--soft:#9aa3af;--accent:#e8412e;--ok:#2fbf71;--warn:#e8a92e;--bad:#e8412e}
+@media (prefers-color-scheme:light){:root{--bg:#f4f5f7;--panel:#fff;--raised:#f0f2f5;--line:#dde1e7;--ink:#14171c;--soft:#5b6572}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px;border-bottom:1px solid var(--line);background:var(--panel)}
+h1{margin:0;font-size:1.15rem;letter-spacing:.01em}
+.sub{color:var(--soft);font-size:.85rem}
+main{display:grid;grid-template-columns:340px 1fr;gap:20px;padding:20px 24px;align-items:start}
+@media(max-width:980px){main{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+.card h2{margin:0 0 12px;font-size:.78rem;text-transform:uppercase;letter-spacing:.09em;color:var(--soft)}
+label{display:block;font-size:.85rem;color:var(--soft);margin:12px 0 5px}
+select,input[type=text],input[type=number],textarea{width:100%;background:var(--raised);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font:inherit}
+textarea{resize:vertical;min-height:62px}
+select:focus,input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+.seg{display:grid;grid-auto-flow:column;gap:6px}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{margin:0;text-align:center;padding:8px 6px;border:1px solid var(--line);border-radius:9px;cursor:pointer;color:var(--ink);background:var(--raised);font-size:.88rem}
+.seg input:checked+label{background:var(--accent);border-color:var(--accent);color:#fff}
+.seg input:focus-visible+label{outline:2px solid var(--accent);outline-offset:2px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chk{display:flex;gap:9px;align-items:flex-start;margin:9px 0;color:var(--ink);font-size:.88rem}
+.chk input{margin-top:3px;accent-color:var(--accent)}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--ink);padding:9px 14px}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;width:100%;padding:12px;margin-top:14px}
+button.primary:disabled{opacity:.45;cursor:not-allowed}
+button.stop{width:100%;margin-top:8px}
+.status{display:flex;align-items:center;gap:10px;font-size:.88rem}
+.pill{display:inline-block;width:10px;height:10px;background:var(--soft);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M5 0l5 5-5 5-5-5z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M5 0l5 5-5 5-5-5z'/%3E%3C/svg%3E") center/contain no-repeat}
+.pill.on{background:var(--ok)}.pill.bad{background:var(--bad)}.pill.warn{background:var(--warn)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.stat{background:var(--raised);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.stat b{display:block;font-size:1.35rem;line-height:1.2}.stat span{font-size:.75rem;color:var(--soft)}
+.bar{height:6px;background:var(--raised);border-radius:99px;overflow:hidden;margin:6px 0 12px}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .4s}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.tools .grow{flex:1;min-width:140px}
+.msg{font-size:.88rem;color:var(--soft);margin:0 0 10px;min-height:1.3em}
+.msg.bad{color:var(--bad)}
+.tablewrap{overflow:auto;max-height:62vh;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:.85rem}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;white-space:nowrap}
+th{position:sticky;top:0;background:var(--raised);color:var(--soft);font-weight:600;font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;z-index:1}
+td.wrap{white-space:normal;min-width:220px;max-width:340px}
+td a{color:var(--accent);text-decoration:none}td a:hover{text-decoration:underline}
+.tag{display:inline-block;padding:1px 8px;border-radius:99px;font-size:.76rem;border:1px solid var(--line)}
+.tag.yes{color:var(--ok);border-color:var(--ok)}.tag.no{color:var(--warn);border-color:var(--warn)}
+.empty{padding:36px 16px;text-align:center;color:var(--soft)}
+details{margin-top:14px}summary{cursor:pointer;color:var(--soft);font-size:.85rem}
+pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:10px 12px;max-height:200px;overflow:auto;font:12px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap}
+.skips{font-size:.8rem;color:var(--soft);margin-top:10px}
+.note{font-size:.78rem;color:var(--soft);margin-top:12px}
+.upd{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--raised);border-bottom:1px solid var(--accent);padding:10px 24px;font-size:.88rem}
+.upd[hidden]{display:none}.upd button{padding:6px 12px}
+</style>
+</head>
+<body>
+<div class="upd" id="upd" hidden><span id="updtext"></span><button type="button" id="updbtn">Update and restart</button></div>
+<header>
+  <div><h1>IG Scout</h1><div class="sub">Find businesses on Instagram and save them as a leads sheet <span id="ver"></span></div></div>
+  <div class="status"><span class="pill" id="ligt"></span><span id="litext">Checking</span>
+    <button id="btnlogin" type="button">Log in to Instagram</button></div>
+</header>
+<main>
+  <section class="card" aria-label="Search">
+    <h2>Search</h2>
+    <label for="country">Country</label>
+    <select id="country"><option value="">Any country</option></select>
+
+    <label>Website</label>
+    <div class="seg" role="radiogroup" aria-label="Website filter">
+      <input type="radio" name="website" id="w-either" value="either" checked><label for="w-either">Either</label>
+      <input type="radio" name="website" id="w-no" value="no"><label for="w-no">No website</label>
+      <input type="radio" name="website" id="w-yes" value="yes"><label for="w-yes">Has website</label>
+    </div>
+
+    <label for="keywords">Kind of business <span style="opacity:.7">(optional, separate with commas)</span></label>
+    <textarea id="keywords" placeholder="tattoo artist, barber, bakery. Leave empty to search many kinds."></textarea>
+
+    <label for="handles">Handles to check <span style="opacity:.7">(optional, one per line or a profile link)</span></label>
+    <textarea id="handles" placeholder="Paste Instagram handles or links you already have"></textarea>
+
+    <label for="msg-tpl">Your own message <span style="opacity:.7">(optional)</span></label>
+    <textarea id="msg-tpl" rows="5" placeholder="Leave empty and every lead gets the automatic message. Or write your own here."></textarea>
+    <p class="note" style="margin:4px 0 0">Every CSV and PDF has a message for each lead. With this box empty it is written for you from what the app found. Your own text can use {first_name} {niche} {city} {country} {handle} {website} {instagram_link}.</p>
+
+    <div class="row2">
+      <div><label for="minf">Min followers</label><input type="number" id="minf" value="500" min="0"></div>
+      <div><label for="maxf">Max followers</label><input type="number" id="maxf" value="100000" min="1"></div>
+    </div>
+    <div class="row2">
+      <div><label for="target">How many leads</label><input type="number" id="target" value="50" min="1" max="2000"></div>
+      <div><label>Speed</label>
+        <div class="seg"><input type="radio" name="speed" id="s-safe" value="safe" checked><label for="s-safe">Safe</label>
+          <input type="radio" name="speed" id="s-fast" value="fast"><label for="s-fast">Fast</label></div></div>
+    </div>
+
+    <label class="chk"><input type="checkbox" id="skipknown" checked><span>Skip handles I already have</span></label>
+    <label class="chk"><input type="checkbox" id="onlyactive" checked><span>Only accounts that posted recently</span></label>
+    <label class="chk"><input type="checkbox" id="onlybiz" checked><span>Only accounts that look like a business</span></label>
+    <label class="chk"><input type="checkbox" id="expand" checked><span>Also look at accounts Instagram says are similar to each lead</span></label>
+    <label class="chk"><input type="checkbox" id="allowunk"><span>Keep profiles where the country cannot be told</span></label>
+
+    <button class="primary" id="btnrun" type="button">Run</button>
+    <button class="stop" id="btnstop" type="button" hidden>Stop</button>
+    <p class="note">Safe checks one profile every few seconds and stops at a daily limit that protects your account. Fast is quicker but raises the chance Instagram limits the account.</p>
+  </section>
+
+  <section class="card" aria-label="Results">
+    <h2>Results</h2>
+    <div class="stats">
+      <div class="stat"><b id="s-kept">0</b><span>Leads found</span></div>
+      <div class="stat"><b id="s-checked">0</b><span>Profiles checked</span></div>
+      <div class="stat"><b id="s-time">0:00</b><span>Time</span></div>
+      <div class="stat"><b id="s-cap">0</b><span>Used today</span></div>
+    </div>
+    <div class="bar" aria-hidden="true"><i id="prog"></i></div>
+    <p class="msg" id="msg">Log in, choose what to look for, and press Run.</p>
+    <div class="tools">
+      <button id="dlcsv" type="button" disabled>Download CSV</button>
+      <button id="dlpdf" type="button" disabled>Download PDF</button>
+      <button id="openf" type="button" hidden>Open results folder</button>
+      <input class="grow" type="text" id="filter" placeholder="Filter the table" aria-label="Filter the table">
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>#</th><th>Handle</th><th>Instagram link</th><th>Country</th><th>Website</th><th>Website link</th><th>Website detail</th><th>What they do</th><th>Followers</th><th>Last 3 posts</th><th>Active</th><th>Email</th><th>Message</th><th>Account notes</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div class="empty" id="empty">Results appear here as they are found.</div>
+    </div>
+    <div class="skips" id="skips"></div>
+    <details><summary>Live log</summary><pre id="log"></pre></details>
+  </section>
+</main>
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  var since=0, logSince=0, all=[], running=false;
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function post(u,b){return fetch(u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b||{})}).then(function(r){return r.json().then(function(j){j._ok=r.ok;return j})})}
+  fetch('/api/countries').then(function(r){return r.json()}).then(function(l){l.forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;$('country').appendChild(o)})});
+  $('btnlogin').onclick=function(){post('/api/login')};
+  $('btnrun').onclick=function(){
+    var b={country:$('country').value,website:document.querySelector('input[name=website]:checked').value,keywords:$('keywords').value,message:$('msg-tpl').value,handles:$('handles').value,expand:$('expand').checked,
+      min_followers:$('minf').value,max_followers:$('maxf').value,target:$('target').value,speed:document.querySelector('input[name=speed]:checked').value,
+      skip_known:$('skipknown').checked,only_active:$('onlyactive').checked,only_business:$('onlybiz').checked,allow_unknown:$('allowunk').checked};
+    all=[];since=0;$('rows').innerHTML='';$('empty').hidden=false;
+    post('/api/run',b).then(function(j){if(!j._ok){setMsg(j.error||'Could not start',true)}});
+  };
+  $('btnstop').onclick=function(){post('/api/stop')};
+  $('dlcsv').onclick=function(){location.href='/api/download/csv'};
+  $('dlpdf').onclick=function(){location.href='/api/download/pdf'};
+  $('filter').oninput=draw;
+  function setMsg(t,bad){var m=$('msg');m.textContent=t;m.className='msg'+(bad?' bad':'')}
+  function fmt(s){return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+  function rowHtml(r){
+    var notes=[r.category,r.posts?r.posts+' posts':'',r.posts_per_month?r.posts_per_month+'/month':'',r.first_visible_post?'earliest seen '+r.first_visible_post:'',r.top_post_likes?'best post '+r.top_post_likes+' likes':''].filter(Boolean).join(', ');
+    var site=r.website?'<a href="'+esc(r.website)+'" target="_blank" rel="noopener">'+esc(r.website)+'</a>':'';
+    return '<tr><td>'+r['#']+'</td><td>@'+esc(r.handle)+'</td>'+
+      '<td><a href="'+esc(r.instagram_link)+'" target="_blank" rel="noopener">'+esc(r.instagram_link)+'</a></td><td>'+esc(r.country)+'</td>'+
+      '<td><span class="tag '+(r.has_website==='Yes'?'yes':'no')+'">'+esc(r.has_website)+'</span></td><td>'+site+'</td><td class="wrap">'+esc(r.website_detail)+'</td>'+
+      '<td class="wrap">'+esc(r.what_they_do)+'</td><td>'+esc(r.followers)+'</td><td>'+esc(r.last_3_post_dates)+'</td><td>'+esc(r.active)+'</td><td>'+esc(r.email)+'</td>'+
+      '<td class="wrap" style="min-width:300px">'+esc(r.message)+'</td><td class="wrap">'+esc(notes)+'</td></tr>';
+  }
+  function draw(){
+    var q=$('filter').value.toLowerCase();
+    var list=q?all.filter(function(r){return JSON.stringify(r).toLowerCase().indexOf(q)>-1}):all;
+    $('rows').innerHTML=list.map(rowHtml).join('');
+    $('empty').hidden=list.length>0;
+  }
+  function tick(){
+    fetch('/api/state?since='+since+'&log='+logSince).then(function(r){return r.json()}).then(function(s){
+      var e=s.engine, li=e.logged_in;
+      $('ligt').className='pill '+(li?'on':(e.browser_open?'warn':'bad'));
+      $('litext').textContent=li?'Logged in to Instagram':(e.browser_open?'Waiting for you to log in':'Not logged in');
+      $('btnlogin').textContent=li?'Open Instagram window':'Log in to Instagram';
+      if(s.rows.length){all=all.concat(s.rows);since+=s.rows.length;draw()}
+      if(s.log.length){var p=$('log');p.textContent+=s.log.join('\n')+'\n';p.scrollTop=p.scrollHeight;logSince=s.log_total}
+      var j=s.job;
+      running=!!j&&(j.state==='running'||j.state==='starting'||j.state==='stopping');
+      $('btnrun').disabled=running||!li;$('btnrun').textContent=running?'Running':'Run';
+      $('btnstop').hidden=!running;
+      if(j){
+        $('s-kept').textContent=j.kept;$('s-checked').textContent=j.checked;$('s-time').textContent=fmt(j.elapsed);
+        $('s-cap').textContent=j.used_today+' / '+j.cap;
+        $('prog').style.width=Math.min(100,j.kept/j.target*100)+'%';
+        var sk=Object.keys(j.skipped).map(function(k){return j.skipped[k]+' '+k}).join(', ');
+        $('skips').textContent=sk?'Passed over: '+sk:'';
+        $('dlcsv').disabled=$('dlpdf').disabled=j.kept===0;
+        var names={running:'Searching. New leads appear in the table.',starting:'Starting',stopping:'Stopping',done:j.message,stopped:j.message,capped:j.message,blocked:j.message};
+        setMsg(names[j.state]||'',j.state==='blocked');
+      }else if(!li){setMsg('Press "Log in to Instagram" and sign in inside the window that opens.')}
+    }).catch(function(){setMsg('The app is not running. Start it with run.bat.',true)});
+  }
+  fetch('/api/version').then(function(r){return r.json()}).then(function(v){
+    $('ver').textContent='| version '+v.version;
+    if(v.exe){$('openf').hidden=false;
+      fetch('/api/update').then(function(r){return r.json()}).then(function(u){
+        if(u.available){$('upd').hidden=false;$('updtext').textContent='Version '+u.latest+' is ready'+(u.notes&&u.notes.length?': '+u.notes.join('. '):'.')}
+      }).catch(function(){});}
+  }).catch(function(){});
+  fetch('/api/settings').then(function(r){return r.json()}).then(function(c){if(c.message)$('msg-tpl').value=c.message}).catch(function(){});
+  var saveT=null;$('msg-tpl').oninput=function(){clearTimeout(saveT);saveT=setTimeout(function(){post('/api/settings',{message:$('msg-tpl').value})},600)};
+  $('openf').onclick=function(){post('/api/open-folder')};
+  $('updbtn').onclick=function(){
+    $('updbtn').disabled=true;$('updtext').textContent='Updating. The app restarts by itself in a moment.';
+    post('/api/update/install').then(function(j){if(!j._ok){$('updbtn').disabled=false;$('updtext').textContent=j.error||'The update failed'}});
+  };
+  setInterval(tick,1000);tick();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+name: Video Editor app
+
+# Builds the Windows installer and the Mac disk images (Apple chip and Intel) and attaches them to a release
+# called editor-v1.0.0 (never marked as the latest release, because the Presenter download uses "latest").
+# Start it by pushing a tag such as editor-v1.0.0, or run it by hand from the Actions tab.
+on:
+  push:
+    tags: ['editor-v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag
+        default: editor-v1.0.0
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            script: dist:win
+          - os: macos-latest
+            script: dist:mac
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: desktop/editor-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop/editor-app/package-lock.json
+      - run: npm ci
+      - run: npm run ${{ matrix.script }}
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: editor-${{ matrix.os }}
+          path: |
+            desktop/editor-app/dist/Editor-Setup.exe
+            desktop/editor-app/dist/Editor-mac-*.dmg
+          if-no-files-found: error
+
+  release:
+    needs: build
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: files
+          merge-multiple: true
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          ls -la files
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --title "Video Editor app" --notes "Video Editor for Windows and Mac." --latest=false
+          gh release upload "$TAG" files/* --repo "$GITHUB_REPOSITORY" --clobber

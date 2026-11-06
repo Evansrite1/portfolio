@@ -50,5 +50,13 @@ drafts/maison-gray/pitch/*.png
 desktop/presenter-app/dist/
 
 # Private tooling
-ig-scout/
+ig-scout/build_out/
+ig-scout/output/
+ig-scout/profile/
+ig-scout/__pycache__/
+ig-scout/core/__pycache__/
+ig-scout/download_url*.txt
+ig-scout/igscout.log
 scout/download/
+
+.test-assets/

@@ -1,13 +1,10 @@
 {
-  "version": "1.1.0",
-  "code": "update/ig-scout-code-1.1.0.zip",
-  "sha256": "3051fc3da1239edf10f10a46bca77e6b7b87d834c32bdf6652d27b26df0e0fc3",
+  "version": "1.1.1",
+  "code": "update/ig-scout-code-1.1.1.zip",
+  "sha256": "13def407726adc9d5a912a4cd08244b2d43c950c464af88ffa9ee97bb94c8ffc",
   "notes": [
-    "A ready message for every lead, written from what the app found, in every CSV and PDF",
-    "The CSV matches your leads sheet, with the website link and the dates of the last three posts added",
-    "Pinned posts are left out of the post dates",
-    "Job boards, product brands and hotel chains are left out",
-    "Installs as a normal Windows app"
+    "IG Scout now installs on Mac as well as Windows",
+    "Open results folder works on Mac"
   ],
   "download": "https://github.com/Evansrite1/portfolio/releases/download/scout-v1.1.0/IG-Scout-Setup.exe"
 }

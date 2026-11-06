@@ -1733,18 +1733,13 @@
   function goFull() { if (tvFull()) { say('The TV screen is using full screen. Press F11 to make this window full screen.', true); return Promise.resolve(); } var el = document.documentElement; if (el.requestFullscreen) return el.requestFullscreen().catch(function () { say('Your browser did not allow full screen. Press F11 instead.', true); }); return Promise.resolve(); }
   $('fs').onclick = function () { if (inFull()) document.exitFullscreen(); else goFull(); };
   var installEvt = null;
-  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); installEvt = e; $('gate-install').hidden = false; });
-  window.addEventListener('appinstalled', function () { $('gate').hidden = true; });
-  $('gate-install').onclick = function () { if (installEvt) { installEvt.prompt(); installEvt = null; $('gate-install').hidden = true; } };
-  $('gate-fs').onclick = function () { $('gate').hidden = true; try { sessionStorage.setItem('ae_ss_gate', '1'); } catch (e) {} startTV(); };
-  $('gate-win').onclick = function () { $('gate').hidden = true; tvSkip = true; try { sessionStorage.setItem('ae_ss_gate', '1'); } catch (e) {} };
   (function gate() {
-    var standalone = window.matchMedia && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches);
-    var seen = false; try { seen = !!sessionStorage.getItem('ae_ss_gate'); } catch (e) {}
-    if (!DESK && !standalone && !seen && !inFull() && !/[?&]nogate=1/.test(location.search)) {
-      $('gate').hidden = false;
-      if (window.PresenterDownload) { var os = window.PresenterDownload.apply($('gate-dl'), null); $('gate-tip').textContent = window.PresenterDownload.tip(os); }
-    }
+    /* The Presenter runs as an installed app. In an ordinary browser tab only the download screen is shown. */
+    var dev = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && /[?&]nogate=1/.test(location.search);
+    if (DESK || dev) return;
+    $('gate').hidden = false;
+    try { $('app').inert = true; $('app').setAttribute('aria-hidden', 'true'); } catch (e) {}
+    if (window.PresenterDownload) { var os = window.PresenterDownload.apply($('gate-dl'), 'gate-other'); $('gate-tip').textContent = window.PresenterDownload.tip(os); }
   })();
 
   function syncMtabs() { [].forEach.call($('mtabs').children, function (b) { b.setAttribute('aria-selected', b.dataset.view === $('app').dataset.view); }); }

@@ -51,18 +51,20 @@ footer.sc-f{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px
   <div class="card dl" id="download">
     <div>
       <h3>Download for Windows</h3>
-      <p style="margin:0">A normal Windows installer. It installs IG Scout like any other app, with a Start Menu entry and a Desktop shortcut. Works on Windows 10 and 11 with Microsoft Edge or Google Chrome. No administrator password needed.</p>
+      <p style="margin:0">A normal installer for Windows and Mac. It installs IG Scout like any other app. On Windows you get a Start Menu entry and a Desktop shortcut and no administrator password is needed. On Mac it goes in your Applications folder. It needs Google Chrome or Microsoft Edge on the computer.</p>
     </div>
     <a class="btn primary" id="dlbtn" href="#download" aria-disabled="true" style="opacity:.5;pointer-events:none">Download opens soon</a>
-    <p class="meta" id="vmeta">Windows installer, about 56 MB</p>
+    <p class="meta" id="dlother" style="margin:0"></p>
+    <p class="meta" id="dltip" style="margin:0"></p>
+    <p class="meta" id="vmeta">Windows and Mac installers, about 60 MB</p>
     <p class="meta" style="margin-top:0">It updates itself. A banner appears when a new version is ready.</p>
   </div>
   <div class="card">
     <h3>Install it in four steps</h3>
     <ol class="steps">
-      <li><b>Download the installer</b>Press the button above. You get one file, <code>IG-Scout-Setup.exe</code>.</li>
-      <li><b>Run it</b>Double click the file and press Next, then Install. If Windows shows "Windows protected your PC", press <b style="display:inline">More info</b>, then <b style="display:inline">Run anyway</b>. The installer is not signed with a paid certificate, so this happens once.</li>
-      <li><b>Open IG Scout</b>Use the Desktop shortcut or the Start Menu. It opens in its own window.</li>
+      <li><b>Download the installer</b>Press the button above. It picks the right file for your computer: <code>IG-Scout-Setup.exe</code> on Windows, or a <code>.dmg</code> disk image on Mac.</li>
+      <li><b>Run it</b>On Windows, double click the file and press Next, then Install. If Windows shows "Windows protected your PC", press <b style="display:inline">More info</b>, then <b style="display:inline">Run anyway</b>. On Mac, open the disk image and drag IG Scout into Applications, then right click it and press Open the first time. The app is not signed with a paid certificate, so this happens once.</li>
+      <li><b>Open IG Scout</b>Use the Desktop shortcut or the Start Menu on Windows, or the Applications folder on Mac. It opens in its own window.</li>
       <li><b>Log in to Instagram</b>Press the Log in button. A browser window opens and you sign in yourself. The app never sees your password, and you only do this once.</li>
     </ol>
   </div>
@@ -107,7 +109,7 @@ footer.sc-f{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px
 
 <h2>Where things are saved</h2>
 <ul class="notes">
-  <li>Results: <code>Documents\IG Scout\results</code></li>
+  <li>Results: <code>Documents\IG Scout\results</code> (on Mac, <code>Documents/IG Scout/results</code>)</li>
   <li>Handles you already have: put CSV files in <code>Documents\IG Scout\already-have</code> and the app skips those people. The option is on by default.</li>
   <li>Your Instagram login is stored only on your computer, inside <code>AppData\Local\IGScout</code>. Delete that folder to sign out completely.</li>
   <li>To remove the app, use Settings, Apps, Installed apps, IG Scout, Uninstall. Your results and login are kept unless you delete those folders.</li>
@@ -128,12 +130,13 @@ footer.sc-f{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px
 <script>
 (function(){
   fetch('/scout/version.json',{cache:'no-store'}).then(function(r){return r.json()}).then(function(v){
-    if(v.download){var b=document.getElementById('dlbtn');b.href=v.download;b.textContent='Download IG Scout';b.removeAttribute('aria-disabled');b.removeAttribute('style');b.setAttribute('download','')}
-    document.getElementById('vmeta').textContent='Version '+v.version+', Windows installer, about 56 MB';
+    if(v.download&&window.AppDL){var b=document.getElementById('dlbtn');b.removeAttribute('style');var base=v.download.replace(/[^/]*$/,'');var dl=window.AppDL({name:'IG Scout',base:base,files:{win:'IG-Scout-Setup.exe',macArm:'IG-Scout-mac-arm64.dmg',macIntel:'IG-Scout-mac-x64.dmg'}});dl.apply(b,'dlother').then(function(os){document.getElementById('dltip').textContent=dl.tip(os)})}
+    document.getElementById('vmeta').textContent='Version '+v.version+', Windows and Mac, about 60 MB';
     var n=(v.notes||[]).map(function(x){return '<li>'+String(x).replace(/[&<>]/g,'')+'</li>'}).join('');
     document.getElementById('changes').innerHTML='<h3>Version '+v.version+'</h3><ul class="notes">'+(n||'<li>No notes</li>')+'</ul>';
   }).catch(function(){document.getElementById('changes').innerHTML='<p style="margin:0">Version information is not available right now.</p>'});
 })();
 </script>
+<script src="/tools/appdl.js"></script>
 </body>
 </html>

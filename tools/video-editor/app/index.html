@@ -99,6 +99,7 @@ input[type=range]{width:100%;height:28px;accent-color:var(--acc);margin:0}
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
 .chip{background:var(--p2);border:1px solid var(--line);border-radius:99px;padding:8px 14px;font-size:.84rem;color:var(--soft)}
 .chip[aria-pressed=true]{background:var(--ink);color:#111;border-color:var(--ink)}
+a.btn{color:inherit;text-decoration:none}
 .item{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--p2);border:1px solid var(--line);border-radius:12px;padding:13px;margin-bottom:8px;cursor:pointer;font-size:.9rem}
 .item small{color:var(--faint)}
 
@@ -233,6 +234,42 @@ canvas#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
 .welcome button{flex:1;border-radius:10px;padding:10px;border:1px solid var(--line);background:var(--p3);font-weight:600}
 .welcome button.pri{background:var(--acc);border-color:var(--acc);color:#1a0b0a}
 @media (max-width:820px){.steps3 div{min-width:0}.empty{gap:10px;padding:14px}}
+
+/* ---------- clip properties, timeline lane names, guides */
+.insp,.tllabels{display:none}
+.stage.guides::after{content:"";position:absolute;inset:8% 6% 20% 6%;border:2px dashed rgba(255,255,255,.7);border-radius:6px;pointer-events:none;background:linear-gradient(rgba(255,255,255,.35),rgba(255,255,255,.35)) center/1px 100% no-repeat,linear-gradient(rgba(255,255,255,.35),rgba(255,255,255,.35)) center/100% 1px no-repeat}
+.ic[aria-pressed=true]{border-color:var(--acc);color:var(--acc)}
+.tlbody{display:flex;min-height:0}
+.tlbody .scroll{flex:1;min-width:0}
+.wf{position:absolute;left:0;top:0;width:100%;height:100%;fill:#fff;opacity:.5;pointer-events:none}
+.wf.main{top:auto;bottom:0;height:46%}
+.chip[aria-pressed=true]{background:var(--ink);color:#111;border-color:var(--ink)}
+
+/* ---------- computer layout, like Premiere Pro and CapCut: tools, preview, properties, timeline */
+@media (min-width:1100px) and (min-height:620px){
+  .app{display:grid;grid-template-columns:86px 392px minmax(0,1fr) 316px;grid-template-rows:auto minmax(0,1fr) clamp(250px,37vh,400px);grid-template-areas:"top top top top" "tools sheet stage insp" "tl tl tl tl"}
+  .top{grid-area:top;padding:8px 16px}
+  .body{display:contents}
+  .toolbar{grid-area:tools;flex-direction:column;justify-content:flex-start;border-top:0;border-right:1px solid var(--line);padding:10px 8px;gap:4px;overflow-y:auto;background:var(--p1)}
+  .tb{min-width:0;width:100%;padding:12px 4px;font-size:.72rem}
+  .tb[data-t="clip"]{display:none}
+  .sheet,.app.open .sheet{grid-area:sheet;display:flex;width:auto;border-left:0;border-right:1px solid var(--line)}
+  .sh-head button{display:none}
+  .stagearea{grid-area:stage;min-width:0;min-height:0;background:var(--bg)}
+  .stagewrap{padding:18px}
+  .insp{grid-area:insp;display:flex;flex-direction:column;min-height:0;background:var(--p1);border-left:1px solid var(--line)}
+  .tl{grid-area:tl;display:flex;flex-direction:column;min-height:0}
+  .tlbody{flex:1}
+  .tllabels{display:block;width:80px;flex:none;border-right:1px solid var(--line);background:var(--p1);overflow:hidden}
+  .tllabels .sp{height:24px;border-bottom:1px solid var(--line)}
+  .tllabels .ll{height:42px;margin-top:3px;display:flex;align-items:center;padding:0 10px;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+  .scroll{max-height:none;min-height:0}
+  .lane{height:42px}
+  .app.blank{grid-template-rows:auto minmax(0,1fr) 0}
+  .app.blank .insp{opacity:.4}
+  .toast{bottom:24px}
+  .transport{padding:4px 12px 12px}
+}
 </style>
 </head>
 <body>
@@ -262,11 +299,16 @@ canvas#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
         <button class="ic play" id="play" aria-label="Play"><svg viewBox="0 0 24 24" id="playIco"><path d="M8 5v14l11-7z"/></svg></button>
         <button class="ic" id="toEnd" aria-label="Go to end"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5l11 7-11 7z"/></svg></button>
         <span class="time" id="time">0:00 / 0:00</span>
+        <button class="ic" id="guides" aria-label="Show safe zone guides" aria-pressed="false" title="Safe zone guides (G)"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M3 5h18v14H3zM5 7v10h14V7z"/></svg></button>
       </div>
     </section>
     <aside class="sheet" id="sheet" aria-live="polite">
       <div class="sh-head"><h3 id="shTitle"></h3><button id="shDone">Done</button></div>
       <div class="sh-body" id="shBody"></div>
+    </aside>
+    <aside class="insp" id="insp" aria-label="Clip properties">
+      <div class="sh-head"><h3>Properties</h3></div>
+      <div class="sh-body" id="inspBody"></div>
     </aside>
   </div>
 
@@ -283,7 +325,7 @@ canvas#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
       <button class="act" id="zout"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4M8 11h6"/></svg>Zoom out</button>
       <button class="act" id="zin"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4M8 11h6M11 8v6"/></svg>Zoom in</button>
     </div>
-    <div class="scroll" id="scroll"><div class="canvas" id="canvas"><div class="ruler" id="ruler"></div><div id="lanes"></div><div class="ph" id="ph"></div></div></div>
+    <div class="tlbody"><div class="tllabels" id="tllabels"></div><div class="scroll" id="scroll"><div class="canvas" id="canvas"><div class="ruler" id="ruler"></div><div id="lanes"></div><div class="ph" id="ph"></div></div></div></div>
   </section>
 
   <nav class="toolbar" id="toolbar" aria-label="Tools"></nav>

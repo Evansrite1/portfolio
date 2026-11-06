@@ -1,0 +1,49 @@
+{
+  "name": "editor-app",
+  "productName": "Video Editor",
+  "version": "1.0.0",
+  "description": "Video Editor by Evans Ademilua: cut, caption and export videos. Works on your computer and nothing is uploaded.",
+  "author": "Evans Ademilua",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win --x64 --publish never",
+    "dist:mac": "electron-builder --mac --x64 --arm64 --publish never"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.evansademilua.videoeditor",
+    "productName": "Video Editor",
+    "copyright": "Evans Ademilua",
+    "directories": { "output": "dist", "buildResources": "build" },
+    "files": ["main.js", "offline.html", "package.json"],
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "artifactName": "Editor-Setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false,
+      "shortcutName": "Video Editor"
+    },
+    "mac": {
+      "target": [{ "target": "dmg", "arch": ["x64", "arm64"] }],
+      "category": "public.app-category.video",
+      "identity": null,
+      "hardenedRuntime": false,
+      "artifactName": "Editor-mac-${arch}.${ext}",
+      "extendInfo": {
+        "NSCameraUsageDescription": "Video Editor can record from the camera.",
+        "NSMicrophoneUsageDescription": "Video Editor can record a voiceover."
+      }
+    },
+    "dmg": { "title": "Video Editor" }
+  }
+}

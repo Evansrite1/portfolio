@@ -9,6 +9,13 @@ TOOL = '''<div class="tool" id="ve-tool" style="grid-template-columns:1fr">
     <a class="btn primary" href="/tools/video-editor/app/" style="padding:15px 28px;font-size:1rem">Start editing</a>
     <p class="help" style="margin-top:14px">Best in Chrome or Edge, on a computer or an Android phone.</p>
   </div>
+  <div class="card" style="text-align:center;padding:26px 20px;margin-top:16px">
+    <h2 style="margin:0 0 8px;font-size:1.2rem">Or install it as an app</h2>
+    <p class="help" style="max-width:52ch;margin:0 auto 16px">The same editor in its own window, with a roomy layout like Premiere Pro and CapCut: tools on the left, preview in the middle, clip properties on the right and the timeline below. For Windows and Mac.</p>
+    <a class="btn" id="ve-dl" href="https://github.com/Evansrite1/portfolio/releases/download/editor-v1.0.0/Editor-Setup.exe">Download the app</a>
+    <p class="help" id="ve-dl-other" style="margin-top:10px"></p>
+    <p class="help" id="ve-dl-tip" style="max-width:58ch;margin:6px auto 0"></p>
+  </div>
 </div>'''
 
 SECTIONS = '''
@@ -48,7 +55,7 @@ PAGE = dict(
     desc='A free online video editor for your phone or computer. Trim, split, add automatic captions, text, music and filters, change speed and size, and export an MP4. Nothing is uploaded.',
     h1='Free online video editor', app='Free Online Video Editor',
     lead='Cut your video, add automatic captions, text and music, pick a filter and save an MP4, on your phone or your computer. Simple to use, and your files never leave your device.',
-    tool=TOOL, vendor=[], own=[], module=[], css=[],
+    tool=TOOL, vendor=[], own=['appdl.js', 'editor-download.js'], module=[], css=[],
     sections=SECTIONS,
     faq=[
         ('Is this video editor free?', 'Yes. There is no sign-up, no watermark and no limit on how many videos you make.'),
