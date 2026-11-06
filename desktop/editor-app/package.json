@@ -10,7 +10,9 @@
   "scripts": {
     "start": "electron .",
     "dist:win": "electron-builder --win --x64 --publish never",
-    "dist:mac": "electron-builder --mac --x64 --arm64 --publish never"
+    "dist:mac": "electron-builder --mac --x64 --arm64 --publish never",
+    "dist:mac:arm64": "electron-builder --mac --arm64 --publish never",
+    "dist:mac:x64": "electron-builder --mac --x64 --publish never"
   },
   "devDependencies": {
     "electron": "^33.0.0",
@@ -20,10 +22,24 @@
     "appId": "com.evansademilua.videoeditor",
     "productName": "Video Editor",
     "copyright": "Evans Ademilua",
-    "directories": { "output": "dist", "buildResources": "build" },
-    "files": ["main.js", "offline.html", "package.json"],
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "offline.html",
+      "package.json"
+    ],
     "win": {
-      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
       "artifactName": "Editor-Setup.${ext}"
     },
     "nsis": {
@@ -34,7 +50,15 @@
       "shortcutName": "Video Editor"
     },
     "mac": {
-      "target": [{ "target": "dmg", "arch": ["x64", "arm64"] }],
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
       "category": "public.app-category.video",
       "identity": null,
       "hardenedRuntime": false,
@@ -44,6 +68,8 @@
         "NSMicrophoneUsageDescription": "Video Editor can record a voiceover."
       }
     },
-    "dmg": { "title": "Video Editor" }
+    "dmg": {
+      "title": "Video Editor"
+    }
   }
 }

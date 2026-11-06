@@ -23,8 +23,13 @@ jobs:
         include:
           - os: windows-latest
             script: dist:win
+            label: win
           - os: macos-latest
-            script: dist:mac
+            script: dist:mac:arm64
+            label: mac-arm64
+          - os: macos-latest
+            script: dist:mac:x64
+            label: mac-x64
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -36,13 +41,16 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: desktop/editor-app/package-lock.json
+      - if: runner.os == 'macOS'
+        run: sudo mdutil -a -i off
+        working-directory: .
       - run: npm ci
       - run: npm run ${{ matrix.script }}
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
       - uses: actions/upload-artifact@v4
         with:
-          name: editor-${{ matrix.os }}
+          name: editor-${{ matrix.label }}
           path: |
             desktop/editor-app/dist/Editor-Setup.exe
             desktop/editor-app/dist/Editor-mac-*.dmg

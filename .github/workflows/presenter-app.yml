@@ -20,7 +20,9 @@ jobs:
           - os: windows-latest
             script: release:win
           - os: macos-latest
-            script: release:mac
+            script: release:mac:arm64
+          - os: macos-latest
+            script: release:mac:x64
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -32,6 +34,9 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: desktop/presenter-app/package-lock.json
+      - if: runner.os == 'macOS'
+        run: sudo mdutil -a -i off
+        working-directory: .
       - run: npm ci
       - run: npm run ${{ matrix.script }}
         env:
