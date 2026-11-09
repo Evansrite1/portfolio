@@ -81,23 +81,23 @@
       "permanent": true
     },
     {
-      "source": "/scout",
-      "destination": "/ig-scouts/",
+      "source": "/web-developer-kuwait",
+      "destination": "/web-developer/",
       "permanent": true
     },
     {
-      "source": "/scout/",
-      "destination": "/ig-scouts/",
+      "source": "/web-developer-kuwait/",
+      "destination": "/web-developer/",
       "permanent": true
     },
     {
-      "source": "/ig-scout",
-      "destination": "/ig-scouts/",
+      "source": "/web-developer-uae",
+      "destination": "/web-developer/",
       "permanent": true
     },
     {
-      "source": "/ig-scout/",
-      "destination": "/ig-scouts/",
+      "source": "/web-developer-uae/",
+      "destination": "/web-developer/",
       "permanent": true
     }
   ],

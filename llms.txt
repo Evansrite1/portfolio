@@ -6,8 +6,6 @@
 - [Home and portfolio](https://evansademilua.vercel.app/): about, recent builds, how a project runs, and how to request an audit
 - [Full stack developer for hire](https://evansademilua.vercel.app/full-stack-developer/): what he builds, the stack he uses and how to hire him
 - [Web developer in Lagos, Nigeria](https://evansademilua.vercel.app/web-developer/): websites and web apps for businesses worldwide
-- [Web developer for businesses in Kuwait](https://evansademilua.vercel.app/web-developer-kuwait/): remote web development, WhatsApp-ready sites and booking systems for Kuwait
-- [Web developer for businesses in the UAE](https://evansademilua.vercel.app/web-developer-uae/): remote web development, WhatsApp-ready sites and booking systems for the UAE
 - [Free online tools](https://evansademilua.vercel.app/tools/): QR code generator, barcode generator, WiFi QR, WhatsApp QR and link, vCard QR and a QR scanner
 - [QR code generator](https://evansademilua.vercel.app/tools/qr-code-generator/): free, no sign-up, never expires
 - [Barcode generator](https://evansademilua.vercel.app/tools/barcode-generator/): Code 128, EAN-13, UPC-A and more

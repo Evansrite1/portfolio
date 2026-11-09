@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page not found | Evans Ademilua</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#07070a">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<style>
+:root{--bg:#07070a;--ink:#f4f1ec;--soft:#a8a39b;--accent:#ff5b52;--a2:#ffb15c;--a3:#7a6cff}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;overflow:hidden}
+body{display:grid;place-items:center;min-height:100svh}
+.orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:.55;pointer-events:none;will-change:transform}
+.o1{width:46vmax;height:46vmax;left:-12vmax;top:-14vmax;background:radial-gradient(circle,var(--accent),transparent 65%);animation:drift1 18s ease-in-out infinite alternate}
+.o2{width:40vmax;height:40vmax;right:-10vmax;bottom:-12vmax;background:radial-gradient(circle,var(--a3),transparent 65%);animation:drift2 22s ease-in-out infinite alternate}
+.o3{width:26vmax;height:26vmax;left:40%;top:46%;background:radial-gradient(circle,var(--a2),transparent 65%);opacity:.3;animation:drift3 26s ease-in-out infinite alternate}
+@keyframes drift1{to{transform:translate(18vmax,12vmax) scale(1.15)}}
+@keyframes drift2{to{transform:translate(-16vmax,-10vmax) scale(.9)}}
+@keyframes drift3{to{transform:translate(-20vmax,-16vmax) scale(1.3)}}
+.grain{position:fixed;inset:-50%;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:grain 1.2s steps(6) infinite}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}}
+.grid{position:fixed;inset:0;pointer-events:none;opacity:.12;background-image:linear-gradient(var(--soft) 1px,transparent 1px),linear-gradient(90deg,var(--soft) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(circle at 50% 50%,#000,transparent 70%);-webkit-mask-image:radial-gradient(circle at 50% 50%,#000,transparent 70%)}
+main{position:relative;z-index:2;text-align:center;padding:24px;max-width:880px;width:100%}
+.tag{display:inline-flex;gap:10px;align-items:center;font:600 .72rem/1 ui-monospace,Consolas,monospace;letter-spacing:.22em;text-transform:uppercase;color:var(--soft);opacity:0;animation:fade .8s .1s forwards}
+.tag i{width:9px;height:9px;background:var(--accent);display:block;transform:rotate(45deg);animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:rotate(45deg) scale(.55);opacity:.5}}
+.big{display:flex;justify-content:center;align-items:center;gap:clamp(6px,2vw,28px);margin:clamp(10px,3vh,30px) 0;perspective:900px;font-weight:900;letter-spacing:-.04em;line-height:.9;font-size:clamp(7rem,28vw,20rem)}
+.big .d{display:block;overflow:hidden;padding:.04em .02em}
+.big .d span{display:block;transform:translateY(105%);animation:rise 1s cubic-bezier(.2,.9,.2,1) forwards;background:linear-gradient(180deg,#fff 10%,#ffb8b2 60%,var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 60px rgba(255,91,82,.25)}
+.big .d:nth-child(1) span{animation-delay:.25s}.big .d:nth-child(3) span{animation-delay:.55s}
+@keyframes rise{to{transform:translateY(0)}}
+.zero{position:relative;width:.72em;height:.72em;flex:none;transform-style:preserve-3d;transition:transform .15s ease-out;opacity:0;animation:fade .8s .4s forwards}
+.zero::before{content:"";position:absolute;inset:0;border-radius:50%;border:.085em solid transparent;border-top-color:var(--accent);border-right-color:var(--a2);animation:spin 3.2s linear infinite;filter:drop-shadow(0 0 22px rgba(255,91,82,.55))}
+.zero::after{content:"";position:absolute;inset:.17em;border-radius:50%;border:.03em dashed rgba(255,255,255,.28);animation:spin 9s linear infinite reverse}
+.zero b{position:absolute;left:50%;top:50%;width:.12em;height:.12em;margin:-.06em;border-radius:50%;background:#fff;box-shadow:0 0 24px 6px rgba(255,255,255,.6);animation:orbit 2.4s ease-in-out infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes orbit{0%{transform:translate(0,-.26em)}25%{transform:translate(.26em,0)}50%{transform:translate(0,.26em)}75%{transform:translate(-.26em,0)}100%{transform:translate(0,-.26em)}}
+h1{margin:0;font-size:clamp(1.3rem,3.2vw,2rem);font-weight:700;letter-spacing:-.01em;opacity:0;animation:fade .9s .8s forwards}
+p a{color:var(--accent);font-weight:700;text-underline-offset:4px}
+p{margin:12px auto 0;color:var(--soft);max-width:46ch;line-height:1.6;opacity:0;animation:fade .9s 1s forwards}
+code{font:600 .9em ui-monospace,Consolas,monospace;color:var(--ink);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:2px 8px;word-break:break-all}
+.links{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:30px;opacity:0;animation:fade .9s 1.2s forwards}
+.links a{color:var(--ink);text-decoration:none;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:12px 22px;font-weight:600;font-size:.92rem;backdrop-filter:blur(8px);background:rgba(255,255,255,.04);transition:transform .25s,background .25s,border-color .25s}
+.links a:hover,.links a:focus-visible{transform:translateY(-3px);border-color:var(--accent);background:rgba(255,91,82,.12);outline:none}
+.links a.pri{background:var(--accent);border-color:var(--accent);color:#1a0b0a}
+.links a.pri:hover{background:#ff7068}
+@keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.foot{position:fixed;left:0;right:0;bottom:18px;text-align:center;font:.7rem ui-monospace,Consolas,monospace;letter-spacing:.2em;text-transform:uppercase;color:#6b675f;z-index:2}
+.shape{position:fixed;pointer-events:none;border:1px solid rgba(255,255,255,.14);z-index:1;will-change:transform}
+.s1{width:90px;height:90px;left:10%;top:18%;transform:rotate(18deg);animation:float 9s ease-in-out infinite alternate}
+.s2{width:56px;height:56px;border-radius:50%;right:12%;top:24%;animation:float 11s ease-in-out infinite alternate-reverse}
+.s3{width:130px;height:130px;right:16%;bottom:16%;transform:rotate(45deg);animation:float 13s ease-in-out infinite alternate}
+.s4{width:40px;height:40px;left:16%;bottom:22%;border-radius:50%;background:rgba(255,91,82,.18);border:0;animation:float 8s ease-in-out infinite alternate-reverse}
+@keyframes float{to{transform:translate(26px,-34px) rotate(60deg)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important}.big .d span,.tag,h1,p,.links,.zero{opacity:1;transform:none}}
+@media (max-width:560px){.shape{display:none}}
+</style>
+</head>
+<body>
+<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+<div class="grid"></div><div class="grain"></div>
+<span class="shape s1"></span><span class="shape s2"></span><span class="shape s3"></span><span class="shape s4"></span>
+<main>
+  <div class="tag"><i></i>Error 404</div>
+  <div class="big" id="big" aria-label="404">
+    <div class="d"><span>4</span></div>
+    <div class="zero" id="zero" aria-hidden="true"><b></b></div>
+    <div class="d"><span>4</span></div>
+  </div>
+  <h1>Looks like you took a wrong turn.</h1>
+  <p>The address <code id="path">you typed</code> does not lead anywhere on this site. It may have moved, or the link may have a typo.</p>
+  <p id="guess" hidden>Were you looking for <a id="guessLink" href="/"></a>?</p>
+  <nav class="links" aria-label="Where to go next">
+    <a class="pri" href="/">Back to home</a>
+    <a href="/tools/">Free tools</a>
+    <a href="/#work">Recent builds</a>
+    <a href="/cv.html">CV</a>
+  </nav>
+</main>
+<div class="foot">Evans Ademilua</div>
+<script>
+(function(){
+  try{ document.getElementById('path').textContent = location.pathname + location.search; }catch(e){}
+  /* suggest the closest real page, so a typo lands somewhere useful */
+  var PAGES=[['/','the home page'],['/tools/','the free tools'],['/cv.html','my CV'],['/solutions.html','the solutions page'],['/full-stack-developer/','full stack developer for hire'],['/web-developer/','web developer in Lagos'],['/web-developer-kuwait/','web developer for Kuwait'],['/web-developer-uae/','web developer for the UAE'],['/tools/qr-code-generator/','the QR code generator'],['/tools/video-editor/','the video editor'],['/tools/video-compressor/','the video compressor'],['/tools/pdf-converter/','the PDF converter'],['/tools/image-converter/','the image converter'],['/tools/remove-background/','the background remover'],['/tools/whatsapp-link-generator/','the WhatsApp link generator'],['/tools/second-screen-presenter/','the Presenter app'],['/tools/audio-mastering/','audio mastering'],['/tools/screen-recorder/','the screen recorder']];
+  function words(x){ return x.toLowerCase().replace(/\.html$/,'').split(/[\/\-_\s.]+/).filter(Boolean); }
+  function lev(a,b){ var m=[],i,j; for(i=0;i<=a.length;i++){m[i]=[i];} for(j=0;j<=b.length;j++){m[0][j]=j;} for(i=1;i<=a.length;i++)for(j=1;j<=b.length;j++)m[i][j]=Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+(a[i-1]===b[j-1]?0:1)); return m[a.length][b.length]; }
+  try{
+    var want=words(location.pathname), best=null, bs=0;
+    if(want.length){ PAGES.forEach(function(p){ var have=words(p[0]), sc=0; want.forEach(function(w){ have.forEach(function(h){ if(w===h) sc+=2; else if(w.length>3&&(h.indexOf(w)>-1||w.indexOf(h)>-1)) sc+=1.5; else if(w.length>3&&h.length>3&&lev(w,h)<=2) sc+=1.2; }); }); if(sc>bs){bs=sc;best=p;} }); }
+    if(best&&bs>=1.2&&best[0]!==location.pathname){ var g=document.getElementById('guessLink'); g.href=best[0]; g.textContent=best[1]; document.getElementById('guess').hidden=false; }
+  }catch(e){}
+  var big=document.getElementById('big'), zero=document.getElementById('zero'), shapes=[].slice.call(document.querySelectorAll('.shape')), orbs=[].slice.call(document.querySelectorAll('.orb'));
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var tx=0,ty=0,cx=0,cy=0;
+  addEventListener('pointermove',function(e){ tx=(e.clientX/innerWidth-.5); ty=(e.clientY/innerHeight-.5); },{passive:true});
+  (function tick(){
+    cx+=(tx-cx)*.07; cy+=(ty-cy)*.07;
+    big.style.transform='rotateY('+(cx*16)+'deg) rotateX('+(-cy*12)+'deg)';
+    zero.style.transform='translateZ(60px) translate('+(cx*18)+'px,'+(cy*14)+'px)';
+    shapes.forEach(function(s,i){ var k=(i+1)*14; s.style.translate=(cx*k)+'px '+(cy*k)+'px'; });
+    orbs.forEach(function(o,i){ var k=(i+1)*22; o.style.translate=(-cx*k)+'px '+(-cy*k)+'px'; });
+    requestAnimationFrame(tick);
+  })();
+})();
+</script>
+</body>
+</html>
