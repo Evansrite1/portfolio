@@ -79,6 +79,26 @@
       "source": "/tools/split-pdf/",
       "destination": "/tools/pdf-converter/",
       "permanent": true
+    },
+    {
+      "source": "/scout",
+      "destination": "/ig-scouts/",
+      "permanent": true
+    },
+    {
+      "source": "/scout/",
+      "destination": "/ig-scouts/",
+      "permanent": true
+    },
+    {
+      "source": "/ig-scout",
+      "destination": "/ig-scouts/",
+      "permanent": true
+    },
+    {
+      "source": "/ig-scout/",
+      "destination": "/ig-scouts/",
+      "permanent": true
     }
   ],
   "headers": [
@@ -92,7 +112,16 @@
       ]
     },
     {
-      "source": "/scout",
+      "source": "/ig-scouts/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/ig-scouts",
       "headers": [
         {
           "key": "X-Robots-Tag",
