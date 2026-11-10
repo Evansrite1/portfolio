@@ -65,6 +65,8 @@
     if (location.hash === '#book') { scrollToBook(false); setTimeout(function () { scrollToBook(false); }, 350); }
   }
 
+  /* safety net: the page always appears, even if the browser is slow to run animation frames */
+  setTimeout(function () { if (!doc.classList.contains('loaded')) { finishLoad(); if (loader) loader.remove(); } }, 1400);
   if (loader && !reduced && !seen) {
     doc.classList.add('loading');
     var start = performance.now(), dur = 450;
