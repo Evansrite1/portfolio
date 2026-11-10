@@ -65,7 +65,7 @@ pre.cap{white-space:pre-wrap;word-wrap:break-word;font-family:inherit;font-size:
 <body>
 <div class="wrap">
 <h1>IG posts for Evans<br>Nov 2026 to Jun 2027</h1>
-<p class="lead">132 posts over 33 weeks: Monday value carousel, Wednesday silent African market Reel, Thursday "Built For" showcase, Saturday myth or story carousel. Open a month, copy a caption, download the slides, schedule on Instagram, tick it off.</p>
+<p class="lead">132 posts over 33 weeks. Monday teaches (carousel). Wednesday tells an African story from the past (3 slide carousel, a different look every week, no marketing). Thursday shows off a rebuilt site (Built For). Saturday is one marketing picture. Open a month, copy a caption, download the slides, schedule on Instagram, tick it off.</p>
 <div class="how"><b>How to use each month</b>
 <ol>
 <li>Pick the month. Open the first post.</li>
@@ -74,16 +74,50 @@ pre.cap{white-space:pre-wrap;word-wrap:break-word;font-family:inherit;font-size:
 <li>Tick <b>Scheduled</b>. Ticks are saved in this browser only.</li>
 </ol>
 <div class="count" style="margin-top:8px">Instagram limits how far ahead you can schedule (about 30 days has worked before), so do one month at a time. On Thursdays, send the message first, then tag the business twice on the images and once in the caption. Hashtags: 30 on every post, the most Instagram allows.</div></div>
-<div class="bar" id="months"></div>
+<details class="how" id="pv"><summary style="cursor:pointer;font-weight:900;font-size:18px">Posting your own videos (skating, how you feel)</summary>
+<p style="margin:10px 0 4px">These are extra posts, outside the four weekly slots. Mondays, Wednesdays, Thursdays and Saturdays are taken, so use <b>Tuesday, Friday or Sunday</b>. One personal video a week keeps your feed human.</p>
+<div class="story" style="margin:10px 0"><b>Get the video ready (once, then use it everywhere)</b>
+<div>1. Film vertical. The size to aim for is 1080 by 1920 (9:16). Keep what matters in the middle, away from the top and bottom edges where buttons and captions sit.</div>
+<div>2. Cut the first two seconds so the best moment is first. A trick landing, a smile, a line of text.</div>
+<div>3. Export one MP4 (H.264 video, AAC sound). That one file uploads to every app below. Your video editor tool on this site can trim and export it.</div>
+<div>4. Pick a cover frame. The profile grid shows a middle crop, so keep the subject centred.</div>
+<div>5. Check each app's current length limit before you upload, because they change.</div></div>
+<div class="story" style="margin:10px 0"><b>Where it can go</b>
+<div><b>Instagram Reel:</b> New post, Reel, choose the video, trim, pick the cover, paste the caption and hashtags, then Share. To schedule, use Advanced settings in the app, or Meta Business Suite on a computer.</div>
+<div><b>Facebook Reels, YouTube Shorts, TikTok:</b> upload the same file. Download it clean from your own camera roll, not from another app, so there is no watermark on it. Apps tend to show less of a video that carries another app's logo.</div>
+<div><b>LinkedIn:</b> works for the "how I feel" and founder videos. Rewrite the caption in a calmer tone and use three or four hashtags, not thirty.</div>
+<div><b>Music:</b> pick a track from Instagram's own library when you upload. If you add your own music to the file, you need the right to use it.</div></div>
+<b>Caption starters (change the brackets)</b>
+<pre class="cap" id="pv1">Back on the board. [one line about the trick or how it felt].
+
+Falling is part of it. Getting back up is the whole thing.
+
+What is something you keep practising?</pre>
+<div class="row"><button class="btn" onclick="copy(document.getElementById('pv1').innerText)">Copy skate caption</button></div>
+<pre class="cap" id="pv2">How I feel right now: [one honest line].
+
+Some days are loud and some days are quiet. I am posting this one because [reason].
+
+How are you really doing?</pre>
+<div class="row"><button class="btn" onclick="copy(document.getElementById('pv2').innerText)">Copy feelings caption</button></div>
+<b>30 hashtags, skate video</b>
+<pre class="cap" id="pv3">#Skateboarding #Skate #SkateLife #Skater #SkateVideo #SkateEveryday #SkateTricks #Skateboard #StreetSkating #SkateCulture #SkateReels #LearnToSkate #SkateSession #Kickflip #Ollie #SkatePark #SkateLove #Skateboarder #SkateDaily #ActionSports #Reels #ReelsInstagram #Lifestyle #PersonalBrand #FounderLife #DayInMyLife #BehindTheScenes #Entrepreneur #SmallBusinessOwner #LargeTechnologies</pre>
+<div class="row"><button class="btn" onclick="copy(document.getElementById('pv3').innerText)">Copy skate hashtags</button></div>
+<b>30 hashtags, how I feel or day in my life</b>
+<pre class="cap" id="pv4">#DayInMyLife #BehindTheScenes #FounderLife #EntrepreneurLife #RealTalk #MentalHealthMatters #HowIFeel #Authentic #PersonalBrand #Motivation #Mindset #SelfGrowth #Vlog #Storytime #Reels #ReelsInstagram #Lifestyle #BusinessOwnerLife #StartupLife #SmallBusinessOwner #Gratitude #Consistency #OneDayAtATime #Journey #Creator #ContentCreator #AfricanEntrepreneur #NigerianEntrepreneur #WebDeveloper #LargeTechnologies</pre>
+<div class="row"><button class="btn" onclick="copy(document.getElementById('pv4').innerText)">Copy feelings hashtags</button></div>
+</details>
+<p class="lead" id="igsum" style="font-weight:700;margin:6px 0"></p><div class="bar" id="months"></div>
 <div class="bar" id="slots"></div>
 <div id="list"></div>
 </div>
 <div class="toast" id="toast"></div>
+<script src="slides.js?v=2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
 <script>
 const PAL = {or:['#ff4a12','#fff'], cr:['#f3eee4','#111'], bk:['#0e0e0e','#fff'], bl:['#2c56ff','#fff'], ye:['#ffd21f','#111']};
-const LABEL = {Monday:'Value', Wednesday:'Market', Thursday:'Built for', Saturday:'Myth or story'};
+const LABEL = {Monday:'Value', Wednesday:'African story', Thursday:'Built for', Saturday:'Marketing'};
 const labelFor = p => p.slot==='Thursday' && p.handle ? 'Built for '+p.handle : LABEL[p.slot];
 const MONTHNAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 let DATA = null, month = 'all', slot = 'all';
@@ -99,6 +133,7 @@ function hl(t,h,bg){
 const fsz = n => n<=14?210 : n<=24?165 : n<=40?132 : n<=64?108 : n<=100?88 : 72;
 const ssz = n => n<=60?72 : n<=120?60 : 50;
 function slideEl(sp, i, total, label, post){
+  if(!sp.src && window.SLIDES) return SLIDES.render(sp, i, total, post);
   const el = document.createElement('div');
   if(sp.src){ el.className='slide img'; el.innerHTML = '<img src="'+sp.src+'" alt="">'; return el; }
   const [bg, fg] = PAL[sp.bg] || PAL.cr;
@@ -196,12 +231,23 @@ async function copy(txt){
 }
 const fullCaption = p => p.caption + '\n.\n.\n.\n' + p.tags.join(' ');
 function fmtDate(iso){ const d = new Date(iso+'T12:00:00'); return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}); }
+function igPill(p){
+  const g = p.ig || {state:'not scheduled', note:''};
+  const col = {posted:'#1a9c4a', scheduled:'#2c56ff', hold:'#c98a00', 'not scheduled':'#777'}[g.state] || '#777';
+  const txt = {posted:'Posted', scheduled:'Scheduled on Instagram', hold:'Held', 'not scheduled':'Not scheduled'}[g.state] || g.state;
+  return '<span title="'+esc(g.note||'')+'" style="background:'+col+';color:#fff;font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:99px">'+esc(txt)+(g.when?' '+esc(g.when):'')+'</span>';
+}
+function igSummary(){
+  const c = {posted:0, scheduled:0, hold:0, 'not scheduled':0};
+  DATA.posts.forEach(p=>{ c[(p.ig||{}).state||'not scheduled']++; });
+  return 'On Instagram: '+c.posted+' posted, '+c.scheduled+' scheduled. Not scheduled yet: '+c['not scheduled']+'. Held (Thursday posts that need a message and tags first): '+c.hold+'.';
+}
 function cardEl(p){
   const c = document.createElement('div'); c.className = 'card'+(store.get('done:'+p.id)?' done':''); c.id = p.id;
   const done = !!store.get('done:'+p.id);
   c.innerHTML =
    '<div class="head"><span class="date">'+fmtDate(p.date)+'</span><span class="pill '+p.slot+'">'+p.slot+'</span><span class="title">'+esc(p.title)+'</span>'+
-   '<label class="chk" onclick="event.stopPropagation()"><input type="checkbox" '+(done?'checked':'')+'> Scheduled</label></div>'+
+   igPill(p)+'<label class="chk" onclick="event.stopPropagation()"><input type="checkbox" '+(done?'checked':'')+'> Scheduled</label></div>'+
    '<div class="body"></div>';
   const chk = c.querySelector('input');
   chk.addEventListener('change',()=>{ if(chk.checked) store.set('done:'+p.id,'1'); else store.del('done:'+p.id); c.classList.toggle('done',chk.checked); progress(); });
@@ -212,7 +258,7 @@ function build(c,p){
   c.dataset.built = 1;
   const b = c.querySelector('.body');
   const full = fullCaption(p);
-  let h = '<div class="meta">'+esc(p.format)+' &middot; '+esc(p.status)+(p.handle?' &middot; Tag: '+esc(p.handle):'')+'</div>';
+  let h = '<div class="meta"><b>'+esc(((p.ig||{}).state||'')+((p.ig||{}).note?': '+(p.ig||{}).note:''))+'</b><br>'+esc(p.format)+' &middot; '+esc(p.status)+(p.handle?' &middot; Tag: '+esc(p.handle):'')+'</div>';
   if(p.template) h += '<div class="warn"><b>Template.</b> Needs a real draft. Build it from a verified lead, replace everything in [BRACKETS], add the screenshots, then post.</div>';
   if(p.slot==='Thursday'){
     if(!p.template) h += '<div class="warn"><b>Before posting:</b> check the handle is right and keep the line that says it is a draft and not live.</div>';
@@ -221,7 +267,8 @@ function build(c,p){
          '<div class="row"><button class="btn pri" data-a="dm">Copy message</button></div></div>';
   }
   if(p.story){
-    h += '<div class="story"><b>Video storyboard (no voice, beat only)</b><div style="margin:4px 0 8px;color:#555">Scene: '+esc(p.story.scene)+'</div>'+p.story.lines.map(l=>'<div>'+esc(l)+'</div>').join('')+
+    h += '<div class="strip"></div><div class="row"><button class="btn pri" data-a="dl">Download cover image</button></div>';
+    h += '<div class="story"><b>Video storyboard (no voice, beat only, no call to action)</b><div style="margin:4px 0 8px;color:#555">Scene: '+esc(p.story.scene)+'</div>'+p.story.lines.map(l=>'<div>'+esc(l)+'</div>').join('')+
          '<div style="margin-top:8px;color:#555">Pick a licensed Afrobeats or percussion beat in Instagram when you upload. Use your own footage or licensed stock, and no real faces without permission.</div></div>';
   } else {
     h += '<div class="strip"></div><div class="row"><button class="btn pri" data-a="dl">Download slides</button></div>';
@@ -248,9 +295,10 @@ function drawNav(){
   months.forEach(v=>{ const [y,mm]=v.split('-'); const n=DATA.posts.filter(p=>p.month===v).length; m.appendChild(mk(MONTHNAMES[+mm-1].slice(0,3)+' '+y+' ('+n+')',v,month)); });
   const pr = document.createElement('span'); pr.className='prog'; pr.id='prog'; m.appendChild(pr);
   const s = document.getElementById('slots'); s.innerHTML = '';
-  [['all','All posts'],['Monday','Mon value'],['Wednesday','Wed Reel'],['Thursday','Thu Built For'],['Saturday','Sat myth']].forEach(([v,l])=>{
+  [['all','All posts'],['Monday','Mon teaches'],['Wednesday','Wed African story'],['Thursday','Thu Built For'],['Saturday','Sat marketing']].forEach(([v,l])=>{
     const b=document.createElement('button'); b.textContent=l; if(slot===v) b.classList.add('on'); b.onclick=()=>{slot=v; draw();}; s.appendChild(b); });
   progress();
+  const sm = document.getElementById('igsum'); if(sm) sm.textContent = igSummary();
 }
 function draw(){
   drawNav();
