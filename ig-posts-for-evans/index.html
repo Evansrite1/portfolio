@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Instagram plan, Nov 2026 to Apr 2027</title>
+<title>IG posts for Evans, Nov 2026 to Jun 2027</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link id="gf" href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@500;700;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -64,8 +64,8 @@ pre.cap{white-space:pre-wrap;word-wrap:break-word;font-family:inherit;font-size:
 </head>
 <body>
 <div class="wrap">
-<h1>Instagram plan<br>Nov 2026 to Apr 2027</h1>
-<p class="lead">100 posts: Monday value carousel, Wednesday silent African market Reel, Thursday "Built For" showcase, Saturday myth or story carousel. Open a month, copy a caption, download the slides, schedule on Instagram, tick it off.</p>
+<h1>IG posts for Evans<br>Nov 2026 to Jun 2027</h1>
+<p class="lead">132 posts over 33 weeks: Monday value carousel, Wednesday silent African market Reel, Thursday "Built For" showcase, Saturday myth or story carousel. Open a month, copy a caption, download the slides, schedule on Instagram, tick it off.</p>
 <div class="how"><b>How to use each month</b>
 <ol>
 <li>Pick the month. Open the first post.</li>
@@ -73,7 +73,7 @@ pre.cap{white-space:pre-wrap;word-wrap:break-word;font-family:inherit;font-size:
 <li>On Instagram: New post, choose the slides in order, paste the caption, Advanced settings, schedule for 8:00 PM your time.</li>
 <li>Tick <b>Scheduled</b>. Ticks are saved in this browser only.</li>
 </ol>
-<div class="count" style="margin-top:8px">Instagram limits how far ahead you can schedule (about 30 days has worked before), so do one month at a time. Hashtags: 30 on every post, the most Instagram allows.</div></div>
+<div class="count" style="margin-top:8px">Instagram limits how far ahead you can schedule (about 30 days has worked before), so do one month at a time. On Thursdays, send the message first, then tag the business twice on the images and once in the caption. Hashtags: 30 on every post, the most Instagram allows.</div></div>
 <div class="bar" id="months"></div>
 <div class="bar" id="slots"></div>
 <div id="list"></div>
@@ -84,6 +84,7 @@ pre.cap{white-space:pre-wrap;word-wrap:break-word;font-family:inherit;font-size:
 <script>
 const PAL = {or:['#ff4a12','#fff'], cr:['#f3eee4','#111'], bk:['#0e0e0e','#fff'], bl:['#2c56ff','#fff'], ye:['#ffd21f','#111']};
 const LABEL = {Monday:'Value', Wednesday:'Market', Thursday:'Built for', Saturday:'Myth or story'};
+const labelFor = p => p.slot==='Thursday' && p.handle ? 'Built for '+p.handle : LABEL[p.slot];
 const MONTHNAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 let DATA = null, month = 'all', slot = 'all';
 const store = {get(k){try{return localStorage.getItem(k)}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,v)}catch(e){}}, del(k){try{localStorage.removeItem(k)}catch(e){}}};
@@ -136,7 +137,7 @@ function slideList(p){
   return p.slides || [];
 }
 function thumbs(p, host){
-  const sl = slideList(p), lab = LABEL[p.slot];
+  const sl = slideList(p), lab = labelFor(p);
   host.innerHTML = '';
   sl.forEach((sp,i)=>{
     const w = document.createElement('div'); w.className='sw';
@@ -163,7 +164,7 @@ async function downloadSlides(p, btn){
   const old = btn.textContent; btn.textContent = 'Preparing...'; btn.disabled = true;
   try{
     await document.fonts.ready;
-    const sl = slideList(p), lab = LABEL[p.slot], zip = new JSZip();
+    const sl = slideList(p), lab = labelFor(p), zip = new JSZip();
     const fcss = await getFontCSS();
     for(let i=0;i<sl.length;i++){
       btn.textContent = 'Slide '+(i+1)+' of '+sl.length+'...';
@@ -213,7 +214,12 @@ function build(c,p){
   const full = fullCaption(p);
   let h = '<div class="meta">'+esc(p.format)+' &middot; '+esc(p.status)+(p.handle?' &middot; Tag: '+esc(p.handle):'')+'</div>';
   if(p.template) h += '<div class="warn"><b>Template.</b> Needs a real draft. Build it from a verified lead, replace everything in [BRACKETS], add the screenshots, then post.</div>';
-  if(p.slot==='Thursday' && !p.template) h += '<div class="warn"><b>Before posting:</b> check the handle, check the owner is happy to be tagged, and keep the line that says it is a draft and not live.</div>';
+  if(p.slot==='Thursday'){
+    if(!p.template) h += '<div class="warn"><b>Before posting:</b> check the handle is right and keep the line that says it is a draft and not live.</div>';
+    h += '<div class="story" style="margin:10px 0"><b>Tag them in three places</b>'+(p.tagplan||[]).map((l,i)=>'<div><b>'+(i+1)+'.</b> '+esc(l)+'</div>').join('')+
+         '<div style="margin:10px 0 4px"><b>Message to send first</b></div><pre class="dm" style="max-height:none;white-space:pre-wrap;font-family:inherit;font-size:15px;background:#fff;border-radius:10px;padding:12px;margin:6px 0">'+esc(p.dm||'')+'</pre>'+
+         '<div class="row"><button class="btn pri" data-a="dm">Copy message</button></div></div>';
+  }
   if(p.story){
     h += '<div class="story"><b>Video storyboard (no voice, beat only)</b><div style="margin:4px 0 8px;color:#555">Scene: '+esc(p.story.scene)+'</div>'+p.story.lines.map(l=>'<div>'+esc(l)+'</div>').join('')+
          '<div style="margin-top:8px;color:#555">Pick a licensed Afrobeats or percussion beat in Instagram when you upload. Use your own footage or licensed stock, and no real faces without permission.</div></div>';
@@ -227,7 +233,7 @@ function build(c,p){
   const strip = b.querySelector('.strip'); if(strip) thumbs(p, strip);
   b.addEventListener('click',e=>{
     const a = e.target.dataset && e.target.dataset.a; if(!a) return;
-    if(a==='cap') copy(full); if(a==='tags') copy(p.tags.join(' ')); if(a==='text') copy(p.caption); if(a==='dl') downloadSlides(p,e.target);
+    if(a==='dm') copy(p.dm); if(a==='cap') copy(full); if(a==='tags') copy(p.tags.join(' ')); if(a==='text') copy(p.caption); if(a==='dl') downloadSlides(p,e.target);
   });
 }
 function progress(){

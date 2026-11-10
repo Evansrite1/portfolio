@@ -1,6 +1,16 @@
 {
   "redirects": [
     {
+      "source": "/instagram-plan/",
+      "destination": "/ig-posts-for-evans/",
+      "permanent": false
+    },
+    {
+      "source": "/instagram-plan",
+      "destination": "/ig-posts-for-evans/",
+      "permanent": false
+    },
+    {
       "source": "/tools/barcode-generator",
       "destination": "/tools/",
       "permanent": true
