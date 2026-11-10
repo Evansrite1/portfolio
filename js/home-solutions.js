@@ -48,3 +48,23 @@
     note.textContent = 'Your email app should open with the request filled in. Press send and I will confirm a time.';
   });
 })();
+
+/* LinkedIn: show a sample message to copy, then open LinkedIn */
+(function () {
+  var modal = document.getElementById('li-modal'); if (!modal) return;
+  var ta = document.getElementById('li-text'), note = document.getElementById('li-note'), last = null;
+  function open(from) { last = from || null; modal.hidden = false; note.textContent = ''; document.getElementById('li-copy').focus(); }
+  function close() { modal.hidden = true; if (last && last.focus) last.focus(); }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[data-li]');
+    if (a) { e.preventDefault(); open(a); }
+  });
+  document.getElementById('li-close').addEventListener('click', close);
+  modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.hidden) close(); });
+  document.getElementById('li-copy').addEventListener('click', function () {
+    function ok() { note.textContent = 'Copied. Paste it into your message to me on LinkedIn.'; }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(ok, function () { ta.select(); document.execCommand('copy'); ok(); });
+    else { ta.select(); document.execCommand('copy'); ok(); }
+  });
+})();
