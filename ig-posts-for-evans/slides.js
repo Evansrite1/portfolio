@@ -286,5 +286,5 @@
     else el.innerHTML = inner(sp, i, n, post);
     return el;
   }
-  window.SLIDES = {render, THEME, lib: {C, ART, svg, clay, burst, rays, dots, ankara, squig, sticker, photo, mark, esc, ab, fsz, pickArt}};
+  window.SLIDES = {render, THEME, lib: {C, ART, svg, clay, burst, rays, dots, ankara, squig, sticker, photo, mark, esc, ab, fsz, pickArt, SIL}};
 })();
