@@ -30,7 +30,7 @@ NAMES = {c[0]: c[4] for c in CARDS}
 # ------------------------------------------------------------------ shared markup
 def header(current=None):
     fab = ('<a href="/#embedded" class="nav-fab" aria-label="Embedded systems, coming soon" title="Embedded systems, coming soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1.6"/><path d="M9.5 3v4M14.5 3v4M9.5 17v4M14.5 17v4M3 9.5h4M3 14.5h4M17 9.5h4M17 14.5h4"/></svg></a>')
-    site = '<a href="/#work">Recent builds</a><a href="/cv.html">CV</a><a href="/tools/" aria-current="page">Tools</a>' + fab
+    site = '<a href="/#work">Recent builds</a><a href="/tools/" aria-current="page">Tools</a>' + fab
     return ('<a class="skip" href="#main">Skip to the tool</a>\n<header class="th"><div class="wrap top">'
             '<a class="brand" href="/" title="Evans Ademilua, portfolio"><img src="/favicon-32.png" width="30" height="30" alt=""><span>Evans Ademilua</span></a>'
             '<nav aria-label="Site">%s</nav>'
@@ -59,7 +59,7 @@ FOOTER = '''<footer>
     </div>
   </div>
 </section>
-<div class="legal"><div class="wrap"><span>&copy; Evans Ademilua. These tools are free to use. Your data stays in your browser.</span><span><a href="/">Portfolio</a> &nbsp;|&nbsp; <a href="/tools/">All tools</a> &nbsp;|&nbsp; <a href="/cv.html">CV</a></span></div></div>
+<div class="legal"><div class="wrap"><span>&copy; Evans Ademilua. These tools are free to use. Your data stays in your browser.</span><span><a href="/">Portfolio</a> &nbsp;|&nbsp; <a href="/tools/">All tools</a> &nbsp;|&nbsp; </span></div></div>
 </footer>
 <div id="print-sheet" aria-hidden="true"></div>''' % (WA, ICO['chat'], EMAIL, ICO['mail'], LINKEDIN, ICO['in'])
 
@@ -595,7 +595,7 @@ def build_hub():
 
 def update_seo_lists():
     pages = [p for p in make_seo.PUBLIC_PAGES if not p[0].startswith('/tools/')]
-    i = [p[0] for p in pages].index('/cv.html') + 1
+    i = [p[0] for p in pages].index('/solutions.html') + 1
     tool_pages = [('/tools/', '0.9')] + [('/tools/%s/' % c[0], '0.9' if c[0] in ('qr-code-generator', 'remove-background', 'video-compressor') else '0.8') for c in CARDS]
     make_seo.PUBLIC_PAGES = pages[:i] + tool_pages + pages[i:]
     lines = ['- [Free online tools]({site}/tools/): video, audio, PDF, image and QR code tools that run in the browser']

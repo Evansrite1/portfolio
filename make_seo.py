@@ -79,7 +79,7 @@ def seo_tags(path, title, desc, extra_nodes=None, og_type='website', image=None)
 
 # ------------------------------------------------------------------ static files
 PUBLIC_PAGES = [  # path, priority
-    ('/', '1.0'), ('/full-stack-developer/', '0.9'), ('/web-developer/', '0.9'),  ('/solutions.html', '0.8'), ('/cv.html', '0.8'),
+    ('/', '1.0'), ('/full-stack-developer/', '0.9'), ('/web-developer/', '0.9'),  ('/solutions.html', '0.8'),
     ('/tools/', '0.9'), ('/tools/qr-code-generator/', '0.9'), ('/tools/remove-background/', '0.9'), ('/tools/wifi-qr-code-generator/', '0.8'),
     ('/tools/whatsapp-qr-code-generator/', '0.8'), ('/tools/qr-code-scanner/', '0.8'),
     ('/work/caretrac.html', '0.6'), ('/work/billionaire-club.html', '0.6'), ('/work/sky-team-ife.html', '0.6'),
@@ -133,7 +133,6 @@ LLMS = '''# Evans Ademilua
 - [Barcode generator]({site}/tools/barcode-generator/): Code 128, EAN-13, UPC-A and more
 - [Background remover]({site}/tools/remove-background/): remove an image background, exact for logos and AI for photos
 - [Solutions]({site}/solutions.html): nine systems he builds, what each does and how it benefits the owner
-- [CV]({site}/cv.html): curriculum vitae, skills, experience, education
 - [CareTRAC case study]({site}/work/caretrac.html): field and client coordination portal (FastAPI, React)
 - [Sky Team Ife case study]({site}/work/sky-team-ife.html): operations dashboard (Vercel, Supabase)
 - [Billionaire Club case study]({site}/work/billionaire-club.html): community platform (Next.js)

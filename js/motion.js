@@ -67,7 +67,7 @@
 
   if (loader && !reduced && !seen) {
     doc.classList.add('loading');
-    var start = performance.now(), dur = 1250;
+    var start = performance.now(), dur = 450;
     (function tick(now) {
       var t = Math.min(1, (now - start) / dur);
       var e = 1 - Math.pow(1 - t, 3);
@@ -77,8 +77,8 @@
       if (t < 1) requestAnimationFrame(tick);
       else {
         loader.classList.add('done');
-        setTimeout(finishLoad, 180);
-        setTimeout(function () { loader.remove(); }, 1100);
+        setTimeout(finishLoad, 60);
+        setTimeout(function () { loader.remove(); }, 500);
       }
     })(start);
   } else {
