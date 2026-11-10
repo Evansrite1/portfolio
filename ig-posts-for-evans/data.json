@@ -831,8 +831,9 @@
    "template": false,
    "seed": 7,
    "ig": {
-    "state": "not scheduled",
-    "note": "Not scheduled yet"
+    "state": "scheduled",
+    "when": "Sat 21 Nov 8:00 PM",
+    "note": "Scheduled with Instagram's own scheduler"
    }
   },
   {
