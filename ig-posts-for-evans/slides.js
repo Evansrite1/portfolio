@@ -125,21 +125,70 @@
     drum: '<path d="M90 90 H310 C260 150 260 160 310 210 C260 270 260 280 310 340 H90 C140 280 140 270 90 210 C140 160 140 150 90 90 Z" fill="#0a0a0a"/><ellipse cx="200" cy="90" rx="110" ry="22" fill="#0a0a0a"/><ellipse cx="200" cy="340" rx="110" ry="22" fill="#0a0a0a"/><path d="M92 100 L60 290 M308 100 L340 290" stroke="#0a0a0a" stroke-width="12" fill="none"/>',
     dome: '<path d="M100 300 V210 C100 130 140 90 200 90 C260 90 300 130 300 210 V300 Z" fill="#0a0a0a"/><rect x="40" y="130" width="40" height="230" fill="#0a0a0a"/><rect x="320" y="130" width="40" height="230" fill="#0a0a0a"/><polygon points="40,130 60,70 80,130" fill="#0a0a0a"/><polygon points="320,130 340,70 360,130" fill="#0a0a0a"/><rect x="0" y="352" width="400" height="48" fill="#0a0a0a"/><circle cx="200" cy="72" r="14" fill="#0a0a0a"/>'
   };
-  function storyCover(sp, post, n) {
-    const art = SIL[sp.art] ? sp.art : 'baobab', t = sp.t || '', era = sp.era || '', hook = sp.s || '';
-    let h = '';
-    h += ankara(1080, 120, C.bk, C.or, C.ye, 0, 0) + ankara(1080, 90, C.bk, C.or, C.ye, 0, 1260) + dots(.08);
-    h += '<div style="' + ab('left:240px;top:190px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#ffe27a,' + C.ye + ' 55%,#ff9d2e)') + '"></div>' + rays(C.or, 540, 490, .22, 22);
-    h += '<div style="' + ab('left:240px;top:190px;width:600px;height:600px;border-radius:50%;overflow:hidden') + '"><div style="' + ab('left:60px;top:190px;width:480px;height:480px') + '">' + svg(SIL[art], 480, 480) + '</div></div>';
-    h += clay('star', C.ye, 90, 900, 190, 12) + clay('sphere', C.or, 110, 70, 700, 0);
-    h += sticker('African story', 84, 150, -3, C.or, '#fff');
-    h += '<div style="' + ab('left:620px;top:150px;background:#fff;color:#111;border:6px solid #111;border-radius:999px;padding:12px 28px;font-family:Anton,Impact,sans-serif;font-size:34px;letter-spacing:.08em;text-transform:uppercase;box-shadow:8px 8px 0 #111') + '">' + esc(sp.kind || 'History') + '</div>';
-    h += '<div style="' + ab('left:0;right:0;top:770px;text-align:center;color:' + C.ye + ';' + ANTON + 'font-size:' + (era.length > 12 ? 84 : era.length > 7 ? 110 : 150) + 'px;text-shadow:0 8px 0 #000') + '">' + esc(era) + '</div>';
-    h += '<div style="' + ab('left:70px;right:70px;top:' + (era.length > 12 ? 880 : 930) + 'px;text-align:center;color:#fff;' + ANTON + 'font-size:' + (t.length > 32 ? 58 : 72) + 'px') + '">' + esc(t) + '</div>';
-    h += '<div style="' + ab('left:84px;right:84px;top:1080px;text-align:center;color:#ddd;' + SERIF + 'font-size:38px') + '">' + esc(hook) + '</div>';
-    h += '<div style="' + ab('left:50%;transform:translateX(-50%);bottom:30px;background:#0a0a0a;border:3px solid #ffd21f;border-radius:999px;padding:6px 26px;color:#ffd21f;font-weight:900;font-size:22px;letter-spacing:.22em;white-space:nowrap') + '">LARGE TECHNOLOGIES</div>';
-    return h;
+  /* ---------- African story carousel (Wednesday): 3 slides, a different look each week ---------- */
+  const STHEME = [
+    {name: 'sun on black', bg: C.bk, disc: ['#ffe27a', C.ye, '#ff9d2e'], rays: C.or, rayop: .22, band: [C.bk, C.or, C.ye], fg: '#fff', acc: C.ye, card: 'rgba(255,255,255,.1)', sil: '#0a0a0a', stars: false},
+    {name: 'blue night', bg: C.bl, disc: ['#ffffff', C.cr, '#d9d2c0'], rays: C.ye, rayop: .14, band: [C.bl, C.ye, C.bk], fg: '#fff', acc: C.ye, card: 'rgba(0,0,0,.22)', sil: '#0a0a0a', stars: true},
+    {name: 'orange earth', bg: C.or, disc: ['#ffe27a', C.ye, '#ffb42e'], rays: C.bk, rayop: .16, band: [C.or, C.bk, C.ye], fg: '#fff', acc: '#111', card: 'rgba(0,0,0,.18)', sil: '#0a0a0a', stars: false},
+    {name: 'yellow sun', bg: C.ye, disc: ['#ff8a5c', C.or, '#d93a00'], rays: '#fff', rayop: .35, band: [C.ye, C.bk, C.or], fg: '#111', acc: C.or, card: 'rgba(255,255,255,.55)', sil: '#0a0a0a', stars: false},
+    {name: 'cream poster', bg: C.cr, disc: ['#ff8a5c', C.or, '#d93a00'], rays: C.ye, rayop: .5, band: [C.cr, C.bk, C.or], fg: '#111', acc: C.or, card: 'rgba(255,255,255,.7)', sil: '#0a0a0a', stars: false}
+  ];
+  const stheme = sp => STHEME[((sp && sp.theme) || 0) % STHEME.length];
+  function starsField(on) {
+    if (!on) return '';
+    let s = '';
+    const pts = [[120, 360], [260, 250], [900, 330], [980, 560], [140, 760], [960, 820], [330, 880], [760, 230], [60, 560]];
+    pts.forEach((p, i) => { s += '<div style="' + ab('left:' + p[0] + 'px;top:' + p[1] + 'px;width:' + (14 + (i % 3) * 8) + 'px;height:' + (14 + (i % 3) * 8) + 'px;background:#fff;border-radius:50%;opacity:.8') + '"></div>'; });
+    return s;
   }
+  function storyBase(th) {
+    return '<div style="' + ab('inset:0;background:' + th.bg) + '"></div>' + dots(.08) + ankara(1080, 110, th.band[0], th.band[1], th.band[2], 0, 0) + ankara(1080, 90, th.band[0], th.band[1], th.band[2], 0, 1260);
+  }
+  const storyMark = th => '<div style="' + ab('left:50%;transform:translateX(-50%);bottom:26px;background:#0a0a0a;border:3px solid #ffd21f;border-radius:999px;padding:6px 26px;color:#ffd21f;font-weight:900;font-size:22px;letter-spacing:.22em;white-space:nowrap') + '">LARGE TECHNOLOGIES</div>';
+  function storyDisc(th, art, x, y, size) {
+    const sil = SIL[SIL[art] ? art : 'baobab'].replace(/#0a0a0a/g, th.sil);
+    const sc = size / 600;
+    return '<div style="' + ab('left:' + x + 'px;top:' + y + 'px;width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:radial-gradient(circle at 40% 35%,' + th.disc[0] + ',' + th.disc[1] + ' 55%,' + th.disc[2] + ')') + '"></div>' +
+      '<div style="' + ab('left:' + x + 'px;top:' + y + 'px;width:' + size + 'px;height:' + size + 'px;border-radius:50%;overflow:hidden') + '"><div style="' + ab('left:' + Math.round(60 * sc) + 'px;top:' + Math.round(190 * sc) + 'px;width:' + Math.round(480 * sc) + 'px;height:' + Math.round(480 * sc)) + '">' + svg(sil, Math.round(480 * sc), Math.round(480 * sc)) + '</div></div>';
+  }
+  function storyCover(sp, post, n) {
+    const th = stheme(sp), art = sp.art || 'baobab', t = sp.t || '', era = sp.era || '', hook = sp.s || '';
+    let h = storyBase(th) + rays(th.rays, 540, 490, th.rayop, 22) + starsField(th.stars);
+    h += storyDisc(th, art, 240, 190, 600);
+    h += clay('star', C.ye, 90, 900, 190, 12) + clay('sphere', th.bg === C.or ? C.bl : C.or, 110, 70, 700, 0);
+    h += sticker('African story', 84, 150, -3, th.bg === C.or ? '#111' : C.or, '#fff');
+    h += '<div style="' + ab('left:620px;top:150px;background:#fff;color:#111;border:6px solid #111;border-radius:999px;padding:12px 28px;font-family:Anton,Impact,sans-serif;font-size:34px;letter-spacing:.08em;text-transform:uppercase;box-shadow:8px 8px 0 #111') + '">' + esc(sp.kind || 'History') + '</div>';
+    h += '<div style="' + ab('left:0;right:0;top:770px;text-align:center;color:' + th.acc + ';' + ANTON + 'font-size:' + (era.length > 12 ? 84 : era.length > 7 ? 110 : 150) + 'px;text-shadow:0 8px 0 rgba(0,0,0,.35)') + '">' + esc(era) + '</div>';
+    h += '<div style="' + ab('left:70px;right:70px;top:' + (era.length > 12 ? 880 : 930) + 'px;text-align:center;color:' + th.fg + ';' + ANTON + 'font-size:' + (t.length > 32 ? 58 : 72) + 'px') + '">' + esc(t) + '</div>';
+    h += '<div style="' + ab('left:84px;right:84px;top:1080px;text-align:center;color:' + th.fg + ';opacity:.9;' + SERIF + 'font-size:38px') + '">' + esc(hook) + '</div>';
+    h += '<div style="' + ab('right:84px;top:1196px;color:' + th.fg + ';font-weight:900;font-size:24px;letter-spacing:.1em') + '">SWIPE &rarr;</div>';
+    return h + storyMark(th);
+  }
+  function storyBeats(sp, i, n, post) {
+    const th = stheme(sp), beats = sp.beats || [];
+    let h = storyBase(th) + starsField(th.stars);
+    h += storyDisc(th, sp.art || 'baobab', 790, 150, 240);
+    h += '<div style="' + ab('left:84px;top:150px;color:' + th.acc + ';' + ANTON + 'font-size:' + ((sp.era || '').length > 12 ? 60 : 84) + 'px') + '">' + esc(sp.era || '') + '</div>';
+    h += '<div style="' + ab('left:84px;top:' + ((sp.era || '').length > 12 ? 240 : 260) + 'px;width:660px;color:' + th.fg + ';' + ANTON + 'font-size:52px') + '">' + esc(sp.t || '') + '</div>';
+    const top0 = 430, avail = 1210 - top0, step = Math.floor(avail / Math.max(1, beats.length));
+    beats.forEach((b, j) => {
+      const off = (j % 2) * 40;
+      h += '<div style="' + ab('left:' + (84 + off) + 'px;right:' + (84 - off) + 'px;top:' + (top0 + j * step) + 'px;height:' + (step - 18) + 'px;display:flex;gap:24px;align-items:center;background:' + th.card + ';border:5px solid #111;border-radius:26px;padding:0 26px;color:' + th.fg + ';box-shadow:8px 8px 0 #111') + '"><span style="' + ANTON + 'font-size:70px;color:' + th.acc + ';min-width:50px">' + (j + 1) + '</span><span style="font-weight:700;font-size:' + (b.length > 90 ? 30 : 34) + 'px;line-height:1.25">' + esc(b) + '</span></div>';
+    });
+    h += '<div style="' + ab('right:84px;top:1196px;color:' + th.fg + ';font-weight:900;font-size:24px;letter-spacing:.1em') + '">' + (i + 1) + ' / ' + n + '</div>';
+    return h + storyMark(th);
+  }
+  function storyClose(sp, i, n, post) {
+    const th = stheme(sp);
+    let h = storyBase(th) + rays(th.rays, 540, 640, th.rayop, 22) + starsField(th.stars);
+    h += storyDisc(th, sp.art || 'baobab', 290, 150, 500);
+    h += clay('sphere', C.or === th.bg ? C.bl : C.or, 120, 80, 640, 0) + clay('star', C.ye, 100, 880, 700, 14);
+    h += '<div style="' + ab('left:70px;right:70px;top:690px;text-align:center;color:' + th.fg + ';' + SERIF + 'font-size:' + ((sp.close || '').length > 70 ? 62 : 74) + 'px') + '">' + esc(sp.close || '') + '</div>';
+    h += '<div style="' + ab('left:0;right:0;top:1030px;text-align:center;color:' + th.acc + ';' + ANTON + 'font-size:96px;text-shadow:0 6px 0 rgba(0,0,0,.3)') + '">' + esc(sp.era || '') + '</div>';
+    h += '<div style="' + ab('left:70px;right:70px;top:1150px;text-align:center;color:' + th.fg + ';' + ANTON + 'font-size:44px') + '">' + esc(sp.t || '') + '</div>';
+    return h + storyMark(th);
+  }
+
   /* ---------- single marketing picture (Saturday) ---------- */
   function adCover(sp, post, n) {
     const t = sp.t || '', hl = sp.hl || '', sub = sp.s || '', chips = sp.chips || [], word = sp.word || 'BUILD';
@@ -209,6 +258,8 @@
 
   /* ---------- inner slides ---------- */
   function inner(sp, i, n, post) {
+    if (sp.k === 'sbeats') return storyBeats(sp, i, n, post);
+    if (sp.k === 'sclose') return storyClose(sp, i, n, post);
     const T = THEME[post.slot], alt = i % 2 === 0;
     const bg = alt ? T.alt : T.main, fg = alt ? T.altfg : T.fg, onYellow = bg === C.ye;
     const accent = bg === C.or ? '#111' : (bg === C.ye ? C.or : (bg === C.bk ? C.ye : C.ye));

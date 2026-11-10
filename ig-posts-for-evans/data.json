@@ -125,8 +125,8 @@
    "month": "2026-11",
    "slot": "Wednesday",
    "title": "Mansa Musa's journey to Mecca",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "In 1324 the ruler of Mali set out on a pilgrimage that the world still talks about.\n\nMansa Musa left Mali with a huge caravan of people, camels and gold.\n\nWriters of the time say he gave away so much gold in Cairo that its value fell for years.\n\nHe came home with scholars and builders.\n\nTimbuktu grew into a famous city of learning.\n\nOne journey put West Africa on the map of the world.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Mali",
@@ -167,22 +167,33 @@
      "era": "1324",
      "s": "In 1324 the ruler of Mali set out on a pilgrimage that the world still talks about.",
      "art": "dome",
-     "kind": "History"
+     "kind": "History",
+     "theme": 0
+    },
+    {
+     "k": "sbeats",
+     "t": "Mansa Musa's journey to Mecca",
+     "era": "1324",
+     "beats": [
+      "Mansa Musa left Mali with a huge caravan of people, camels and gold.",
+      "Writers of the time say he gave away so much gold in Cairo that its value fell for years.",
+      "He came home with scholars and builders.",
+      "Timbuktu grew into a famous city of learning."
+     ],
+     "art": "dome",
+     "theme": 0
+    },
+    {
+     "k": "sclose",
+     "t": "Mansa Musa's journey to Mecca",
+     "era": "1324",
+     "close": "One journey put West Africa on the map of the world.",
+     "art": "dome",
+     "theme": 0
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (dome), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: MANSA MUSA'S JOURNEY TO MECCA (1324)",
-     "0:03  Caption: Mansa Musa left Mali with a huge caravan of people, camels and gold.",
-     "0:05  Caption: Writers of the time say he gave away so much gold in Cairo that its value fell for years.",
-     "0:08  Caption: He came home with scholars and builders.",
-     "0:11  Caption: Timbuktu grew into a famous city of learning.",
-     "0:15  Closing line: One journey put West Africa on the map of the world.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -501,8 +512,8 @@
    "month": "2026-11",
    "slot": "Wednesday",
    "title": "Queen Amina of Zazzau",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "Tradition remembers her as a queen who led armies and built walls.\n\nAmina ruled Zazzau, a Hausa city state in what is now northern Nigeria.\n\nShe is remembered for leading her warriors and widening her kingdom.\n\nTradition says she raised great walls around towns, called Amina's walls.\n\nTrade routes grew and the cities grew with them.\n\nHer name is still spoken with pride in Hausaland.\n\n(History and tradition)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#QueenAmina",
@@ -543,22 +554,33 @@
      "era": "1500s",
      "s": "Tradition remembers her as a queen who led armies and built walls.",
      "art": "crown",
-     "kind": "History and tradition"
+     "kind": "History and tradition",
+     "theme": 1
+    },
+    {
+     "k": "sbeats",
+     "t": "Queen Amina of Zazzau",
+     "era": "1500s",
+     "beats": [
+      "Amina ruled Zazzau, a Hausa city state in what is now northern Nigeria.",
+      "She is remembered for leading her warriors and widening her kingdom.",
+      "Tradition says she raised great walls around towns, called Amina's walls.",
+      "Trade routes grew and the cities grew with them."
+     ],
+     "art": "crown",
+     "theme": 1
+    },
+    {
+     "k": "sclose",
+     "t": "Queen Amina of Zazzau",
+     "era": "1500s",
+     "close": "Her name is still spoken with pride in Hausaland.",
+     "art": "crown",
+     "theme": 1
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (crown), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: QUEEN AMINA OF ZAZZAU (1500s)",
-     "0:03  Caption: Amina ruled Zazzau, a Hausa city state in what is now northern Nigeria.",
-     "0:05  Caption: She is remembered for leading her warriors and widening her kingdom.",
-     "0:08  Caption: Tradition says she raised great walls around towns, called Amina's walls.",
-     "0:11  Caption: Trade routes grew and the cities grew with them.",
-     "0:15  Closing line: Her name is still spoken with pride in Hausaland.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -877,8 +899,8 @@
    "month": "2026-11",
    "slot": "Wednesday",
    "title": "The manuscripts of Timbuktu",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "In Timbuktu, knowledge was kept in ink and paper, not only in memory.\n\nScholars at Sankore and other schools copied and wrote books on law, science and poetry.\n\nFamilies kept thousands of manuscripts in homes and small libraries.\n\nWhen danger came, people hid them and carried them to safety.\n\nMany survive today.\n\nA city of books, guarded by its people.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Timbuktu",
@@ -919,22 +941,33 @@
      "era": "1300s to today",
      "s": "In Timbuktu, knowledge was kept in ink and paper, not only in memory.",
      "art": "dome",
-     "kind": "History"
+     "kind": "History",
+     "theme": 2
+    },
+    {
+     "k": "sbeats",
+     "t": "The manuscripts of Timbuktu",
+     "era": "1300s to today",
+     "beats": [
+      "Scholars at Sankore and other schools copied and wrote books on law, science and poetry.",
+      "Families kept thousands of manuscripts in homes and small libraries.",
+      "When danger came, people hid them and carried them to safety.",
+      "Many survive today."
+     ],
+     "art": "dome",
+     "theme": 2
+    },
+    {
+     "k": "sclose",
+     "t": "The manuscripts of Timbuktu",
+     "era": "1300s to today",
+     "close": "A city of books, guarded by its people.",
+     "art": "dome",
+     "theme": 2
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (dome), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: THE MANUSCRIPTS OF TIMBUKTU (1300s to today)",
-     "0:03  Caption: Scholars at Sankore and other schools copied and wrote books on law, science and poetry.",
-     "0:05  Caption: Families kept thousands of manuscripts in homes and small libraries.",
-     "0:08  Caption: When danger came, people hid them and carried them to safety.",
-     "0:11  Caption: Many survive today.",
-     "0:15  Closing line: A city of books, guarded by its people.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -1253,8 +1286,8 @@
    "month": "2026-12",
    "slot": "Wednesday",
    "title": "Great Zimbabwe",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "Long before maps had its name, a stone city rose in the highlands.\n\nGreat Zimbabwe was built of carefully fitted granite blocks.\n\nIts walls stand without mortar in many places.\n\nIt grew as a centre of trade in gold, cattle and goods.\n\nThe word Zimbabwe is often traced to words meaning stone houses.\n\nStones stacked with patience, still standing.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#GreatZimbabwe",
@@ -1295,22 +1328,33 @@
      "era": "1100s to 1400s",
      "s": "Long before maps had its name, a stone city rose in the highlands.",
      "art": "pyramid",
-     "kind": "History"
+     "kind": "History",
+     "theme": 3
+    },
+    {
+     "k": "sbeats",
+     "t": "Great Zimbabwe",
+     "era": "1100s to 1400s",
+     "beats": [
+      "Great Zimbabwe was built of carefully fitted granite blocks.",
+      "Its walls stand without mortar in many places.",
+      "It grew as a centre of trade in gold, cattle and goods.",
+      "The word Zimbabwe is often traced to words meaning stone houses."
+     ],
+     "art": "pyramid",
+     "theme": 3
+    },
+    {
+     "k": "sclose",
+     "t": "Great Zimbabwe",
+     "era": "1100s to 1400s",
+     "close": "Stones stacked with patience, still standing.",
+     "art": "pyramid",
+     "theme": 3
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (pyramid), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: GREAT ZIMBABWE (1100s to 1400s)",
-     "0:03  Caption: Great Zimbabwe was built of carefully fitted granite blocks.",
-     "0:05  Caption: Its walls stand without mortar in many places.",
-     "0:08  Caption: It grew as a centre of trade in gold, cattle and goods.",
-     "0:11  Caption: The word Zimbabwe is often traced to words meaning stone houses.",
-     "0:15  Closing line: Stones stacked with patience, still standing.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -1636,8 +1680,8 @@
    "month": "2026-12",
    "slot": "Wednesday",
    "title": "The pyramids of Kush",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "Egypt is famous for pyramids. Sudan has more than people realise.\n\nThe kingdom of Kush ruled along the Nile south of Egypt.\n\nIts kings built their own pyramids at places like Meroe.\n\nKushite rulers even governed Egypt for a time.\n\nMore than two hundred pyramids still stand in Sudan.\n\nAn empire of the Nile that history often forgets.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Kush",
@@ -1678,22 +1722,33 @@
      "era": "700s BC",
      "s": "Egypt is famous for pyramids. Sudan has more than people realise.",
      "art": "pyramid",
-     "kind": "History"
+     "kind": "History",
+     "theme": 4
+    },
+    {
+     "k": "sbeats",
+     "t": "The pyramids of Kush",
+     "era": "700s BC",
+     "beats": [
+      "The kingdom of Kush ruled along the Nile south of Egypt.",
+      "Its kings built their own pyramids at places like Meroe.",
+      "Kushite rulers even governed Egypt for a time.",
+      "More than two hundred pyramids still stand in Sudan."
+     ],
+     "art": "pyramid",
+     "theme": 4
+    },
+    {
+     "k": "sclose",
+     "t": "The pyramids of Kush",
+     "era": "700s BC",
+     "close": "An empire of the Nile that history often forgets.",
+     "art": "pyramid",
+     "theme": 4
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (pyramid), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: THE PYRAMIDS OF KUSH (700s BC)",
-     "0:03  Caption: The kingdom of Kush ruled along the Nile south of Egypt.",
-     "0:05  Caption: Its kings built their own pyramids at places like Meroe.",
-     "0:08  Caption: Kushite rulers even governed Egypt for a time.",
-     "0:11  Caption: More than two hundred pyramids still stand in Sudan.",
-     "0:15  Closing line: An empire of the Nile that history often forgets.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -2012,8 +2067,8 @@
    "month": "2026-12",
    "slot": "Wednesday",
    "title": "The Battle of Adwa",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "In 1896 an African army defeated a European one and kept its freedom.\n\nItaly tried to take over Ethiopia.\n\nEmperor Menelik II gathered a large army, and Empress Taytu stood beside him.\n\nAt Adwa the Ethiopians won a decisive victory.\n\nEthiopia stayed independent.\n\nA victory remembered across the world.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Adwa",
@@ -2054,22 +2109,33 @@
      "era": "1896",
      "s": "In 1896 an African army defeated a European one and kept its freedom.",
      "art": "crown",
-     "kind": "History"
+     "kind": "History",
+     "theme": 0
+    },
+    {
+     "k": "sbeats",
+     "t": "The Battle of Adwa",
+     "era": "1896",
+     "beats": [
+      "Italy tried to take over Ethiopia.",
+      "Emperor Menelik II gathered a large army, and Empress Taytu stood beside him.",
+      "At Adwa the Ethiopians won a decisive victory.",
+      "Ethiopia stayed independent."
+     ],
+     "art": "crown",
+     "theme": 0
+    },
+    {
+     "k": "sclose",
+     "t": "The Battle of Adwa",
+     "era": "1896",
+     "close": "A victory remembered across the world.",
+     "art": "crown",
+     "theme": 0
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (crown), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: THE BATTLE OF ADWA (1896)",
-     "0:03  Caption: Italy tried to take over Ethiopia.",
-     "0:05  Caption: Emperor Menelik II gathered a large army, and Empress Taytu stood beside him.",
-     "0:08  Caption: At Adwa the Ethiopians won a decisive victory.",
-     "0:11  Caption: Ethiopia stayed independent.",
-     "0:15  Closing line: A victory remembered across the world.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -2388,8 +2454,8 @@
    "month": "2026-12",
    "slot": "Wednesday",
    "title": "Yaa Asantewaa and the Golden Stool",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "When the Asante were told to hand over their Golden Stool, one woman said no.\n\nThe Golden Stool is the sacred symbol of the Asante nation.\n\nYaa Asantewaa was a queen mother of Ejisu.\n\nShe called on the people to defend it, and led the Asante forces herself.\n\nThe war of 1900 is named after the stool.\n\nCourage that her people still celebrate.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#YaaAsantewaa",
@@ -2430,22 +2496,33 @@
      "era": "1900",
      "s": "When the Asante were told to hand over their Golden Stool, one woman said no.",
      "art": "crown",
-     "kind": "History"
+     "kind": "History",
+     "theme": 1
+    },
+    {
+     "k": "sbeats",
+     "t": "Yaa Asantewaa and the Golden Stool",
+     "era": "1900",
+     "beats": [
+      "The Golden Stool is the sacred symbol of the Asante nation.",
+      "Yaa Asantewaa was a queen mother of Ejisu.",
+      "She called on the people to defend it, and led the Asante forces herself.",
+      "The war of 1900 is named after the stool."
+     ],
+     "art": "crown",
+     "theme": 1
+    },
+    {
+     "k": "sclose",
+     "t": "Yaa Asantewaa and the Golden Stool",
+     "era": "1900",
+     "close": "Courage that her people still celebrate.",
+     "art": "crown",
+     "theme": 1
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (crown), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: YAA ASANTEWAA AND THE GOLDEN STOOL (1900)",
-     "0:03  Caption: The Golden Stool is the sacred symbol of the Asante nation.",
-     "0:05  Caption: Yaa Asantewaa was a queen mother of Ejisu.",
-     "0:08  Caption: She called on the people to defend it, and led the Asante forces herself.",
-     "0:11  Caption: The war of 1900 is named after the stool.",
-     "0:15  Closing line: Courage that her people still celebrate.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -2764,8 +2841,8 @@
    "month": "2026-12",
    "slot": "Wednesday",
    "title": "Sundiata and the lion of Mali",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "The story says the king who could not walk became the founder of an empire.\n\nSundiata Keita was a prince who, in the epic, did not walk as a child.\n\nDriven into exile, he returned with an army.\n\nAt the battle of Kirina in about 1235, he defeated the king of Sosso.\n\nThe Mali Empire began.\n\nTold by griots for generations, still told today.\n\n(Epic and history)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Sundiata",
@@ -2806,22 +2883,33 @@
      "era": "1235",
      "s": "The story says the king who could not walk became the founder of an empire.",
      "art": "crown",
-     "kind": "Epic and history"
+     "kind": "Epic and history",
+     "theme": 2
+    },
+    {
+     "k": "sbeats",
+     "t": "Sundiata and the lion of Mali",
+     "era": "1235",
+     "beats": [
+      "Sundiata Keita was a prince who, in the epic, did not walk as a child.",
+      "Driven into exile, he returned with an army.",
+      "At the battle of Kirina in about 1235, he defeated the king of Sosso.",
+      "The Mali Empire began."
+     ],
+     "art": "crown",
+     "theme": 2
+    },
+    {
+     "k": "sclose",
+     "t": "Sundiata and the lion of Mali",
+     "era": "1235",
+     "close": "Told by griots for generations, still told today.",
+     "art": "crown",
+     "theme": 2
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (crown), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: SUNDIATA AND THE LION OF MALI (1235)",
-     "0:03  Caption: Sundiata Keita was a prince who, in the epic, did not walk as a child.",
-     "0:05  Caption: Driven into exile, he returned with an army.",
-     "0:08  Caption: At the battle of Kirina in about 1235, he defeated the king of Sosso.",
-     "0:11  Caption: The Mali Empire began.",
-     "0:15  Closing line: Told by griots for generations, still told today.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -3140,8 +3228,8 @@
    "month": "2027-01",
    "slot": "Wednesday",
    "title": "Queen Nzinga of Ndongo and Matamba",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "She walked into a meeting and, they say, refused to stand below the governor.\n\nNzinga came from the kingdoms of Ndongo and Matamba, in what is now Angola.\n\nShe negotiated with the Portuguese as a diplomat.\n\nWhen talks failed, she led resistance for decades.\n\nShe ruled until old age.\n\nA leader who used both words and armies.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#QueenNzinga",
@@ -3182,22 +3270,33 @@
      "era": "1600s",
      "s": "She walked into a meeting and, they say, refused to stand below the governor.",
      "art": "crown",
-     "kind": "History"
+     "kind": "History",
+     "theme": 3
+    },
+    {
+     "k": "sbeats",
+     "t": "Queen Nzinga of Ndongo and Matamba",
+     "era": "1600s",
+     "beats": [
+      "Nzinga came from the kingdoms of Ndongo and Matamba, in what is now Angola.",
+      "She negotiated with the Portuguese as a diplomat.",
+      "When talks failed, she led resistance for decades.",
+      "She ruled until old age."
+     ],
+     "art": "crown",
+     "theme": 3
+    },
+    {
+     "k": "sclose",
+     "t": "Queen Nzinga of Ndongo and Matamba",
+     "era": "1600s",
+     "close": "A leader who used both words and armies.",
+     "art": "crown",
+     "theme": 3
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (crown), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: QUEEN NZINGA OF NDONGO AND MATAMBA (1600s)",
-     "0:03  Caption: Nzinga came from the kingdoms of Ndongo and Matamba, in what is now Angola.",
-     "0:05  Caption: She negotiated with the Portuguese as a diplomat.",
-     "0:08  Caption: When talks failed, she led resistance for decades.",
-     "0:11  Caption: She ruled until old age.",
-     "0:15  Closing line: A leader who used both words and armies.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -3516,8 +3615,8 @@
    "month": "2027-01",
    "slot": "Wednesday",
    "title": "The rock churches of Lalibela",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "These churches were not built up. They were carved down.\n\nIn Lalibela, Ethiopia, workers carved churches out of solid rock.\n\nThey cut trenches around each block and shaped it from the top.\n\nTradition links the work to King Lalibela in the 1100s.\n\nPeople still pray there today.\n\nStone shaped by faith and patience.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Lalibela",
@@ -3558,22 +3657,33 @@
      "era": "1100s",
      "s": "These churches were not built up. They were carved down.",
      "art": "pyramid",
-     "kind": "History"
+     "kind": "History",
+     "theme": 4
+    },
+    {
+     "k": "sbeats",
+     "t": "The rock churches of Lalibela",
+     "era": "1100s",
+     "beats": [
+      "In Lalibela, Ethiopia, workers carved churches out of solid rock.",
+      "They cut trenches around each block and shaped it from the top.",
+      "Tradition links the work to King Lalibela in the 1100s.",
+      "People still pray there today."
+     ],
+     "art": "pyramid",
+     "theme": 4
+    },
+    {
+     "k": "sclose",
+     "t": "The rock churches of Lalibela",
+     "era": "1100s",
+     "close": "Stone shaped by faith and patience.",
+     "art": "pyramid",
+     "theme": 4
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (pyramid), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: THE ROCK CHURCHES OF LALIBELA (1100s)",
-     "0:03  Caption: In Lalibela, Ethiopia, workers carved churches out of solid rock.",
-     "0:05  Caption: They cut trenches around each block and shaped it from the top.",
-     "0:08  Caption: Tradition links the work to King Lalibela in the 1100s.",
-     "0:11  Caption: People still pray there today.",
-     "0:15  Closing line: Stone shaped by faith and patience.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -3892,8 +4002,8 @@
    "month": "2027-01",
    "slot": "Wednesday",
    "title": "The kingdom of Axum",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "Axum was among the great powers of its age.\n\nIt sat on trade routes between Africa, Arabia and India.\n\nAxum minted its own coins.\n\nIt raised tall carved stone monuments called obelisks.\n\nIt was one of the early states to adopt Christianity.\n\nA kingdom that wrote its name in stone and coin.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Axum",
@@ -3934,22 +4044,33 @@
      "era": "100 to 900",
      "s": "Axum was among the great powers of its age.",
      "art": "pyramid",
-     "kind": "History"
+     "kind": "History",
+     "theme": 0
+    },
+    {
+     "k": "sbeats",
+     "t": "The kingdom of Axum",
+     "era": "100 to 900",
+     "beats": [
+      "It sat on trade routes between Africa, Arabia and India.",
+      "Axum minted its own coins.",
+      "It raised tall carved stone monuments called obelisks.",
+      "It was one of the early states to adopt Christianity."
+     ],
+     "art": "pyramid",
+     "theme": 0
+    },
+    {
+     "k": "sclose",
+     "t": "The kingdom of Axum",
+     "era": "100 to 900",
+     "close": "A kingdom that wrote its name in stone and coin.",
+     "art": "pyramid",
+     "theme": 0
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (pyramid), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: THE KINGDOM OF AXUM (100 to 900)",
-     "0:03  Caption: It sat on trade routes between Africa, Arabia and India.",
-     "0:05  Caption: Axum minted its own coins.",
-     "0:08  Caption: It raised tall carved stone monuments called obelisks.",
-     "0:11  Caption: It was one of the early states to adopt Christianity.",
-     "0:15  Closing line: A kingdom that wrote its name in stone and coin.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -4268,8 +4389,8 @@
    "month": "2027-01",
    "slot": "Wednesday",
    "title": "The walls of Benin",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "Around Benin City ran miles and miles of earthen walls.\n\nThe Edo people built banks and ditches around their city.\n\nTogether they formed a vast network around the kingdom.\n\nVisitors from Europe wrote about the planned streets and the palace.\n\nBenin was famous for its brass work.\n\nA city planned with care.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Benin",
@@ -4310,22 +4431,33 @@
      "era": "1400s",
      "s": "Around Benin City ran miles and miles of earthen walls.",
      "art": "crown",
-     "kind": "History"
+     "kind": "History",
+     "theme": 1
+    },
+    {
+     "k": "sbeats",
+     "t": "The walls of Benin",
+     "era": "1400s",
+     "beats": [
+      "The Edo people built banks and ditches around their city.",
+      "Together they formed a vast network around the kingdom.",
+      "Visitors from Europe wrote about the planned streets and the palace.",
+      "Benin was famous for its brass work."
+     ],
+     "art": "crown",
+     "theme": 1
+    },
+    {
+     "k": "sclose",
+     "t": "The walls of Benin",
+     "era": "1400s",
+     "close": "A city planned with care.",
+     "art": "crown",
+     "theme": 1
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (crown), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: THE WALLS OF BENIN (1400s)",
-     "0:03  Caption: The Edo people built banks and ditches around their city.",
-     "0:05  Caption: Together they formed a vast network around the kingdom.",
-     "0:08  Caption: Visitors from Europe wrote about the planned streets and the palace.",
-     "0:11  Caption: Benin was famous for its brass work.",
-     "0:15  Closing line: A city planned with care.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -4644,8 +4776,8 @@
    "month": "2027-02",
    "slot": "Wednesday",
    "title": "The heads of Ife",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "The faces look so real that people once could not believe who made them.\n\nThe artists of Ife made life like heads in brass and terracotta.\n\nThe features are calm and carefully shaped.\n\nThey were made hundreds of years ago in southwest Nigeria.\n\nToday they sit in museums around the world.\n\nSkill that still stops visitors in their tracks.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Ife",
@@ -4686,22 +4818,33 @@
      "era": "1100s to 1400s",
      "s": "The faces look so real that people once could not believe who made them.",
      "art": "crown",
-     "kind": "History"
+     "kind": "History",
+     "theme": 2
+    },
+    {
+     "k": "sbeats",
+     "t": "The heads of Ife",
+     "era": "1100s to 1400s",
+     "beats": [
+      "The artists of Ife made life like heads in brass and terracotta.",
+      "The features are calm and carefully shaped.",
+      "They were made hundreds of years ago in southwest Nigeria.",
+      "Today they sit in museums around the world."
+     ],
+     "art": "crown",
+     "theme": 2
+    },
+    {
+     "k": "sclose",
+     "t": "The heads of Ife",
+     "era": "1100s to 1400s",
+     "close": "Skill that still stops visitors in their tracks.",
+     "art": "crown",
+     "theme": 2
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (crown), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: THE HEADS OF IFE (1100s to 1400s)",
-     "0:03  Caption: The artists of Ife made life like heads in brass and terracotta.",
-     "0:05  Caption: The features are calm and carefully shaped.",
-     "0:08  Caption: They were made hundreds of years ago in southwest Nigeria.",
-     "0:11  Caption: Today they sit in museums around the world.",
-     "0:15  Closing line: Skill that still stops visitors in their tracks.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -5020,8 +5163,8 @@
    "month": "2027-02",
    "slot": "Wednesday",
    "title": "Anansi and the pot of wisdom",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "Anansi the spider decided to hoard all the wisdom in the world.\n\nHe gathered wisdom and put it in a big clay pot.\n\nHe tied the pot to his front and tried to climb a tall tree.\n\nHe struggled, because the pot kept getting in the way.\n\nHis small son said, why not tie it on your back?\n\nAnansi saw that wisdom is not kept by one person. He shared it, and that is why we all have some.\n\n(Folktale)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Anansi",
@@ -5062,22 +5205,33 @@
      "era": "Akan folktale",
      "s": "Anansi the spider decided to hoard all the wisdom in the world.",
      "art": "baobab",
-     "kind": "Folktale"
+     "kind": "Folktale",
+     "theme": 3
+    },
+    {
+     "k": "sbeats",
+     "t": "Anansi and the pot of wisdom",
+     "era": "Akan folktale",
+     "beats": [
+      "He gathered wisdom and put it in a big clay pot.",
+      "He tied the pot to his front and tried to climb a tall tree.",
+      "He struggled, because the pot kept getting in the way.",
+      "His small son said, why not tie it on your back?"
+     ],
+     "art": "baobab",
+     "theme": 3
+    },
+    {
+     "k": "sclose",
+     "t": "Anansi and the pot of wisdom",
+     "era": "Akan folktale",
+     "close": "Anansi saw that wisdom is not kept by one person. He shared it, and that is why we all have some.",
+     "art": "baobab",
+     "theme": 3
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (baobab), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: ANANSI AND THE POT OF WISDOM (Akan folktale)",
-     "0:03  Caption: He gathered wisdom and put it in a big clay pot.",
-     "0:05  Caption: He tied the pot to his front and tried to climb a tall tree.",
-     "0:08  Caption: He struggled, because the pot kept getting in the way.",
-     "0:11  Caption: His small son said, why not tie it on your back?",
-     "0:15  Closing line: Anansi saw that wisdom is not kept by one person. He shared it, and that is why we all have some.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -5396,8 +5550,8 @@
    "month": "2027-02",
    "slot": "Wednesday",
    "title": "Why the tortoise has a cracked shell",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "A hungry tortoise once talked the birds into taking him to a feast in the sky.\n\nThe birds lent him feathers, and he flew up with them.\n\nHe told them to call him by a new name: All of You.\n\nAt the feast he said the food was for all of you, and ate everything.\n\nThe angry birds took back their feathers.\n\nHe fell, his shell cracked, and that is the story of why it looks patched.\n\n(Folktale)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Tortoise",
@@ -5438,22 +5592,33 @@
      "era": "West African folktale",
      "s": "A hungry tortoise once talked the birds into taking him to a feast in the sky.",
      "art": "baobab",
-     "kind": "Folktale"
+     "kind": "Folktale",
+     "theme": 4
+    },
+    {
+     "k": "sbeats",
+     "t": "Why the tortoise has a cracked shell",
+     "era": "West African folktale",
+     "beats": [
+      "The birds lent him feathers, and he flew up with them.",
+      "He told them to call him by a new name: All of You.",
+      "At the feast he said the food was for all of you, and ate everything.",
+      "The angry birds took back their feathers."
+     ],
+     "art": "baobab",
+     "theme": 4
+    },
+    {
+     "k": "sclose",
+     "t": "Why the tortoise has a cracked shell",
+     "era": "West African folktale",
+     "close": "He fell, his shell cracked, and that is the story of why it looks patched.",
+     "art": "baobab",
+     "theme": 4
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (baobab), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: WHY THE TORTOISE HAS A CRACKED SHELL (West African folktale)",
-     "0:03  Caption: The birds lent him feathers, and he flew up with them.",
-     "0:05  Caption: He told them to call him by a new name: All of You.",
-     "0:08  Caption: At the feast he said the food was for all of you, and ate everything.",
-     "0:11  Caption: The angry birds took back their feathers.",
-     "0:15  Closing line: He fell, his shell cracked, and that is the story of why it looks patched.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -5772,8 +5937,8 @@
    "month": "2027-02",
    "slot": "Wednesday",
    "title": "The dye pits of Kano",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "In Kano, cloth has been dyed in the same pits for centuries.\n\nThe Kofar Mata dye pits in Kano are among the oldest still in use.\n\nCloth is dipped in indigo until it turns deep blue.\n\nThe craft is passed from one generation to the next.\n\nKano was a great trading city of the Sahel.\n\nA craft kept alive by hands.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Kano",
@@ -5814,22 +5979,33 @@
      "era": "1400s to today",
      "s": "In Kano, cloth has been dyed in the same pits for centuries.",
      "art": "baobab",
-     "kind": "History"
+     "kind": "History",
+     "theme": 0
+    },
+    {
+     "k": "sbeats",
+     "t": "The dye pits of Kano",
+     "era": "1400s to today",
+     "beats": [
+      "The Kofar Mata dye pits in Kano are among the oldest still in use.",
+      "Cloth is dipped in indigo until it turns deep blue.",
+      "The craft is passed from one generation to the next.",
+      "Kano was a great trading city of the Sahel."
+     ],
+     "art": "baobab",
+     "theme": 0
+    },
+    {
+     "k": "sclose",
+     "t": "The dye pits of Kano",
+     "era": "1400s to today",
+     "close": "A craft kept alive by hands.",
+     "art": "baobab",
+     "theme": 0
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (baobab), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: THE DYE PITS OF KANO (1400s to today)",
-     "0:03  Caption: The Kofar Mata dye pits in Kano are among the oldest still in use.",
-     "0:05  Caption: Cloth is dipped in indigo until it turns deep blue.",
-     "0:08  Caption: The craft is passed from one generation to the next.",
-     "0:11  Caption: Kano was a great trading city of the Sahel.",
-     "0:15  Closing line: A craft kept alive by hands.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -6148,8 +6324,8 @@
    "month": "2027-03",
    "slot": "Wednesday",
    "title": "Kaldi and the dancing goats",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "The story says coffee was found by a goat herder.\n\nKaldi noticed his goats leaping about after eating red berries.\n\nHe tried the berries and felt wide awake.\n\nA monk dropped them in a fire, and the smell was wonderful.\n\nBrewed in water, the drink began to spread.\n\nA legend, but coffee does come from the forests of Ethiopia.\n\n(Legend)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Coffee",
@@ -6190,22 +6366,33 @@
      "era": "Ethiopian legend",
      "s": "The story says coffee was found by a goat herder.",
      "art": "baobab",
-     "kind": "Legend"
+     "kind": "Legend",
+     "theme": 1
+    },
+    {
+     "k": "sbeats",
+     "t": "Kaldi and the dancing goats",
+     "era": "Ethiopian legend",
+     "beats": [
+      "Kaldi noticed his goats leaping about after eating red berries.",
+      "He tried the berries and felt wide awake.",
+      "A monk dropped them in a fire, and the smell was wonderful.",
+      "Brewed in water, the drink began to spread."
+     ],
+     "art": "baobab",
+     "theme": 1
+    },
+    {
+     "k": "sclose",
+     "t": "Kaldi and the dancing goats",
+     "era": "Ethiopian legend",
+     "close": "A legend, but coffee does come from the forests of Ethiopia.",
+     "art": "baobab",
+     "theme": 1
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (baobab), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: KALDI AND THE DANCING GOATS (Ethiopian legend)",
-     "0:03  Caption: Kaldi noticed his goats leaping about after eating red berries.",
-     "0:05  Caption: He tried the berries and felt wide awake.",
-     "0:08  Caption: A monk dropped them in a fire, and the smell was wonderful.",
-     "0:11  Caption: Brewed in water, the drink began to spread.",
-     "0:15  Closing line: A legend, but coffee does come from the forests of Ethiopia.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -6524,8 +6711,8 @@
    "month": "2027-03",
    "slot": "Wednesday",
    "title": "The Ghana Empire: gold and salt",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "Gold lay in the south and salt lay in the Sahara. The empire stood in the middle.\n\nThe Ghana Empire, also called Wagadu, controlled trade routes in West Africa.\n\nTraders brought salt south and carried gold north.\n\nThe king taxed the goods that passed through.\n\nVisitors wrote of its wealth.\n\nTrade made it strong.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#GhanaEmpire",
@@ -6566,22 +6753,33 @@
      "era": "800 to 1100",
      "s": "Gold lay in the south and salt lay in the Sahara. The empire stood in the middle.",
      "art": "dome",
-     "kind": "History"
+     "kind": "History",
+     "theme": 2
+    },
+    {
+     "k": "sbeats",
+     "t": "The Ghana Empire: gold and salt",
+     "era": "800 to 1100",
+     "beats": [
+      "The Ghana Empire, also called Wagadu, controlled trade routes in West Africa.",
+      "Traders brought salt south and carried gold north.",
+      "The king taxed the goods that passed through.",
+      "Visitors wrote of its wealth."
+     ],
+     "art": "dome",
+     "theme": 2
+    },
+    {
+     "k": "sclose",
+     "t": "The Ghana Empire: gold and salt",
+     "era": "800 to 1100",
+     "close": "Trade made it strong.",
+     "art": "dome",
+     "theme": 2
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (dome), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: THE GHANA EMPIRE: GOLD AND SALT (800 to 1100)",
-     "0:03  Caption: The Ghana Empire, also called Wagadu, controlled trade routes in West Africa.",
-     "0:05  Caption: Traders brought salt south and carried gold north.",
-     "0:08  Caption: The king taxed the goods that passed through.",
-     "0:11  Caption: Visitors wrote of its wealth.",
-     "0:15  Closing line: Trade made it strong.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -6900,8 +7098,8 @@
    "month": "2027-03",
    "slot": "Wednesday",
    "title": "Kilwa and the Swahili coast",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "Ships from India, Arabia and China once called at an African port.\n\nKilwa was a stone built city on the coast of present day Tanzania.\n\nIt traded gold, ivory and cloth across the Indian Ocean.\n\nIt minted its own coins.\n\nThe traveller Ibn Battuta visited and praised it.\n\nAn ocean city with many languages.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Kilwa",
@@ -6942,22 +7140,33 @@
      "era": "1300s",
      "s": "Ships from India, Arabia and China once called at an African port.",
      "art": "dome",
-     "kind": "History"
+     "kind": "History",
+     "theme": 3
+    },
+    {
+     "k": "sbeats",
+     "t": "Kilwa and the Swahili coast",
+     "era": "1300s",
+     "beats": [
+      "Kilwa was a stone built city on the coast of present day Tanzania.",
+      "It traded gold, ivory and cloth across the Indian Ocean.",
+      "It minted its own coins.",
+      "The traveller Ibn Battuta visited and praised it."
+     ],
+     "art": "dome",
+     "theme": 3
+    },
+    {
+     "k": "sclose",
+     "t": "Kilwa and the Swahili coast",
+     "era": "1300s",
+     "close": "An ocean city with many languages.",
+     "art": "dome",
+     "theme": 3
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (dome), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: KILWA AND THE SWAHILI COAST (1300s)",
-     "0:03  Caption: Kilwa was a stone built city on the coast of present day Tanzania.",
-     "0:05  Caption: It traded gold, ivory and cloth across the Indian Ocean.",
-     "0:08  Caption: It minted its own coins.",
-     "0:11  Caption: The traveller Ibn Battuta visited and praised it.",
-     "0:15  Closing line: An ocean city with many languages.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -7276,8 +7485,8 @@
    "month": "2027-03",
    "slot": "Wednesday",
    "title": "The golden rhino of Mapungubwe",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "A small golden rhino was found on a hill in South Africa.\n\nMapungubwe was a kingdom that traded with faraway places.\n\nIts people worked gold into fine objects.\n\nIn the 1930s archaeologists found the golden rhino.\n\nIt is now a symbol of that early kingdom.\n\nA tiny treasure that tells a big story.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Mapungubwe",
@@ -7318,22 +7527,33 @@
      "era": "1200s",
      "s": "A small golden rhino was found on a hill in South Africa.",
      "art": "crown",
-     "kind": "History"
+     "kind": "History",
+     "theme": 4
+    },
+    {
+     "k": "sbeats",
+     "t": "The golden rhino of Mapungubwe",
+     "era": "1200s",
+     "beats": [
+      "Mapungubwe was a kingdom that traded with faraway places.",
+      "Its people worked gold into fine objects.",
+      "In the 1930s archaeologists found the golden rhino.",
+      "It is now a symbol of that early kingdom."
+     ],
+     "art": "crown",
+     "theme": 4
+    },
+    {
+     "k": "sclose",
+     "t": "The golden rhino of Mapungubwe",
+     "era": "1200s",
+     "close": "A tiny treasure that tells a big story.",
+     "art": "crown",
+     "theme": 4
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (crown), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: THE GOLDEN RHINO OF MAPUNGUBWE (1200s)",
-     "0:03  Caption: Mapungubwe was a kingdom that traded with faraway places.",
-     "0:05  Caption: Its people worked gold into fine objects.",
-     "0:08  Caption: In the 1930s archaeologists found the golden rhino.",
-     "0:11  Caption: It is now a symbol of that early kingdom.",
-     "0:15  Closing line: A tiny treasure that tells a big story.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -7652,8 +7872,8 @@
    "month": "2027-03",
    "slot": "Wednesday",
    "title": "The Nok terracottas",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "Some of the earliest large sculptures in West Africa come from Nok.\n\nThe Nok people lived in what is now central Nigeria.\n\nThey shaped clay figures with detailed hair and faces.\n\nThey also worked iron.\n\nMany figures are older than two thousand years.\n\nClay that remembers a lost culture.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Nok",
@@ -7694,22 +7914,33 @@
      "era": "1500 BC to 500 AD",
      "s": "Some of the earliest large sculptures in West Africa come from Nok.",
      "art": "crown",
-     "kind": "History"
+     "kind": "History",
+     "theme": 0
+    },
+    {
+     "k": "sbeats",
+     "t": "The Nok terracottas",
+     "era": "1500 BC to 500 AD",
+     "beats": [
+      "The Nok people lived in what is now central Nigeria.",
+      "They shaped clay figures with detailed hair and faces.",
+      "They also worked iron.",
+      "Many figures are older than two thousand years."
+     ],
+     "art": "crown",
+     "theme": 0
+    },
+    {
+     "k": "sclose",
+     "t": "The Nok terracottas",
+     "era": "1500 BC to 500 AD",
+     "close": "Clay that remembers a lost culture.",
+     "art": "crown",
+     "theme": 0
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (crown), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: THE NOK TERRACOTTAS (1500 BC to 500 AD)",
-     "0:03  Caption: The Nok people lived in what is now central Nigeria.",
-     "0:05  Caption: They shaped clay figures with detailed hair and faces.",
-     "0:08  Caption: They also worked iron.",
-     "0:11  Caption: Many figures are older than two thousand years.",
-     "0:15  Closing line: Clay that remembers a lost culture.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -8049,8 +8280,8 @@
    "month": "2027-04",
    "slot": "Wednesday",
    "title": "Imhotep, the first named architect",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "Thousands of years ago, one man planned a building that changed the world.\n\nImhotep served the Egyptian king Djoser.\n\nHe is credited with designing the step pyramid at Saqqara.\n\nIt is among the earliest large stone buildings.\n\nLater generations honoured him as a sage and healer.\n\nA name that has lasted four and a half thousand years.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Imhotep",
@@ -8091,22 +8322,33 @@
      "era": "2600 BC",
      "s": "Thousands of years ago, one man planned a building that changed the world.",
      "art": "pyramid",
-     "kind": "History"
+     "kind": "History",
+     "theme": 1
+    },
+    {
+     "k": "sbeats",
+     "t": "Imhotep, the first named architect",
+     "era": "2600 BC",
+     "beats": [
+      "Imhotep served the Egyptian king Djoser.",
+      "He is credited with designing the step pyramid at Saqqara.",
+      "It is among the earliest large stone buildings.",
+      "Later generations honoured him as a sage and healer."
+     ],
+     "art": "pyramid",
+     "theme": 1
+    },
+    {
+     "k": "sclose",
+     "t": "Imhotep, the first named architect",
+     "era": "2600 BC",
+     "close": "A name that has lasted four and a half thousand years.",
+     "art": "pyramid",
+     "theme": 1
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (pyramid), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: IMHOTEP, THE FIRST NAMED ARCHITECT (2600 BC)",
-     "0:03  Caption: Imhotep served the Egyptian king Djoser.",
-     "0:05  Caption: He is credited with designing the step pyramid at Saqqara.",
-     "0:08  Caption: It is among the earliest large stone buildings.",
-     "0:11  Caption: Later generations honoured him as a sage and healer.",
-     "0:15  Closing line: A name that has lasted four and a half thousand years.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -8425,8 +8667,8 @@
    "month": "2027-04",
    "slot": "Wednesday",
    "title": "The Golden Stool comes down from the sky",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "Asante tradition says a golden stool floated down from the sky.\n\nThe priest Okomfo Anokye called the clans together.\n\nA golden stool came down and rested on the knees of Osei Tutu.\n\nAnokye said the stool held the soul of the nation.\n\nThe clans agreed to unite as one.\n\nA story about unity, still told in Ghana.\n\n(Legend)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Asante",
@@ -8467,22 +8709,33 @@
      "era": "Asante tradition",
      "s": "Asante tradition says a golden stool floated down from the sky.",
      "art": "crown",
-     "kind": "Legend"
+     "kind": "Legend",
+     "theme": 2
+    },
+    {
+     "k": "sbeats",
+     "t": "The Golden Stool comes down from the sky",
+     "era": "Asante tradition",
+     "beats": [
+      "The priest Okomfo Anokye called the clans together.",
+      "A golden stool came down and rested on the knees of Osei Tutu.",
+      "Anokye said the stool held the soul of the nation.",
+      "The clans agreed to unite as one."
+     ],
+     "art": "crown",
+     "theme": 2
+    },
+    {
+     "k": "sclose",
+     "t": "The Golden Stool comes down from the sky",
+     "era": "Asante tradition",
+     "close": "A story about unity, still told in Ghana.",
+     "art": "crown",
+     "theme": 2
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (crown), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: THE GOLDEN STOOL COMES DOWN FROM THE SKY (Asante tradition)",
-     "0:03  Caption: The priest Okomfo Anokye called the clans together.",
-     "0:05  Caption: A golden stool came down and rested on the knees of Osei Tutu.",
-     "0:08  Caption: Anokye said the stool held the soul of the nation.",
-     "0:11  Caption: The clans agreed to unite as one.",
-     "0:15  Closing line: A story about unity, still told in Ghana.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -8801,8 +9054,8 @@
    "month": "2027-04",
    "slot": "Wednesday",
    "title": "Kanem-Bornu, the empire by the lake",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "One state lasted close to a thousand years near Lake Chad.\n\nKanem and later Bornu ruled the lands around Lake Chad.\n\nIts rulers controlled trade across the Sahara.\n\nThey exchanged letters and envoys with distant powers.\n\nScholars and traders passed through its cities.\n\nA long lived power of the Sahel.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#KanemBornu",
@@ -8843,22 +9096,33 @@
      "era": "700 to 1800s",
      "s": "One state lasted close to a thousand years near Lake Chad.",
      "art": "dome",
-     "kind": "History"
+     "kind": "History",
+     "theme": 3
+    },
+    {
+     "k": "sbeats",
+     "t": "Kanem-Bornu, the empire by the lake",
+     "era": "700 to 1800s",
+     "beats": [
+      "Kanem and later Bornu ruled the lands around Lake Chad.",
+      "Its rulers controlled trade across the Sahara.",
+      "They exchanged letters and envoys with distant powers.",
+      "Scholars and traders passed through its cities."
+     ],
+     "art": "dome",
+     "theme": 3
+    },
+    {
+     "k": "sclose",
+     "t": "Kanem-Bornu, the empire by the lake",
+     "era": "700 to 1800s",
+     "close": "A long lived power of the Sahel.",
+     "art": "dome",
+     "theme": 3
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (dome), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: KANEM-BORNU, THE EMPIRE BY THE LAKE (700 to 1800s)",
-     "0:03  Caption: Kanem and later Bornu ruled the lands around Lake Chad.",
-     "0:05  Caption: Its rulers controlled trade across the Sahara.",
-     "0:08  Caption: They exchanged letters and envoys with distant powers.",
-     "0:11  Caption: Scholars and traders passed through its cities.",
-     "0:15  Closing line: A long lived power of the Sahel.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -9177,8 +9441,8 @@
    "month": "2027-04",
    "slot": "Wednesday",
    "title": "The griots, keepers of memory",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "In West Africa, history is sometimes sung.\n\nA griot is a family of storytellers, musicians and keepers of memory.\n\nThey recite family histories and the stories of kings.\n\nThey learn from their elders over many years.\n\nThe epic of Sundiata is one of their stories.\n\nA library that walks and sings.\n\n(Tradition)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Griot",
@@ -9219,22 +9483,33 @@
      "era": "Oral tradition",
      "s": "In West Africa, history is sometimes sung.",
      "art": "drum",
-     "kind": "Tradition"
+     "kind": "Tradition",
+     "theme": 4
+    },
+    {
+     "k": "sbeats",
+     "t": "The griots, keepers of memory",
+     "era": "Oral tradition",
+     "beats": [
+      "A griot is a family of storytellers, musicians and keepers of memory.",
+      "They recite family histories and the stories of kings.",
+      "They learn from their elders over many years.",
+      "The epic of Sundiata is one of their stories."
+     ],
+     "art": "drum",
+     "theme": 4
+    },
+    {
+     "k": "sclose",
+     "t": "The griots, keepers of memory",
+     "era": "Oral tradition",
+     "close": "A library that walks and sings.",
+     "art": "drum",
+     "theme": 4
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (drum), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: THE GRIOTS, KEEPERS OF MEMORY (Oral tradition)",
-     "0:03  Caption: A griot is a family of storytellers, musicians and keepers of memory.",
-     "0:05  Caption: They recite family histories and the stories of kings.",
-     "0:08  Caption: They learn from their elders over many years.",
-     "0:11  Caption: The epic of Sundiata is one of their stories.",
-     "0:15  Closing line: A library that walks and sings.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -9553,8 +9828,8 @@
    "month": "2027-05",
    "slot": "Wednesday",
    "title": "Oduduwa and the chain from heaven",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "Yoruba tradition says the world began at Ile-Ife.\n\nIn the story, the high god sent Oduduwa down from heaven on a chain.\n\nHe carried a handful of earth and a five toed hen.\n\nThe hen scattered the earth, and land spread over the waters.\n\nIfe became the sacred home of the Yoruba.\n\nA creation story still told in Yorubaland.\n\n(Legend)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Yoruba",
@@ -9595,22 +9870,33 @@
      "era": "Yoruba tradition",
      "s": "Yoruba tradition says the world began at Ile-Ife.",
      "art": "baobab",
-     "kind": "Legend"
+     "kind": "Legend",
+     "theme": 0
+    },
+    {
+     "k": "sbeats",
+     "t": "Oduduwa and the chain from heaven",
+     "era": "Yoruba tradition",
+     "beats": [
+      "In the story, the high god sent Oduduwa down from heaven on a chain.",
+      "He carried a handful of earth and a five toed hen.",
+      "The hen scattered the earth, and land spread over the waters.",
+      "Ife became the sacred home of the Yoruba."
+     ],
+     "art": "baobab",
+     "theme": 0
+    },
+    {
+     "k": "sclose",
+     "t": "Oduduwa and the chain from heaven",
+     "era": "Yoruba tradition",
+     "close": "A creation story still told in Yorubaland.",
+     "art": "baobab",
+     "theme": 0
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (baobab), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: ODUDUWA AND THE CHAIN FROM HEAVEN (Yoruba tradition)",
-     "0:03  Caption: In the story, the high god sent Oduduwa down from heaven on a chain.",
-     "0:05  Caption: He carried a handful of earth and a five toed hen.",
-     "0:08  Caption: The hen scattered the earth, and land spread over the waters.",
-     "0:11  Caption: Ife became the sacred home of the Yoruba.",
-     "0:15  Closing line: A creation story still told in Yorubaland.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -9929,8 +10215,8 @@
    "month": "2027-05",
    "slot": "Wednesday",
    "title": "Shaka and the short spear",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "A change in a spear changed a nation.\n\nShaka became leader of the Zulu in the early 1800s.\n\nHe promoted a short stabbing spear for close combat.\n\nHe trained disciplined regiments.\n\nThe Zulu kingdom grew strong.\n\nA leader remembered, and debated, to this day.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Shaka",
@@ -9971,22 +10257,33 @@
      "era": "1816 to 1828",
      "s": "A change in a spear changed a nation.",
      "art": "crown",
-     "kind": "History"
+     "kind": "History",
+     "theme": 1
+    },
+    {
+     "k": "sbeats",
+     "t": "Shaka and the short spear",
+     "era": "1816 to 1828",
+     "beats": [
+      "Shaka became leader of the Zulu in the early 1800s.",
+      "He promoted a short stabbing spear for close combat.",
+      "He trained disciplined regiments.",
+      "The Zulu kingdom grew strong."
+     ],
+     "art": "crown",
+     "theme": 1
+    },
+    {
+     "k": "sclose",
+     "t": "Shaka and the short spear",
+     "era": "1816 to 1828",
+     "close": "A leader remembered, and debated, to this day.",
+     "art": "crown",
+     "theme": 1
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (crown), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: SHAKA AND THE SHORT SPEAR (1816 to 1828)",
-     "0:03  Caption: Shaka became leader of the Zulu in the early 1800s.",
-     "0:05  Caption: He promoted a short stabbing spear for close combat.",
-     "0:08  Caption: He trained disciplined regiments.",
-     "0:11  Caption: The Zulu kingdom grew strong.",
-     "0:15  Closing line: A leader remembered, and debated, to this day.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -10305,8 +10602,8 @@
    "month": "2027-05",
    "slot": "Wednesday",
    "title": "Hannibal and the elephants",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "A general from Carthage in North Africa marched elephants over the Alps.\n\nCarthage was a great trading city on the coast of present day Tunisia.\n\nHannibal led his army from Spain across the Alps to Italy.\n\nElephants went with him.\n\nHe won famous battles against Rome.\n\nOne of the boldest marches in history.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Hannibal",
@@ -10347,22 +10644,33 @@
      "era": "218 BC",
      "s": "A general from Carthage in North Africa marched elephants over the Alps.",
      "art": "dome",
-     "kind": "History"
+     "kind": "History",
+     "theme": 2
+    },
+    {
+     "k": "sbeats",
+     "t": "Hannibal and the elephants",
+     "era": "218 BC",
+     "beats": [
+      "Carthage was a great trading city on the coast of present day Tunisia.",
+      "Hannibal led his army from Spain across the Alps to Italy.",
+      "Elephants went with him.",
+      "He won famous battles against Rome."
+     ],
+     "art": "dome",
+     "theme": 2
+    },
+    {
+     "k": "sclose",
+     "t": "Hannibal and the elephants",
+     "era": "218 BC",
+     "close": "One of the boldest marches in history.",
+     "art": "dome",
+     "theme": 2
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (dome), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: HANNIBAL AND THE ELEPHANTS (218 BC)",
-     "0:03  Caption: Carthage was a great trading city on the coast of present day Tunisia.",
-     "0:05  Caption: Hannibal led his army from Spain across the Alps to Italy.",
-     "0:08  Caption: Elephants went with him.",
-     "0:11  Caption: He won famous battles against Rome.",
-     "0:15  Closing line: One of the boldest marches in history.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -10681,8 +10989,8 @@
    "month": "2027-05",
    "slot": "Wednesday",
    "title": "The Mande Charter",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "Some say Mali had a constitution that was spoken, not written.\n\nAfter Kirina, leaders met to set rules for the new empire.\n\nThe rules are known as the Kouroukan Fouga.\n\nThey covered respect, food, and how people should treat each other.\n\nThey were passed down by the griots.\n\nLaw kept in memory.\n\n(Tradition and history)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Mali",
@@ -10723,22 +11031,33 @@
      "era": "1236",
      "s": "Some say Mali had a constitution that was spoken, not written.",
      "art": "drum",
-     "kind": "Tradition and history"
+     "kind": "Tradition and history",
+     "theme": 3
+    },
+    {
+     "k": "sbeats",
+     "t": "The Mande Charter",
+     "era": "1236",
+     "beats": [
+      "After Kirina, leaders met to set rules for the new empire.",
+      "The rules are known as the Kouroukan Fouga.",
+      "They covered respect, food, and how people should treat each other.",
+      "They were passed down by the griots."
+     ],
+     "art": "drum",
+     "theme": 3
+    },
+    {
+     "k": "sclose",
+     "t": "The Mande Charter",
+     "era": "1236",
+     "close": "Law kept in memory.",
+     "art": "drum",
+     "theme": 3
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (drum), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: THE MANDE CHARTER (1236)",
-     "0:03  Caption: After Kirina, leaders met to set rules for the new empire.",
-     "0:05  Caption: The rules are known as the Kouroukan Fouga.",
-     "0:08  Caption: They covered respect, food, and how people should treat each other.",
-     "0:11  Caption: They were passed down by the griots.",
-     "0:15  Closing line: Law kept in memory.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -11057,8 +11376,8 @@
    "month": "2027-06",
    "slot": "Wednesday",
    "title": "The Queen of Sheba, Makeda",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "Ethiopian tradition tells of a queen who travelled to meet a wise king.\n\nMakeda ruled a rich kingdom and heard of King Solomon's wisdom.\n\nShe travelled far to test him with riddles.\n\nShe returned home with a son, Menelik, in the story.\n\nEthiopian tradition traces its royal line to him.\n\nA legend that shaped a nation's sense of itself.\n\n(Legend)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Makeda",
@@ -11099,22 +11418,33 @@
      "era": "Ethiopian tradition",
      "s": "Ethiopian tradition tells of a queen who travelled to meet a wise king.",
      "art": "crown",
-     "kind": "Legend"
+     "kind": "Legend",
+     "theme": 4
+    },
+    {
+     "k": "sbeats",
+     "t": "The Queen of Sheba, Makeda",
+     "era": "Ethiopian tradition",
+     "beats": [
+      "Makeda ruled a rich kingdom and heard of King Solomon's wisdom.",
+      "She travelled far to test him with riddles.",
+      "She returned home with a son, Menelik, in the story.",
+      "Ethiopian tradition traces its royal line to him."
+     ],
+     "art": "crown",
+     "theme": 4
+    },
+    {
+     "k": "sclose",
+     "t": "The Queen of Sheba, Makeda",
+     "era": "Ethiopian tradition",
+     "close": "A legend that shaped a nation's sense of itself.",
+     "art": "crown",
+     "theme": 4
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (crown), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: THE QUEEN OF SHEBA, MAKEDA (Ethiopian tradition)",
-     "0:03  Caption: Makeda ruled a rich kingdom and heard of King Solomon's wisdom.",
-     "0:05  Caption: She travelled far to test him with riddles.",
-     "0:08  Caption: She returned home with a son, Menelik, in the story.",
-     "0:11  Caption: Ethiopian tradition traces its royal line to him.",
-     "0:15  Closing line: A legend that shaped a nation's sense of itself.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -11433,8 +11763,8 @@
    "month": "2027-06",
    "slot": "Wednesday",
    "title": "The talking drum",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "Some drums can say words.\n\nThe talking drum, or dundun, can copy the rise and fall of speech.\n\nDrummers can send messages across the village.\n\nIt is squeezed under the arm to change the pitch.\n\nIt is still played at ceremonies and parties.\n\nMusic that carries meaning.\n\n(Tradition)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#TalkingDrum",
@@ -11475,22 +11805,33 @@
      "era": "Yoruba tradition",
      "s": "Some drums can say words.",
      "art": "drum",
-     "kind": "Tradition"
+     "kind": "Tradition",
+     "theme": 0
+    },
+    {
+     "k": "sbeats",
+     "t": "The talking drum",
+     "era": "Yoruba tradition",
+     "beats": [
+      "The talking drum, or dundun, can copy the rise and fall of speech.",
+      "Drummers can send messages across the village.",
+      "It is squeezed under the arm to change the pitch.",
+      "It is still played at ceremonies and parties."
+     ],
+     "art": "drum",
+     "theme": 0
+    },
+    {
+     "k": "sclose",
+     "t": "The talking drum",
+     "era": "Yoruba tradition",
+     "close": "Music that carries meaning.",
+     "art": "drum",
+     "theme": 0
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (drum), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: THE TALKING DRUM (Yoruba tradition)",
-     "0:03  Caption: The talking drum, or dundun, can copy the rise and fall of speech.",
-     "0:05  Caption: Drummers can send messages across the village.",
-     "0:08  Caption: It is squeezed under the arm to change the pitch.",
-     "0:11  Caption: It is still played at ceremonies and parties.",
-     "0:15  Closing line: Music that carries meaning.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -11809,8 +12150,8 @@
    "month": "2027-06",
    "slot": "Wednesday",
    "title": "The Great Mosque of Djenne",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "The biggest mud building in the world gets a fresh coat every year.\n\nThe Great Mosque of Djenne in Mali is built from sun dried mud bricks.\n\nRains wear at the walls.\n\nEach year the community gathers to replaster them.\n\nIt is a festival as much as a repair.\n\nA building kept alive by a whole town.\n\n(History)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Djenne",
@@ -11851,22 +12192,33 @@
      "era": "1200s",
      "s": "The biggest mud building in the world gets a fresh coat every year.",
      "art": "dome",
-     "kind": "History"
+     "kind": "History",
+     "theme": 1
+    },
+    {
+     "k": "sbeats",
+     "t": "The Great Mosque of Djenne",
+     "era": "1200s",
+     "beats": [
+      "The Great Mosque of Djenne in Mali is built from sun dried mud bricks.",
+      "Rains wear at the walls.",
+      "Each year the community gathers to replaster them.",
+      "It is a festival as much as a repair."
+     ],
+     "art": "dome",
+     "theme": 1
+    },
+    {
+     "k": "sclose",
+     "t": "The Great Mosque of Djenne",
+     "era": "1200s",
+     "close": "A building kept alive by a whole town.",
+     "art": "dome",
+     "theme": 1
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (dome), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: THE GREAT MOSQUE OF DJENNE (1200s)",
-     "0:03  Caption: The Great Mosque of Djenne in Mali is built from sun dried mud bricks.",
-     "0:05  Caption: Rains wear at the walls.",
-     "0:08  Caption: Each year the community gathers to replaster them.",
-     "0:11  Caption: It is a festival as much as a repair.",
-     "0:15  Closing line: A building kept alive by a whole town.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
@@ -12185,8 +12537,8 @@
    "month": "2027-06",
    "slot": "Wednesday",
    "title": "Moremi of Ile-Ife",
-   "format": "Silent Reel, about 20 seconds",
-   "status": "Story and caption ready. Video to be built.",
+   "format": "African story carousel, 3 slides",
+   "status": "Written. Slides generated on this page.",
    "caption": "A queen offered herself so her people could be free.\n\nRaiders kept attacking Ife and the people did not know how to stop them.\n\nMoremi let herself be captured and lived among the raiders.\n\nShe learned their secrets and escaped.\n\nIfe used what she learned and defended itself.\n\nA story of courage, still honoured at the Edi festival.\n\n(Legend)\nAn African story from the past, every Wednesday.",
    "tags": [
     "#Moremi",
@@ -12227,22 +12579,33 @@
      "era": "Yoruba legend",
      "s": "A queen offered herself so her people could be free.",
      "art": "crown",
-     "kind": "Legend"
+     "kind": "Legend",
+     "theme": 2
+    },
+    {
+     "k": "sbeats",
+     "t": "Moremi of Ile-Ife",
+     "era": "Yoruba legend",
+     "beats": [
+      "Raiders kept attacking Ife and the people did not know how to stop them.",
+      "Moremi let herself be captured and lived among the raiders.",
+      "She learned their secrets and escaped.",
+      "Ife used what she learned and defended itself."
+     ],
+     "art": "crown",
+     "theme": 2
+    },
+    {
+     "k": "sclose",
+     "t": "Moremi of Ile-Ife",
+     "era": "Yoruba legend",
+     "close": "A story of courage, still honoured at the Edi festival.",
+     "art": "crown",
+     "theme": 2
     }
    ],
    "imgs": null,
-   "story": {
-    "scene": "Story poster look: dark warm background, gold title, African pattern bands, one symbol (crown), big word by word captions.",
-    "lines": [
-     "0:00  Beat drops. Title card: MOREMI OF ILE-IFE (Yoruba legend)",
-     "0:03  Caption: Raiders kept attacking Ife and the people did not know how to stop them.",
-     "0:05  Caption: Moremi let herself be captured and lived among the raiders.",
-     "0:08  Caption: She learned their secrets and escaped.",
-     "0:11  Caption: Ife used what she learned and defended itself.",
-     "0:15  Closing line: A story of courage, still honoured at the Edi festival.",
-     "0:18  End card: the title and year. Small Large Technologies mark in the corner throughout. No call to action."
-    ]
-   },
+   "story": null,
    "handle": "",
    "template": false
   },
