@@ -109,7 +109,7 @@
   /* ---------- theme per post type ---------- */
   const THEME = {
     Monday:    {main: C.or, alt: C.bk, fg: '#fff', altfg: '#fff', hl: C.ye, label: 'Monday value'},
-    Wednesday: {main: C.bk, alt: C.or, fg: '#fff', altfg: '#fff', hl: C.ye, label: 'Market Wednesday'},
+    Wednesday: {main: C.bk, alt: C.or, fg: '#fff', altfg: '#fff', hl: C.ye, label: 'African story'},
     Thursday:  {main: C.bl, alt: C.bk, fg: '#fff', altfg: '#fff', hl: C.ye, label: 'Built for'},
     Saturday:  {main: C.ye, alt: C.bk, fg: '#111', altfg: '#fff', hl: C.lm, label: 'Saturday myth'}
   };
@@ -117,8 +117,48 @@
   const ANTON = 'font-family:Anton,Impact,sans-serif;text-transform:uppercase;line-height:1.1;';
   const SERIF = "font-family:'Instrument Serif',Georgia,serif;font-style:italic;line-height:1.08;";
 
+  /* ---------- African story poster (Wednesday) ---------- */
+  const SIL = {
+    pyramid: '<polygon points="20,330 150,120 280,330" fill="#0a0a0a"/><polygon points="170,330 280,170 390,330" fill="#0a0a0a"/><rect x="0" y="326" width="400" height="74" fill="#0a0a0a"/>',
+    baobab: '<path d="M170 400 C175 300 165 250 150 210 L250 210 C235 250 225 300 230 400 Z" fill="#0a0a0a"/><ellipse cx="120" cy="170" rx="95" ry="48" fill="#0a0a0a"/><ellipse cx="280" cy="165" rx="95" ry="50" fill="#0a0a0a"/><ellipse cx="200" cy="125" rx="110" ry="55" fill="#0a0a0a"/><rect x="0" y="380" width="400" height="20" fill="#0a0a0a"/>',
+    crown: '<path d="M70 330 L40 140 L135 230 L200 100 L265 230 L360 140 L330 330 Z" fill="#0a0a0a"/><rect x="60" y="330" width="280" height="40" rx="8" fill="#0a0a0a"/><circle cx="40" cy="130" r="18" fill="#0a0a0a"/><circle cx="200" cy="88" r="20" fill="#0a0a0a"/><circle cx="360" cy="130" r="18" fill="#0a0a0a"/>',
+    drum: '<path d="M90 90 H310 C260 150 260 160 310 210 C260 270 260 280 310 340 H90 C140 280 140 270 90 210 C140 160 140 150 90 90 Z" fill="#0a0a0a"/><ellipse cx="200" cy="90" rx="110" ry="22" fill="#0a0a0a"/><ellipse cx="200" cy="340" rx="110" ry="22" fill="#0a0a0a"/><path d="M92 100 L60 290 M308 100 L340 290" stroke="#0a0a0a" stroke-width="12" fill="none"/>',
+    dome: '<path d="M100 300 V210 C100 130 140 90 200 90 C260 90 300 130 300 210 V300 Z" fill="#0a0a0a"/><rect x="40" y="130" width="40" height="230" fill="#0a0a0a"/><rect x="320" y="130" width="40" height="230" fill="#0a0a0a"/><polygon points="40,130 60,70 80,130" fill="#0a0a0a"/><polygon points="320,130 340,70 360,130" fill="#0a0a0a"/><rect x="0" y="352" width="400" height="48" fill="#0a0a0a"/><circle cx="200" cy="72" r="14" fill="#0a0a0a"/>'
+  };
+  function storyCover(sp, post, n) {
+    const art = SIL[sp.art] ? sp.art : 'baobab', t = sp.t || '', era = sp.era || '', hook = sp.s || '';
+    let h = '';
+    h += ankara(1080, 120, C.bk, C.or, C.ye, 0, 0) + ankara(1080, 90, C.bk, C.or, C.ye, 0, 1260) + dots(.08);
+    h += '<div style="' + ab('left:240px;top:190px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#ffe27a,' + C.ye + ' 55%,#ff9d2e)') + '"></div>' + rays(C.or, 540, 490, .22, 22);
+    h += '<div style="' + ab('left:240px;top:190px;width:600px;height:600px;border-radius:50%;overflow:hidden') + '"><div style="' + ab('left:60px;top:190px;width:480px;height:480px') + '">' + svg(SIL[art], 480, 480) + '</div></div>';
+    h += clay('star', C.ye, 90, 900, 190, 12) + clay('sphere', C.or, 110, 70, 700, 0);
+    h += sticker('African story', 84, 150, -3, C.or, '#fff');
+    h += '<div style="' + ab('left:620px;top:150px;background:#fff;color:#111;border:6px solid #111;border-radius:999px;padding:12px 28px;font-family:Anton,Impact,sans-serif;font-size:34px;letter-spacing:.08em;text-transform:uppercase;box-shadow:8px 8px 0 #111') + '">' + esc(sp.kind || 'History') + '</div>';
+    h += '<div style="' + ab('left:0;right:0;top:770px;text-align:center;color:' + C.ye + ';' + ANTON + 'font-size:' + (era.length > 12 ? 84 : era.length > 7 ? 110 : 150) + 'px;text-shadow:0 8px 0 #000') + '">' + esc(era) + '</div>';
+    h += '<div style="' + ab('left:70px;right:70px;top:' + (era.length > 12 ? 880 : 930) + 'px;text-align:center;color:#fff;' + ANTON + 'font-size:' + (t.length > 32 ? 58 : 72) + 'px') + '">' + esc(t) + '</div>';
+    h += '<div style="' + ab('left:84px;right:84px;top:1080px;text-align:center;color:#ddd;' + SERIF + 'font-size:38px') + '">' + esc(hook) + '</div>';
+    h += '<div style="' + ab('left:50%;transform:translateX(-50%);bottom:30px;background:#0a0a0a;border:3px solid #ffd21f;border-radius:999px;padding:6px 26px;color:#ffd21f;font-weight:900;font-size:22px;letter-spacing:.22em;white-space:nowrap') + '">LARGE TECHNOLOGIES</div>';
+    return h;
+  }
+  /* ---------- single marketing picture (Saturday) ---------- */
+  function adCover(sp, post, n) {
+    const t = sp.t || '', hl = sp.hl || '', sub = sp.s || '', chips = sp.chips || [], word = sp.word || 'BUILD';
+    let h = rays(C.or, 540, 1000, .16, 20) + dots(.1);
+    h += burst(C.or, 620, 520, 640, 10, 14);
+    h += sticker('We build websites', 84, 84, -3, '#111', '#fff');
+    h += '<div style="' + ab('left:84px;right:84px;top:190px;color:#111;' + ANTON + 'font-size:' + (t.length > 60 ? 96 : t.length > 40 ? 112 : 128) + 'px') + '">' + mark(t, hl, '#fff').replace(/<mark/g, '<mark style="color:#111;padding:0 14px;margin:0 -14px"') + '</div>';
+    h += '<div style="' + ab('left:84px;right:84px;top:' + (t.length > 60 ? 600 : t.length > 40 ? 560 : 520) + 'px;color:#111;' + SERIF + 'font-size:' + (sub.length > 90 ? 44 : 52) + 'px') + '">' + esc(sub) + '</div>';
+    h += deviceLaptop(null, 120, 790, 640, -4) + devicePhone(null, 700, 760, 230, 8);
+    chips.forEach((c, j) => { h += '<div style="' + ab('left:' + (84 + j * 308) + 'px;top:1085px;width:292px;text-align:center;background:#fff;border:5px solid #111;border-radius:18px;padding:12px 8px;font-weight:900;font-size:' + (c.length > 18 ? 22 : 26) + 'px;color:#111;box-shadow:6px 6px 0 #111') + '">' + esc(c) + '</div>'; });
+    h += '<div style="' + ab('left:84px;right:84px;top:1170px;height:96px;background:#111;border-radius:999px;color:#fff;display:flex;align-items:center;justify-content:center;gap:22px;font-weight:900;font-size:40px;letter-spacing:.04em') + '">SEND ME THE WORD <span style="background:' + C.ye + ';color:#111;border-radius:999px;padding:6px 26px;' + ANTON + 'font-size:46px">' + esc(word) + '</span></div>';
+    h += '<div style="' + ab('left:84px;right:84px;bottom:36px;display:flex;justify-content:space-between;font-weight:900;font-size:22px;letter-spacing:.05em;color:#111') + '"><span>LARGE TECHNOLOGIES</span><span>@theevanslarge1</span></div>';
+    return h;
+  }
+
   /* ---------- covers ---------- */
   function cover(sp, post, n) {
+    if (sp.k === 'story') return storyCover(sp, post, n);
+    if (sp.k === 'ad') return adCover(sp, post, n);
     const slot = post.slot, T = THEME[slot];
     let t = sp.t || post.title || '';
     if (slot === 'Saturday') t = t.replace(/^Myth:\s*/i, '');
@@ -246,5 +286,5 @@
     else el.innerHTML = inner(sp, i, n, post);
     return el;
   }
-  window.SLIDES = {render, THEME};
+  window.SLIDES = {render, THEME, lib: {C, ART, svg, clay, burst, rays, dots, ankara, squig, sticker, photo, mark, esc, ab, fsz, pickArt}};
 })();

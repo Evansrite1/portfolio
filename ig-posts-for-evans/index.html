@@ -65,7 +65,7 @@ pre.cap{white-space:pre-wrap;word-wrap:break-word;font-family:inherit;font-size:
 <body>
 <div class="wrap">
 <h1>IG posts for Evans<br>Nov 2026 to Jun 2027</h1>
-<p class="lead">132 posts over 33 weeks: Monday value carousel, Wednesday silent African market Reel, Thursday "Built For" showcase, Saturday myth or story carousel. Open a month, copy a caption, download the slides, schedule on Instagram, tick it off.</p>
+<p class="lead">132 posts over 33 weeks. Monday teaches (carousel). Wednesday tells an African story from the past (silent Reel, no marketing). Thursday shows off a rebuilt site (Built For). Saturday is one marketing picture. Open a month, copy a caption, download the slides, schedule on Instagram, tick it off.</p>
 <div class="how"><b>How to use each month</b>
 <ol>
 <li>Pick the month. Open the first post.</li>
@@ -84,7 +84,7 @@ pre.cap{white-space:pre-wrap;word-wrap:break-word;font-family:inherit;font-size:
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
 <script>
 const PAL = {or:['#ff4a12','#fff'], cr:['#f3eee4','#111'], bk:['#0e0e0e','#fff'], bl:['#2c56ff','#fff'], ye:['#ffd21f','#111']};
-const LABEL = {Monday:'Value', Wednesday:'Market', Thursday:'Built for', Saturday:'Myth or story'};
+const LABEL = {Monday:'Value', Wednesday:'African story', Thursday:'Built for', Saturday:'Marketing'};
 const labelFor = p => p.slot==='Thursday' && p.handle ? 'Built for '+p.handle : LABEL[p.slot];
 const MONTHNAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 let DATA = null, month = 'all', slot = 'all';
@@ -224,7 +224,7 @@ function build(c,p){
   }
   if(p.story){
     h += '<div class="strip"></div><div class="row"><button class="btn pri" data-a="dl">Download cover image</button></div>';
-    h += '<div class="story"><b>Video storyboard (no voice, beat only)</b><div style="margin:4px 0 8px;color:#555">Scene: '+esc(p.story.scene)+'</div>'+p.story.lines.map(l=>'<div>'+esc(l)+'</div>').join('')+
+    h += '<div class="story"><b>Video storyboard (no voice, beat only, no call to action)</b><div style="margin:4px 0 8px;color:#555">Scene: '+esc(p.story.scene)+'</div>'+p.story.lines.map(l=>'<div>'+esc(l)+'</div>').join('')+
          '<div style="margin-top:8px;color:#555">Pick a licensed Afrobeats or percussion beat in Instagram when you upload. Use your own footage or licensed stock, and no real faces without permission.</div></div>';
   } else {
     h += '<div class="strip"></div><div class="row"><button class="btn pri" data-a="dl">Download slides</button></div>';
@@ -251,7 +251,7 @@ function drawNav(){
   months.forEach(v=>{ const [y,mm]=v.split('-'); const n=DATA.posts.filter(p=>p.month===v).length; m.appendChild(mk(MONTHNAMES[+mm-1].slice(0,3)+' '+y+' ('+n+')',v,month)); });
   const pr = document.createElement('span'); pr.className='prog'; pr.id='prog'; m.appendChild(pr);
   const s = document.getElementById('slots'); s.innerHTML = '';
-  [['all','All posts'],['Monday','Mon value'],['Wednesday','Wed Reel'],['Thursday','Thu Built For'],['Saturday','Sat myth']].forEach(([v,l])=>{
+  [['all','All posts'],['Monday','Mon teaches'],['Wednesday','Wed African story'],['Thursday','Thu Built For'],['Saturday','Sat marketing']].forEach(([v,l])=>{
     const b=document.createElement('button'); b.textContent=l; if(slot===v) b.classList.add('on'); b.onclick=()=>{slot=v; draw();}; s.appendChild(b); });
   progress();
 }
