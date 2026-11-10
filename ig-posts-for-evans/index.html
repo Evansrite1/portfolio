@@ -79,6 +79,7 @@ pre.cap{white-space:pre-wrap;word-wrap:break-word;font-family:inherit;font-size:
 <div id="list"></div>
 </div>
 <div class="toast" id="toast"></div>
+<script src="slides.js?v=2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
 <script>
@@ -99,6 +100,7 @@ function hl(t,h,bg){
 const fsz = n => n<=14?210 : n<=24?165 : n<=40?132 : n<=64?108 : n<=100?88 : 72;
 const ssz = n => n<=60?72 : n<=120?60 : 50;
 function slideEl(sp, i, total, label, post){
+  if(!sp.src && window.SLIDES) return SLIDES.render(sp, i, total, post);
   const el = document.createElement('div');
   if(sp.src){ el.className='slide img'; el.innerHTML = '<img src="'+sp.src+'" alt="">'; return el; }
   const [bg, fg] = PAL[sp.bg] || PAL.cr;
@@ -221,6 +223,7 @@ function build(c,p){
          '<div class="row"><button class="btn pri" data-a="dm">Copy message</button></div></div>';
   }
   if(p.story){
+    h += '<div class="strip"></div><div class="row"><button class="btn pri" data-a="dl">Download cover image</button></div>';
     h += '<div class="story"><b>Video storyboard (no voice, beat only)</b><div style="margin:4px 0 8px;color:#555">Scene: '+esc(p.story.scene)+'</div>'+p.story.lines.map(l=>'<div>'+esc(l)+'</div>').join('')+
          '<div style="margin-top:8px;color:#555">Pick a licensed Afrobeats or percussion beat in Instagram when you upload. Use your own footage or licensed stock, and no real faces without permission.</div></div>';
   } else {

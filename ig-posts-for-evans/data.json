@@ -11,7 +11,7 @@
    "slot": "Monday",
    "title": "509 profiles, one pattern",
    "format": "Value carousel, 8 slides",
-   "status": "Finished slides. Ready to schedule.",
+   "status": "Written. Slides generated on this page.",
    "caption": "332 of the 509 service businesses I reviewed this month had no website of their own.\n\nNot no presence. Great photos, busy stories, real followers. But the link in the bio went to a booking calendar, a link page or WhatsApp.\n\nThat works when someone already knows you. It fails the stranger who just found you.\n\nA stranger needs five answers in ten seconds:\n1. What do you do?\n2. Where are you?\n3. How much is it?\n4. Why should I trust you?\n5. How do I book?\n\nA booking link answers one. One simple page answers all five, in this order: Promise, Proof, Price, Policy, Book.\n\n(These were businesses I reviewed for outreach, so this is not a survey of everyone. The pattern was still hard to miss.)\n\nSend me the word PAGE and I will tell you which of the five your profile is missing.\nSave this for the next time you update your link.",
    "tags": [
     "#OnePageWebsite",
@@ -45,17 +45,74 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
-   "imgs": [
-    "assets/week1_mon/slide1.png",
-    "assets/week1_mon/slide2.png",
-    "assets/week1_mon/slide3.png",
-    "assets/week1_mon/slide4.png",
-    "assets/week1_mon/slide5.png",
-    "assets/week1_mon/slide6.png",
-    "assets/week1_mon/slide7.png",
-    "assets/week1_mon/slide8.png"
+   "slides": [
+    {
+     "k": "big",
+     "t": "332 of 509 service profiles had no website of their own.",
+     "hl": "no website",
+     "s": "Not no presence. No front door.",
+     "n": ""
+    },
+    {
+     "k": "pt",
+     "num": "01",
+     "t": "Great photos. Real followers.",
+     "s": "But the link in the bio went to a booking calendar, a link page or WhatsApp.",
+     "art": "phone"
+    },
+    {
+     "k": "pt",
+     "num": "02",
+     "t": "That works when they already know you.",
+     "s": "It fails the stranger who just found you.",
+     "art": "person"
+    },
+    {
+     "k": "list",
+     "t": "A stranger needs five answers in ten seconds",
+     "items": [
+      "What do you do?",
+      "Where are you?",
+      "How much is it?",
+      "Why trust you?",
+      "How do I book?"
+     ],
+     "s": ""
+    },
+    {
+     "k": "pt",
+     "num": "04",
+     "t": "A booking link answers one.",
+     "s": "A link page sends people somewhere else to look for the rest.",
+     "art": "calendar"
+    },
+    {
+     "k": "pt",
+     "num": "05",
+     "t": "The fix is one page.",
+     "s": "One page that holds all five answers.",
+     "art": "laptop"
+    },
+    {
+     "k": "list",
+     "t": "The order that works",
+     "items": [
+      "Promise",
+      "Proof",
+      "Price",
+      "Policy",
+      "Book"
+     ],
+     "s": ""
+    },
+    {
+     "k": "cta",
+     "t": "Which of the five is your profile missing?",
+     "word": "PAGE",
+     "s": "Send me the word and I will tell you."
+    }
    ],
+   "imgs": null,
    "story": null,
    "handle": "",
    "template": false
@@ -103,7 +160,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "In an African market, nobody buys from the stall they cannot see.",
+     "hl": "stall",
+     "s": "The market stall rule"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "Market stalls, goods on display, a seller calling out. Use your own footage or licensed stock.",
@@ -128,7 +192,7 @@
    "month": "2026-11",
    "slot": "Thursday",
    "title": "Built For @handymancoach",
-   "format": "Built For, 10 slides",
+   "format": "Built For, 9 slides",
    "status": "Slides and caption done. Verify his current link first.",
    "caption": "Brandon (@handymancoach) says he went from $0 in May 2024 to $103,192 collected five months later. Flyers, an SUV and a few tools.\n\nSo we built him the page that story deserves.\n\nWHERE HE IS\nA proven story, told in posts and DMs. All the numbers on the page come from his own public posts.\n\nWHERE HE COULD GO NEXT\nThis part is our idea, not something he has told us:\n1. One page that tells the $0 to $103,192 story in the first five seconds.\n2. A Student Wins section, so the next handyman sees someone like him get paid.\n3. One clear step: Book a free 15 minute call.\n\nThe move is from a story people like to a call people book. A follower who scrolls past on Tuesday should be able to book on Tuesday.\n\nSwipe for the full mockup, screen by screen.\n\nTo be clear: this is a draft we built as a concept. It is not live, Brandon has not approved it, and the student win boxes are marked as placeholders. Brandon, if you want it, say the word.\n\nKnow a coach, trainer or tradesperson with a story like this? Send them this post.\nWant one built for your business? Send me the word BUILD.\n\n@handymancoach, this one is for you.",
    "tags": [
@@ -163,19 +227,96 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
-   "imgs": [
-    "assets/handymancoach/slide1.png",
-    "assets/handymancoach/slide2.png",
-    "assets/handymancoach/slide3.png",
-    "assets/handymancoach/slide4.png",
-    "assets/handymancoach/slide5.png",
-    "assets/handymancoach/slide6.png",
-    "assets/handymancoach/slide7.png",
-    "assets/handymancoach/slide8.png",
-    "assets/handymancoach/slide9.png",
-    "assets/handymancoach/slide10.png"
+   "slides": [
+    {
+     "k": "big",
+     "bg": "bl",
+     "t": "$0 to $103,192 in 5 months.",
+     "hl": "$103,192",
+     "s": "Now he needs one place to send people.",
+     "n": "Built for @handymancoach"
+    },
+    {
+     "k": "big",
+     "bg": "cr",
+     "t": "A proven story.",
+     "hl": "story.",
+     "s": "Told in posts and DMs. Flyers, an SUV and a few tools.",
+     "n": "Numbers are from Brandon's own public posts: $0 in May 2024, $103,192 collected after five months."
+    },
+    {
+     "k": "list",
+     "bg": "bk",
+     "t": "Where he could go next",
+     "items": [
+      "One page that tells the story fast",
+      "A Student Wins section",
+      "A free 15 minute call button"
+     ],
+     "s": "Our idea, not something he has told us."
+    },
+    {
+     "k": "shot",
+     "bg": "ye",
+     "t": "We built the page.",
+     "hl": "the page.",
+     "img": "shots/handymancoach.jpg",
+     "y": 0,
+     "h": 820,
+     "s": "From his own numbers. Before he asked.",
+     "iw": 1280
+    },
+    {
+     "k": "shot",
+     "bg": "cr",
+     "t": "Nobody knew I existed.",
+     "hl": "existed.",
+     "img": "shots/handymancoach.jpg",
+     "y": 900,
+     "h": 600,
+     "s": "",
+     "iw": 1280
+    },
+    {
+     "k": "shot",
+     "bg": "bl",
+     "t": "Four moves, in plain words.",
+     "hl": "plain words.",
+     "img": "shots/handymancoach.jpg",
+     "y": 1330,
+     "h": 520,
+     "s": "Pick work. Put paper on doors. Price the job. Stop being the only hands.",
+     "iw": 1280
+    },
+    {
+     "k": "shot",
+     "bg": "bk",
+     "t": "One clear step.",
+     "hl": "clear step.",
+     "img": "shots/handymancoach.jpg",
+     "y": 2130,
+     "h": 460,
+     "s": "Book a free 15 minute call. Or DM GROW.",
+     "iw": 1280
+    },
+    {
+     "k": "big",
+     "bg": "or",
+     "t": "Built as a draft.",
+     "hl": "draft.",
+     "s": "This is a draft we built as a concept. It is not live and the owner has not approved it.",
+     "n": ""
+    },
+    {
+     "k": "cta",
+     "bg": "bk",
+     "t": "Know a coach with a story like this?",
+     "word": "BUILD",
+     "s": "Send me the word and I will show you what yours could look like.",
+     "n": ""
+    }
    ],
+   "imgs": null,
    "story": null,
    "handle": "@handymancoach",
    "template": false,
@@ -431,7 +572,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "Where I come from, the business is the family.",
+     "hl": "",
+     "s": "Why I build for African and Gulf small businesses"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "Street shop at opening time, shutters going up, a trader greeting customers.",
@@ -527,7 +675,8 @@
      "img": "shots/maison-gray.jpg",
      "y": 0,
      "h": 900,
-     "s": "Interior design by Gina. Construction by Andrew."
+     "s": "Interior design by Gina. Construction by Andrew.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -537,7 +686,8 @@
      "img": "shots/maison-gray.jpg",
      "y": 900,
      "h": 760,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -547,7 +697,8 @@
      "img": "shots/maison-gray.jpg",
      "y": 1560,
      "h": 900,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -557,7 +708,8 @@
      "img": "shots/maison-gray.jpg",
      "y": 2500,
      "h": 900,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -832,7 +984,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "In the market, one happy customer tells ten neighbours.",
+     "hl": "",
+     "s": "Word of mouth, but online"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "Two women talking over a stall, one pointing to a seller.",
@@ -928,7 +1087,8 @@
      "img": "shots/kelcie-mae.jpg",
      "y": 0,
      "h": 900,
-     "s": "UGC creator, San Diego."
+     "s": "UGC creator, San Diego.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -938,7 +1098,8 @@
      "img": "shots/kelcie-mae.jpg",
      "y": 700,
      "h": 900,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -948,7 +1109,8 @@
      "img": "shots/kelcie-mae.jpg",
      "y": 1500,
      "h": 900,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -958,7 +1120,8 @@
      "img": "shots/kelcie-mae.jpg",
      "y": 2400,
      "h": 900,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -1233,7 +1396,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "Market day teaches three things.",
+     "hl": "",
+     "s": "Three lessons from market day for your booking page"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "Busy market aisle, close ups of goods and handwritten prices.",
@@ -1329,7 +1499,8 @@
      "img": "shots/ocgpro.jpg",
      "y": 0,
      "h": 900,
-     "s": "The investor view uses sample data."
+     "s": "The investor view uses sample data.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -1339,7 +1510,8 @@
      "img": "shots/ocgpro.jpg",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -1349,7 +1521,8 @@
      "img": "shots/ocgpro.jpg",
      "y": 1700,
      "h": 900,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -1359,7 +1532,8 @@
      "img": "shots/ocgpro.jpg",
      "y": 2600,
      "h": 900,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -1641,7 +1815,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "The best stalls have the price on a board, not in the seller's head.",
+     "hl": "",
+     "s": "The honest price board"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "A hand painted price board, then a customer smiling at it.",
@@ -1737,7 +1918,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -1747,7 +1929,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -1757,7 +1940,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -1767,7 +1951,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -2042,7 +2227,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "At every owambe, someone asks who did the makeup, the cake, the decor.",
+     "hl": "",
+     "s": "Owambe season: how event vendors get found"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "Colourful gele, tables, a cake, a camera flash. Close ups only, no faces without permission.",
@@ -2138,7 +2330,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -2148,7 +2341,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -2158,7 +2352,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -2168,7 +2363,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -2443,7 +2639,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "Before December, every stall gets lights.",
+     "hl": "",
+     "s": "Festive stall: dress your front"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "Stall with string lights, banners going up, a seller arranging goods.",
@@ -2539,7 +2742,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -2549,7 +2753,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -2559,7 +2764,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -2569,7 +2775,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -2844,7 +3051,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "In January the painter comes round and redoes the signs.",
+     "hl": "",
+     "s": "New year, new sign"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "A sign painter at work, brush strokes, fresh paint drying.",
@@ -2940,7 +3154,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -2950,7 +3165,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -2960,7 +3176,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -2970,7 +3187,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -3245,7 +3463,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "A good sign has three things.",
+     "hl": "",
+     "s": "Name, price, place: the three words on every sign"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "Close ups of signs, each with a name, a price, an address.",
@@ -3341,7 +3566,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -3351,7 +3577,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -3361,7 +3588,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -3371,7 +3599,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -3646,7 +3875,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "Nobody trusts a poster as much as the goods in front of them.",
+     "hl": "",
+     "s": "Why real photos beat adverts"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "Hands holding fabric, a fruit seller choosing fruit, close ups of finished work.",
@@ -3742,7 +3978,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -3752,7 +3989,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -3762,7 +4000,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -3772,7 +4011,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -4033,7 +4273,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "In a village, one neighbour says, go to her, she is good.",
+     "hl": "",
+     "s": "How trust travels: reviews as neighbours talking"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "Two neighbours on a doorstep, a friendly nod, a handshake.",
@@ -4129,7 +4376,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -4139,7 +4387,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -4149,7 +4398,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -4159,7 +4409,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -4434,7 +4685,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "Nothing slows a market sale like not knowing how to pay.",
+     "hl": "",
+     "s": "Cash, transfer or card: say it up front"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "Hands exchanging notes, a phone transfer, a card tap.",
@@ -4530,7 +4788,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -4540,7 +4799,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -4550,7 +4810,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -4560,7 +4821,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -4835,7 +5097,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "A stall that is sometimes open is a stall that people stop coming to.",
+     "hl": "",
+     "s": "Open hours people can rely on"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "Shutters opening at the same hour, a clock, a queue forming.",
@@ -4931,7 +5200,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -4941,7 +5211,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -4951,7 +5222,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -4961,7 +5233,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -5236,7 +5509,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "Your customers live down the road and across the ocean.",
+     "hl": "",
+     "s": "Serving the neighbourhood and the diaspora"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "Street scene, then a video call on a phone, then a parcel.",
@@ -5332,7 +5612,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -5342,7 +5623,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -5352,7 +5634,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -5362,7 +5645,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -5637,7 +5921,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "At the market, you pay to hold the cloth before the tailor cuts it.",
+     "hl": "",
+     "s": "Why deposits are normal everywhere"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "A customer handing over notes, a seller marking fabric as reserved.",
@@ -5733,7 +6024,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -5743,7 +6035,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -5753,7 +6046,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -5763,7 +6057,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -6038,7 +6333,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "A good trader greets you in your language.",
+     "hl": "",
+     "s": "Same language as your customer"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "A trader greeting customers in different languages, with on screen words in each.",
@@ -6134,7 +6436,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -6144,7 +6447,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -6154,7 +6458,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -6164,7 +6469,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -6439,7 +6745,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "A good tailor keeps a catalogue of styles on the counter.",
+     "hl": "",
+     "s": "The tailor and the catalogue"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "Tailor's table, pattern books, fabric rolls, a customer pointing.",
@@ -6535,7 +6848,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -6545,7 +6859,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -6555,7 +6870,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -6565,7 +6881,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -6840,7 +7157,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "The village barber has no website and a full chair.",
+     "hl": "",
+     "s": "What a village barber knows about trust"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "Barber at work in an outdoor shop, a line of waiting customers.",
@@ -6936,7 +7260,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -6946,7 +7271,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -6956,7 +7282,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -6966,7 +7293,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -7241,7 +7569,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "A seller can shout all day, but a good sign speaks all night.",
+     "hl": "",
+     "s": "Why a good sign beats a loud shout"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "A seller calling out, then a lit sign glowing at night.",
@@ -7337,7 +7672,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -7347,7 +7683,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -7357,7 +7694,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -7367,7 +7705,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -7642,7 +7981,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "Look at any good queue. Everyone knows where it starts.",
+     "hl": "",
+     "s": "The queue test: can people see how to book?"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "A neat queue at a stall, an arrow on the ground, a number ticket.",
@@ -7738,7 +8084,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -7748,7 +8095,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -7758,7 +8106,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -7768,7 +8117,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -8043,7 +8393,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "People judge a shop before they step in.",
+     "hl": "",
+     "s": "Your shop front is your profile"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "Shop fronts, before and after tidying, a sweeper at the door.",
@@ -8139,7 +8496,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -8149,7 +8507,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -8159,7 +8518,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -8169,7 +8529,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -8465,7 +8826,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "People trust the baker they have seen kneading.",
+     "hl": "",
+     "s": "Why showing the process builds trust"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "Hands kneading, stitching, braiding, painting. Close ups, no faces needed.",
@@ -8561,7 +8929,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -8571,7 +8940,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -8581,7 +8951,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -8591,7 +8962,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -8873,7 +9245,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "The best stalls do the same small things every week.",
+     "hl": "",
+     "s": "The weekly routine of a visible business"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "A seller sweeping, arranging, greeting. Quick cuts.",
@@ -8969,7 +9348,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -8979,7 +9359,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -8989,7 +9370,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -8999,7 +9381,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -9274,7 +9657,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "People used to find you by walking past.",
+     "hl": "",
+     "s": "From street to search"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "A busy street shot, then a phone showing a map and a search result.",
@@ -9370,7 +9760,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -9380,7 +9771,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -9390,7 +9782,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -9400,7 +9793,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -9689,7 +10083,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "If I built a page for a trader in Balogun, Dubai Souq or a Kuwait market, I would start with five things.",
+     "hl": "",
+     "s": "What I would put on a one page site for a market trader"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "A trader at a stall, then each of the five items on screen.",
@@ -9787,7 +10188,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -9797,7 +10199,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -9807,7 +10210,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -9817,7 +10221,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -10092,7 +10497,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "Some stalls stay lit after the market closes.",
+     "hl": "",
+     "s": "The market never closes: your page is the night stall"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "A market at dusk, a single lit stall, a hand painted sign glowing.",
@@ -10188,7 +10600,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -10198,7 +10611,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -10208,7 +10622,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -10218,7 +10633,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -10493,7 +10909,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "A good trader does not chase. A good trader remembers.",
+     "hl": "",
+     "s": "Following up like a patient trader"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "A trader nodding at a returning customer, holding the item they looked at yesterday.",
@@ -10589,7 +11012,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -10599,7 +11023,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -10609,7 +11034,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -10619,7 +11045,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -10894,7 +11321,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "When the rains come, the market goes quiet.",
+     "hl": "",
+     "s": "Low season is when good traders prepare"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "A quiet market in rain, a trader repainting a sign under a tarp.",
@@ -10990,7 +11424,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -11000,7 +11435,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -11010,7 +11446,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -11020,7 +11457,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -11295,7 +11733,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "In every market, one stall shouts and another has a queue.",
+     "hl": "",
+     "s": "The loudest stall is not always the busiest"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "A calm stall with a queue beside a loud stall with none.",
@@ -11391,7 +11836,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -11401,7 +11847,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -11411,7 +11858,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -11421,7 +11869,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -11696,7 +12145,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "The best stall owners know their regulars by name.",
+     "hl": "",
+     "s": "Remember your regulars"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "A trader greeting a regular, handing over a favourite item without being asked.",
@@ -11792,7 +12248,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -11802,7 +12259,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -11812,7 +12270,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -11822,7 +12281,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -12097,7 +12557,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "At half year, every trader counts the stock.",
+     "hl": "",
+     "s": "Mid year stock taking"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "A trader counting goods, writing in a notebook, rearranging shelves.",
@@ -12193,7 +12660,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -12203,7 +12671,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -12213,7 +12682,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -12223,7 +12693,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -12498,7 +12969,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "On festival day the whole market dresses up.",
+     "hl": "",
+     "s": "Festival day at the market"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "Colourful market, bunting, a seller holding up a special offer sign.",
@@ -12594,7 +13072,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -12604,7 +13083,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -12614,7 +13094,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -12624,7 +13105,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
@@ -12899,7 +13381,14 @@
     "#LargeTechnologies",
     "#WebsitesThatSell"
    ],
-   "slides": null,
+   "slides": [
+    {
+     "k": "big",
+     "t": "Some customers cannot walk to your stall. They still want what you sell.",
+     "hl": "",
+     "s": "Serving the customer who is far away"
+    }
+   ],
    "imgs": null,
    "story": {
     "scene": "A parcel being packed, a phone video call, a map pin.",
@@ -12995,7 +13484,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 0,
      "h": 900,
-     "s": "Screenshot of the hero."
+     "s": "Screenshot of the hero.",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -13005,7 +13495,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 900,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -13015,7 +13506,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 1700,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "shot",
@@ -13025,7 +13517,8 @@
      "img": "shots/PLACEHOLDER",
      "y": 2500,
      "h": 800,
-     "s": ""
+     "s": "",
+     "iw": 1440
     },
     {
      "k": "big",
