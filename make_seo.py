@@ -80,7 +80,7 @@ def seo_tags(path, title, desc, extra_nodes=None, og_type='website', image=None)
 # ------------------------------------------------------------------ static files
 PUBLIC_PAGES = [  # path, priority
     ('/', '1.0'), ('/full-stack-developer/', '0.9'), ('/web-developer/', '0.9'),  ('/solutions.html', '0.8'),
-    ('/tools/', '0.9'), ('/tools/qr-code-generator/', '0.9'), ('/tools/remove-background/', '0.9'), ('/tools/wifi-qr-code-generator/', '0.8'),
+    ('/tools/', '0.9'), ('/tools/qr-code-generator/', '0.9'), ('/tools/remove-background/', '0.9'), ('/tools/qr-code-generator/?type=wifi', '0.8'),
     ('/tools/whatsapp-qr-code-generator/', '0.8'), ('/tools/qr-code-scanner/', '0.8'),
     ('/work/caretrac.html', '0.6'), ('/work/billionaire-club.html', '0.6'), ('/work/sky-team-ife.html', '0.6'),
     ('/work/chillwireless.html', '0.6'), ('/work/cge.html', '0.6'),

@@ -169,7 +169,7 @@ async function encodeRange(start, end, label, partIdx, partCount, targetBytes, o
   const input = new Input({ source: new BlobSource(st.file), formats: ALL_FORMATS });
   const target = new BufferTarget();
   const output = new Output({ format: webm ? new WebMOutputFormat() : new Mp4OutputFormat(), target });
-  const video = { bitrate: Math.min(bps, origBps), forceTranscode: true };
+  const video = { bitrate: Math.max(100000, Math.floor(Math.min(bps, origBps))), forceTranscode: true };  /* a whole number: the encoder rejects a fraction */
   if (h && h < st.height) { video.height = h; video.width = Math.round(st.width * h / st.height / 2) * 2; video.fit = 'contain'; }
   video.codec = webm ? 'vp9' : 'avc';
   if (!(await canEncodeVideo(video.codec, { bitrate: video.bitrate, width: video.width || st.width, height: video.height || st.height }))) delete video.codec;

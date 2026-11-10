@@ -285,8 +285,8 @@ PAGES['qr-code-generator'] = dict(
 <li><b>Text.</b> Show a message, a code or a short note.</li>
 <li><b>Email.</b> Open a new email with the address, subject and message already filled in.</li>
 <li><b>Phone and SMS.</b> Start a call or a text with one scan.</li>
-<li><b>WhatsApp.</b> Open a chat with your number. See the <a href="/tools/whatsapp-link-generator/">WhatsApp QR code generator</a>.</li>
-<li><b>WiFi.</b> Let guests join your network without typing a password. See the <a href="/tools/wifi-qr-code-generator/">WiFi QR code generator</a>.</li>
+<li><b>WhatsApp.</b> Open a chat with your number. See the <a href="/tools/qr-code-generator/?type=whatsapp">WhatsApp QR code generator</a>.</li>
+<li><b>WiFi.</b> Let guests join your network without typing a password. See the <a href="/tools/qr-code-generator/?type=wifi">WiFi QR code generator</a>.</li>
 <li><b>Contact card.</b> Save your details to their contacts. Pick the Contact card type above.</li>
 <li><b>Location.</b> Open a point on the map from its coordinates.</li>
 </ul></section>
@@ -596,7 +596,10 @@ def build_hub():
 def update_seo_lists():
     pages = [p for p in make_seo.PUBLIC_PAGES if not p[0].startswith('/tools/')]
     i = [p[0] for p in pages].index('/solutions.html') + 1
-    tool_pages = [('/tools/', '0.9')] + [('/tools/%s/' % c[0], '0.9' if c[0] in ('qr-code-generator', 'remove-background', 'video-compressor') else '0.8') for c in CARDS]
+    import os
+    top = ('qr-code-generator', 'remove-background', 'video-compressor', 'video-editor')
+    slugs = sorted(d for d in os.listdir(os.path.join(ROOT, 'tools')) if os.path.isfile(os.path.join(ROOT, 'tools', d, 'index.html')) and d not in ('church-presenter', 'am', 'css', 'vendor'))
+    tool_pages = [('/tools/', '0.9')] + [('/tools/%s/' % d, '0.9' if d in top else '0.8') for d in slugs]
     make_seo.PUBLIC_PAGES = pages[:i] + tool_pages + pages[i:]
     lines = ['- [Free online tools]({site}/tools/): video, audio, PDF, image and QR code tools that run in the browser']
     lines += ['- [%s]({site}/tools/%s/): %s' % (c[2], c[0], c[3]) for c in CARDS]
@@ -604,6 +607,12 @@ def update_seo_lists():
     old_end = make_seo.LLMS.index('- [Solutions]')
     make_seo.LLMS = make_seo.LLMS[:old_start] + '\n'.join(lines) + '\n' + make_seo.LLMS[old_end:]
     make_seo.write_static()
+
+# These tools were merged into the QR code generator (use ?type=wifi or ?type=whatsapp there). Keep them from coming back.
+MERGED = ('wifi-qr-code-generator', 'whatsapp-link-generator')
+CARDS[:] = [c for c in CARDS if c[0] not in MERGED]
+for _k in MERGED:
+    PAGES.pop(_k, None)
 
 if __name__ == '__main__':
     load_new_tools()

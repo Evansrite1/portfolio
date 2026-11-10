@@ -52,12 +52,12 @@
     },
     {
       "source": "/tools/whatsapp-qr-code-generator",
-      "destination": "/tools/whatsapp-link-generator/",
+      "destination": "/tools/qr-code-generator/?type=whatsapp",
       "permanent": true
     },
     {
       "source": "/tools/whatsapp-qr-code-generator/",
-      "destination": "/tools/whatsapp-link-generator/",
+      "destination": "/tools/qr-code-generator/?type=whatsapp",
       "permanent": true
     },
     {
@@ -108,6 +108,26 @@
     {
       "source": "/web-developer-uae/",
       "destination": "/web-developer/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/wifi-qr-code-generator",
+      "destination": "/tools/qr-code-generator/?type=wifi",
+      "permanent": true
+    },
+    {
+      "source": "/tools/wifi-qr-code-generator/",
+      "destination": "/tools/qr-code-generator/?type=wifi",
+      "permanent": true
+    },
+    {
+      "source": "/tools/whatsapp-link-generator",
+      "destination": "/tools/qr-code-generator/?type=whatsapp",
+      "permanent": true
+    },
+    {
+      "source": "/tools/whatsapp-link-generator/",
+      "destination": "/tools/qr-code-generator/?type=whatsapp",
       "permanent": true
     }
   ],

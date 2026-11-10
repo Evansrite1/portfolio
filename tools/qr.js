@@ -318,5 +318,6 @@
   var enc = $('f-wifi-enc');
   if (enc) enc.addEventListener('change', function () { $('wifi-pass-row').hidden = this.value === 'nopass'; });
 
+  (function () { try { var q = new URLSearchParams(location.search).get('type'); if (q && types.indexOf(q) > -1) state.type = q; } catch (e) {} })();
   showType(state.type);
 })();
