@@ -937,8 +937,9 @@
    "template": false,
    "seed": 8,
    "ig": {
-    "state": "not scheduled",
-    "note": "Not scheduled yet"
+    "state": "scheduled",
+    "when": "Mon 23 Nov 8:00 PM",
+    "note": "Scheduled with Instagram's own scheduler"
    }
   },
   {
@@ -1022,8 +1023,9 @@
    "template": false,
    "seed": 9,
    "ig": {
-    "state": "not scheduled",
-    "note": "Not scheduled yet"
+    "state": "scheduled",
+    "when": "Wed 25 Nov 8:00 PM",
+    "note": "Scheduled with Instagram's own scheduler"
    }
   },
   {
@@ -1239,8 +1241,9 @@
    "template": false,
    "seed": 11,
    "ig": {
-    "state": "not scheduled",
-    "note": "Not scheduled yet"
+    "state": "scheduled",
+    "when": "Sat 28 Nov 8:00 PM",
+    "note": "Scheduled with Instagram's own scheduler"
    }
   },
   {
@@ -1344,8 +1347,9 @@
    "template": false,
    "seed": 12,
    "ig": {
-    "state": "not scheduled",
-    "note": "Not scheduled yet"
+    "state": "scheduled",
+    "when": "Mon 30 Nov 8:00 PM",
+    "note": "Scheduled with Instagram's own scheduler"
    }
   },
   {
@@ -1429,8 +1433,9 @@
    "template": false,
    "seed": 13,
    "ig": {
-    "state": "not scheduled",
-    "note": "Not scheduled yet"
+    "state": "scheduled",
+    "when": "Wed 2 Dec 8:00 PM",
+    "note": "Scheduled with Instagram's own scheduler"
    }
   },
   {
@@ -1646,8 +1651,9 @@
    "template": false,
    "seed": 15,
    "ig": {
-    "state": "not scheduled",
-    "note": "Not scheduled yet"
+    "state": "scheduled",
+    "when": "Sat 5 Dec 8:00 PM",
+    "note": "Scheduled with Instagram's own scheduler"
    }
   },
   {
@@ -1758,8 +1764,9 @@
    "template": false,
    "seed": 16,
    "ig": {
-    "state": "not scheduled",
-    "note": "Not scheduled yet"
+    "state": "scheduled",
+    "when": "Mon 7 Dec 8:00 PM",
+    "note": "Scheduled with Instagram's own scheduler"
    }
   },
   {
@@ -1843,8 +1850,9 @@
    "template": false,
    "seed": 17,
    "ig": {
-    "state": "not scheduled",
-    "note": "Not scheduled yet"
+    "state": "scheduled",
+    "when": "Wed 9 Dec 8:00 PM",
+    "note": "Scheduled with Instagram's own scheduler"
    }
   },
   {
