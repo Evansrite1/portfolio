@@ -1,5 +1,8 @@
 /* Free online video editor. Everything runs in the browser; files are never uploaded.
    Preview and export share one renderer (renderFrame), so what you see is what you export. */
+import { compose } from './ve/layers.js';
+import { layoutText } from './ve/text.js';
+import { EASINGS } from './ve/ease.js';
 const MB = '/tools/vendor/mediabunny/mediabunny.min.mjs';
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -99,7 +102,7 @@ function drawClip(ctx, W, H, c, src, fx) {
 /* transitions: each one works on a single picture, so they behave the same in the preview and in the export */
 const TRANS = [['none', 'None'], ['fade', 'Fade'], ['flash', 'Flash'], ['zoom', 'Zoom in'], ['blur', 'Blur in']];
 const TR_D = 0.5, TR_HALF = 0.25;
-const easeOut = (p) => 1 - Math.pow(1 - p, 3);
+const easeOut = EASINGS.outCubic.fn;
 function nextMain(c) { const m = mains(), i = m.indexOf(c); return i >= 0 ? m[i + 1] : null; }
 function transFx(c, tt, H) {
   const out = { zoom: 1, blur: 0, over: null };
@@ -129,19 +132,25 @@ function drawText(ctx, W, H, c) {
   ctx.save();
   ctx.font = (c.bold ? '800 ' : '500 ') + px + 'px ' + c.font;
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  const lines = String(c.str || '').split('\n'), lh = px * 1.2;
-  const cx = c.x / 100 * W, cy = c.y / 100 * H - ((lines.length - 1) * lh) / 2;
+  /* The layout tells us how wide each line is. The line itself is still drawn in one go, the way
+     it always was, so the picture does not change. */
+  const lay = layoutText(ctx, c.str || '', { size: px, lineHeight: 1.2, align: 'center', origin: 'center' });
+  const lh = px * 1.2;
+  const cx = c.x / 100 * W;
+  /* The lines are placed with the same arithmetic the editor has always used, so the letters land
+     on exactly the same pixel they did before. */
+  const cy = c.y / 100 * H - ((lay.lines.length - 1) * lh) / 2;
   if (c.bg) {
-    const w = Math.max(...lines.map((l) => ctx.measureText(l).width)) + px * 0.8, h = lines.length * lh + px * 0.3;
+    const w = lay.width + px * 0.8, h = lay.lines.length * lh + px * 0.3;
     ctx.fillStyle = 'rgba(0,0,0,.62)';
     const x = cx - w / 2, y = (c.y / 100 * H) - h / 2, r = px * 0.3;
     ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); ctx.fill();
   }
-  lines.forEach((l, i) => {
+  lay.lines.forEach((line, i) => {
     const y = cy + i * lh;
-    if (c.outline) { ctx.lineWidth = Math.max(2, px * 0.14); ctx.strokeStyle = '#000'; ctx.lineJoin = 'round'; ctx.strokeText(l, cx, y); }
+    if (c.outline) { ctx.lineWidth = Math.max(2, px * 0.14); ctx.strokeStyle = '#000'; ctx.lineJoin = 'round'; ctx.strokeText(line.text, cx, y); }
     else if (!c.bg) { ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = px * 0.25; ctx.shadowOffsetY = px * 0.06; }
-    ctx.fillStyle = c.color; ctx.fillText(l, cx, y);
+    ctx.fillStyle = c.color; ctx.fillText(line.text, cx, y);
     ctx.shadowColor = 'transparent';
   });
   ctx.restore();
@@ -197,7 +206,8 @@ function emphSet(toks) {
   if (!set.size && toks.length >= 3 && bl >= 6) set.add(best);
   return set;
 }
-const eob = (p) => { const k = 1.70158; return 1 + (k + 1) * Math.pow(p - 1, 3) + k * Math.pow(p - 1, 2); };
+/* The elastic curve behind the popping captions. It lives in the easing library with the rest. */
+const eob = EASINGS.outElasticCubic.fn;
 function animFor(kind, p, px) {
   if (kind === 'pop') return { sc: 0.55 + 0.45 * eob(p), dy: 0, al: Math.min(1, p * 3) };
   if (kind === 'bounce') return { sc: 1, dy: -px * 0.38 * Math.sin(p * Math.PI), al: 1 };
@@ -289,17 +299,43 @@ function paintCapThumbs() {
     drawCaption(g, W, H, { str: 'Make it pop', words: null, s: 0, d: 2, mi: 0 }, 0.9, { style: cv.dataset.ct, size: 21, y: 52 });
   });
 }
-function renderFrame(ctx, W, H, tt, src) {
-  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+/* Builds the list of layers for one moment in time.
+   The order is the order the editor has always drawn in: the video, then the text, then the
+   captions. A layer can be given its own number to move it in front of or behind the others. */
+function layersAt(W, H, tt, src) {
+  const out = [];
   const c = mainAt(tt);
   if (c && src) {
     const fx = transFx(c, tt, H);
-    drawClip(ctx, W, H, c, src, fx);
-    if (fx.over) { ctx.fillStyle = fx.over; ctx.fillRect(0, 0, W, H); }
+    out.push({
+      z: c.z == null ? 0 : c.z, opacity: 1, blend: 'source-over',
+      transform: c.transform, actions: c.actions, time: tt - c.s,
+      draw: (g) => {
+        drawClip(g, W, H, c, src, fx);
+        if (fx.over) { g.fillStyle = fx.over; g.fillRect(0, 0, W, H); }
+      },
+    });
   }
-  for (const x of st.clips) if (x.lane === 'text' && tt >= x.s && tt < x.s + x.d) drawText(ctx, W, H, x);
+  let z = 1000;
+  for (const x of st.clips) if (x.lane === 'text' && tt >= x.s && tt < x.s + x.d) {
+    out.push({
+      z: x.z == null ? (z += 1) : x.z, opacity: 1, blend: 'source-over',
+      pivot: { x: x.x, y: x.y },
+      transform: x.transform, actions: x.actions, time: tt - x.s,
+      draw: (g) => drawText(g, W, H, x),
+    });
+  }
   const cp = st.clips.find((x) => x.lane === 'cap' && tt >= x.s && tt < x.s + x.d);
-  if (cp) drawCaption(ctx, W, H, cp, tt);
+  if (cp) out.push({
+    z: cp.z == null ? 2000 : cp.z, opacity: 1, blend: 'source-over',
+    transform: cp.transform, actions: cp.actions, time: tt - cp.s,
+    draw: (g) => drawCaption(g, W, H, cp, tt),
+  });
+  return out;
+}
+function renderFrame(ctx, W, H, tt, src) {
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+  compose(ctx, W, H, layersAt(W, H, tt, src));
 }
 
 /* ------------------------------------------------------------------ preview and playback */
@@ -1465,4 +1501,4 @@ if (/[?&]desktop=1/.test(location.search)) { const bk = document.querySelector('
 applyRatio(); buildToolbar(); updateActs(); draw(); syncZoomUI();
 if (isDesk()) openTool('add');
 matchMedia('(min-width:1100px) and (min-height:620px)').addEventListener('change', () => { drawTL(); if (isDesk() && !tool) openTool('add'); });
-window.__ve = { st, media, importFile, handleFiles, addToTimeline, refresh, layout, renderFrame, runExport, seek, setPlay, get DUR() { return DUR; }, get t() { return t; }, undo, redo, dims };
+window.__ve = { st, media, importFile, handleFiles, addToTimeline, refresh, layout, renderFrame, runExport, seek, setPlay, get DUR() { return DUR; }, get t() { return t; }, undo, redo, dims, layersAt, compose, layoutText, EASINGS };

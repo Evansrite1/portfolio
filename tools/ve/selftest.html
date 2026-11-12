@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video editor foundation tests</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+:root{--bg:#0b0b0c;--p1:#141416;--p2:#1c1c20;--line:#2d2d33;--ink:#f4f4f5;--soft:#b8b8c0;--acc:#ff5b52;--ok:#2ee06a;--bad:#ff5b52}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px}
+h1{font-size:1.3rem;margin:0 0 4px}
+p.lead{color:var(--soft);margin:0 0 20px;font-size:.9rem}
+.group{margin:0 0 18px;background:var(--p1);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.group>h2{margin:0;padding:10px 14px;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--soft);border-bottom:1px solid var(--line)}
+.rows{display:grid}
+.row{display:flex;gap:12px;align-items:flex-start;padding:8px 14px;border-bottom:1px solid var(--line);font-size:.87rem}
+.row:last-child{border-bottom:0}
+.row .st{flex:none;width:52px;font-weight:700;font-size:.74rem;padding-top:1px}
+.row .st.ok{color:var(--ok)}
+.row .st.bad{color:var(--bad)}
+.row .nm{flex:1;min-width:0}
+.row .msg{color:var(--soft);font-size:.8rem;margin-top:2px}
+#summary{margin:18px 0;padding:14px 16px;border-radius:14px;font-weight:700}
+#summary.ok{background:rgba(46,224,106,.12);color:var(--ok);border:1px solid var(--ok)}
+#summary.bad{background:rgba(255,91,82,.12);color:var(--bad);border:1px solid var(--ok)}
+canvas{position:fixed;left:-9999px;top:0}
+a{color:var(--acc)}
+</style>
+</head>
+<body>
+<h1>Video editor foundation tests</h1>
+<p class="lead">Checks the four pieces every later feature stands on: the easing curves, the text layout, the action model and the layer compositor.</p>
+<div id="summary">Running...</div>
+<div id="out"></div>
+<canvas id="cv" width="200" height="120"></canvas>
+
+<script type="module">
+import { EASINGS, EASE_ORDER, bezierEasing, springEasing, makeEase, easeLabel, curveEndpoints } from './ease.js';
+import { layoutText, paintText, wrapText, letterCount } from './text.js';
+import { evalActions, actionValueAt, makeAction, cloneActions, serializeActions, deserializeActions, stagger, pathPoint, presetActions, ACTION_PRESETS, ACTION_TYPES } from './anim.js';
+import { compose, sortLayers, BLEND_MODES, validBlend } from './layers.js';
+
+const groups = [];
+let pass = 0, fail = 0;
+function group(name) { const g = { name, rows: [] }; groups.push(g); return g; }
+function ok(g, name, msg) { g.rows.push({ ok: true, name, msg }); pass++; }
+function bad(g, name, msg) { g.rows.push({ ok: false, name, msg }); fail++; }
+function check(g, name, cond, msg) { if (cond) ok(g, name, msg || ''); else bad(g, name, msg || 'failed'); return !!cond; }
+function near(a, b, eps) { return Math.abs(a - b) <= (eps == null ? 1e-6 : eps); }
+
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d', { willReadFrequently: true });
+const px = (x, y) => { const d = ctx.getImageData(x, y, 1, 1).data; return [d[0], d[1], d[2], d[3]]; };
+const clear = () => { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.clearRect(0, 0, cv.width, cv.height); };
+
+/* ------------------------------------------------------------------ easing */
+{
+  const g = group('Easing curves');
+  let badCurves = [];
+  for (const id of EASE_ORDER) {
+    const fn = EASINGS[id].fn;
+    const a = fn(0), b = fn(1);
+    if (!near(a, 0, 1e-6) || !near(b, 1, 1e-6)) badCurves.push(id + ' (' + a.toFixed(4) + ' -> ' + b.toFixed(4) + ')');
+  }
+  check(g, 'Every curve starts at 0 and ends at 1', badCurves.length === 0, badCurves.length ? badCurves.join(', ') : EASE_ORDER.length + ' curves checked');
+
+  const over = ['outBack', 'outElastic', 'outElasticCubic', 'inOutBack', 'inOutElastic'];
+  let noOver = [];
+  for (const id of over) {
+    let max = 0;
+    for (let i = 0; i <= 100; i++) max = Math.max(max, EASINGS[id].fn(i / 100));
+    if (max <= 1) noOver.push(id);
+  }
+  check(g, 'The overshoot curves really do overshoot', noOver.length === 0, noOver.length ? 'flat: ' + noOver.join(', ') : 'back, elastic and pop all pass 1');
+
+  const bz = bezierEasing(0.25, 0.1, 0.25, 1);
+  check(g, 'A custom curve starts and ends in the right place', near(bz(0), 0) && near(bz(1), 1));
+  const lin = bezierEasing(0, 0, 1, 1);
+  let straight = true;
+  for (let i = 0; i <= 20; i++) if (!near(lin(i / 20), i / 20, 1e-4)) straight = false;
+  check(g, 'Control points on the diagonal give a straight line', straight);
+  const ease = bezierEasing(0.42, 0, 0.58, 1);
+  let slowStart = ease(0.25) < 0.25;
+  check(g, 'A curve that starts slow really does start slow', slowStart, 'at a quarter of the way it is at ' + ease(0.25).toFixed(3));
+
+  const sp = springEasing({ stiffness: 170, damping: 16 });
+  check(g, 'A spring starts at 0 and settles at 1', near(sp(0), 0, 1e-6) && near(sp(1), 1, 1e-6));
+  let springOvershoot = false;
+  for (let i = 0; i <= 100; i++) if (sp(i / 100) > 1.001) springOvershoot = true;
+  check(g, 'A spring overshoots before it settles', springOvershoot);
+
+  check(g, 'A curve can be asked for by name', makeEase('outCubic') === EASINGS.outCubic.fn);
+  check(g, 'A curve can be asked for by its points', typeof makeEase({ bezier: [0.4, 0, 0.6, 1] }) === 'function');
+  check(g, 'An unknown curve falls back to a straight line', makeEase('nope') === EASINGS.linear.fn && makeEase(null) === EASINGS.linear.fn);
+  check(g, 'A curve can be given a name for the interface', easeLabel('outCubic') === EASINGS.outCubic.name && easeLabel({ bezier: [0, 0, 1, 1] }) === 'Custom curve');
+  const pop = EASINGS.outElasticCubic.fn;
+  check(g, 'The elastic pop curve is the one the captions use', near(pop(1), 1) && near(pop(0), 0) && pop(0.5) > 1);
+}
+
+/* ------------------------------------------------------------------ text */
+{
+  const g = group('Text layout');
+  const lay = layoutText(ctx, 'Hello\nWorld again', { font: '700 40px Arial', size: 40, lineHeight: 1.2 });
+  check(g, 'A newline starts a new line', lay.lines.length === 2, 'got ' + lay.lines.length + ' lines');
+  ctx.font = '700 40px Arial';
+  const exact = lay.lines.every((l) => near(l.width, ctx.measureText(l.text).width, 1e-9));
+  check(g, 'Each line measures exactly as the browser measures it', exact);
+
+  const cy = layoutText(ctx, 'one\ntwo\nthree', { font: '40px Arial', size: 40, lineHeight: 1.2 });
+  const expect = [(0 - 1) * 48, 0, 48];
+  check(g, 'Lines are spread evenly around the anchor', cy.lines.every((l, i) => near(l.y, expect[i], 1e-9)), 'y = ' + cy.lines.map((l) => l.y.toFixed(1)).join(', '));
+
+  const spaced = layoutText(ctx, 'a  b', { font: '40px Arial', size: 40 });
+  check(g, 'Two spaces between words are kept as they were written', spaced.lines[0].text === 'a  b', 'read back as "' + spaced.lines[0].text + '"');
+
+  const simple = layoutText(ctx, 'Outlined text', { font: '40px Arial', size: 40 });
+  check(g, 'A line of text comes back exactly as it was written', simple.lines[0].text === 'Outlined text', 'read back as "' + simple.lines[0].text + '"');
+  ctx.font = '40px Arial';
+  check(g, 'A line of text measures the width of the words in it', near(simple.width, ctx.measureText('Outlined text').width, 1e-9));
+
+  const letters = layoutText(ctx, 'Hi there', { font: '40px Arial', size: 40 });
+  const total = letters.lines[0].letters.reduce((a, l) => a + l.width, 0);
+  check(g, 'Every letter has a position', letters.lines[0].letters.length === 7, 'got ' + letters.lines[0].letters.length + ' letters, the space is not one');
+  check(g, 'The letters add up to the width of the line', total <= letters.lines[0].width + 0.5, 'letters ' + total.toFixed(2) + ' vs line ' + letters.lines[0].width.toFixed(2));
+  const ordered = letters.lines[0].letters.every((l, i, arr) => i === 0 || l.x >= arr[i - 1].x);
+  check(g, 'The letters run from left to right', ordered);
+
+  const wrapped = wrapText(ctx, 'the quick brown fox jumps over the lazy dog', '40px Arial', 40, 200);
+  check(g, 'Long text breaks into lines', wrapped.length > 1, 'got ' + wrapped.length + ' lines');
+  check(g, 'Every broken line fits the width', wrapped.every((l) => ctx.measureText(l).width <= 200 + 0.5), 'widest ' + Math.max(...wrapped.map((l) => ctx.measureText(l).width)).toFixed(1));
+
+  const centred = layoutText(ctx, 'abc', { font: '40px Arial', size: 40 });
+  check(g, 'Centred text sits on the anchor', near(centred.lines[0].x, -centred.lines[0].width / 2, 1e-9));
+  const left = layoutText(ctx, 'abc', { font: '40px Arial', size: 40, align: 'left' });
+  check(g, 'Left aligned text starts at the edge of the block', near(left.lines[0].x, -left.width / 2, 1e-9));
+
+  check(g, 'Letters are counted the way a person would', letterCount('Hi there') === 8);
+}
+
+/* ------------------------------------------------------------------ actions */
+{
+  const g = group('Action model');
+  const none = evalActions([], 1);
+  check(g, 'A layer with no actions sits still', none.x === 0 && none.opacity === 1 && none.scale === 1);
+
+  const fade = makeAction('fade', { from: 0, to: 1, dur: 1, ease: 'linear' });
+  check(g, 'A fade starts where it should', near(actionValueAt(fade, 0), 0));
+  check(g, 'A fade ends where it should', near(actionValueAt(fade, 1), 1));
+  check(g, 'A fade has not started before its delay', actionValueAt(makeAction('fade', { delay: 1 }), 0.5) === null);
+  check(g, 'A fade is half way at the half', near(actionValueAt(fade, 0.5), 0.5, 0.02));
+  const curved = makeAction('fade', { from: 0, to: 1, dur: 1, ease: 'outCubic' });
+  check(g, 'A curve changes the way an action plays out', actionValueAt(curved, 0.5) > actionValueAt(fade, 0.5), 'the smooth curve is ahead of a straight one');
+
+  const stack = [
+    makeAction('move', { from: { x: 0, y: 0 }, to: { x: 10, y: -5 }, dur: 1 }),
+    makeAction('fade', { from: 0, to: 1, dur: 1 }),
+    makeAction('scale', { from: 1, to: 2, dur: 1 }),
+  ];
+  const s = evalActions(stack, 1);
+  check(g, 'Different kinds of action sit side by side', near(s.x, 10) && near(s.opacity, 1) && near(s.scale, 2));
+
+  const two = [
+    makeAction('fade', { from: 0, to: 0.4, dur: 1, ease: 'linear' }),
+    makeAction('fade', { from: 1, to: 0, dur: 1, delay: 0.5, ease: 'linear' }),
+  ];
+  check(g, 'The later action of the same kind wins', near(evalActions(two, 0.75).opacity, 0.75, 0.02), 'got ' + evalActions(two, 0.75).opacity.toFixed(3));
+  check(g, 'The earlier action still runs before the later one starts', near(evalActions(two, 0.25).opacity, 0.1, 0.02), 'got ' + evalActions(two, 0.25).opacity.toFixed(3));
+
+  const del = makeAction('fade', { from: 0, to: 1, dur: 1, delay: 1 });
+  check(g, 'A delayed action holds the layer still until it starts', evalActions([del], 0.5).opacity === 1);
+
+  const st = stagger(5, { each: 0.1 });
+  check(g, 'Staggering spreads things out one after another', st.length === 5 && near(st[1] - st[0], 0.1), st.map((x) => x.toFixed(2)).join(', '));
+  const stMid = stagger(5, { each: 0.1, from: 'centre' });
+  check(g, 'Staggering from the middle starts in the middle', near(stMid[2], 0) && near(stMid[0], 0.2));
+
+  const clone = cloneActions(stack);
+  check(g, 'A copy of a stack gets its own names', clone.length === stack.length && clone.every((a, i) => a.id !== stack[i].id));
+  check(g, 'A copy keeps the same settings', JSON.stringify({ ...clone[0], id: '' }) === JSON.stringify({ ...stack[0], id: '' }));
+
+  const round = deserializeActions(serializeActions(stack));
+  check(g, 'A stack survives a trip through the clipboard', round.length === stack.length && round[0].type === 'move');
+  check(g, 'Rubbish from the clipboard is ignored', deserializeActions('not json').length === 0 && deserializeActions('[1,2,3]').length === 0);
+
+  const p = pathPoint([[0, 0], [50, 0], [50, 50]], 0.5);
+  check(g, 'A path gives a point half way along', near(p.x, 50, 6) && near(p.y, 0, 25), 'at ' + p.x.toFixed(1) + ', ' + p.y.toFixed(1));
+  check(g, 'A path starts and ends where it should', near(pathPoint([[0, 0], [50, 50]], 0).x, 0, 1e-6) && near(pathPoint([[0, 0], [50, 50]], 1).x, 50, 1e-6));
+
+  check(g, 'There is a ready made stack for every kind of action', Object.keys(ACTION_TYPES).length === 7);
+  check(g, 'The ready made stacks all build', presetActions('fadein').length === 1 && presetActions('nope').length === 0);
+}
+
+/* ------------------------------------------------------------------ layers */
+{
+  const g = group('Layer compositor');
+  const order = sortLayers([{ z: 5 }, { z: 1 }, { z: 3 }]);
+  check(g, 'Layers are drawn in order', order[0].z === 1 && order[1].z === 3 && order[2].z === 5);
+  const stable = sortLayers([{ z: 1, n: 'a' }, { z: 1, n: 'b' }]);
+  check(g, 'Layers with the same number keep their order', stable[0].n === 'a');
+
+  clear();
+  compose(ctx, 200, 120, [
+    { z: 1, draw: (g) => { g.fillStyle = '#ff0000'; g.fillRect(0, 0, 200, 120); } },
+    { z: 2, draw: (g) => { g.fillStyle = '#0000ff'; g.fillRect(50, 20, 60, 60); } },
+  ]);
+  check(g, 'The layer on top covers the one below', px(80, 50)[2] > 200 && px(80, 50)[0] < 60);
+  check(g, 'The layer below shows where it is not covered', px(10, 10)[0] > 200 && px(10, 10)[2] < 60);
+
+  clear();
+  compose(ctx, 200, 120, [
+    { z: 1, draw: (g) => { g.fillStyle = '#ff0000'; g.fillRect(0, 0, 200, 120); } },
+    { z: 2, opacity: 0.5, draw: (g) => { g.fillStyle = '#0000ff'; g.fillRect(0, 0, 200, 120); } },
+  ]);
+  const half = px(100, 60);
+  check(g, 'A layer that is half see-through really is', half[0] > 100 && half[0] < 155 && half[2] > 100 && half[2] < 155, 'rgb ' + half.slice(0, 3).join(', '));
+
+  clear();
+  compose(ctx, 200, 120, [
+    { z: 1, draw: (g) => { g.fillStyle = '#ff0000'; g.fillRect(0, 0, 200, 120); } },
+    { z: 2, blend: 'multiply', draw: (g) => { g.fillStyle = '#808080'; g.fillRect(0, 0, 200, 120); } },
+  ]);
+  const mult = px(100, 60);
+  check(g, 'A blended layer mixes with what is below', mult[0] < 200 && mult[0] > 100, 'rgb ' + mult.slice(0, 3).join(', '));
+
+  clear();
+  compose(ctx, 200, 120, [
+    { z: 1, draw: (g) => { g.fillStyle = '#ff0000'; g.fillRect(0, 0, 200, 120); } },
+    { z: 2, mask: (m) => { m.fillStyle = '#fff'; m.fillRect(60, 30, 40, 40); }, draw: (g) => { g.fillStyle = '#0000ff'; g.fillRect(0, 0, 200, 120); } },
+  ]);
+  check(g, 'A mask shows only the part it paints', px(80, 50)[2] > 200 && px(80, 50)[0] < 60);
+  check(g, 'A mask hides the rest of the layer', px(10, 10)[0] > 200 && px(10, 10)[2] < 60);
+
+  clear();
+  compose(ctx, 200, 120, [
+    { z: 1, transform: { x: 50, y: 0, pivot: { x: 0, y: 0 } }, draw: (g) => { g.fillStyle = '#ff0000'; g.fillRect(0, 0, 40, 40); } },
+  ]);
+  check(g, 'A moved layer lands in the right place', px(120, 20)[0] > 200 && px(10, 20)[0] < 60, 'moved 50% of the width');
+
+  clear();
+  compose(ctx, 200, 120, [
+    { z: 1, actions: [makeAction('move', { from: { x: 0, y: 0 }, to: { x: 50, y: 0 }, dur: 1 })], time: 1, draw: (g) => { g.fillStyle = '#ff0000'; g.fillRect(0, 0, 40, 40); } },
+  ]);
+  check(g, 'An action moves the layer', px(120, 20)[0] > 200 && px(10, 20)[0] < 60);
+
+  clear();
+  compose(ctx, 200, 120, [
+    { z: 1, actions: [makeAction('fade', { from: 0, to: 1, dur: 1, ease: 'linear' })], time: 0.5, draw: (g) => { g.fillStyle = '#ff0000'; g.fillRect(0, 0, 200, 120); } },
+  ]);
+  const faded = px(100, 60);
+  check(g, 'An action can fade a layer', faded[3] > 110 && faded[3] < 145, 'alpha ' + faded[3] + ' at half way');
+
+  check(g, 'Every blend mode is one the browser knows', BLEND_MODES.every((b) => validBlend(b.id)));
+}
+
+/* ------------------------------------------------------------------ results */
+const out = document.getElementById('out');
+out.innerHTML = groups.map((g) => {
+  const rows = g.rows.map((r) => '<div class="row"><span class="st ' + (r.ok ? 'ok' : 'bad') + '">' + (r.ok ? 'PASS' : 'FAIL') + '</span><span class="nm">' + r.name + (r.msg ? '<div class="msg">' + r.msg + '</div>' : '') + '</span></div>').join('');
+  const bads = g.rows.filter((r) => !r.ok).length;
+  return '<section class="group"><h2>' + g.name + ' &middot; ' + (g.rows.length - bads) + '/' + g.rows.length + '</h2><div class="rows">' + rows + '</div></section>';
+}).join('');
+const sum = document.getElementById('summary');
+sum.className = fail === 0 ? 'ok' : 'bad';
+sum.textContent = fail === 0 ? pass + ' passed, none failed.' : pass + ' passed, ' + fail + ' failed.';
+document.title = (fail === 0 ? 'PASS ' : 'FAIL ') + pass + '/' + (pass + fail) + ' foundation tests';
+window.__selftest = { pass, fail, results: groups.flatMap((g) => g.rows.map((r) => ({ group: g.name, ...r }))) };
+</script>
+</body>
+</html>
