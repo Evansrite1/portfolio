@@ -3,6 +3,16 @@
 import { compose } from './ve/layers.js';
 import { layoutText } from './ve/text.js';
 import { EASINGS } from './ve/ease.js';
+import { drawTextFx } from './ve/textfx.js';
+import { SHAPES, makeFill, svgImage, drawSvg, shapeSize } from './ve/fx.js';
+import { tornPath, layPaperTexture, drawFold, magazineLetters, paperPreset } from './ve/paper.js';
+import { drawShatter, drawTuring, drawStreet, drawFlight } from './ve/physics.js';
+import { loadBrand, saveBrand, addColor, addEase, saveFontFile, getFontFile, useFont } from './ve/brand.js';
+import { allTemplates, saveTemplate, TEMPLATE_FILTERS } from './ve/templates.js';
+import { animPanel, fxPanel, shapePanel, paperPanel, brandPanel, templatesPanel } from './ve/panels.js';
+import { EXPORT_FORMATS, FPS_CHOICES, RES_CHOICES, sizeLabel, deviceCheck, buildGif, buildZip, frameName, formatNote, canMake } from './ve/export.js';
+import { findSubject, paintMask, softenMask, applyMask, keyOut, pickColour } from './ve/cutout.js';
+import { makeAction, presetActions, serializeActions, deserializeActions, ACTION_PRESETS } from './ve/anim.js';
 const MB = '/tools/vendor/mediabunny/mediabunny.min.mjs';
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -18,6 +28,11 @@ const st = {
 const media = new Map();
 let uid = 1, DUR = 0, t = 0, pps = 30, playing = false, last = 0, tool = null, exporting = false;
 const undoStack = [], redoStack = [];
+/* The brand kit, the background removal and the copied animation live outside the project,
+   because they are about how the video looks rather than what is in it. */
+let brand = loadBrand();
+let cutoutState = null;
+let animClipboard = null;
 
 const RATIOS = { '16/9': [16, 9], '9/16': [9, 16], '1/1': [1, 1], '4/5': [4, 5] };
 function dims(ratio, shortSide) {
@@ -299,6 +314,93 @@ function paintCapThumbs() {
     drawCaption(g, W, H, { str: 'Make it pop', words: null, s: 0, d: 2, mi: 0 }, 0.9, { style: cv.dataset.ct, size: 21, y: 52 });
   });
 }
+/* Draws a text layer, with whatever effect it carries. */
+function drawTextLayer(ctx, W, H, c, tt) {
+  const local = tt - c.s;
+  const tfx = c.txf;
+  if (tfx && tfx.fx && tfx.fx !== 'none') {
+    const px = Math.round(c.size / 100 * H);
+    const font = (c.bold ? '800 ' : '500 ') + px + 'px ' + c.font;
+    ctx.save();
+    ctx.translate(c.x / 100 * W, c.y / 100 * H);
+    drawTextFx(ctx, c.str || '', { fx: tfx.fx, unit: tfx.unit, opts: tfx.opts, font, size: px, color: c.color, lineHeight: 1.2, align: 'center' }, local);
+    ctx.restore();
+    return;
+  }
+  if (c.magazine) {
+    const px = Math.round(c.size / 100 * H);
+    const font = (c.bold ? '800 ' : '500 ') + px + 'px ' + c.font;
+    const lay = layoutText(ctx, c.str || '', { font, size: px, lineHeight: 1.2, align: 'center', origin: 'center' });
+    ctx.save();
+    ctx.translate(c.x / 100 * W, c.y / 100 * H);
+    magazineLetters(ctx, lay, { size: px, font, color: c.color, turn: c.magazine.turn, jitter: c.magazine.jitter, pad: 0.22 }, local);
+    ctx.restore();
+    return;
+  }
+  if (c.match) { drawMatchCut(ctx, W, H, c, tt); return; }
+  drawText(ctx, W, H, c);
+}
+
+/* The match cut: the words sit behind pages that slide away and line up in place. */
+function drawMatchCut(ctx, W, H, c, tt) {
+  const m = c.match, local = tt - c.s;
+  const p = clamp((local - (m.delay || 0)) / (m.dur || 1.1), 0, 1);
+  const ease = 1 - Math.pow(1 - p, 3);
+  ctx.save();
+  if (m.blur) ctx.filter = 'blur(' + (m.blur * 16 * (1 - ease)).toFixed(2) + 'px)';
+  drawText(ctx, W, H, c);
+  ctx.restore();
+  const n = 5, w = W / n;
+  for (let i = 0; i < n; i++) {
+    const e = clamp((ease - i * 0.05) * 1.5, 0, 1);
+    if (e >= 1) continue;
+    const dir = i % 2 ? 1 : -1;
+    ctx.save();
+    ctx.translate(i * w + w / 2 + dir * e * w * 1.3, 0);
+    ctx.fillStyle = m.dark ? '#101014' : (m.style === 'press' ? '#efe9dc' : '#f6f6f7');
+    ctx.fillRect(-w / 2, 0, w, H);
+    if (m.style === 'press') { ctx.fillStyle = 'rgba(0,0,0,.16)'; ctx.fillRect(-w / 2, 0, w, Math.max(2, H * 0.004)); }
+    ctx.restore();
+  }
+  if (m.glitch && p > 0 && p < 1) {
+    const slices = 6;
+    for (let i = 0; i < slices; i++) {
+      const sy = (i / slices) * H + Math.sin(tt * 21 + i) * H * 0.004;
+      const sh = H / slices;
+      const off = Math.sin(tt * 33 + i * 2.1) * W * 0.02 * m.glitch;
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      ctx.globalAlpha = 0.5 * m.glitch;
+      ctx.fillStyle = i % 2 ? '#ff0044' : '#00d0ff';
+      ctx.fillRect(off, sy, W, sh * 0.35);
+      ctx.restore();
+    }
+  }
+}
+
+/* Draws a shape layer. */
+function drawShapeLayer(ctx, W, H, c) {
+  const [w, h] = shapeSize(c, W, H);
+  ctx.save();
+  ctx.translate(c.x / 100 * W, c.y / 100 * H);
+  if (c.rot) ctx.rotate((c.rot * Math.PI) / 180);
+  if (c.svg) {
+    const img = c.svgImg;
+    if (img) drawSvg(ctx, img, w, h, c.color === '#ffffff' && c.recolour ? c.color : null);
+    else {
+      ctx.fillStyle = c.color;
+      ctx.fillRect(-w / 2, -h / 2, w, h);
+    }
+    ctx.restore();
+    return;
+  }
+  const shape = SHAPES[c.shape] || SHAPES.rect;
+  const fill = makeFill(ctx, W, H, c.fill);
+  ctx.fillStyle = fill || c.color || '#ffffff';
+  shape.draw(ctx, w, h);
+  ctx.restore();
+}
+
 /* Builds the list of layers for one moment in time.
    The order is the order the editor has always drawn in: the video, then the text, then the
    captions. A layer can be given its own number to move it in front of or behind the others. */
@@ -307,22 +409,50 @@ function layersAt(W, H, tt, src) {
   const c = mainAt(tt);
   if (c && src) {
     const fx = transFx(c, tt, H);
-    out.push({
-      z: c.z == null ? 0 : c.z, opacity: 1, blend: 'source-over',
+    const ph = c.physics;
+    const layer = {
+      z: c.z == null ? 0 : c.z, opacity: 1, blend: c.blend || 'source-over',
       transform: c.transform, actions: c.actions, time: tt - c.s,
-      draw: (g) => {
+    };
+    if (ph && ph.kind === 'turing') {
+      layer.draw = (g) => drawTuring(g, W, H, tt - c.s, ph.turing || {});
+    } else if (ph && ph.kind === 'flight') {
+      layer.draw = (g) => drawFlight(g, W, H, tt - c.s, ph.flight || {});
+    } else if (ph && ph.kind === 'street') {
+      layer.draw = (g) => drawStreet(g, (ph.street && ph.street.text) || '', W, H, tt - c.s, ph.street || {});
+    } else if (ph && ph.kind === 'shatter') {
+      layer.draw = (g) => drawShatter(g, src, W, H, tt - c.s, ph.shatter || {});
+    } else if (c.fold) {
+      layer.draw = (g) => drawFold(g, src, W, H, c.fold.panels || 4, (tt - c.s) / (c.fold.dur || 1.4), c.fold.angle);
+    } else {
+      layer.draw = (g) => {
         drawClip(g, W, H, c, src, fx);
         if (fx.over) { g.fillStyle = fx.over; g.fillRect(0, 0, W, H); }
-      },
-    });
+      };
+    }
+    if (c.paper) {
+      const paper = c.paper;
+      layer.mask = (m) => { if (paper.torn > 0) { tornPath(m, W, H, paper.torn, paper.seed || 1); m.fillStyle = '#fff'; m.fill(); } else { m.fillStyle = '#fff'; m.fillRect(0, 0, W, H); } };
+      if (paper.shadow > 0) layer.shadow = { color: 'rgba(0,0,0,.5)', blur: 6 + paper.shadow * 26, x: 4 + paper.shadow * 10, y: 6 + paper.shadow * 14 };
+      if (paper.texture > 0) layer.overlay = (g) => layPaperTexture(g, W, H, paper.texture);
+    }
+    out.push(layer);
   }
   let z = 1000;
   for (const x of st.clips) if (x.lane === 'text' && tt >= x.s && tt < x.s + x.d) {
     out.push({
-      z: x.z == null ? (z += 1) : x.z, opacity: 1, blend: 'source-over',
+      z: x.z == null ? (z += 1) : x.z, opacity: 1, blend: x.blend || 'source-over',
       pivot: { x: x.x, y: x.y },
       transform: x.transform, actions: x.actions, time: tt - x.s,
-      draw: (g) => drawText(g, W, H, x),
+      draw: (g) => drawTextLayer(g, W, H, x, tt),
+    });
+  }
+  for (const x of st.clips) if (x.lane === 'shape' && tt >= x.s && tt < x.s + x.d) {
+    out.push({
+      z: x.z == null ? (z += 1) : x.z, opacity: x.op == null ? 1 : x.op / 100, blend: x.blend || 'source-over',
+      pivot: { x: x.x, y: x.y },
+      transform: x.transform, actions: x.actions, time: tt - x.s,
+      draw: (g) => drawShapeLayer(g, W, H, x),
     });
   }
   const cp = st.clips.find((x) => x.lane === 'cap' && tt >= x.s && tt < x.s + x.d);
@@ -342,7 +472,40 @@ function renderFrame(ctx, W, H, tt, src) {
 const cv = $('cv'), cx = cv.getContext('2d');
 function previewSrc(c) { const m = media.get(c.mid); return m ? m.el : null; }
 let drawQueued = false;
+/* While the background is being fixed, the preview shows the picture with the part that will be
+   kept picked out in green, so you can paint on it. */
+let maskTint = null, maskTintFor = null;
+function tintedMask() {
+  if (!cutoutState || !cutoutState.mask) return null;
+  if (maskTintFor === cutoutState.mask) return maskTint;
+  const c = document.createElement('canvas');
+  c.width = cutoutState.mask.width; c.height = cutoutState.mask.height;
+  const g = c.getContext('2d');
+  g.drawImage(cutoutState.mask, 0, 0);
+  g.globalCompositeOperation = 'source-in';
+  g.fillStyle = '#00e676';
+  g.fillRect(0, 0, c.width, c.height);
+  maskTint = c; maskTintFor = cutoutState.mask;
+  return c;
+}
+function drawCutoutView() {
+  const m = media.get(cutoutState.mid);
+  if (!m) return;
+  const g = cx;
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.globalAlpha = 1; g.globalCompositeOperation = 'source-over'; g.filter = 'none';
+  g.fillStyle = '#141416';
+  g.fillRect(0, 0, cv.width, cv.height);
+  const s = Math.min(cv.width / m.w, cv.height / m.h);
+  const dw = m.w * s, dh = m.h * s;
+  const ox = (cv.width - dw) / 2, oy = (cv.height - dh) / 2;
+  g.drawImage(m.el, ox, oy, dw, dh);
+  const tint = tintedMask();
+  if (tint) { g.save(); g.globalAlpha = 0.45; g.drawImage(tint, ox, oy, dw, dh); g.restore(); }
+  $('time').textContent = cutoutState.picking ? 'Tap the colour to take away' : 'Paint to keep or take away';
+}
 function draw() {
+  if (cutoutState && (cutoutState.mask || cutoutState.picking)) { drawCutoutView(); return; }
   const c = mainAt(t);
   renderFrame(cx, cv.width, cv.height, t, c ? previewSrc(c) : null);
   $('time').textContent = fmt(t) + ' / ' + fmt(DUR);
@@ -417,6 +580,34 @@ function setPlay(p) {
 }
 function seek(tt) { t = clamp(tt, 0, DUR); if (playing) { pauseAll(); } seekMedia(t); head(); requestDraw(); $('time').textContent = fmt(t) + ' / ' + fmt(DUR); updateActs(); }
 function follow() { const sc = $('scroll'), x = t * pps; if (x > sc.scrollLeft + sc.clientWidth - 30 || x < sc.scrollLeft) sc.scrollLeft = Math.max(0, x - 30); }
+
+/* Painting on the preview to fix the background, and picking a colour to take out. */
+let painting = false;
+$('stage').addEventListener('pointerdown', (e) => {
+  if (!cutoutState) return;
+  const c = selClip();
+  const m = cutoutState.mid && media.get(cutoutState.mid);
+  if (!m) return;
+  const p = stagePoint(e);
+  if (cutoutState.picking) {
+    const s = Math.min(cv.width / m.w, cv.height / m.h);
+    const ox = (cv.width - m.w * s) / 2, oy = (cv.height - m.h * s) / 2;
+    const ix = (p.x - ox) / s, iy = (p.y - oy) / s;
+    if (ix < 0 || iy < 0 || ix >= m.w || iy >= m.h) return;
+    const col = pickColour(m.el, ix, iy);
+    if (c) c.keyColour = col;
+    cutoutState = null;
+    repaint();
+    toast('Colour picked. Now take it out.');
+    return;
+  }
+  painting = true;
+  paintAt(e);
+  e.preventDefault();
+});
+addEventListener('pointermove', (e) => { if (painting && cutoutState) paintAt(e); });
+addEventListener('pointerup', () => { painting = false; });
+addEventListener('pointercancel', () => { painting = false; });
 
 /* ------------------------------------------------------------------ importing media */
 function waitFor(el, ok, bad) {
@@ -587,9 +778,9 @@ async function removeSilences(c) {
 }
 
 /* ------------------------------------------------------------------ timeline UI */
-const COLORS = { main: 'v', text: 't', cap: 'c', audio: 'a' };
-const LANE_NAMES = { main: 'Video', text: 'Text', cap: 'Captions', audio: 'Sound' };
-function lanesInUse() { return ['main', 'text', 'cap', 'audio'].filter((l) => isDesk() || l === 'main' || st.clips.some((c) => c.lane === l)); }
+const COLORS = { main: 'v', text: 't', cap: 'c', audio: 'a', shape: 's' };
+const LANE_NAMES = { main: 'Video', text: 'Text', cap: 'Captions', shape: 'Shapes', audio: 'Sound' };
+function lanesInUse() { return ['main', 'text', 'cap', 'shape', 'audio'].filter((l) => isDesk() || l === 'main' || st.clips.some((c) => c.lane === l)); }
 const RULER_STEPS = [0.1, 0.25, 0.5, 1, 2, 5, 10, 15, 30, 60, 120, 300, 600];
 function drawTL() {
   $('canvas').style.width = (Math.max(DUR, 10) * pps + 100) + 'px';
@@ -603,7 +794,7 @@ function drawTL() {
       const sel = c.id === st.sel, k = COLORS[lane];
       const m = media.get(c.mid);
       const bg = (lane === 'main' && m && m.thumb) ? ' style="left:' + c.s * pps + 'px;width:' + cdur(c) * pps + 'px;background-image:linear-gradient(rgba(20,40,90,.55),rgba(20,40,90,.55)),url(' + m.thumb + ')"' : ' style="left:' + c.s * pps + 'px;width:' + Math.max(8, cdur(c) * pps) + 'px"';
-      const name = (lane === 'text' || lane === 'cap') ? c.str : (m ? m.name : '');
+      const name = (lane === 'text' || lane === 'cap') ? c.str : lane === 'shape' ? (SHAPES[c.shape] ? SHAPES[c.shape].name : 'Drawing') : (m ? m.name : '');
       h += '<div class="clip ' + k + (sel ? ' sel' : '') + (lane !== 'main' ? ' free' : '') + '" data-id="' + c.id + '"' + bg + '>' +
         waveHtml(c, m, lane) + (sel ? '<span class="hd l" data-h="l"></span><span class="hd r" data-h="r"></span>' : '') +
         '<span class="lb">' + esc(name) + '</span></div>';
@@ -785,9 +976,15 @@ const I = {
   size: '<svg viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M3 8v8M21 8v8"/></svg>',
   info: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5h.01"/></svg>',
   cap: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 11h4M13 11h4M7 15h7"/></svg>',
-  clip: '<svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M8 6v12M16 6v12"/></svg>'
+  clip: '<svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M8 6v12M16 6v12"/></svg>',
+  anim: '<svg viewBox="0 0 24 24"><path d="m12 3 2.2 5.3L20 9.5l-4 3.8.9 5.7L12 16.5 7.1 19l.9-5.7-4-3.8 5.8-1.2z"/></svg>',
+  fx: '<svg viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8 9-12h-7z"/></svg>',
+  shape: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1"/><circle cx="16.5" cy="16.5" r="5.5"/></svg>',
+  paper: '<svg viewBox="0 0 24 24"><path d="M5 3h9l5 5v13H5z"/><path d="M14 3v5h5M8 13h8M8 17h5"/></svg>',
+  brand: '<svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 2-.9 2-2 0-.5-.2-1-.6-1.4-.3-.3-.4-.7-.4-1.1 0-.8.7-1.5 1.5-1.5H16a5 5 0 0 0 5-5c0-3.9-4-7-9-7z"/><circle cx="7.5" cy="11.5" r="1.2"/><circle cx="11" cy="7.5" r="1.2"/><circle cx="16" cy="8.5" r="1.2"/></svg>',
+  tpl: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>'
 };
-const TOOLS = [['add', 'Add', 'add'], ['text', 'Text', 'text'], ['cap', 'Captions', 'cap'], ['music', 'Sound', 'music'], ['filt', 'Filters', 'filt'], ['adjust', 'Adjust', 'adj'], ['speed', 'Speed', 'speed'], ['size', 'Size', 'size'], ['clip', 'Clip', 'clip'], ['info', 'Details', 'info']];
+const TOOLS = [['add', 'Add', 'add'], ['text', 'Text', 'text'], ['cap', 'Captions', 'cap'], ['music', 'Sound', 'music'], ['filt', 'Filters', 'filt'], ['adjust', 'Adjust', 'adj'], ['speed', 'Speed', 'speed'], ['size', 'Size', 'size'], ['anim', 'Animate', 'anim'], ['fx', 'Effects', 'fx'], ['shape', 'Shapes', 'shape'], ['paper', 'Paper', 'paper'], ['brand', 'Brand', 'brand'], ['tpl', 'Looks', 'tpl'], ['clip', 'Clip', 'clip'], ['info', 'Details', 'info']];
 function buildToolbar() {
   const has = mains().length > 0;
   $('toolbar').innerHTML = TOOLS.map((x) => '<button class="tb" data-t="' + x[0] + '"' + (has || x[0] === 'add' ? '' : ' disabled') + ' aria-pressed="' + (tool === x[0]) + '">' + I[x[2]] + x[1] + '</button>').join('');
@@ -809,7 +1006,7 @@ function hint(msg) { return '<p class="hint">' + msg + '</p>'; }
 
 function openTool(k) {
   tool = k; $('app').classList.add('open'); buildToolbar();
-  const T = { add: 'Media', text: 'Text', cap: 'Captions', music: 'Sound', filt: 'Filters', adjust: 'Adjust', speed: 'Speed', size: 'Size', clip: 'Clip', info: 'Video details' };
+  const T = { add: 'Media', text: 'Text', cap: 'Captions', music: 'Sound', filt: 'Filters', adjust: 'Adjust', speed: 'Speed', size: 'Size', anim: 'Animate', fx: 'Effects', shape: 'Shapes', paper: 'Paper', brand: 'Brand kit', tpl: 'Looks', clip: 'Clip', info: 'Video details' };
   $('shTitle').textContent = T[k];
   let h = '';
   const v = selVis();
@@ -833,6 +1030,12 @@ function openTool(k) {
   }
   if (k === 'cap') h = capPanelHtml();
   if (k === 'clip') h = clipPanelHtml();
+  if (k === 'anim') h = animPanel({ clip: get(st.sel), presets: ACTION_PRESETS });
+  if (k === 'fx') h = fxPanel({ clip: get(st.sel), cutout: cutoutState });
+  if (k === 'shape') h = shapePanel({ clip: get(st.sel) });
+  if (k === 'paper') h = paperPanel({ clip: get(st.sel) });
+  if (k === 'brand') h = brandPanel({ brand });
+  if (k === 'tpl') h = templatesPanel({});
   if (k === 'music') {
     h = '<button class="btn pri" id="pickAudio">' + I.music + 'Add music from this device</button><button class="btn" id="rec">Record voiceover</button><p class="hint" id="recMsg">Sound is added at the red line. Free music is not included, so use a track you have the rights to.</p>';
     const c = get(st.sel);
@@ -896,6 +1099,50 @@ function getTarget() { return get(st.sel); }
 $('shBody').addEventListener('pointerdown', (e) => { if (e.target.matches('input[type=range],input[type=color]')) commit(); });
 $('shBody').addEventListener('input', (e) => {
   const el = e.target;
+  /* the new tools */
+  if (el.dataset.actdur || el.dataset.actdelay || el.dataset.actfrom || el.dataset.actto) {
+    const c = selClip(); if (!c) return;
+    const id = el.dataset.actdur || el.dataset.actdelay || el.dataset.actfrom || el.dataset.actto;
+    const a = actOf(c, id); if (!a) return;
+    const v = +el.value;
+    if (el.dataset.actdur) a.dur = v;
+    else if (el.dataset.actdelay) a.delay = v;
+    else if (el.dataset.actfrom) actSet(a, 'from', el.dataset.part || 'x', v);
+    else actSet(a, 'to', el.dataset.part || 'x', v);
+    const lab = el.parentNode.querySelector('b');
+    if (lab) lab.textContent = el.dataset.part === 'num' ? v.toFixed(2) : v;
+    requestDraw();
+    return;
+  }
+  if (el.dataset.txopt) {
+    const c = selClip(); if (!c) return;
+    if (!c.txf) c.txf = { fx: 'none', unit: 'letter', opts: {} };
+    if (!c.txf.opts) c.txf.opts = {};
+    c.txf.opts[el.dataset.txopt] = el.type === 'checkbox' ? el.checked : (el.type === 'range' ? +el.value : el.value);
+    const lab = el.parentNode && el.parentNode.querySelector('b');
+    if (lab) lab.textContent = el.value;
+    requestDraw();
+    return;
+  }
+  if (el.dataset.shapep || el.dataset.paperp || el.dataset.magp || el.dataset.matchp || el.dataset.foldp) {
+    const c = selClip(); if (!c) return;
+    const v = +el.value;
+    if (el.dataset.shapep) { c[el.dataset.shapep] = v; }
+    else if (el.dataset.paperp) { if (c.paper) c.paper[el.dataset.paperp] = v; }
+    else if (el.dataset.magp) { if (c.magazine) c.magazine[el.dataset.magp] = v; }
+    else if (el.dataset.matchp) { if (c.match) c.match[el.dataset.matchp] = v; }
+    else if (el.dataset.foldp) { if (c.fold) c.fold[el.dataset.foldp] = v; }
+    const lab = el.parentNode.querySelector('b');
+    if (lab) {
+      const pct = (el.dataset.paperp || el.dataset.matchp) ? Math.round(v * 100) + '%' : v;
+      lab.textContent = pct;
+    }
+    requestDraw();
+    return;
+  }
+  if (el.dataset.cutsize) { if (cutoutState) cutoutState.size = +el.value; const b = el.parentNode.querySelector('b'); if (b) b.textContent = el.value + ' px'; return; }
+  if (el.dataset.cutsoften) { if (cutoutState) cutoutState.soften = +el.value; const b = el.parentNode.querySelector('b'); if (b) b.textContent = el.value + ' px'; return; }
+  if (el.dataset.shapecolor) { const c = selClip(); if (c) { c.color = el.value; requestDraw(); } return; }
   if (el.dataset.cstr) { const c = get(el.dataset.cstr); if (c) { c.str = el.value; if (c.words && c.words.length !== c.str.split(/\s+/).filter(Boolean).length) c.words = null; clearTimeout(drawTL.h); drawTL.h = setTimeout(drawTL, 250); requestDraw(); } return; }
   if (el.dataset.cs) { st.cap[el.dataset.cs] = +el.value; const b = el.parentNode.querySelector('b'); if (b) b.textContent = el.value + (el.dataset.u || ''); requestDraw(); return; }
   if (el.dataset.p) {
@@ -910,6 +1157,58 @@ $('shBody').addEventListener('input', (e) => {
   if (el.id === 'txColor') { const c = selIs('text'); if (c) { c.color = el.value; requestDraw(); } }
 });
 $('shBody').addEventListener('change', (e) => {
+  /* the new tools */
+  if (e.target.dataset.actease) {
+    const c = selClip(); const a = actOf(c, e.target.dataset.actease);
+    if (a) {
+      commit();
+      const v = e.target.value;
+      a.ease = v === 'custom' ? (a.ease && typeof a.ease === 'object' ? a.ease : { bezier: [0.25, 0.1, 0.25, 1] }) : (v === 'spring' ? { spring: { stiffness: 170, damping: 16 } } : v);
+      repaint();
+    }
+    return;
+  }
+  if (e.target.dataset.txfx || e.target.dataset.txunit) {
+    const c = selClip(); if (!c) return;
+    commit();
+    if (!c.txf) c.txf = { fx: 'none', unit: 'letter', opts: {} };
+    if (e.target.dataset.txfx) c.txf.fx = e.target.value;
+    if (e.target.dataset.txunit) c.txf.unit = e.target.value;
+    repaint();
+    return;
+  }
+  if (e.target.dataset.fxsel || e.target.dataset.fxunit) {
+    const c = selClip(); if (!c) return;
+    commit();
+    if (!c.txf) c.txf = { fx: 'none', unit: 'letter', opts: {} };
+    if (e.target.dataset.fxsel) c.txf.fx = e.target.value;
+    if (e.target.dataset.fxunit) c.txf.unit = e.target.value;
+    repaint();
+    return;
+  }
+  if (e.target.dataset.shapefill || e.target.dataset.blend || e.target.dataset.matchstyle) {
+    const c = selClip(); if (!c) return;
+    commit();
+    if (e.target.dataset.shapefill) {
+      const type = e.target.value;
+      c.fill = type === 'solid' ? null : { type, stops: type === 'radial' ? [[0, '#ffffff'], [1, '#ff5b52']] : [[0, '#ffffff'], [1, '#ff5b52']], angle: 45 };
+    }
+    if (e.target.dataset.blend) c.blend = e.target.value;
+    if (e.target.dataset.matchstyle) { if (!c.match) c.match = { style: 'classic', blur: 0, glitch: 0, dark: false }; c.match.style = e.target.value; }
+    repaint();
+    return;
+  }
+  if (e.target.id === 'foldon' || e.target.id === 'mag' || e.target.id === 'matchdark') {
+    const c = selClip(); if (!c) return;
+    commit();
+    const on = e.target.getAttribute('aria-checked') !== 'true';
+    e.target.setAttribute('aria-checked', on);
+    if (e.target.id === 'foldon') c.fold = on ? { panels: 4, angle: 34 } : null;
+    if (e.target.id === 'mag') c.magazine = on ? { turn: 7, jitter: 5 } : null;
+    if (e.target.id === 'matchdark') { if (!c.match) c.match = { style: 'classic', blur: 0, glitch: 0, dark: false }; c.match.dark = on; }
+    repaint();
+    return;
+  }
   if (e.target.id === 'capLang') capLang = e.target.value;
   if (e.target.id === 'txFont') { const c = selIs('text'); if (c) { commit(); c.font = e.target.value; requestDraw(); } }
 });
@@ -917,6 +1216,88 @@ $('shBody').addEventListener('focusin', (e) => { if (e.target.id === 'txIn' || e
 $('shBody').addEventListener('click', (e) => {
   let el;
   if (capClick(e)) return;
+  /* the new tools */
+  if ((el = e.target.closest('[data-addact]'))) { addAction(el.dataset.addact); return; }
+  if ((el = e.target.closest('[data-actdel]'))) {
+    const c = selClip(); const a = actOf(c, el.dataset.actdel);
+    if (c && a) { commit(); c.actions = c.actions.filter((x) => x.id !== a.id); repaint(); }
+    return;
+  }
+  if ((el = e.target.closest('[data-preset]'))) { applyPreset(el.dataset.preset); return; }
+  if (e.target.closest('[data-animcopy]')) { copyAnimation(); return; }
+  if (e.target.closest('[data-animpaste]')) { pasteAnimation(); return; }
+  if ((el = e.target.closest('[data-pathclear]'))) {
+    const c = selClip(); const a = actOf(c, el.dataset.pathclear);
+    if (a) { commit(); a.points = [[0, 0], [0, 0]]; repaint(); }
+    return;
+  }
+  if ((el = e.target.closest('[data-shape]'))) {
+    const c = selClip();
+    if (c && c.lane === 'shape') { commit(); c.shape = el.dataset.shape; repaint(); }
+    else addShapeClip(el.dataset.shape);
+    return;
+  }
+  if (e.target.closest('[data-uploadsvg]')) {
+    pickFile('.svg,image/svg+xml').then((f) => {
+      if (!f) return;
+      f.text().then((txt) => {
+        const c = addShapeClip('svg', { svg: txt, svgName: f.name });
+        svgImage(txt).then((img) => { c.svgImg = img; repaint(); toast('Drawing added'); });
+      });
+    });
+    return;
+  }
+  if ((el = e.target.closest('[data-paper]'))) {
+    const c = selClip();
+    if (!c) { toast('Choose a picture or a text first'); return; }
+    commit();
+    const p = paperPreset(el.dataset.paper);
+    c.paper = p ? Object.assign({ preset: el.dataset.paper }, p) : null;
+    repaint();
+    return;
+  }
+  if ((el = e.target.closest('[data-physics]'))) {
+    const c = selClip();
+    const kind = el.dataset.physics;
+    commit();
+    if (kind === 'turing') c.physics = { kind: 'turing', turing: { seed: 3 } };
+    else if (kind === 'street') c.physics = { kind: 'street', street: { text: (c && c.str) || 'your words here', speed: 6 } };
+    else if (kind === 'flight') c.physics = { kind: 'flight', flight: { seed: 5, duration: 6, trail: true } };
+    else c.physics = { kind: 'shatter', shatter: { seed: 1, cells: 7, duration: 1.4 } };
+    repaint();
+    toast('Effect added');
+    return;
+  }
+  if (e.target.closest('[data-cutout]')) { runCutout(); return; }
+  if ((el = e.target.closest('[data-cutmode]'))) { cutoutState.mode = el.dataset.cutmode; repaint(); return; }
+  if (e.target.closest('[data-cutredo]')) { runCutout(); return; }
+  if (e.target.closest('[data-cutapply]')) { applyCutout(); return; }
+  if (e.target.closest('[data-keypick]')) { pickKeyColour(); return; }
+  if (e.target.closest('[data-keyapply]')) {
+    const c = selClip();
+    if (c && c.keyColour) applyKeyOut(c.keyColour);
+    return;
+  }
+  if (e.target.closest('[data-brandadd]')) { saveBrandNow(); return; }
+  if (e.target.closest('[data-brandfontup]')) { uploadFont(); return; }
+  if ((el = e.target.closest('[data-brandcolor]'))) {
+    const c = selClip();
+    if (c && c.lane === 'text') { commit(); c.color = el.dataset.brandcolor; repaint(); }
+    else if (c && c.lane === 'shape') { commit(); c.color = el.dataset.brandcolor; repaint(); }
+    else toast('Choose a text or a shape to use this colour');
+    return;
+  }
+  if ((el = e.target.closest('[data-brandfont]'))) { useBrandFont(el.dataset.brandfont); return; }
+  if (e.target.closest('[data-brandcurve]')) {
+    const c = selClip();
+    const a = c && c.actions && c.actions[c.actions.length - 1];
+    if (!a) { toast('Add an animation first'); return; }
+    addEase(brand, a.ease && typeof a.ease === 'object' ? a.ease : { bezier: [0.25, 0.1, 0.25, 1] }, 'Curve ' + (brand.easings.length + 1));
+    saveBrand(brand); repaint(); toast('Curve saved');
+    return;
+  }
+  if ((el = e.target.closest('[data-template]'))) { applyTemplate(el.dataset.template); return; }
+  if (e.target.closest('[data-templatesave]')) { saveCurrentTemplate(); return; }
   if (e.target.closest('#pick')) { $('file').click(); return; }
   if (e.target.closest('#pickAudio')) { $('file').click(); return; }
   if (e.target.closest('#rec')) { recordVoice(); return; }
@@ -1001,6 +1382,213 @@ function bindClipPanel(root) {
 addEventListener('pointerup', () => { inspBusy = false; });
 addEventListener('pointercancel', () => { inspBusy = false; });
 bindClipPanel($('inspBody')); bindClipPanel($('shBody'));
+
+/* ------------------------------------------------------------------ the new tools */
+function selClip() { return get(st.sel); }
+function actOf(c, id) { return c && c.actions ? c.actions.find((a) => a.id === id) : null; }
+/* Sets one end of an animation. A move has two numbers, a scale is kept as a fraction of normal. */
+function actSet(a, kind, part, val) {
+  if (kind === 'from') {
+    if (a.type === 'move') { a.from = Object.assign({ x: 0, y: 0 }, a.from); a.from[part] = val; }
+    else if (a.type === 'scale') a.from = val / 100;
+    else a.from = val;
+  } else {
+    if (a.type === 'move') { a.to = Object.assign({ x: 0, y: 0 }, a.to); a.to[part] = val; }
+    else if (a.type === 'scale') a.to = val / 100;
+    else if (a.type === 'path') a.to = (a.from || 0) + val;
+    else a.to = val;
+  }
+}
+function repaint() { if (tool) openTool(tool); requestDraw(); }
+function pickFile(accept) {
+  return new Promise((res) => {
+    const inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = accept;
+    inp.onchange = () => res(inp.files && inp.files[0] ? inp.files[0] : null);
+    inp.click();
+  });
+}
+/* The shape and the picture are made into a layer of their own, on their own line of the timeline. */
+function addShapeClip(shape, extra) {
+  commit();
+  const c = Object.assign({
+    id: 'c' + uid++, lane: 'shape', s: Math.min(t, Math.max(0, DUR - 1)), d: Math.min(4, Math.max(1, DUR - t || 4)),
+    shape, w: 30, h: 30, x: 50, y: 50, color: '#ffffff', rot: 0, blend: 'source-over', fill: null,
+  }, extra || {});
+  st.clips.push(c); st.sel = c.id;
+  layout(); refresh(); openTool('shape');
+  return c;
+}
+
+/* Adds an animation to whatever is chosen. */
+function addAction(type) {
+  const c = selClip();
+  if (!c) { toast('Choose a clip first'); return; }
+  commit();
+  if (!c.actions) c.actions = [];
+  const a = makeAction(type);
+  if (type === 'move') { a.from = { x: 0, y: 8 }; a.to = { x: 0, y: 0 }; }
+  if (type === 'fade') { a.from = 0; a.to = 1; }
+  if (type === 'scale') { a.from = 0.6; a.to = 1; }
+  if (type === 'mask') { a.from = 0; a.to = 1; }
+  if (type === 'path') { a.from = 0; a.to = 1; a.points = [[0, 0], [0, 0]]; }
+  c.actions.push(a);
+  repaint();
+}
+/* Puts a ready made set of animations on the chosen layer. */
+function applyPreset(id) {
+  const c = selClip();
+  if (!c) { toast('Choose a clip first'); return; }
+  commit();
+  c.actions = presetActions(id);
+  repaint();
+}
+/* The animation on the chosen layer, ready to be put on another one. */
+function copyAnimation() {
+  const c = selClip();
+  if (!c || !c.actions || !c.actions.length) { toast('There is no animation to copy'); return; }
+  animClipboard = serializeActions(c.actions);
+  toast('Animation copied');
+}
+function pasteAnimation() {
+  const c = selClip();
+  if (!c) { toast('Choose a clip first'); return; }
+  if (!animClipboard) { toast('Nothing was copied yet'); return; }
+  const list = deserializeActions(animClipboard);
+  if (!list.length) { toast('Nothing was copied yet'); return; }
+  commit();
+  c.actions = (c.actions || []).concat(list);
+  repaint();
+}
+
+/* The curve being looked at, so a custom one can be drawn and kept. */
+let curveEdit = null;
+function customEaseSpec(points) { return { bezier: points || [0.25, 0.1, 0.25, 1] }; }
+
+/* ------------------------------------------------------------------ background removal */
+function stagePoint(e) {
+  const r = $('cv').getBoundingClientRect();
+  return { x: (e.clientX - r.left) * (cv.width / r.width), y: (e.clientY - r.top) * (cv.height / r.height) };
+}
+async function runCutout() {
+  const c = selClip();
+  if (!c || c.lane !== 'main') { toast('Tap a photo first'); return; }
+  const m = media.get(c.mid);
+  if (!m || m.type !== 'image') { toast('Only a photo can have the background taken away'); return; }
+  const msg = $('cutoutMsg');
+  try {
+    const mask = await findSubject(m.el, (s) => { if (msg) msg.textContent = s; });
+    cutoutState = { mask, size: 40, mode: 'add', soften: 1, mid: c.mid, w: m.w, h: m.h };
+    repaint();
+    toast('Paint on the picture to fix the edges');
+  } catch (e) {
+    if (msg) msg.textContent = 'The AI engine did not start: ' + (e && e.message ? e.message : e);
+  }
+}
+function paintAt(e) {
+  if (!cutoutState) return;
+  const p = stagePoint(e);
+  const k = cutoutState.w / cv.width;
+  paintMask(cutoutState.mask, p.x * k, p.y * k, cutoutState.size * k, cutoutState.mode, 0.85);
+  requestDraw();
+}
+function applyCutout() {
+  const c = selClip();
+  if (!c || !cutoutState) return;
+  commit();
+  const m = media.get(c.mid);
+  if (!m) return;
+  const soft = softenMask(cutoutState.mask, cutoutState.soften);
+  const cut = applyMask(m.el, soft);
+  const id = 'm' + uid++;
+  media.set(id, { id, file: m.file, url: '', type: 'image', name: m.name + ' (cut out)', dur: m.dur, w: cut.width, h: cut.height, el: cut, thumb: m.thumb });
+  const nc = { id: 'c' + uid++, lane: 'main', mid: id, in: 0, out: m.dur, speed: 1, vol: 0, adj: { ...ADJ0 }, filter: 'none', s: c.s, d: (c.out - c.in) / (c.speed || 1) };
+  st.clips.push(nc);
+  cutoutState = null;
+  layout(); refresh();
+  toast('Background taken away');
+}
+/* Takes one flat colour out of the picture. */
+async function pickKeyColour() {
+  const c = selClip();
+  if (!c || c.lane !== 'main') { toast('Tap a photo first'); return; }
+  const m = media.get(c.mid);
+  if (!m || m.type !== 'image') { toast('Only a photo can have a colour taken out'); return; }
+  const msg = $('cutoutMsg');
+  if (msg) msg.textContent = 'Tap the picture to pick the colour.';
+  cutoutState = { picking: true, mid: c.mid, w: m.w, h: m.h };
+  repaint();
+}
+function applyKeyOut(colour) {
+  const c = selClip();
+  if (!c) return;
+  const m = media.get(c.mid);
+  if (!m) return;
+  commit();
+  const cut = keyOut(m.el, colour, 60);
+  const id = 'm' + uid++;
+  media.set(id, { id, file: m.file, url: '', type: 'image', name: m.name + ' (cut out)', dur: m.dur, w: cut.width, h: cut.height, el: cut, thumb: m.thumb });
+  st.clips.push({ id: 'c' + uid++, lane: 'main', mid: id, in: 0, out: m.dur, speed: 1, vol: 0, adj: { ...ADJ0 }, filter: 'none', s: c.s, d: (c.out - c.in) / (c.speed || 1) });
+  cutoutState = null;
+  layout(); refresh();
+  toast('Colour taken away');
+}
+
+/* ------------------------------------------------------------------ templates and brand */
+function applyTemplate(id) {
+  const t = allTemplates().find((x) => x.id === id);
+  if (!t) return;
+  commit();
+  if (t.cap) Object.assign(st.cap, t.cap);
+  let touched = 0;
+  for (const c of st.clips) {
+    if (c.lane === 'text' && t.text) { Object.assign(c, t.text); touched++; }
+    if (c.lane === 'main' && t.filter && TEMPLATE_FILTERS[t.filter]) { c.filter = TEMPLATE_FILTERS[t.filter]; touched++; }
+  }
+  repaint();
+  toast(touched ? t.name + ' applied' : t.name + ' applied to the captions');
+}
+function saveCurrentTemplate() {
+  const name = ($('tplname') && $('tplname').value.trim()) || 'My look';
+  commit();
+  const t = saveTemplate({ name, cap: Object.assign({}, st.cap) });
+  const first = st.clips.find((c) => c.lane === 'text');
+  if (first) t.text = { font: first.font, bold: first.bold, color: first.color, bg: first.bg, outline: first.outline, size: first.size };
+  const main = st.clips.find((c) => c.lane === 'main');
+  if (main) t.filter = main.filter;
+  repaint();
+  toast('Saved as ' + name);
+}
+function saveBrandNow() {
+  const hex = ($('brandnew') && $('brandnew').value) || '#ff5b52';
+  const nm = ($('brandname') && $('brandname').value.trim()) || hex;
+  addColor(brand, hex, nm);
+  saveBrand(brand);
+  repaint();
+  toast('Colour saved');
+}
+async function uploadFont() {
+  const f = await pickFile('.ttf,.otf,.woff,.woff2,font/*');
+  if (!f) return;
+  const id = 'f' + Date.now().toString(36);
+  const family = 'Brand' + (brand.fonts.length + 1);
+  const ok = await useFont(id, family, f);
+  if (!ok) { toast('The browser would not take that font'); return; }
+  await saveFontFile(id, f);
+  brand.fonts.push({ id, name: f.name.replace(/\.[^.]+$/, ''), family });
+  saveBrand(brand);
+  repaint();
+  toast('Font added');
+}
+async function useBrandFont(id) {
+  const f = brand.fonts.find((x) => x.id === id);
+  if (!f) return;
+  const file = await getFontFile(id);
+  if (file) await useFont(id, f.family, file);
+  const c = selClip();
+  if (c && c.lane === 'text') { commit(); c.font = f.family; repaint(); toast('Font applied'); }
+  else toast('Font ready. Choose a text to use it.');
+}
 
 /* ------------------------------------------------------------------ captions */
 const capClips = () => st.clips.filter((c) => c.lane === 'cap').sort((a, b) => a.s - b.s);
@@ -1226,8 +1814,8 @@ async function recordVoice() {
 }
 
 /* ------------------------------------------------------------------ export */
-function qualityOpts(W, H, durS) {
-  const px = W * H * 30;
+function qualityOpts(W, H, durS, fps) {
+  const px = W * H * (fps || 30);
   return [['small', 'Small file', 0.045], ['rec', 'Recommended', 0.08], ['best', 'Best quality', 0.14]].map(([id, name, bpp]) => {
     const vb = Math.round(px * bpp); return { id, name, vb, bytes: (vb + 128000) * durS / 8 };
   });
@@ -1237,38 +1825,65 @@ function metaSummary() {
   if (M.title) p.push('title'); if (M.desc) p.push('description'); if (M.author) p.push('made by'); if (M.date) p.push('date'); if (M.copy || M.tags || M.place) p.push('comment');
   return p.length ? p.join(', ') : 'none';
 }
-function openExport() {
+async function openExport() {
   if (!DUR || exporting) return;
   setPlay(false);
-  let q = 'rec', res = 1080, result = null;
+  let fmt = 'mp4', res = 1080, fps = '30', alpha = false, loop = true, q = 'rec';
   const box = $('mbox');
-  const view = () => {
-    const [W, H] = dims(st.ratio, res), opts = qualityOpts(W, H, DUR);
-    box.innerHTML = '<h2>Export video</h2><p>Made on your device, then saved as a file. Nothing is uploaded.</p>' +
-      '<div class="chips"><span class="chip" data-res="1080" aria-pressed="' + (res === 1080) + '">1080p</span><span class="chip" data-res="720" aria-pressed="' + (res === 720) + '">720p</span></div>' +
-      opts.map((o) => '<button class="opt" data-q="' + o.id + '" aria-pressed="' + (q === o.id) + '"><span>' + o.name + '<small>About ' + size(o.bytes) + '</small></span></button>').join('') +
-      '<p style="margin:6px 0 14px;font-size:.82rem">' + W + ' x ' + H + ', 30 fps, MP4. Details inside the file: ' + metaSummary() + '.</p>' +
+  let mb = null;
+  try { mb = await import(MB); } catch (e) { /* checked when the export starts */ }
+  const view = async () => {
+    const [W, H] = dims(st.ratio, res);
+    const fpsNum = parseFloat(fps);
+    const opts = qualityOpts(W, H, DUR, fpsNum);
+    const isVideo = fmt === 'mp4' || fmt === 'webm' || fmt === 'prores';
+    const can = mb ? await canMake(mb, fmt, alpha) : false;
+    const notes = deviceCheck(W, H, fpsNum);
+    if (fmt === 'gif' && W > 640) notes.push('A GIF this size will be a very big file. 480p or 720p keeps it smaller.');
+    if (fmt === 'prores' && !can) notes.push('This browser cannot make a ProRes file. Choose MP4 or WebM instead.');
+    if (fmt === 'webm' && alpha) notes.push('A WebM with a see-through background plays in Chrome and Firefox. Other programs may not play it.');
+    box.innerHTML = '<h2>Save your video</h2><p>Made on your device, then saved as a file. Nothing is uploaded.</p>' +
+      '<div class="chips">' + EXPORT_FORMATS.map((f) => '<span class="chip" data-fmt="' + f.id + '" aria-pressed="' + (fmt === f.id) + '">' + f.name + '</span>').join('') + '</div>' +
+      '<p class="hint">' + formatNote(fmt, alpha) + '</p>' +
+      '<div class="chips">' + RES_CHOICES.map((r) => '<span class="chip" data-res="' + r.id + '" aria-pressed="' + (+res === +r.id) + '">' + r.short + '</span>').join('') + '</div>' +
+      '<div class="chips">' + FPS_CHOICES.map((f) => '<span class="chip" data-fps="' + f.id + '" aria-pressed="' + (fps === f.id) + '">' + f.name + '</span>').join('') + '</div>' +
+      (isVideo ? opts.map((o) => '<button class="opt" data-q="' + o.id + '" aria-pressed="' + (q === o.id) + '"><span>' + o.name + '<small>About ' + sizeLabel(o.bytes) + '</small></span></button>').join('') : '') +
+      '<div class="tog"><div>Keep the background see-through<small>For putting your video over something else</small></div><button class="sw" role="switch" id="xalpha" aria-checked="' + alpha + '" aria-label="Keep the background see-through"></button></div>' +
+      (fmt === 'gif' ? '<div class="tog"><div>Loop it forever<small>Most places that show a GIF will loop it anyway</small></div><button class="sw" role="switch" id="xloop" aria-checked="' + loop + '" aria-label="Loop it forever"></button></div>' : '') +
+      '<p style="margin:6px 0 14px;font-size:.82rem">' + W + ' x ' + H + ', ' + fps + ' frames a second' + (isVideo ? ', ' + (fmt === 'webm' ? 'WebM' : fmt === 'prores' ? 'ProRes' : 'MP4') : fmt === 'gif' ? ', animated GIF' : ', a zip of pictures') + '. Details inside the file: ' + metaSummary() + '.</p>' +
+      (notes.length ? '<div class="tips"><ul>' + notes.map((n) => '<li>' + n + '</li>').join('') + '</ul></div>' : '') +
       '<div id="xp" hidden><div class="bar"><span id="xb"></span></div><p id="xl">Starting...</p></div><div id="xe" class="err" hidden></div>' +
-      '<div style="display:flex;gap:8px"><button class="opt" id="xc" style="justify-content:center;margin:0">Cancel</button><button class="opt" id="xg" style="justify-content:center;margin:0;background:var(--acc);border-color:var(--acc);color:#1a0b0a;font-weight:700">Export</button></div>';
+      '<div style="display:flex;gap:8px"><button class="opt" id="xc" style="justify-content:center;margin:0">Cancel</button><button class="opt" id="xg" style="justify-content:center;margin:0;background:var(--acc);border-color:var(--acc);color:#1a0b0a;font-weight:700"' + (can ? '' : ' disabled') + '>Save</button></div>';
     box.querySelectorAll('[data-q]').forEach((b) => { b.onclick = () => { q = b.dataset.q; view(); }; });
     box.querySelectorAll('[data-res]').forEach((b) => { b.onclick = () => { res = +b.dataset.res; view(); }; });
+    box.querySelectorAll('[data-fps]').forEach((b) => { b.onclick = () => { fps = b.dataset.fps; view(); }; });
+    box.querySelectorAll('[data-fmt]').forEach((b) => { b.onclick = () => { fmt = b.dataset.fmt; view(); }; });
+    if ($('xalpha')) $('xalpha').onclick = () => { alpha = !alpha; view(); };
+    if ($('xloop')) $('xloop').onclick = () => { loop = !loop; view(); };
     $('xc').onclick = () => { if (exporting) cancelExport = true; else $('modal').classList.remove('on'); };
     $('xg').onclick = async () => {
       $('xp').hidden = false; $('xg').disabled = true; $('xe').hidden = true;
-      box.querySelectorAll('[data-q],[data-res]').forEach((b) => { b.disabled = true; });
+      box.querySelectorAll('[data-q],[data-res],[data-fps],[data-fmt]').forEach((b) => { b.disabled = true; });
       try {
-        const blob = await runExport(W, H, opts.find((o) => o.id === q).vb, (p, label) => { $('xb').style.width = (p * 100) + '%'; $('xl').textContent = label + ' ' + Math.floor(p * 100) + '%'; });
-        result = blob; showDone(blob);
+        const blob = await runExport(W, H, (opts.find((o) => o.id === q) || opts[1]).vb, (p, label) => { $('xb').style.width = (p * 100) + '%'; $('xl').textContent = label + ' ' + Math.floor(p * 100) + '%'; }, { format: fmt, fps: fpsNum, alpha, loop });
+        showDone(blob);
       } catch (e) {
-        exporting = false; $('xp').hidden = true; $('xg').disabled = false; box.querySelectorAll('[data-q],[data-res]').forEach((b) => { b.disabled = false; });
-        if (e && e.message === 'cancelled') { $('xe').textContent = 'Export stopped.'; } else { $('xe').textContent = 'The export did not finish: ' + (e && e.message ? e.message : e) + ' Try 720p or another source file.'; }
+        exporting = false; $('xp').hidden = true; $('xg').disabled = false; box.querySelectorAll('[data-q],[data-res],[data-fps],[data-fmt]').forEach((b) => { b.disabled = false; });
+        if (e && e.message === 'cancelled') { $('xe').textContent = 'Stopped.'; } else { $('xe').textContent = 'The save did not finish: ' + (e && e.message ? e.message : e) + ' Try a smaller size or another format.'; }
         $('xe').hidden = false;
       }
     };
   };
   const showDone = (blob) => {
-    const url = URL.createObjectURL(blob), fn = (st.name || 'video').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-') || 'video';
-    box.innerHTML = '<h2>Your video is ready</h2><p>' + size(blob.size) + ', MP4. Saved with: ' + metaSummary() + '.</p><video src="' + url + '" controls playsinline style="width:100%;border-radius:12px;background:#000;margin-bottom:12px;max-height:40vh"></video><a class="dl" href="' + url + '" download="' + fn + '.mp4">' + I.add.replace('M12 5v14M5 12h14', 'M12 3v12m0 0 4-4m-4 4-4-4M4 20h16') + 'Download video</a>' + (capClips().length ? '<button class="opt" id="xsrt" style="justify-content:center">Download subtitles (.srt)</button>' : '') + '<button class="opt" id="xc" style="justify-content:center;margin:0">Close</button>';
+    const url = URL.createObjectURL(blob);
+    const fn = (st.name || 'video').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-') || 'video';
+    const ext = EXPORT_FORMATS.find((f) => f.id === fmt).ext;
+    const isVideo = fmt === 'mp4' || fmt === 'webm' || fmt === 'prores';
+    box.innerHTML = '<h2>Your file is ready</h2><p>' + sizeLabel(blob.size) + ', ' + EXPORT_FORMATS.find((f) => f.id === fmt).name + '. Saved with: ' + metaSummary() + '.</p>' +
+      (isVideo ? '<video src="' + url + '" controls playsinline style="width:100%;border-radius:12px;background:#000;margin-bottom:12px;max-height:40vh"></video>' : '') +
+      '<a class="dl" href="' + url + '" download="' + fn + '.' + ext + '">' + I.add.replace('M12 5v14M5 12h14', 'M12 3v12m0 0 4-4m-4 4-4-4M4 20h16') + 'Download the file</a>' +
+      (capClips().length && isVideo ? '<button class="opt" id="xsrt" style="justify-content:center">Download subtitles (.srt)</button>' : '') +
+      '<button class="opt" id="xc" style="justify-content:center;margin:0">Close</button>';
     $('xc').onclick = () => $('modal').classList.remove('on');
     if ($('xsrt')) $('xsrt').onclick = () => saveFile(fn + '.srt', makeSrt(), 'text/plain');
   };
@@ -1313,44 +1928,106 @@ async function buildMix(mb, clips, sr, channels, isCancelled, onProgress) {
 const exportAudioClips = () => st.clips.filter((c) => (c.lane === 'main' && media.get(c.mid) && media.get(c.mid).type === 'video') || c.lane === 'audio');
 /* Give the page a breath between frames. A message is not slowed down when the tab is in the background, a timer is. */
 function yieldNow() { return new Promise((r) => { const ch = new MessageChannel(); ch.port1.onmessage = () => r(); ch.port2.postMessage(0); }); }
-async function runExport(W, H, vbitrate, progress) {
-  const mb = await import(MB);
-  const { Output, Mp4OutputFormat, BufferTarget, CanvasSource, AudioBufferSource, Input, BlobSource, ALL_FORMATS, CanvasSink, canEncodeAudio } = mb;
+/* Gets the pictures out of the clips, ready to be drawn one after another.
+   Each clip's frames are read in one pass, because asking for them one by one gets slower and
+   slower, most of all for recordings made in a browser. */
+async function prepareFrames(mb, inputs, fps, N) {
+  const sinks = new Map();
+  for (const id of new Set(st.clips.filter((c) => c.lane === 'main').map((c) => c.mid))) {
+    const m = media.get(id); if (!m || m.type !== 'video') continue;
+    const input = new mb.Input({ source: new mb.BlobSource(m.file), formats: mb.ALL_FORMATS }); inputs.push(input);
+    const vt = await input.getPrimaryVideoTrack();
+    if (!vt) throw new Error(m.name + ' has no video track.');
+    if (!(await vt.canDecode())) throw new Error(m.name + ' uses a video format this browser cannot decode.');
+    sinks.set(id, new mb.CanvasSink(vt, { poolSize: 2 }));
+  }
+  const times = new Map();
+  for (let i = 0; i < N; i++) {
+    const tt = i / fps, c = mainAt(tt), m = c && media.get(c.mid);
+    if (m && m.type === 'video') { let a = times.get(c.id); if (!a) times.set(c.id, a = []); a.push(clamp(c.in + (tt - c.s) * c.speed, c.in, Math.max(c.in, c.out - 0.001))); }
+  }
+  const gens = new Map();
+  const nextFrame = async (c) => {
+    let g = gens.get(c.id);
+    if (!g) { g = sinks.get(c.mid).canvasesAtTimestamps(times.get(c.id))[Symbol.asyncIterator](); gens.set(c.id, g); }
+    const r = await g.next();
+    return r.done || !r.value ? null : r.value.canvas;
+  };
+  const frameFor = async (c, tt) => {
+    const m = media.get(c.mid); if (!m) return null;
+    if (m.type === 'image') return m.el;
+    const w = await sinks.get(c.mid).getCanvas(clamp(c.in + (tt - c.s) * c.speed, c.in, Math.max(c.in, c.out - 0.001)));
+    return w ? w.canvas : null;
+  };
+  return { sinks, nextFrame, frameFor };
+}
+
+/* Saves the video as a set of pictures, either as an animated GIF or as a zip of PNG files. */
+async function runFrameExport(W, H, fps, progress, kind, opts) {
   exporting = true; cancelExport = false;
   const inputs = [];
   try {
-    const fps = 30, N = Math.max(1, Math.round(DUR * fps));
+    const N = Math.max(1, Math.round(DUR * fps));
+    progress(0.02, 'Getting the pictures ready...');
+    const mb = await import(MB);
+    const { nextFrame } = await prepareFrames(mb, inputs, fps, N);
+    const canvas = new OffscreenCanvas(W, H), ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const frames = [], files = [];
+    for (let i = 0; i < N; i++) {
+      if (cancelExport) throw new Error('cancelled');
+      const tt = i / fps, c = mainAt(tt), cm = c && media.get(c.mid);
+      renderFrame(ctx, W, H, tt, !cm ? null : cm.type === 'image' ? cm.el : await nextFrame(c));
+      if (kind === 'gif') {
+        frames.push({ data: ctx.getImageData(0, 0, W, H).data, delay: 100 / fps });
+      } else {
+        const blob = await canvas.convertToBlob({ type: 'image/png' });
+        files.push({ name: frameName(i, N), data: new Uint8Array(await blob.arrayBuffer()) });
+      }
+      if (i % 2 === 0) { progress(0.05 + 0.85 * i / N, kind === 'gif' ? 'Making the GIF...' : 'Making the pictures...'); await yieldNow(); }
+    }
+    if (kind === 'gif') {
+      progress(0.95, 'Saving the GIF...');
+      return await buildGif(frames, W, H, opts.loop === false ? 1 : 0);
+    }
+    progress(0.95, 'Building the zip...');
+    return await buildZip(files);
+  } finally {
+    for (const i of inputs) i.dispose && i.dispose();
+    exporting = false; currentOutput = null;
+  }
+}
+
+async function runExport(W, H, vbitrate, progress, opts) {
+  opts = opts || {};
+  const fmt = opts.format || 'mp4';
+  const fps = opts.fps || 30;
+  const alpha = !!opts.alpha;
+  if (fmt === 'gif' || fmt === 'png') return runFrameExport(W, H, fps, progress, fmt, opts);
+  const mb = await import(MB);
+  const { Output, Mp4OutputFormat, WebMOutputFormat, BufferTarget, CanvasSource, AudioBufferSource, Input, BlobSource, ALL_FORMATS, CanvasSink, canEncodeAudio } = mb;
+  exporting = true; cancelExport = false;
+  const inputs = [];
+  try {
+    const N = Math.max(1, Math.round(DUR * fps));
     progress(0.01, 'Preparing sound...');
     const mix = await buildMix(mb, exportAudioClips(), 48000, 2, () => cancelExport, (f) => progress(0.01 + f * 0.04, 'Preparing sound...'));
     const canvas = new OffscreenCanvas(W, H), ctx = canvas.getContext('2d');
     const target = new BufferTarget();
-    const output = new Output({ format: new Mp4OutputFormat({ fastStart: 'in-memory' }), target });
+    const outFormat = fmt === 'webm' ? new WebMOutputFormat() : new Mp4OutputFormat({ fastStart: 'in-memory' });
+    const codec = fmt === 'webm' ? 'vp9' : fmt === 'prores' ? 'prores' : 'avc';
+    const output = new Output({ format: outFormat, target, video: alpha ? { alpha: 'keep' } : undefined });
     currentOutput = output;
-    const vsrc = new CanvasSource(canvas, { codec: 'avc', bitrate: vbitrate });
+    const vsrc = new CanvasSource(canvas, { codec, bitrate: vbitrate, alpha: alpha ? 'keep' : 'discard' });
     output.addVideoTrack(vsrc, { frameRate: fps });
     let asrc = null;
     if (mix) { asrc = new AudioBufferSource({ codec: (await canEncodeAudio('aac')) ? 'aac' : 'opus', bitrate: 128000 }); output.addAudioTrack(asrc); }
 
-    const sinks = new Map();
-    for (const id of new Set(st.clips.filter((c) => c.lane === 'main').map((c) => c.mid))) {
-      const m = media.get(id); if (!m || m.type !== 'video') continue;
-      const input = new Input({ source: new BlobSource(m.file), formats: ALL_FORMATS }); inputs.push(input);
-      const vt = await input.getPrimaryVideoTrack();
-      if (!vt) throw new Error(m.name + ' has no video track.');
-      if (!(await vt.canDecode())) throw new Error(m.name + ' uses a video format this browser cannot decode.');
-      sinks.set(id, new CanvasSink(vt, { poolSize: 2 }));
-    }
+    const { sinks, nextFrame, frameFor } = await prepareFrames(mb, inputs, fps, N);
     const M = st.meta, tags = {};
     if (M.title) tags.title = M.title; if (M.desc) tags.description = M.desc; if (M.author) tags.artist = M.author;
     if (M.date) { const d = new Date(M.date + 'T12:00:00'); if (!isNaN(d)) tags.date = d; }
     const cm = []; if (M.copy) cm.push('Copyright: ' + M.copy); if (M.tags) cm.push('Tags: ' + M.tags); if (M.place) cm.push('Place: ' + M.place);
     if (cm.length) tags.comment = cm.join(' | ');
-    const frameFor = async (c, tt) => {
-      const m = media.get(c.mid); if (!m) return null;
-      if (m.type === 'image') return m.el;
-      const w = await sinks.get(c.mid).getCanvas(clamp(c.in + (tt - c.s) * c.speed, c.in, Math.max(c.in, c.out - 0.001)));
-      return w ? w.canvas : null;
-    };
     try {
       const ct = clamp(M.cover, 0, Math.max(0, DUR - 0.05)), cc = mainAt(ct);
       const full = new OffscreenCanvas(W, H), fg = full.getContext('2d'), small = new OffscreenCanvas(Math.round(W / 2), Math.round(H / 2));
@@ -1359,26 +2036,12 @@ async function runExport(W, H, vbitrate, progress) {
       tags.images = [{ data: new Uint8Array(await b.arrayBuffer()), mimeType: 'image/jpeg', kind: 'coverFront' }];
     } catch (e) { /* the cover is optional */ }
     output.setMetadataTags(tags);
-    /* Read each clip's frames in order, in one pass. Asking for every frame on its own gets slower and slower, most of all
-       for recordings made in a browser. */
-    const times = new Map();
-    for (let i = 0; i < N; i++) {
-      const tt = i / fps, c = mainAt(tt), m = c && media.get(c.mid);
-      if (m && m.type === 'video') { let a = times.get(c.id); if (!a) times.set(c.id, a = []); a.push(clamp(c.in + (tt - c.s) * c.speed, c.in, Math.max(c.in, c.out - 0.001))); }
-    }
-    const gens = new Map();
-    const nextFrame = async (c) => {
-      let g = gens.get(c.id);
-      if (!g) { g = sinks.get(c.mid).canvasesAtTimestamps(times.get(c.id))[Symbol.asyncIterator](); gens.set(c.id, g); }
-      const r = await g.next();
-      return r.done || !r.value ? null : r.value.canvas;
-    };
     await output.start();
     for (let i = 0; i < N; i++) {
       if (cancelExport) { await output.cancel(); throw new Error('cancelled'); }
       const tt = i / fps, c = mainAt(tt);
-      const cm = c && media.get(c.mid);
-      renderFrame(ctx, W, H, tt, !cm ? null : cm.type === 'image' ? cm.el : await nextFrame(c));
+      const cm2 = c && media.get(c.mid);
+      renderFrame(ctx, W, H, tt, !cm2 ? null : cm2.type === 'image' ? cm2.el : await nextFrame(c));
       await vsrc.add(tt, 1 / fps);
       if (i % 3 === 0) { progress(0.05 + 0.88 * i / N, 'Making your video...'); await yieldNow(); }
     }
@@ -1386,7 +2049,7 @@ async function runExport(W, H, vbitrate, progress) {
     progress(0.98, 'Finishing...');
     await output.finalize();
     progress(1, 'Done');
-    return new Blob([target.buffer], { type: 'video/mp4' });
+    return new Blob([target.buffer], { type: fmt === 'webm' ? 'video/webm' : 'video/mp4' });
   } finally {
     for (const i of inputs) i.dispose && i.dispose();
     exporting = false; currentOutput = null;
@@ -1501,4 +2164,4 @@ if (/[?&]desktop=1/.test(location.search)) { const bk = document.querySelector('
 applyRatio(); buildToolbar(); updateActs(); draw(); syncZoomUI();
 if (isDesk()) openTool('add');
 matchMedia('(min-width:1100px) and (min-height:620px)').addEventListener('change', () => { drawTL(); if (isDesk() && !tool) openTool('add'); });
-window.__ve = { st, media, importFile, handleFiles, addToTimeline, refresh, layout, renderFrame, runExport, seek, setPlay, get DUR() { return DUR; }, get t() { return t; }, undo, redo, dims, layersAt, compose, layoutText, EASINGS };
+window.__ve = { st, media, importFile, handleFiles, addToTimeline, refresh, layout, renderFrame, runExport, seek, setPlay, get DUR() { return DUR; }, get t() { return t; }, undo, redo, dims, layersAt, drawTextLayer, compose, layoutText, EASINGS, openTool, addAction, applyPreset, addShapeClip, applyTemplate, saveBrandNow, get brand() { return brand; }, get cutout() { return cutoutState; } };

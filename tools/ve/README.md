@@ -1,9 +1,8 @@
-# The video editor foundations
+# The video editor foundations and features
 
-Four pieces that every later feature stands on. They live in their own folder so the main file,
-`tools/veditor.js`, does not have to grow past what it already is.
+The pieces the editor is built from, and the features that stand on them.
 
-## The four pieces
+## The four foundations
 
 **`ease.js` — the curves.**
 Every animation gets its timing from here. There are 28 curves, from a straight line to bounce and
@@ -58,14 +57,56 @@ compose(ctx, W, H, [
 ]);
 ```
 
+## The features
+
+**`textfx.js` — the text effects.**
+Fifteen effects. They move single letters, whole words or whole lines, whichever you ask for.
+
+Typewriter, Spotlight, Receipt printer, Text reshuffle, Word sphere, Text cube, Depth focus,
+Magnifier, Pow boom, Text trail, Magnetic text, Rise in, Spin in, Slide in.
+
+**`fx.js` — shapes and drawings.**
+Rectangles, rounded boxes, ellipses, triangles, stars, arrows, lines and hearts, with a flat
+colour, a linear gradient or a radial one, a blend mode and a tilt. Any SVG file can be used too,
+and it stays sharp at any size.
+
+**`paper.js` — the paper looks.**
+A picture made to look torn out of something: a rough edge, the texture of paper and a shadow
+underneath. A picture that opens like a folded sheet. Text cut into letters, each on its own
+scrap of paper, each turned a little differently.
+
+**`physics.js` — the heavy effects.**
+Glass that breaks and flies apart. A pattern that grows on its own, the way the spots on a
+leopard do. Words written along a street going away into the distance. A paper plane over a map.
+The street and the map are made from shapes the editor draws itself, so there is no map to
+download and nothing to pay for.
+
+**`cutout.js` — taking the background away.**
+The same small AI model the background remover tool uses. It finds the subject on its own, and
+then you can paint on the result to add or take away bits. A flat colour can also be keyed out
+for green screen work. The model runs on the computer; nothing is uploaded.
+
+**`export.js` — the ways to save.**
+MP4, WebM, an animated GIF, a zip of PNG pictures, and ProRes 4444 where the browser can make one.
+The frame rate is yours to choose, from 23.976 to 60. The background can be left see-through.
+The editor says so first when a job looks too big for the computer.
+
+**`brand.js` — your colours, fonts and curves.**
+Kept in this browser so the next video starts where the last one finished. Colours and curves sit
+in local storage. Fonts are larger, so they are kept in a small database on the computer.
+
+**`templates.js` — looks you can use.**
+Six that come with the editor, and your own saved on this computer. A template holds the style of
+the captions, the text and the picture.
+
 ## How the editor uses them
 
 `renderFrame` in `tools/veditor.js` builds the list of layers for one moment in time and hands it
 to the compositor. Preview and export both call it, so what you see on the screen is what comes
 out of the file.
 
-The order has always been: the video, then the text, then the captions. That is still the order.
-A layer can be given its own number to move it in front of or behind the others.
+The order has always been: the video, then the text, then the shapes, then the captions. That is
+still the order. A layer can be given its own number to move it in front of or behind the others.
 
 ## One thing to be careful about
 
@@ -84,8 +125,13 @@ after changing any of that.
 
 ## Checking the work
 
-**`selftest.html`** — open it in a browser. It checks all four pieces, 58 tests, and needs
-nothing installed. It also runs in Node with any browser runner.
+**`selftest.html`** — open it in a browser. It checks the four foundations, 58 tests, and needs
+nothing installed.
+
+**`featuretest.mjs`** — checks that the features work, not just that they do not break anything.
+It opens the editor, puts a picture and some text in it, and tries every panel, every text
+effect, the shapes, the paper looks, the heavy effects, the templates and all four ways of
+saving. 23 tests.
 
 **`pixeldiff.mjs`** — checks that a change did not alter the picture. It opens the editor twice,
 once with the version in the last commit and once with the version on disk, draws the same
@@ -94,6 +140,7 @@ moments in time in both, and compares the frames byte for byte.
 ```
 npm i playwright && npx playwright install chromium
 node tools/ve/pixeldiff.mjs
+node tools/ve/featuretest.mjs
 ```
 
-It is the one to run after touching `renderFrame`, the compositor or the text layout.
+The pixel one is the one to run after touching `renderFrame`, the compositor or the text layout.

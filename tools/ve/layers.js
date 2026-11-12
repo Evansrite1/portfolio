@@ -142,6 +142,13 @@ export function compose(ctx, W, H, layers) {
       b.globalCompositeOperation = 'source-over';
     }
 
+    /* An overlay goes on top of the layer but not on top of the background. */
+    if (L.overlay) {
+      b.globalCompositeOperation = 'source-atop';
+      L.overlay(b, W, H);
+      b.globalCompositeOperation = 'source-over';
+    }
+
     if (L.shadow) {
       /* The shadow is the shape of the layer, blurred and moved a little, in one flat colour. */
       const shadowBuf = getBuf(W, H, 1);
