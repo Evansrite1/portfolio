@@ -1,0 +1,5 @@
+body { font-family: system-ui, sans-serif; margin: 0; background: #0b0b0c; color: #e0e0e0; }
+#root { padding: 20px; }
+.peer { background: #14141a; margin: 8px 0; padding: 10px; border-radius: 8; display: flex; justify-content: space-between; align-items: center; }
+.connect-btn { background: #0066ff; color: #fff; border: none; padding: 4px 8px; border-radius: 4; cursor: pointer; font-size: 13px; }
+#destination-display { margin-top: 20px; font-size: 14px; color: #777; }

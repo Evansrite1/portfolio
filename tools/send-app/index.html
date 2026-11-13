@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Share</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module">
+    const peers = [];
+    let myId = null;
+    let destination = null;
+
+    function render() {
+      const peerList = document.getElementById('peer-list');
+      peerList.innerHTML = peers.map(p => `
+        <div class="peer" data-id="${p.id}">
+          <span>${p.os} (${p.hostname})</span>
+          <button class="connect-btn" data-id="${p.id}">Connect</button>
+        </div>
+      `).join('');
+
+      const destDisplay = document.getElementById('destination-display');
+      destDisplay.textContent = destination || 'No destination chosen';
+    }
+
+    window.electron = {
+      connectToPeer: (peerId, ip) => ipcRenderer.send('connect-peer', { peerId, connectViaIp: !!ip, ip }),
+      setDestinationFolder: (folder) => ipcRenderer.send('set-destination', folder),
+      requestFile: (senderId, filePath, offset) => ipcRenderer.send('request-file', { senderId, filePath, offset })
+    };
+
+    ipcRenderer.on('peer-list-updated', (e, updatedPeers) => {
+      peers.length = 0;
+      peers.push(...updatedPeers);
+      render();
+    });
+
+    ipcRenderer.on('destination-changed', (e, folder) => {
+      destination = folder;
+      render();
+    });
+
+    ipcRenderer.on('request-file-reply', (e, { ok, size, stream }) => {
+      if (!ok) return alert('Peer offline or file not found');
+      alert(`Receiving ${ (size/1024/1024).toFixed(2) } MB from peer`);
+      // In a full app, stream would be piped to a chosen folder
+    });
+
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('.connect-btn');
+      if (!btn) return;
+      const peerId = btn.dataset.id;
+      ipcRenderer.send('connect-peer', { peerId, connectViaIp: false });
+    });
+
+    myId = `${os.hostname()}-${Date.now()}`;
+    render();
+  </script>
+</body>
+</html>
