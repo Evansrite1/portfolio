@@ -1,0 +1,117 @@
+{
+  "name": "file-share",
+  "productName": "File Share by Evans Large",
+  "version": "1.0.0",
+  "description": "File Share by Evans Large: send files between computers over Wi-Fi. Windows, Mac and Linux. Nothing is uploaded.",
+  "author": "Evans Ademilua",
+  "homepage": "https://evansademilua.vercel.app/tools/send-app/",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/",
+    "dist:win": "electron-builder --win --x64 --publish never",
+    "dist:mac": "electron-builder --mac --x64 --arm64 --publish never",
+    "dist:mac:arm64": "electron-builder --mac --arm64 --publish never",
+    "dist:mac:x64": "electron-builder --mac --x64 --publish never",
+    "dist:linux": "electron-builder --linux --x64 --publish never",
+    "dist:pkg:arm64": "electron-builder --mac pkg --arm64 --publish never",
+    "dist:pkg:x64": "electron-builder --mac pkg --x64 --publish never"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.evansademilua.fileshare",
+    "productName": "File Share by Evans Large",
+    "copyright": "Evans Ademilua",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "lib/**",
+      "renderer/**",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "File-Share-Setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false,
+      "shortcutName": "File Share by Evans Large",
+      "uninstallDisplayName": "File Share by Evans Large"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.utilities",
+      "identity": null,
+      "hardenedRuntime": false,
+      "artifactName": "File-Share-mac-${arch}.${ext}",
+      "extendInfo": {
+        "NSLocalNetworkUsageDescription": "File Share by Evans Large finds other computers on your network to send and receive files.",
+        "NSBonjourServices": []
+      }
+    },
+    "dmg": {
+      "title": "File Share by Evans Large"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "category": "Utility",
+      "synopsis": "Send files between computers on the same network",
+      "maintainer": "Evans Ademilua <ademiluaolufemi2@gmail.com>",
+      "executableName": "file-share-by-evans-large",
+      "desktop": {
+        "Name": "File Share by Evans Large",
+        "Comment": "Send files between computers over Wi-Fi"
+      }
+    },
+    "appImage": {
+      "artifactName": "File-Share-linux-x64.AppImage"
+    },
+    "deb": {
+      "artifactName": "File-Share-linux-x64.deb"
+    },
+    "pkg": {
+      "installLocation": "/Applications",
+      "isRelocatable": false
+    }
+  }
+}

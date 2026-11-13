@@ -1,0 +1,115 @@
+name: File Share app
+
+# Builds File Share for Windows, Mac (Apple chip and Intel) and Linux (AppImage and .deb), runs the tests first,
+# and attaches the files to a release called send-v1.0.0 (never marked as the latest release, because the
+# Presenter download uses "latest").
+# Start it by pushing a tag such as send-v1.0.0, or run it by hand from the Actions tab.
+on:
+  push:
+    tags: ['send-v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag
+        default: send-v1.0.0
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: desktop/send-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test test/
+
+  build:
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            script: dist:win
+            label: win
+          - os: macos-latest
+            script: dist:mac:arm64
+            pkgscript: dist:pkg:arm64
+            label: mac-arm64
+          - os: macos-latest
+            script: dist:mac:x64
+            pkgscript: dist:pkg:x64
+            label: mac-x64
+          - os: ubuntu-latest
+            script: dist:linux
+            label: linux
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: desktop/send-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop/send-app/package-lock.json
+      - if: runner.os == 'macOS'
+        run: sudo mdutil -a -i off
+        working-directory: .
+      - run: npm ci
+      - name: Build (the Mac disk image step fails now and then, so it is tried up to four times)
+        shell: bash
+        run: |
+          for i in 1 2 3 4; do
+            rm -rf dist
+            if npm run ${{ matrix.script }}; then exit 0; fi
+            echo "Attempt $i failed, trying again"; sleep 10
+          done
+          exit 1
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - name: Build the Mac .pkg installer (the download page offers this one to Mac users)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          for i in 1 2 3; do
+            if npm run ${{ matrix.pkgscript }}; then exit 0; fi
+            echo "Attempt $i failed, trying again"; sleep 10
+          done
+          exit 1
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: send-${{ matrix.label }}
+          path: |
+            desktop/send-app/dist/File-Share-Setup.exe
+            desktop/send-app/dist/File-Share-mac-*.dmg
+            desktop/send-app/dist/File-Share-mac-*.pkg
+            desktop/send-app/dist/File-Share-linux-x64.AppImage
+            desktop/send-app/dist/File-Share-linux-x64.deb
+          if-no-files-found: error
+
+  release:
+    needs: build
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: files
+          merge-multiple: true
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          ls -la files
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --title "File Share app" --notes "File Share for Windows, Mac and Linux. Send files between computers on the same network." --latest=false
+          gh release upload "$TAG" files/* --repo "$GITHUB_REPOSITORY" --clobber

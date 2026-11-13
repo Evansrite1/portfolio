@@ -28,12 +28,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install -r ig-scout/requirements.txt pyinstaller pillow
-      - run: python ig-scout/build_mac.py ${{ matrix.arch }}
+      - run: python -m pip install -r "Instagram Outreach Lead Generator/requirements.txt" pyinstaller pillow
+      - run: python "Instagram Outreach Lead Generator/build_mac.py" ${{ matrix.arch }}
       - uses: actions/upload-artifact@v4
         with:
           name: scout-mac-${{ matrix.arch }}
-          path: ig-scout/build_out/IG-Scout-mac-${{ matrix.arch }}.dmg
+          path: Instagram Outreach Lead Generator/build_out/IG-Scout-mac-${{ matrix.arch }}.dmg
           if-no-files-found: error
 
   release:

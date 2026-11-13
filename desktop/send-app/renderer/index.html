@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>File Share by Evans Large</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><img class="logo-img" src="logo.svg" alt="" width="40" height="40"><div><h1>File Share <span class="by">by Evans Large</span></h1><p id="me" class="muted"></p></div></div>
+  <nav class="tabs" role="tablist" aria-label="Send or receive">
+    <button class="tab" role="tab" id="tab-send" aria-selected="true" aria-controls="view-send">Send</button>
+    <button class="tab" role="tab" id="tab-recv" aria-selected="false" aria-controls="view-recv">Receive</button>
+  </nav>
+</header>
+
+<main>
+  <div id="alert" class="alert" role="alert" hidden></div>
+  <section id="net" class="net" hidden aria-live="polite">
+    <h2 id="net-title">Connection check</h2>
+    <ul id="net-list" class="net-list"></ul>
+  </section>
+
+  <section id="view-send" role="tabpanel" aria-labelledby="tab-send">
+    <div id="send-pick">
+      <div id="drop" class="drop" tabindex="0">
+        <p class="drop-title">Drop files or folders here</p>
+        <p class="muted">or choose them from your computer</p>
+        <div class="row center">
+          <button class="btn" id="pick-files">Choose files</button>
+          <button class="btn" id="pick-folder">Choose a folder</button>
+        </div>
+      </div>
+      <div id="send-list-wrap" hidden>
+        <div class="list-head"><strong id="send-count"></strong><button class="link" id="send-clear">Remove all</button></div>
+        <ul id="send-list" class="files"></ul>
+        <button class="btn primary big" id="start">Start sharing</button>
+        <p class="muted small">Only the files above are shared. They are not uploaded anywhere. The other computer must be on the same Wi-Fi or network.</p>
+      </div>
+    </div>
+
+    <div id="send-live" hidden>
+      <div class="card">
+        <p class="muted">On the other computer, open File Share by Evans Large, press <b>Receive</b>, choose <b id="me2"></b> and type this code:</p>
+        <p id="code" class="code" aria-live="polite"></p>
+        <p class="muted small">Computers not finding each other? On the other computer, press Receive, open "Nothing showing up?" and paste this link.</p>
+        <div class="row">
+          <select id="link-pick" aria-label="Which network address to use"></select>
+          <input id="link" class="input" readonly aria-label="Link to send">
+          <button class="btn" id="copy-link">Copy link</button>
+        </div>
+        <p id="send-status" class="status" role="status">Waiting for the other computer...</p>
+      </div>
+      <ul id="live-list" class="files"></ul>
+      <div class="row between">
+        <p class="muted small" id="expires"></p>
+        <button class="btn danger" id="stop">Stop sharing</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="view-recv" role="tabpanel" aria-labelledby="tab-recv" hidden>
+    <div id="recv-find">
+      <h2>Computers sharing files nearby</h2>
+      <ul id="peers" class="peers"></ul>
+      <p id="peers-empty" class="muted">No one is sharing yet. Ask the sender to press <b>Start sharing</b>. Both computers must be on the same Wi-Fi or network, and both need this app.</p>
+      <p id="peers-hint" class="muted small" hidden>Still nothing? Check that both computers are on the same Wi-Fi (not a Guest network), that the sender pressed Start sharing, and run the connection check below.</p>
+
+      <div id="pair" class="card" hidden>
+        <p>Type the 6 digit code shown on <b id="pair-name"></b>:</p>
+        <div class="row">
+          <input id="code-in" class="input code-in" inputmode="numeric" autocomplete="off" maxlength="7" placeholder="000 000" aria-label="6 digit code">
+          <button class="btn primary" id="pair-go">Connect</button>
+          <button class="link" id="pair-cancel">Cancel</button>
+        </div>
+      </div>
+
+      <details class="more">
+        <summary>Nothing showing up? Use a link or an address</summary>
+        <div class="row">
+          <input id="target" class="input" autocomplete="off" spellcheck="false" placeholder="http://192.168.1.5:5123/?t=...   or   192.168.1.5:5123" aria-label="Link or address">
+        </div>
+        <div class="row">
+          <input id="target-code" class="input code-in" inputmode="numeric" autocomplete="off" maxlength="7" placeholder="000 000" aria-label="6 digit code (only if you typed an address)">
+          <button class="btn" id="target-go">Connect</button>
+        </div>
+        <p class="muted small">A full link already includes the secret, so no code is needed. An address needs the code.</p>
+      </details>
+    </div>
+
+    <div id="recv-offer" hidden>
+      <div class="list-head"><strong id="offer-title"></strong><button class="link" id="offer-back">Disconnect</button></div>
+      <ul id="offer-list" class="files"></ul>
+      <div class="card">
+        <p class="muted small">Save to</p>
+        <div class="row">
+          <code id="dest" class="path"></code>
+          <button class="btn" id="dest-change">Change</button>
+        </div>
+      </div>
+      <div class="bar" id="total-bar" hidden><div class="fill" id="total-fill"></div></div>
+      <p id="recv-status" class="status" role="status"></p>
+      <div class="row">
+        <button class="btn primary big" id="download">Download all</button>
+        <button class="btn danger" id="cancel" hidden>Cancel</button>
+        <button class="btn" id="open-dest" hidden>Open the folder</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot muted small">
+  Files go straight between the two computers over your Wi-Fi or network. Each file is checked on arrival. The connection is not encrypted, so use it on a network you trust.
+  <button class="link" id="net-toggle">Connection check</button>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>
