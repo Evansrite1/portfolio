@@ -7,10 +7,25 @@
 - [Full stack developer for hire](https://evansademilua.vercel.app/full-stack-developer/): what he builds, the stack he uses and how to hire him
 - [Web developer in Lagos, Nigeria](https://evansademilua.vercel.app/web-developer/): websites and web apps for businesses worldwide
 - [Free online tools](https://evansademilua.vercel.app/tools/): video, audio, PDF, image and QR code tools that run in the browser
+- [Video editor](https://evansademilua.vercel.app/tools/video-editor/): Cut, add auto captions, text, music and filters, then export an MP4. Works on your phone.
 - [QR code generator](https://evansademilua.vercel.app/tools/qr-code-generator/): Links, text, WiFi, WhatsApp, email, phone, SMS, location and contact cards. Add a logo and colors.
+- [Second screen presenter](https://evansademilua.vercel.app/tools/second-screen-presenter/): Bible verses, lyrics, PDFs, videos, cameras and countdowns on a TV or projector, with a stage display and phone remote.
+- [File Share by Evans Large](https://evansademilua.vercel.app/tools/send-app/): Send big files and folders between two computers over Wi-Fi. Install it on both. Windows, Mac and Linux.
 - [Background remover](https://evansademilua.vercel.app/tools/remove-background/): Remove the background from any image. Exact for logos, AI cutout for photos. Transparent PNG.
+- [Audio mastering](https://evansademilua.vercel.app/tools/audio-mastering/): A free music workstation in your browser: unlimited tracks, MIDI, plugins, spectral repair, noise removal and loudness mastering.
 - [Video compressor](https://evansademilua.vercel.app/tools/video-compressor/): Shrink a big video, like 2 GB down to 500 MB. Trim it or cut it into two parts.
 - [QR code scanner](https://evansademilua.vercel.app/tools/qr-code-scanner/): Read a code from a photo, a screenshot or your camera. Nothing is uploaded.
+- [Color picker](https://evansademilua.vercel.app/tools/color-picker/): Pick a color, copy HEX, RGB, HSL and CMYK, pull a palette from a photo, check contrast.
+- [Currency calculator](https://evansademilua.vercel.app/tools/currency-calculator/): Convert between about 160 currencies with live reference rates, a margin option and a pinned table.
+- [Image converter and compressor](https://evansademilua.vercel.app/tools/image-converter/): Convert HEIC, PNG, WebP, AVIF and more to JPG, PNG or WebP. Shrink images in batches.
+- [Invoice generator](https://evansademilua.vercel.app/tools/invoice-generator/): Pick one of 10 invoice designs, add your logo and items, and download a PDF or image.
+- [Keyboard, key finder and song breakdown](https://evansademilua.vercel.app/tools/keyboard-key-finder/): Play a keyboard with 5 sounds, find the key of a song, and see where the bass, chords, lead line and beat play in any song you upload.
+- [PDF converter](https://evansademilua.vercel.app/tools/pdf-converter/): Turn Word, Excel, PowerPoint, images and text into PDF, or PDF into JPG, Word, Excel and more. Merge, split and compress.
+- [Receipt generator](https://evansademilua.vercel.app/tools/receipt-generator/): 25 receipt designs, from till roll to Christmas, Eid and Independence Day. PDF, PNG or print.
+- [Screen recorder](https://evansademilua.vercel.app/tools/screen-recorder/): Record your screen, a window or a tab with sound and a webcam circle. Save WebM or MP4.
+- [Video converter](https://evansademilua.vercel.app/tools/video-converter/): Video to anything and anything to video: MP4, WebM, MOV, MKV, MP3, WAV, M4A, OGG and GIF, or turn a song into a video.
+- [Video trimmer](https://evansademilua.vercel.app/tools/video-trimmer/): Cut a video in seconds without re-encoding. Keep a selection or split it into two parts.
+- [Watermark maker](https://evansademilua.vercel.app/tools/watermark-maker/): Add a text or logo watermark to one or many photos. Tile it or place it, then download a ZIP.
 - [Solutions](https://evansademilua.vercel.app/solutions.html): nine systems he builds, what each does and how it benefits the owner
 - [CareTRAC case study](https://evansademilua.vercel.app/work/caretrac.html): field and client coordination portal (FastAPI, React)
 - [Sky Team Ife case study](https://evansademilua.vercel.app/work/sky-team-ife.html): operations dashboard (Vercel, Supabase)

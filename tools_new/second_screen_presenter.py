@@ -69,7 +69,7 @@ PAGE = dict(
     desc='Free presenter for churches and events. Show Bible verses, song lyrics, PDFs, photos, videos, cameras and countdowns on a TV or projector, with a stage display and phone remote.',
     h1='Second screen presenter', app='Second Screen Presenter',
     lead='A free presenter for church services and events. Show Bible verses, song lyrics, PDFs, photos, videos, a camera or a countdown on a TV or projector, while you control everything from your laptop or phone.',
-    tool=TOOL, vendor=[], own=['appdl.js', 'presenter-download.js', 'presenter-download-page.js'], module=[], css=[],
+    minimal=True, tool=TOOL, vendor=[], own=['appdl.js', 'presenter-download.js', 'presenter-download-page.js'], module=[], css=[],
     sections=SECTIONS,
     faq=[
         ('Is this free?', 'Yes. There is no sign-up, no watermark and no limit.'),

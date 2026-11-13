@@ -55,7 +55,7 @@ PAGE = dict(
     desc='A free online video editor for your phone or computer. Trim, split, add automatic captions, text, music and filters, change speed and size, and export an MP4. Nothing is uploaded.',
     h1='Free online video editor', app='Free Online Video Editor',
     lead='Cut your video, add automatic captions, text and music, pick a filter and save an MP4, on your phone or your computer. Simple to use, and your files never leave your device.',
-    tool=TOOL, vendor=[], own=['appdl.js', 'editor-download.js'], module=[], css=[],
+    minimal=True, tool=TOOL, vendor=[], own=['appdl.js', 'editor-download.js'], module=[], css=[],
     sections=SECTIONS,
     faq=[
         ('Is this video editor free?', 'Yes. There is no sign-up, no watermark and no limit on how many videos you make.'),

@@ -428,6 +428,8 @@ def schema_nodes(slug, p):
         {'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': SITE + '/'},
         {'@type': 'ListItem', 'position': 2, 'name': 'Free tools', 'item': SITE + '/tools/'},
         {'@type': 'ListItem', 'position': 3, 'name': p['app'], 'item': url}]}
+    if p.get('minimal'):
+        return [app, crumbs]          # a download page shows no FAQ, so it must not claim one in its schema
     return [app, faq, crumbs]
 
 KEYS_PAGES = ['qr-code-generator', 'qr-code-scanner', 'remove-background', 'wifi-qr-code-generator', 'whatsapp-link-generator', 'color-picker', 'currency-calculator', 'image-converter', 'invoice-generator', 'receipt-generator', 'pdf-converter', 'screen-recorder', 'video-compressor', 'video-converter', 'video-trimmer', 'watermark-maker']
@@ -448,8 +450,9 @@ def build_page(slug, p):
 </div>
 </main>
 %s
-%s''' % (e(p['h1']), e(p['lead']), p['tool'], p['sections'],
-         faq_html(p['faq']), related_html(p['related']), FOOTER, scripts(p['vendor'], p['own'] + (['keys.js'] if slug in KEYS_PAGES else []), p.get('module', ())))
+%s''' % (e(p['h1']), e(p['lead']), p['tool'], '' if p.get('minimal') else p['sections'],
+         '' if p.get('minimal') else faq_html(p['faq']), '' if p.get('minimal') else related_html(p['related']),
+         FOOTER.replace('Your data stays in your browser.', 'Your files are never uploaded.') if p.get('minimal') else FOOTER, scripts(p['vendor'], p['own'] + (['keys.js'] if slug in KEYS_PAGES else []), p.get('module', ())))
     extra = ''.join('<link rel="stylesheet" href="/tools/css/%s">\n' % c for c in p.get('css', ()))
     out = (h + body).replace('</head>', extra + '</head>', 1) + '</body>\n</html>\n'
     d = os.path.join(ROOT, 'tools', slug)
