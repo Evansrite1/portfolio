@@ -1,4 +1,4 @@
-"""The browser side. One real Edge or Chrome window, logged in by the person, with its session kept in ig-scout/profile.
+"""The browser side. One real Edge or Chrome window, logged in by the person, with its session kept in Instagram Outreach Lead Generator/profile.
 
 Why a real browser: the person logs in themselves (2FA included), so this app never sees or stores a password.
 

@@ -1,4 +1,4 @@
-"""IG Scout: find Instagram businesses by country and website status, and save them as a leads sheet.
+"""IG Leads Finder: find Instagram businesses for the service you offer, and save them as a leads sheet.
 
 Two ways to start it:
   run.bat          the console shows the live log, the screen opens in your browser
@@ -14,7 +14,7 @@ from pathlib import Path
 
 from flask import Flask, jsonify, request, send_file, send_from_directory, abort
 
-from core import updater
+from core import services, updater
 from core.countries import country_names
 from core.engine import Engine
 from core.job import Job, load_known
@@ -81,6 +81,22 @@ def clean_handles(text):
     return out
 
 
+@app.before_request
+def only_our_own_screen():
+    """Another web page open in the browser must not be able to start a run, read results or change settings.
+    Requests must be for 127.0.0.1 (stops DNS rebinding), and anything that changes something must carry a header
+    that a web page on another site cannot add without the browser asking first."""
+    host = (request.host or "").split(":")[0].lower()
+    if host not in ("127.0.0.1", "localhost"):
+        abort(403)
+    if request.method not in ("GET", "HEAD", "OPTIONS"):
+        origin = request.headers.get("Origin")
+        if origin and origin not in (f"http://127.0.0.1:{PORT}", f"http://localhost:{PORT}"):
+            abort(403)
+        if request.headers.get("X-IGLF") != "1":
+            abort(403)
+
+
 @app.get("/")
 def index():
     return send_from_directory(ROOT / "ui", "index.html")
@@ -89,6 +105,11 @@ def index():
 @app.get("/favicon.ico")
 def favicon():
     return send_from_directory(ROOT / "ui", "icon.ico")
+
+
+@app.get("/api/services")
+def service_list():
+    return jsonify(services.listing())
 
 
 @app.get("/api/countries")
@@ -117,8 +138,15 @@ def save_settings():
     import json
     cur = read_settings()
     d = request.get_json(force=True) or {}
-    if "message" in d:
-        cur["message"] = str(d["message"])[:4000]
+    if "message" in d:                                     # older screens: one message for the website service
+        cur.setdefault("templates", {})["website"] = str(d["message"])[:4000]
+    if isinstance(d.get("templates"), dict):
+        t = cur.setdefault("templates", {})
+        for k, v in d["templates"].items():
+            if k in services.SERVICES:
+                t[k] = str(v)[:4000]
+    if isinstance(d.get("last"), dict):                    # the service and audience used last time, so the screen reopens as it was
+        cur["last"] = {str(k)[:30]: (v if isinstance(v, (bool, int, float)) else str(v)[:300]) for k, v in list(d["last"].items())[:30]}
     HOME.mkdir(parents=True, exist_ok=True)
     SETTINGS_FILE.write_text(json.dumps(cur), encoding="utf-8")
     return jsonify(ok=True)
@@ -165,9 +193,15 @@ def run():
     if not engine.status()["logged_in"]:
         return jsonify(ok=False, error="Log in to Instagram first"), 400
     d = request.get_json(force=True) or {}
+    service = d.get("service") if d.get("service") in services.SERVICES else services.DEFAULT_SERVICE
+    svc = services.get(service)
+    saved = read_settings()
     params = {
+        "service": service,
+        "offer": str(d.get("offer") or svc["offer"])[:80].strip(),
+        "city": str(d.get("city") or "")[:60].strip(),
         "country": d.get("country") or "",
-        "website": d.get("website") if d.get("website") in ("yes", "no") else "either",
+        "website": svc["website"],
         "keywords": [k for k in (d.get("keywords") or "").replace("\n", ",").split(",") if k.strip()],
         "min_followers": max(0, int(d.get("min_followers") or 0)),
         "max_followers": int(d.get("max_followers") or 100000),
@@ -179,7 +213,7 @@ def run():
         "allow_unknown": bool(d.get("allow_unknown", False)),
         "handles": clean_handles(d.get("handles") or ""),
         "expand": bool(d.get("expand", True)),
-        "message": str(d.get("message", read_settings().get("message", "")))[:4000],
+        "message": str(d.get("message", (saved.get("templates") or {}).get(service, "")))[:4000],
     }
     job = Job(engine, params, OUT, OUT / "usage.json", known() if params["skip_known"] else set(), log)
     job.start()
@@ -224,17 +258,31 @@ def open_folder():
 
 
 # ---------- updates ----------
+DOWNLOAD_PAGE = os.environ.get("IGSCOUT_DOWNLOAD_PAGE") or "https://evansademilua.vercel.app/tools/ig-leads-finder/"
+CAN_SELF_UPDATE = sys.platform == "win32"      # On a Mac the app never runs downloaded code: it only points to the download page.
+
+
 @app.get("/api/update")
 def update_check():
     info = updater.check(VERSION)
     info["exe"] = FROZEN
+    info["manual"] = not CAN_SELF_UPDATE
+    info["download_page"] = DOWNLOAD_PAGE
     return jsonify(info)
+
+
+@app.post("/api/open-download-page")
+def open_download_page():
+    webbrowser.open(DOWNLOAD_PAGE)
+    return jsonify(ok=True)
 
 
 @app.post("/api/update/install")
 def update_install():
     if not FROZEN:
         return jsonify(ok=False, error="Updates apply to the installed app only"), 400
+    if not CAN_SELF_UPDATE:
+        return jsonify(ok=False, error="On this computer, download the new version from the page instead"), 400
     if job and job.state in ("running", "starting", "stopping"):
         return jsonify(ok=False, error="Stop the current run first"), 409
     info = updater.check(VERSION)
@@ -264,7 +312,7 @@ def main():
     HOME.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
     print("=" * 62)
-    print(f"  IG Scout {VERSION} is running.  Keep this window open.")
+    print(f"  IG Leads Finder {VERSION} is running.  Keep this window open.")
     print(f"  Screen:  http://127.0.0.1:{PORT}")
     print("  Results are saved as they arrive in:  " + str(OUT))
     print("=" * 62, flush=True)

@@ -1,4 +1,4 @@
-"""IG Scout for Mac starts here (the Windows app uses launcher.py). The screen opens in its own app window.
+"""IG Leads Finder for Mac starts here (the Windows app uses launcher.py). The screen opens in its own app window.
 
 Same design as Windows: the app carries a copy of its code, a newer downloaded copy runs instead when there is one,
 and the built-in copy is used if the newer one fails to start.
@@ -19,8 +19,8 @@ if __name__ == "__never__":  # pragma: no cover
     import playwright.async_api, werkzeug.serving, reportlab.platypus  # noqa
 
 PORT = int(os.environ.get("IGSCOUT_PORT") or 5057)
-HOME = Path.home() / "Library" / "Application Support" / "IG Scout"
-DOCS = Path.home() / "Documents" / "IG Scout"
+HOME = Path.home() / "Library" / "Application Support" / "IG Leads Finder"
+DOCS = Path.home() / "Documents" / "IG Leads Finder"
 HOME.mkdir(parents=True, exist_ok=True)
 DOCS.mkdir(parents=True, exist_ok=True)
 
@@ -88,8 +88,8 @@ def open_window():
     browser = find_browser()
     url = f"http://127.0.0.1:{PORT}"
     if not browser:
-        say("IG Scout needs Chrome or Edge",
-            "IG Scout opens in Google Chrome or Microsoft Edge. Install one of them, then open IG Scout again.")
+        say("IG Leads Finder needs Chrome or Edge",
+            "IG Leads Finder opens in Google Chrome or Microsoft Edge. Install one of them, then open IG Leads Finder again.")
         return None
     return subprocess.Popen([browser, f"--app={url}", f"--user-data-dir={HOME / 'ui-profile'}", "--window-size=1320,880",
                              "--no-first-run", "--no-default-browser-check", "--disable-sync", "--disable-background-mode"])
@@ -127,7 +127,7 @@ def main():
             raise
     server = app.make_server()
     threading.Thread(target=server.serve_forever, daemon=True).start()
-    app.log(f"IG Scout {app.VERSION} started on Mac ({code})")
+    app.log(f"IG Leads Finder {app.VERSION} started on Mac ({code})")
 
     window = open_window()
     started = time.time()
@@ -172,4 +172,4 @@ if __name__ == "__main__":
             (HOME / "igscout-crash.log").write_text(err, encoding="utf-8")
         except Exception:
             pass
-        say("IG Scout could not start", "Something went wrong while starting. Details were saved to:\n" + str(HOME / "igscout-crash.log"))
+        say("IG Leads Finder could not start", "Something went wrong while starting. Details were saved to:\n" + str(HOME / "igscout-crash.log"))

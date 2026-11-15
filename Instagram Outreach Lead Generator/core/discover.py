@@ -25,10 +25,12 @@ def handles_in(text):
     return out
 
 
-def make_queries(country, keywords):
+def make_queries(country, keywords, city=""):
     """A shuffled list of (search_text, niche) pairs: each niche across each city."""
     niches = [k.strip() for k in keywords if k.strip()] or list(DEFAULT_NICHES)
-    if country and country in COUNTRIES:
+    if (city or "").strip():
+        cities = [city.strip()]
+    elif country and country in COUNTRIES:
         cities = COUNTRIES[country]["search_cities"]
     else:
         cities = [c for d in COUNTRIES.values() for c in d["search_cities"][:2]]
@@ -48,9 +50,9 @@ def instagram_search(engine, query):
     return handles, status
 
 
-def candidates(engine, country, keywords, stop):
+def candidates(engine, country, keywords, stop, city=""):
     """Yields (handle, niche_term, source) from Instagram search, one query at a time."""
-    for text, niche in make_queries(country, keywords):
+    for text, niche in make_queries(country, keywords, city):
         if stop():
             return
         hs, status = instagram_search(engine, text)

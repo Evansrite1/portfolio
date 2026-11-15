@@ -1,5 +1,16 @@
 [
   {
+    "version": "1.2.0",
+    "notes": [
+      "Now called IG Leads Finder",
+      "Choose the service you offer: website design, website redesign, social media management, online booking, or any business",
+      "Choose your audience: kinds of business, country, city and the size of the account",
+      "Every service has its own honest message, which you can edit and save",
+      "Safer: only this app's own screen can control it",
+      "On Mac the app shows a download button for new versions and never runs downloaded code"
+    ]
+  },
+  {
     "version": "1.1.1",
     "notes": [
       "IG Scout now installs on Mac as well as Windows",

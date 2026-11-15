@@ -11,7 +11,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-from . import discover, fit, message as M, profile as P, website as W
+from . import discover, fit, message as M, profile as P, services as SV, website as W
 
 # The same columns, in the same order, as the leads sheet (outreach/ig-leads-structured), then the website link and the
 # dates of the three newest posts.
@@ -124,7 +124,7 @@ class Job:
 
     def _main(self):
         self.state = "running"
-        self.log(f"Run started: country={self.p['country'] or 'Any'}, website={self.p['website']}, "
+        self.log(f"Run started: service={self.p.get('service')}, country={self.p['country'] or 'Any'}, city={self.p.get('city') or 'any'}, "
                  f"target={self.p['target']}, speed={self.p['speed']}")
         feeder = threading.Thread(target=self._feed, daemon=True)
         feeder.start()
@@ -161,7 +161,7 @@ class Job:
         try:
             for h in self.p.get("handles", []):
                 self._enqueue(h, (self.p["keywords"] or [""])[0], "pasted")
-            for h, niche, src in discover.candidates(self.engine, self.p["country"], self.p["keywords"], self.stop_flag.is_set):
+            for h, niche, src in discover.candidates(self.engine, self.p["country"], self.p["keywords"], self.stop_flag.is_set, self.p.get("city", "")):
                 if self.stop_flag.is_set():
                     break
                 if src == "blocked":
@@ -226,7 +226,7 @@ class Job:
         if u["verified"] and self.p["max_followers"] < 1_000_000:
             return self.skip("verified brand")
         tr = P.track_record(u)
-        if self.p["only_active"] and tr["active"] == "Inactive":
+        if self.p["only_active"] and tr["active"] == "Inactive" and not SV.get(self.p.get("service"))["quiet_ok"]:
             return self.skip("inactive account")
         term = niche.lower()
         text_blob = " ".join([u["bio"], u["name"], u["category"]] + [p["caption"][:200] for p in u["posts"][:6]]).lower()
@@ -246,6 +246,9 @@ class Job:
             return self.skip("has no website")
         if self.p["website"] == "no" and site["has_website"] != "No":
             return self.skip("has a website")
+        why = SV.skip_reason(self.p.get("service"), u, tr, site, links)
+        if why:
+            return self.skip("not a fit for the service: " + why)
         if country == "Unknown" and site["website"]:
             country, basis = P.guess_country(u, site["website"])
         city = P.city_of(u, country)
@@ -262,6 +265,7 @@ class Job:
             "country_basis": basis, "found_by": src,
             "niche": P.niche_of(u, niche), "city": city, "followers_text": P.human(u.get("followers")),
             "platform": site.get("platform", ""), "domain": site.get("domain", ""), "site_status": site.get("site_status", ""),
+            "service": self.p.get("service", SV.DEFAULT_SERVICE), "offer": self.p.get("offer", ""),
         }
         row["message"] = M.message_for(self.p.get("message", ""), row)
         if self._add_row(row) and self.p.get("expand", True):
@@ -308,11 +312,13 @@ class Job:
         with self.lock:
             rows = list(self.rows)
         p = self.p
-        bits = [f"Country: {p['country'] or 'Any'}", f"Website: {dict(yes='Has a website', no='No website', either='Either')[p['website']]}"]
+        bits = [f"Service: {SV.get(p.get('service'))['label']}", f"Country: {p['country'] or 'Any'}"]
+        if p.get("city"):
+            bits.append("City: " + p["city"])
         if p["keywords"]:
             bits.append("Kind: " + ", ".join(p["keywords"]))
         bits.append(f"Followers {p['min_followers']} to {p['max_followers']}")
-        story = [Paragraph("IG Scout leads", title), Spacer(1, 2 * mm),
+        story = [Paragraph("IG Leads Finder results", title), Spacer(1, 2 * mm),
                  Paragraph(t(f"{len(rows)} leads, {datetime.now().strftime('%Y-%m-%d %H:%M')}. " + ". ".join(bits)), small),
                  Spacer(1, 5 * mm)]
         cols = ["#", "Handle and Instagram link", "Country", "Website and link", "What they do", "Followers", "Last 3 posts", "Notes"]
@@ -351,11 +357,11 @@ class Job:
             canvas.saveState()
             canvas.setFont("Helvetica", 7)
             canvas.setFillColor(colors.HexColor("#777777"))
-            canvas.drawRightString(landscape(A4)[0] - 12 * mm, 7 * mm, f"IG Scout   page {doc.page}")
+            canvas.drawRightString(landscape(A4)[0] - 12 * mm, 7 * mm, f"IG Leads Finder   page {doc.page}")
             canvas.restoreState()
         bio = BytesIO()
         SimpleDocTemplate(bio, pagesize=landscape(A4), leftMargin=12 * mm, rightMargin=12 * mm, topMargin=12 * mm,
-                          bottomMargin=14 * mm, title="IG Scout leads").build(story, onFirstPage=footer, onLaterPages=footer)
+                          bottomMargin=14 * mm, title="IG Leads Finder results").build(story, onFirstPage=footer, onLaterPages=footer)
         return bio.getvalue()
 
     def xlsx_bytes(self):

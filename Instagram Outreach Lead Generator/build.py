@@ -1,10 +1,11 @@
-"""Build IG Scout.exe, the code update package and the version file.
+"""Build IG Leads Finder.exe, the installer, the code update package and the version file.
 
     python build.py            builds everything
     python build.py --code     rebuilds only the code package and version file (use this for a normal update)
+    python build.py --out DIR  writes the installer to DIR (the GitHub workflow uses this)
 
 Output goes to ../scout/ (the private download page of the portfolio site):
-    scout/download/IG-Scout-Setup.exe         the installer people download
+    scout/download/IG-Leads-Finder-Setup.exe  the installer people download
     scout/update/ig-scout-code-<version>.zip  what installed apps download to update themselves
     scout/version.json                        what installed apps check
 """
@@ -50,31 +51,41 @@ def code_zip():
 
 
 def makensis():
-    import glob, os
+    import glob, os, shutil as sh
+    on_path = sh.which("makensis")
+    if on_path:
+        return on_path
+    for pf in (os.environ.get("ProgramFiles(x86)", ""), os.environ.get("ProgramFiles", "")):
+        c = os.path.join(pf, "NSIS", "makensis.exe")
+        if pf and os.path.exists(c):
+            return c
     hits = glob.glob(os.path.join(os.environ.get("LOCALAPPDATA", ""), "electron-builder", "Cache", "nsis", "nsis-*", "makensis.exe"))
     if not hits:
-        raise SystemExit("makensis.exe not found. Run an electron-builder build once (desktop/presenter-app) or install NSIS.")
+        raise SystemExit("makensis.exe not found. Install NSIS, or run an electron-builder build once (desktop/presenter-app).")
     return sorted(hits)[-1]
 
 
 def exe():
-    """The app as a folder (starts fast), then wrapped into one installer: IG-Scout-Setup.exe."""
+    """The app as a folder (starts fast), then wrapped into one installer: IG-Leads-Finder-Setup.exe."""
     if WORK.exists():
         shutil.rmtree(WORK)
-    cmd = [sys.executable, "-m", "PyInstaller", "--noconfirm", "--onedir", "--noconsole", "--name", "IG Scout",
+    cmd = [sys.executable, "-m", "PyInstaller", "--noconfirm", "--onedir", "--noconsole", "--name", "IG Leads Finder",
            "--icon", str(HERE / "ui" / "icon.ico"),
            "--add-data", f"{HERE / 'app.py'};code", "--add-data", f"{HERE / 'core'};code/core",
            "--add-data", f"{HERE / 'ui'};code/ui", "--collect-all", "playwright", "--collect-all", "reportlab",
            "--distpath", str(WORK / "dist"), "--workpath", str(WORK / "work"), "--specpath", str(WORK),
            str(HERE / "launcher.py")]
     subprocess.run(cmd, check=True)
-    app_dir = WORK / "dist" / "IG Scout"
-    (SITE / "download").mkdir(parents=True, exist_ok=True)
-    for old in (SITE / "download").glob("*"):
+    app_dir = WORK / "dist" / "IG Leads Finder"
+    dest = Path(sys.argv[sys.argv.index("--out") + 1]) if "--out" in sys.argv else SITE / "download"
+    dest.mkdir(parents=True, exist_ok=True)
+    for old in dest.glob("IG-*"):
         old.unlink()
-    out = SITE / "download" / "IG-Scout-Setup.exe"
+    out = dest / "IG-Leads-Finder-Setup.exe"
+    side = HERE / "build_art" / "installerSidebar.bmp"
+    extra = [f"/DSIDEBAR={side}"] if side.exists() else []
     subprocess.run([makensis(), "/V2", f"/DVERSION={VERSION}", f"/DSRC={app_dir}", f"/DOUT={out}",
-                    f"/DICON={HERE / 'ui' / 'icon.ico'}", str(HERE / "installer.nsi")], check=True)
+                    f"/DICON={HERE / 'ui' / 'icon.ico'}"] + extra + [str(HERE / "installer.nsi")], check=True)
     print(f"installer {out.name}  {out.stat().st_size // 1048576} MB")
 
 

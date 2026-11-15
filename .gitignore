@@ -60,3 +60,25 @@ ig-scout/igscout.log
 scout/download/
 
 .test-assets/
+
+# private outreach tool lives in its own private repo
+email-outreach/
+
+# Private skills (contain outreach rules and process notes)
+skills/
+
+# Private working files (scripts, graphics, leads, docs)
+workspace/
+desktop/send-app/dist/
+
+# IG Leads Finder (Instagram Outreach Lead Generator): build output and the person's own data stay out of git
+Instagram Outreach Lead Generator/build_out/
+Instagram Outreach Lead Generator/profile/
+Instagram Outreach Lead Generator/output/
+Instagram Outreach Lead Generator/__pycache__/
+Instagram Outreach Lead Generator/core/__pycache__/
+Instagram Outreach Lead Generator/tests/__pycache__/
+Instagram Outreach Lead Generator/download_url*.txt
+Instagram Outreach Lead Generator/igscout.log
+Instagram Outreach Lead Generator/settings.json
+Instagram Outreach Lead Generator/already-have/
