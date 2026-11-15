@@ -167,6 +167,7 @@ class ShareServer extends EventEmitter {
     const ip = req.socket.remoteAddress;
 
     if (req.method === 'POST' && url.pathname === '/api/pair') return this._pair(req, res, ip);
+    if (url.pathname === '/api/ping') return this._json(res, 200, { app: 'file-share-1' });       /* tells a receiver which address works; shares nothing */
     if (req.method !== 'GET' && req.method !== 'HEAD') return this._send(res, 405, 'Method not allowed');
     if (!this._tokenOk(url)) return this._send(res, 401, 'This link is not valid. Ask the sender for a new one.');
     this._seen(ip);

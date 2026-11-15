@@ -46,7 +46,8 @@ class Discovery extends EventEmitter {
     if (!this.info || !this.sock) return;
     const msg = Buffer.from(JSON.stringify({
       app: APP, id: this.id, name: this.info.name, platform: this.info.platform,
-      port: this.info.port, files: this.info.files, bytes: this.info.bytes
+      port: this.info.port, files: this.info.files, bytes: this.info.bytes,
+      ips: this.targets ? [] : lanAddresses().map((a) => a.ip)
     }));
     const targets = this.targets || [...new Set(['255.255.255.255', ...lanAddresses().map((a) => a.broadcast)])].map((h) => ({ host: h, port: this.port }));
     for (const t of targets) { try { this.sock.send(msg, 0, msg.length, t.port, t.host, () => {}); } catch (e) {} }
@@ -61,12 +62,13 @@ class Discovery extends EventEmitter {
     const clean = (s, n) => String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f]/g, '').slice(0, n);
     const p = {
       id: clean(d.id, 40), name: clean(d.name, 64) || 'Another computer', platform: clean(d.platform, 12),
-      host: rinfo.address, port, files: Number.isFinite(files) ? Math.max(0, Math.floor(files)) : 0,
+      host: rinfo.address, ips: Array.isArray(d.ips) ? d.ips.filter((x) => typeof x === 'string' && /^\d{1,3}(\.\d{1,3}){3}$/.test(x)).slice(0, 8) : [],
+      port, files: Number.isFinite(files) ? Math.max(0, Math.floor(files)) : 0,
       bytes: Number.isFinite(bytes) ? Math.max(0, Math.floor(bytes)) : 0, seen: Date.now()
     };
     const before = this.peers.get(p.id);
     this.peers.set(p.id, p);
-    if (!before || before.port !== p.port || before.host !== p.host || before.files !== p.files) this._changed();
+    if (!before || before.port !== p.port || before.host !== p.host || (before.ips || []).join() !== p.ips.join() || before.files !== p.files) this._changed();
   }
 
   _prune() {

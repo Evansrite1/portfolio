@@ -2,6 +2,7 @@
    website is updated. The video work happens on this computer; nothing is uploaded. */
 const { app, BrowserWindow, Menu, session, shell } = require('electron');
 const path = require('path');
+app.setPath('userData', path.join(app.getPath('appData'), 'Video Editor'));      /* keep the saved settings after the rename */
 
 const SITE = (process.env.EDITOR_URL || 'https://evansademilua.vercel.app').replace(/\/$/, '');
 const START = SITE + '/tools/video-editor/app/?desktop=1';
@@ -9,7 +10,7 @@ let win = null;
 
 function create() {
   win = new BrowserWindow({
-    width: 1500, height: 940, minWidth: 1100, minHeight: 640, backgroundColor: '#0b0b0c', title: 'Video Editor',
+    width: 1500, height: 940, minWidth: 1100, minHeight: 640, backgroundColor: '#0b0b0c', title: 'Video Editor by Evans Large',
     autoHideMenuBar: true, webPreferences: { contextIsolation: true, sandbox: true }
   });
   win.maximize();

@@ -6,9 +6,14 @@
   document.documentElement.dataset.platform = window.platform || '';
 
   var FLOWS = {
-    send: [['wifi', 'Connect to Wi-Fi'], ['allow', 'Allow File Share'], ['choose', 'Choose files'], ['share', 'Share the code']],
-    recv: [['wifi', 'Connect to Wi-Fi'], ['allow', 'Allow File Share'], ['find', 'Find the sender'], ['get', 'Download']]
+    send: [['wifi', 'Connect to Wi-Fi'], ['allow', 'Check connection'], ['choose', 'Choose files'], ['share', 'Share the code']],
+    recv: [['wifi', 'Connect to Wi-Fi'], ['allow', 'Check connection'], ['find', 'Find the sender'], ['get', 'Download']]
   };
+  if (window.platform === 'darwin') $('lights').hidden = true;          /* a Mac draws its own three buttons */
+  $('w-close').onclick = function () { window.api.win('close'); };
+  $('w-min').onclick = function () { window.api.win('min'); };
+  $('w-max').onclick = function () { window.api.win('max'); };
+  $('titlebar').addEventListener('dblclick', function (e) { if (e.target === this || e.target.className === 'tb-spacer' || e.target.className === 'tb-name') window.api.win('max'); });
   var state = { me: null, flow: null, step: null, net: null, fw: null, files: [], sending: false, links: [], peers: [], pairPeer: null, offer: null, running: false, bytes: {}, fileState: {} };
 
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
@@ -113,27 +118,31 @@
   $('wifi-open').onclick = guard(function () { return window.api.openWifi(); });
 
   /* ------------------------------------------------------------ step 2: the firewall */
-  function prepAllow() {
-    var p = window.platform;
-    $('allow-intro').textContent = p === 'win32' ? 'Windows Firewall hides this computer from others by default. File Share needs one permission so the other computer can send or receive.'
-      : p === 'darwin' ? 'The Mac firewall can block other computers. File Share asks for one permission so the other computer can reach this one.'
-      : 'A firewall on this computer can block other computers. File Share asks for one permission so the other computer can reach this one.';
-  }
+  var autoTimer = null;
+  function prepAllow() { $('allow-intro').textContent = 'Checking if this computer can reach other computers.'; $('allow-note').hidden = true; $('allow-msg').hidden = true; state.fw = null; clearTimeout(autoTimer); }
   function runFullCheck() {
     return window.api.netCheck().then(function (res) {
-      state.fw = res.items.find(function (i) { return i.id === 'firewall'; }) || { ok: true, title: 'Ready', detail: '' };
-      var n = res.items.find(function (i) { return i.id === 'network'; }); if (n) state.net = n.ok ? state.net || { ok: true, name: '', ip: '' } : { ok: false };
+      var f = res.items.find(function (i) { return i.id === 'firewall'; }) || { ok: true, title: 'Ready', detail: '' };
+      var n = res.items.find(function (i) { return i.id === 'network'; });
+      var l = res.items.find(function (i) { return i.id === 'listen'; });
+      state.fw = (n && !n.ok) ? n : (l && !l.ok && f.ok) ? Object.assign({}, l, { ok: true }) : f;
+      if (n && n.ok) state.net = state.net && state.net.ok ? state.net : { ok: true, name: '', ip: '' };
       renderAllow();
-    }).catch(function () {});
+    }).catch(function () { state.fw = { ok: true, title: 'This computer is ready', detail: '' }; renderAllow(); });
   }
   function renderAllow() {
     if (state.step !== 'allow') return;
     var f = state.fw, ok = !!(f && f.ok);
     $('allow-status').className = 'check ' + (f ? (ok ? 'ok' : 'warn') : '');
-    $('allow-title').textContent = f ? f.title : 'Checking...'; $('allow-detail').textContent = f ? f.detail : '';
+    $('allow-title').textContent = f ? (ok ? 'Yes, this computer can reach other computers' : f.title) : 'Checking...';
+    $('allow-detail').textContent = f ? (ok ? 'Moving on...' : f.detail) : '';
     var b = $('allow-fix'); b.hidden = !(f && f.fix); if (f && f.fix) { b.textContent = f.fix.label; b.disabled = false; }
+    $('allow-note').hidden = !(f && f.fix);
     var list = FLOWS[state.flow], idx = list.findIndex(function (s) { return s[0] === 'allow'; });
-    nav({ back: function () { go('wifi'); }, next: { label: 'Next', enabled: ok, click: function () { go(list[idx + 1][0]); } }, skip: ok ? null : function () { go(list[idx + 1][0]); } });
+    var nextId = list[idx + 1][0];
+    nav({ back: function () { clearTimeout(autoTimer); go('wifi'); }, next: { label: 'Next', enabled: ok, click: function () { clearTimeout(autoTimer); go(nextId); } }, skip: ok ? null : function () { go(nextId); } });
+    clearTimeout(autoTimer);
+    if (ok) autoTimer = setTimeout(function () { if (state.step === 'allow') go(nextId); }, 1100);
   }
   var fixBusy = false;
   $('allow-fix').onclick = function () {
@@ -254,26 +263,49 @@
     state.offer = o; state.bytes = {}; state.fileState = {};
     go('get');
     $('offer-title').textContent = plural(o.files.length, 'file', 'files') + ' from ' + (o.name || 'the sender') + ', ' + size(o.total);
-    var ul = $('offer-list'); ul.textContent = ''; o.files.forEach(function (f) { ul.appendChild(fileRow(f, { bar: true })); });
+    state.sel = {}; state.dl = null; o.files.forEach(function (f) { state.sel[f.id] = true; });
+    var ul = $('offer-list'); ul.textContent = '';
+    o.files.forEach(function (f) {
+      var li = fileRow(f, { bar: true });
+      var cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = true; cb.className = 'pick'; cb.setAttribute('aria-label', 'Download ' + f.name);
+      cb.onchange = function () { state.sel[f.id] = cb.checked; selChanged(); };
+      li.insertBefore(cb, li.firstChild); ul.appendChild(li);
+    });
+    document.querySelectorAll('#sel-all').forEach(function (c) { c.disabled = false; });
+    selChanged();
     $('dest').textContent = o.dest; $('dest').title = o.dest;
     $('download').hidden = false; $('download').disabled = false; $('download').textContent = 'Download all'; $('cancel').hidden = true; $('open-dest').hidden = true; $('total-bar').hidden = true;
     $('recv-status').textContent = ''; $('recv-status').className = 'status';
   }
+  function picked() { return state.offer ? state.offer.files.filter(function (f) { return state.sel[f.id]; }) : []; }
+  function selChanged() {
+    var all = state.offer.files, p = picked(), bytes = p.reduce(function (a, f) { return a + f.size; }, 0);
+    var every = p.length === all.length;
+    $('sel-all').checked = every; $('sel-all').indeterminate = !every && p.length > 0;
+    $('sel-text').textContent = every ? 'All ' + plural(all.length, 'file', 'files') + ' selected' : plural(p.length, 'file', 'files') + ' of ' + all.length + ' selected';
+    $('sel-size').textContent = size(bytes);
+    $('download-sel').hidden = every || state.running; $('download-sel').disabled = !p.length; $('download-sel').textContent = 'Download selected (' + p.length + ')';
+  }
+  $('sel-all').onchange = function () { var on = this.checked; state.offer.files.forEach(function (f) { state.sel[f.id] = on; }); document.querySelectorAll('#offer-list .pick').forEach(function (c) { c.checked = on; }); selChanged(); };
   $('offer-back').onclick = guard(function () { if (state.running) return window.api.cancel(); state.offer = null; go('find'); });
   $('dest-change').onclick = guard(function () { return window.api.chooseDest().then(function (p) { if (p) { $('dest').textContent = p; $('dest').title = p; } }); });
-  $('download').onclick = guard(function () {
-    return window.api.download().then(function (r) {
-      state.running = true; state.bytes = {};
-      $('download').hidden = true; $('cancel').hidden = false; $('dest-change').disabled = true; $('total-bar').hidden = false; $('total-fill').style.width = '0%'; $('total-fill').className = 'fill';
+  function startDownload(ids) {
+    return window.api.download(ids).then(function (r) {
+      state.running = true; state.bytes = {}; state.fileState = {}; state.dl = ids ? ids.reduce(function (o, i) { o[i] = 1; return o; }, {}) : null;
+      document.querySelectorAll('#offer-list .pick, #sel-all').forEach(function (c) { c.disabled = true; });
+      $('download').hidden = true; $('download-sel').hidden = true; $('cancel').hidden = false; $('dest-change').disabled = true; $('total-bar').hidden = false; $('total-fill').style.width = '0%'; $('total-fill').className = 'fill';
       $('recv-status').textContent = 'Downloading...'; $('recv-status').className = 'status'; $('dest').textContent = r.dest;
     });
-  });
+  }
+  $('download').onclick = guard(function () { return startDownload(null); });
+  $('download-sel').onclick = guard(function () { return startDownload(picked().map(function (f) { return f.id; })); });
   $('cancel').onclick = guard(function () { return window.api.cancel(); });
   $('open-dest').onclick = guard(function () { return window.api.openDest(); });
   function paint() {
     if (!state.offer) return;
-    var total = state.offer.total || 0, got = 0;
-    state.offer.files.forEach(function (f) {
+    var files = state.dl ? state.offer.files.filter(function (f) { return state.dl[f.id]; }) : state.offer.files;
+    var total = files.reduce(function (a, f) { return a + f.size; }, 0), got = 0;
+    files.forEach(function (f) {
       var n = Math.min(f.size, state.bytes[f.id] || 0); got += n;
       var li = document.querySelector('#offer-list li[data-id="' + f.id + '"]'); if (!li) return;
       var st = state.fileState[f.id], p = f.size ? n / f.size * 100 : (st === 'done' ? 100 : 0);
@@ -287,8 +319,9 @@
   window.api.on('recv:file', function (d) { state.fileState[d.id] = d.state; if (d.state === 'failed') { var li = document.querySelector('#offer-list li[data-id="' + d.id + '"] .name'); if (li) li.title = d.error || ''; } paint(); });
   window.api.on('recv:done', function (d) {
     state.running = false; $('cancel').hidden = true; $('dest-change').disabled = false; paint();
+    document.querySelectorAll('#offer-list .pick, #sel-all').forEach(function (c) { c.disabled = false; }); selChanged();
     var s = $('recv-status');
-    if (d.cancelled) { s.textContent = 'Stopped. ' + plural(d.done.length, 'file was', 'files were') + ' saved.'; s.className = 'status bad'; $('download').hidden = false; $('download').textContent = 'Download again'; }
+    if (d.cancelled) { s.textContent = 'Stopped. ' + plural(d.done.length, 'file was', 'files were') + ' saved.'; s.className = 'status bad'; $('download').hidden = false; $('download').textContent = 'Download all again'; }
     else if (d.failed.length) { s.textContent = plural(d.done.length, 'file', 'files') + ' saved, ' + d.failed.length + ' failed: ' + d.failed.map(function (f) { return (f.name ? f.name + ': ' : '') + f.error; }).slice(0, 3).join('; '); s.className = 'status bad'; $('download').hidden = false; $('download').textContent = 'Try again'; }
     else { $('total-fill').style.width = '100%'; $('total-fill').className = 'fill ok'; s.textContent = 'Done. ' + plural(d.done.length, 'file', 'files') + ' saved and checked.'; s.className = 'status ok'; }
     if (d.done.length) $('open-dest').hidden = false;

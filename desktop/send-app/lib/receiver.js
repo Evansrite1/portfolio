@@ -28,6 +28,37 @@ async function readJson(res, max = 5 * 1024 * 1024) {
   try { return JSON.parse(text); } catch (e) { return { _text: text }; }
 }
 
+/* Say what went wrong in words a person can act on. */
+function explain(e) {
+  const c = e && e.code;
+  if (c === 'ETIMEDOUT' || c === 'ECONNABORTED') return 'The other computer did not answer. Its firewall may be blocking File Share, or it is on a different network. On that computer, reinstall File Share and press Yes, Allow.';
+  if (c === 'ECONNREFUSED') return 'The other computer refused the connection. Ask the sender to press Start sharing again.';
+  if (c === 'EHOSTUNREACH' || c === 'ENETUNREACH') return 'This computer cannot reach the other one. Check that both are on the same Wi-Fi, not a Guest network.';
+  if (c === 'EACCES' || c === 'EPERM') return 'Windows or a security program stopped File Share from connecting. Allow File Share in the firewall and try again.';
+  if (c === 'ECONNRESET') return 'The connection was cut. Try again.';
+  return (e && e.message) || 'The connection failed.';
+}
+
+/* A computer can have several addresses (Wi-Fi, a virtual adapter). Ask each one and use the first that answers. */
+function ping(host, port, ms) {
+  return new Promise((resolve) => {
+    const req = http.get({ host, port, path: '/api/ping', agent: false, timeout: ms, headers: { Connection: 'close' } }, (res) => {
+      let b = ''; res.setEncoding('utf8'); res.on('data', (c) => { if (b.length < 200) b += c; });
+      res.on('end', () => { try { resolve(res.statusCode === 200 && JSON.parse(b).app === 'file-share-1' ? host : null); } catch (e) { resolve(null); } });
+    });
+    req.on('timeout', () => { req.destroy(); resolve(null); });
+    req.on('error', () => resolve(null));
+  });
+}
+async function pickHost(hosts, port, ms = 2500) {
+  const list = [...new Set(hosts.filter(Boolean))];
+  if (list.length <= 1) return list[0] || null;
+  return new Promise((resolve) => {
+    let left = list.length, done = false;
+    list.forEach((h) => ping(h, port, ms).then((ok) => { if (done) return; if (ok) { done = true; resolve(ok); } else if (--left === 0) resolve(null); }));
+  });
+}
+
 /* Trade the 6 digit code for the secret token. */
 async function pair(host, port, code, opts = {}) {
   const res = await request(host, port, 'POST', '/api/pair', { body: JSON.stringify({ code: String(code) }), headers: { 'Content-Type': 'application/json' }, signal: opts.signal });
@@ -161,4 +192,4 @@ async function downloadAll({ host, port, token, offer, destDir, onFile, onBytes,
   return { done, failed };
 }
 
-module.exports = { pair, getOffer, getHash, downloadOne, downloadAll };
+module.exports = { explain, ping, pickHost, pair, getOffer, getHash, downloadOne, downloadAll };

@@ -1,6 +1,6 @@
 {
   "name": "presenter-app",
-  "productName": "Presenter",
+  "productName": "Presenter by Evans Large",
   "version": "1.0.1",
   "description": "Presenter by Evans Ademilua: Bible verses, song lyrics, photos, videos and countdowns on a TV or projector.",
   "author": "Evans Ademilua",
@@ -26,7 +26,7 @@
   },
   "build": {
     "appId": "com.evansademilua.presenter",
-    "productName": "Presenter",
+    "productName": "Presenter by Evans Large",
     "copyright": "Evans Ademilua",
     "directories": {
       "output": "dist",
@@ -69,11 +69,12 @@
       "createStartMenuShortcut": true,
       "runAfterFinish": true,
       "deleteAppDataOnUninstall": false,
-      "shortcutName": "Presenter",
+      "shortcutName": "Presenter by Evans Large",
       "installerSidebar": "build/installerSidebar.bmp",
       "uninstallerSidebar": "build/uninstallerSidebar.bmp",
       "installerHeader": "build/installerHeader.bmp",
-      "include": "build/installer.nsh"
+      "include": "build/installer.nsh",
+      "uninstallDisplayName": "Presenter by Evans Large"
     },
     "mac": {
       "target": [

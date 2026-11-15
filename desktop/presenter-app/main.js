@@ -3,6 +3,7 @@ const { app, BrowserWindow, Menu, screen, session, desktopCapturer, ipcMain, she
 const path = require('path');
 const fs = require('fs');
 const cfg = require('./config.json');
+app.setPath('userData', path.join(app.getPath('appData'), 'Presenter'));      /* keep the saved settings after the rename */
 
 const SITE = (process.env.PRESENTER_URL || cfg.site).replace(/\/$/, '');
 const ORIGIN = new URL(SITE).origin;
@@ -54,7 +55,7 @@ function createMain() {
   const saved = readPrefs().main || {};
   mainWin = new BrowserWindow({
     width: saved.width || 1360, height: saved.height || 860, x: saved.x, y: saved.y,
-    minWidth: 900, minHeight: 600, show: false, backgroundColor: '#0e0e10', title: 'Presenter',
+    minWidth: 900, minHeight: 600, show: false, backgroundColor: '#0e0e10', title: 'Presenter by Evans Large',
     icon: path.join(__dirname, 'build', 'icon.png'), webPreferences: webPrefs()
   });
   wire(mainWin);

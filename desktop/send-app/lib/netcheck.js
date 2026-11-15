@@ -39,7 +39,8 @@ function winCheckScript() {
     "$ErrorActionPreference='Stop'",
     '$fw = @(Get-NetFirewallProfile | Where-Object { $_.Enabled -eq "True" }).Count',
     '$rule = @(Get-NetFirewallRule -DisplayName ' + psq(NAME) + ' -ErrorAction SilentlyContinue | Get-NetFirewallApplicationFilter | ForEach-Object { $_.Program })',
-    'ConvertTo-Json -Compress @{ fw = $fw; rule = $rule }'
+    '$ports = @(Get-NetFirewallRule -DisplayName ' + psq(NAME + ' ports') + ' -ErrorAction SilentlyContinue | Where-Object { $_.Enabled -eq "True" -and $_.Action -eq "Allow" }).Count',
+    'ConvertTo-Json -Compress @{ fw = $fw; rule = $rule; ports = $ports }'
   ].join('\n');
 }
 function winFixScript(exe) {
@@ -86,9 +87,9 @@ function createChecker(opts = {}) {
       else if (!j.fw) items.push({ id: 'firewall', ok: true, title: 'Windows Firewall is off', detail: 'Nothing is blocking the connection.' });
       else {
         const rules = [].concat(j.rule || []).map((x) => String(x).toLowerCase());
-        const have = rules.includes(path.normalize(execPath).toLowerCase());
+        const have = rules.includes(path.normalize(execPath).toLowerCase()) || Number(j.ports) >= 2;      /* the installer adds a program rule and port rules */
         items.push(have
-          ? { id: 'firewall', ok: true, title: 'Windows Firewall allows File Share', detail: 'A rule named "' + NAME + '" is in place.' }
+          ? { id: 'firewall', ok: true, title: 'Windows Firewall allows File Share', detail: 'The permission is in place.' }
           : { id: 'firewall', ok: false, title: 'Windows Firewall is blocking other computers', detail: 'Windows is on and has no rule for File Share, so the other computer cannot reach this one.', fix: { label: 'Allow File Share' } });
       }
     } else if (platform === 'darwin') {

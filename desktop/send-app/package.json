@@ -1,7 +1,7 @@
 {
   "name": "file-share",
   "productName": "File Share by Evans Large",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "File Share by Evans Large: send files between computers over Wi-Fi. Windows, Mac and Linux. Nothing is uploaded.",
   "author": "Evans Ademilua",
   "homepage": "https://evansademilua.vercel.app/tools/send-app/",
@@ -52,8 +52,8 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "allowElevation": false,
-      "perMachine": false,
+      "allowElevation": true,
+      "perMachine": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "runAfterFinish": true,

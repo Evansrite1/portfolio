@@ -9,7 +9,12 @@
 </head>
 <body>
 <header class="titlebar" id="titlebar">
-  <img class="tb-logo" src="logo.svg" alt="" width="26" height="26">
+  <span class="lights" id="lights" aria-label="Window buttons">
+    <button class="light close" id="w-close" aria-label="Close" title="Close"></button>
+    <button class="light min" id="w-min" aria-label="Minimise" title="Minimise"></button>
+    <button class="light max" id="w-max" aria-label="Maximise" title="Maximise"></button>
+  </span>
+  <img class="tb-logo" src="logo.svg" alt="" width="22" height="22">
   <span class="tb-name">File Share <i>by Evans Large</i></span>
   <span class="tb-spacer"></span>
   <button class="tb-btn" id="tb-home" hidden>Home</button>
@@ -30,13 +35,13 @@
     <div class="cards">
       <button class="bigcard" id="go-send">
         <svg viewBox="0 0 220 120" aria-hidden="true">
-          <rect x="14" y="40" width="64" height="44" rx="6" fill="#1d1d24" stroke="#3a3a45" stroke-width="2"/>
-          <rect x="8" y="88" width="76" height="6" rx="3" fill="#3a3a45"/>
-          <path d="M38 50h18l8 8v18H38z" fill="#fff"/><path d="M56 50v8h8z" fill="#ffc9c5"/>
-          <rect x="142" y="40" width="64" height="44" rx="6" fill="#1d1d24" stroke="#3a3a45" stroke-width="2"/>
-          <rect x="136" y="88" width="76" height="6" rx="3" fill="#3a3a45"/>
-          <path d="M92 66h26" stroke="#ff5b52" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 9"/>
-          <path d="M116 54l14 12-14 12" fill="none" stroke="#ff5b52" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="14" y="40" width="64" height="44" rx="6" fill="#2a2a2e" stroke="#505057" stroke-width="2"/>
+          <rect x="8" y="88" width="76" height="6" rx="3" fill="#505057"/>
+          <path d="M38 50h18l8 8v18H38z" fill="#fff"/><path d="M56 50v8h8z" fill="#bcdcff"/>
+          <rect x="142" y="40" width="64" height="44" rx="6" fill="#2a2a2e" stroke="#505057" stroke-width="2"/>
+          <rect x="136" y="88" width="76" height="6" rx="3" fill="#505057"/>
+          <path d="M92 66h26" stroke="#0a84ff" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 9"/>
+          <path d="M116 54l14 12-14 12" fill="none" stroke="#0a84ff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M96 28a22 22 0 0 1 28 0M101 35a14 14 0 0 1 18 0" fill="none" stroke="#a3a3ad" stroke-width="3" stroke-linecap="round"/><circle cx="110" cy="42" r="2.5" fill="#a3a3ad"/>
         </svg>
         <b>Send files</b>
@@ -45,13 +50,13 @@
       </button>
       <button class="bigcard" id="go-recv">
         <svg viewBox="0 0 220 120" aria-hidden="true">
-          <rect x="14" y="40" width="64" height="44" rx="6" fill="#1d1d24" stroke="#3a3a45" stroke-width="2"/>
-          <rect x="8" y="88" width="76" height="6" rx="3" fill="#3a3a45"/>
-          <rect x="142" y="40" width="64" height="44" rx="6" fill="#1d1d24" stroke="#3a3a45" stroke-width="2"/>
-          <rect x="136" y="88" width="76" height="6" rx="3" fill="#3a3a45"/>
-          <path d="M166 50h18l8 8v18h-26z" fill="#fff"/><path d="M184 50v8h8z" fill="#ffc9c5"/>
-          <path d="M126 66h-26" stroke="#ff5b52" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 9"/>
-          <path d="M102 54l-14 12 14 12" fill="none" stroke="#ff5b52" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="14" y="40" width="64" height="44" rx="6" fill="#2a2a2e" stroke="#505057" stroke-width="2"/>
+          <rect x="8" y="88" width="76" height="6" rx="3" fill="#505057"/>
+          <rect x="142" y="40" width="64" height="44" rx="6" fill="#2a2a2e" stroke="#505057" stroke-width="2"/>
+          <rect x="136" y="88" width="76" height="6" rx="3" fill="#505057"/>
+          <path d="M166 50h18l8 8v18h-26z" fill="#fff"/><path d="M184 50v8h8z" fill="#bcdcff"/>
+          <path d="M126 66h-26" stroke="#0a84ff" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 9"/>
+          <path d="M102 54l-14 12 14 12" fill="none" stroke="#0a84ff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M96 28a22 22 0 0 1 28 0M101 35a14 14 0 0 1 18 0" fill="none" stroke="#a3a3ad" stroke-width="3" stroke-linecap="round"/><circle cx="110" cy="42" r="2.5" fill="#a3a3ad"/>
         </svg>
         <b>Receive files</b>
@@ -82,11 +87,11 @@
       </div>
 
       <div class="panel" id="p-allow" hidden>
-        <h2>Let the other computer reach this one</h2>
-        <p class="muted" id="allow-intro"></p>
+        <h2>Checking the connection</h2>
+        <p class="muted" id="allow-intro">Checking if this computer can reach other computers.</p>
         <div class="check" id="allow-status"><span class="dot"></span><div><b id="allow-title">Checking...</b><span id="allow-detail" class="muted"></span></div><button class="btn primary" id="allow-fix" hidden>Allow File Share</button></div>
         <p id="allow-msg" class="net-msg" hidden></p>
-        <p class="muted small">You only do this once. Your computer shows its own permission window, and you press Yes. File Share does not change anything else.</p>
+        <p class="muted small" id="allow-note" hidden>The permission is normally given when File Share is installed. If it was skipped, press the button and confirm in the window your computer shows.</p>
       </div>
 
       <div class="panel" id="p-choose" hidden>
@@ -130,7 +135,7 @@
         <p class="muted">On the other computer: open File Share, press <b>Send</b>, choose the files and press <b>Start sharing</b>. It will appear here.</p>
         <ul id="peers" class="peers"></ul>
         <p id="peers-empty" class="muted">Looking for computers that are sharing...</p>
-        <p id="peers-hint" class="muted small" hidden>Still nothing? Check that both computers are on the same Wi-Fi (not Guest), that the sender pressed Start sharing, and that both have pressed Allow File Share.</p>
+        <p id="peers-hint" class="muted small" hidden>Still nothing? Check that both computers are on the same Wi-Fi (not Guest), that the sender pressed Start sharing, and that both have File Share installed with the permission allowed.</p>
         <div id="pair" class="card" hidden>
           <p>Type the 6 digit code shown on <b id="pair-name"></b>:</p>
           <div class="row">
@@ -152,7 +157,8 @@
 
       <div class="panel" id="p-get" hidden>
         <div class="list-head"><h2 id="offer-title"></h2><button class="link" id="offer-back">Disconnect</button></div>
-        <ul id="offer-list" class="files"></ul>
+        <div class="list-head"><label class="tick"><input type="checkbox" id="sel-all" checked> <span id="sel-text">All selected</span></label><span class="muted small" id="sel-size"></span></div>
+        <ul id="offer-list" class="files scroll"></ul>
         <div class="card">
           <p class="muted small">Save to</p>
           <div class="row"><code id="dest" class="path"></code><button class="btn" id="dest-change">Change</button></div>
@@ -161,6 +167,7 @@
         <p id="recv-status" class="status" role="status"></p>
         <div class="row">
           <button class="btn primary big" id="download">Download all</button>
+          <button class="btn big" id="download-sel" hidden>Download selected</button>
           <button class="btn danger" id="cancel" hidden>Cancel</button>
           <button class="btn" id="open-dest" hidden>Open the folder</button>
         </div>
@@ -176,10 +183,7 @@
   </section>
 </main>
 
-<footer class="foot muted small">
-  Files go straight between the two computers over your Wi-Fi. Each file is checked on arrival. The connection is not encrypted, so use it on a network you trust.
-  <span id="version"></span>
-</footer>
+<footer class="foot muted small">Files go straight between the two computers over your Wi-Fi and are checked on arrival. Use a network you trust. <span id="version"></span></footer>
 <script src="app.js"></script>
 </body>
 </html>

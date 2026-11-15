@@ -1,6 +1,6 @@
 {
   "name": "editor-app",
-  "productName": "Video Editor",
+  "productName": "Video Editor by Evans Large",
   "version": "1.0.0",
   "description": "Video Editor by Evans Ademilua: cut, caption and export videos. Works on your computer and nothing is uploaded.",
   "author": "Evans Ademilua",
@@ -20,7 +20,7 @@
   },
   "build": {
     "appId": "com.evansademilua.videoeditor",
-    "productName": "Video Editor",
+    "productName": "Video Editor by Evans Large",
     "copyright": "Evans Ademilua",
     "directories": {
       "output": "dist",
@@ -51,11 +51,12 @@
       "createStartMenuShortcut": true,
       "runAfterFinish": true,
       "deleteAppDataOnUninstall": false,
-      "shortcutName": "Video Editor",
+      "shortcutName": "Video Editor by Evans Large",
       "installerSidebar": "build/installerSidebar.bmp",
       "uninstallerSidebar": "build/uninstallerSidebar.bmp",
       "installerHeader": "build/installerHeader.bmp",
-      "include": "build/installer.nsh"
+      "include": "build/installer.nsh",
+      "uninstallDisplayName": "Video Editor by Evans Large"
     },
     "mac": {
       "target": [

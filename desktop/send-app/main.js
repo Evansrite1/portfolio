@@ -125,7 +125,9 @@ const H = {
     if (a.peerId != null) {
       const p = discovery.list().find((x) => x.id === a.peerId);
       if (!p) throw new Error('That computer is no longer sharing. Ask the sender to share again.');
-      host = p.host; port = p.port;
+      port = p.port;
+      host = await rx.pickHost([p.host].concat(p.ips || []), p.port);
+      if (!host) throw new Error(rx.explain({ code: 'ETIMEDOUT' }));
     } else if (isStr(a.target, 600)) {
       const t = parseTarget(a.target);
       if (!t) throw new Error('That is not a valid link or address. It looks like 192.168.1.5:5123 or a link starting with http://.');
@@ -133,24 +135,32 @@ const H = {
     } else throw new Error('Bad request');
     if (!token) {
       if (!/^\d{6}$/.test(code)) throw new Error('Type the 6 digit code shown on the sender\'s screen.');
-      token = await rx.pair(host, port, code);
+      try { token = await rx.pair(host, port, code); } catch (e) { throw new Error(e.code && /^[A-Z_]+$/.test(e.code) && !['WRONG_CODE', 'LOCKED', 'ENDED'].includes(e.code) ? rx.explain(e) : e.message); }
     }
-    const offer = await rx.getOffer(host, port, token);
+    let offer;
+    try { offer = await rx.getOffer(host, port, token); } catch (e) { throw new Error(['BAD_TOKEN', 'ENDED'].includes(e.code) ? e.message : rx.explain(e)); }
     if (session_ && session_.abort) session_.abort.abort();
     session_ = { host, port, token, offer, dest: (session_ && session_.dest) || defaultDest(), abort: null, running: false };
     return { name: offer.name, platform: offer.platform, total: offer.total, files: offer.files.map((f) => ({ id: f.id, name: f.name, size: f.size })), dest: session_.dest };
   },
 
-  async 'recv:download'() {
+  async 'recv:download'(ids) {
     const s = session_;
     if (!s) throw new Error('Connect to a sender first.');
     if (s.running) throw new Error('Already downloading.');
+    let offer = s.offer;
+    if (Array.isArray(ids)) {                       /* only the files the person ticked */
+      const want = new Set(ids.filter((x) => typeof x === 'string'));
+      const files = s.offer.files.filter((f) => want.has(f.id));
+      if (!files.length) throw new Error('Tick at least one file to download.');
+      offer = Object.assign({}, s.offer, { files, total: files.reduce((a, f) => a + f.size, 0) });
+    }
     s.running = true; s.abort = new AbortController();
     keepAwake(true);
     const bytes = {}; let dirty = false;
     const timer = setInterval(() => { if (dirty) { dirty = false; send('recv:progress', { bytes }); } }, 150);
     rx.downloadAll({
-      host: s.host, port: s.port, token: s.token, offer: s.offer, destDir: s.dest, signal: s.abort.signal,
+      host: s.host, port: s.port, token: s.token, offer, destDir: s.dest, signal: s.abort.signal,
       onBytes: (id, n) => { bytes[id] = n; dirty = true; },
       onFile: (f) => send('recv:file', f)
     }).then((res) => {
@@ -169,6 +179,13 @@ const H = {
     const rel = path.relative(path.resolve(session_.dest), path.resolve(p));
     if (!rel || rel.startsWith('..') || path.isAbsolute(rel)) return false;      /* only files inside the save folder */
     shell.showItemInFolder(path.resolve(p)); return true;
+  },
+  async 'win:ctl'(what) {                      /* the three round buttons on Windows and Linux (a Mac has its own) */
+    if (!win || win.isDestroyed()) return false;
+    if (what === 'close') win.close();
+    else if (what === 'min') win.minimize();
+    else if (what === 'max') { if (win.isMaximized()) win.unmaximize(); else win.maximize(); }
+    return win.isMaximized();
   },
   async 'clip:copy'(text) { if (!isStr(text, 1000)) return false; clipboard.writeText(text); return true; }
 };
@@ -219,18 +236,18 @@ function setupUpdates() {
 /* ------------------------------------------------------------------ window */
 function createWindow() {
   win = new BrowserWindow({
-    width: 1040, height: 740, minWidth: 820, minHeight: 600, backgroundColor: '#0d0d10', title: APP_NAME,
-    /* No system title bar: the app draws its own. Windows and Linux keep the real minimise, maximise and close buttons,
-       drawn over our bar in our colours. On Mac the traffic lights sit inside our bar. */
+    width: 1040, height: 760, minWidth: 900, minHeight: 640, backgroundColor: '#1c1c1e', title: APP_NAME, center: true,
+    /* No system title bar: the app draws its own, in the style of a Mac, with the three round buttons on the left.
+       On a Mac they are the real ones; on Windows and Linux the app draws them and they do the same jobs. */
     titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'hidden',
-    trafficLightPosition: { x: 16, y: 15 },
-    titleBarOverlay: process.platform === 'darwin' ? undefined : { color: '#0d0d10', symbolColor: '#f2f2f4', height: 46 },
+    trafficLightPosition: { x: 16, y: 16 },
     webPreferences: { contextIsolation: true, sandbox: true, nodeIntegration: false, webSecurity: true, preload: path.join(__dirname, 'preload.js') }
   });
   if (process.platform !== 'darwin') win.removeMenu();
   win.loadFile(INDEX);
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   win.webContents.on('will-navigate', (e) => e.preventDefault());
+  win.on('maximize', () => send('win:max', true)); win.on('unmaximize', () => send('win:max', false));
   win.on('closed', () => { win = null; });
 }
 
