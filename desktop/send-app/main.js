@@ -22,6 +22,10 @@ const fs = require('fs');
 
 const APP_NAME = 'File Share by Evans Large';
 const PORTS = { udp: 41873, tcp: 41874 };
+/* Updates: the newest version is always published to the "send-latest" release (installers plus latest.yml). */
+const UPDATE_FEED = process.env.FILESHARE_UPDATE_FEED || 'https://github.com/Evansrite1/portfolio/releases/download/send-latest/';
+const DOWNLOAD_PAGE = 'https://evansademilua.vercel.app/tools/send-app/';
+const WIFI_SETTINGS = { win32: 'ms-settings:network-wifi', darwin: 'x-apple.systempreferences:com.apple.preference.network' };
 
 const INDEX = path.join(__dirname, 'renderer', 'index.html');
 const INDEX_URL = pathToFileURL(INDEX).href;
@@ -48,13 +52,14 @@ function keepAwake(on) {                       /* the computer must not sleep in
   if (on && blockerId === null) blockerId = powerSaveBlocker.start('prevent-app-suspension');
   else if (!on && blockerId !== null) { try { powerSaveBlocker.stop(blockerId); } catch (e) {} blockerId = null; }
 }
-const defaultDest = () => path.join(app.getPath('downloads'), 'File Share');
+/* Received files go to Downloads/File Share (made automatically). If the person picks another folder, that choice is remembered. */
+const defaultDest = () => store.get('dest') || path.join(app.getPath('downloads'), 'File Share');
 const isStr = (v, max) => typeof v === 'string' && v.length > 0 && v.length <= max;
 
 /* ------------------------------------------------------------------ what the screen can ask for */
 const H = {
   async 'app:info'() {
-    return { id: myId, name: myName, version: app.getVersion(), platform: process.platform, dest: defaultDest(), files: share.list(), active: share.active };
+    return { id: myId, name: myName, version: app.getVersion(), platform: process.platform, dest: defaultDest(), files: share.list(), active: share.active, wifiSettings: !!WIFI_SETTINGS[process.platform] };
   },
 
   async 'files:pick'(kind) {
@@ -84,6 +89,20 @@ const H = {
   async 'share:stop'() { share.stop(); return true; },
 
   async 'net:check'() { return checker.check(); },
+  async 'net:quick'() {                         /* cheap: is there a network right now? (the screen asks every few seconds) */
+    const n = lanAddresses();
+    return { network: n.length ? { ok: true, name: n[0].name, ip: n[0].ip } : { ok: false } };
+  },
+  async 'net:wifi'() {                          /* only opens the system's own Wi-Fi page; changes nothing */
+    const url = WIFI_SETTINGS[process.platform];
+    if (!url) return false;
+    await shell.openExternal(url); return true;
+  },
+  async 'update:now'() {
+    if (updateMode === 'auto') { await autoUpdater.downloadUpdate(); return { started: true }; }
+    await shell.openExternal(DOWNLOAD_PAGE); return { opened: true };
+  },
+  async 'update:install'() { if (autoUpdater) autoUpdater.quitAndInstall(false, true); return true; },
   async 'net:fix'(id) {
     if (!isStr(id, 20)) throw new Error('Bad request');
     const r = await checker.fix(id);
@@ -93,6 +112,7 @@ const H = {
   async 'recv:dest'() {
     const r = await dialog.showOpenDialog(win, { title: 'Where should the files be saved?', defaultPath: (session_ && session_.dest) || defaultDest(), properties: ['openDirectory', 'createDirectory'] });
     if (r.canceled || !r.filePaths[0]) return null;
+    store.set('dest', r.filePaths[0]);
     if (session_) session_.dest = r.filePaths[0];
     return r.filePaths[0];
   },
@@ -174,10 +194,37 @@ share.on('error', (e) => send('share:error', { message: e.message }));
 discovery.on('peers', (list) => send('peers', list));
 discovery.on('error', (e) => send('discovery:error', { message: e.message }));
 
+/* ------------------------------------------------------------------ updates */
+let autoUpdater = null, updateMode = 'manual';
+function setupUpdates() {
+  if (!app.isPackaged && !process.env.FILESHARE_UPDATE_FEED) return;        /* nothing to update when running from source */
+  try { autoUpdater = require('electron-updater').autoUpdater; } catch (e) { return; }
+  /* Windows and the AppImage can replace themselves. Mac (unsigned) and .deb installs send the person to the download page. */
+  updateMode = (process.platform === 'win32' || process.env.APPIMAGE) ? 'auto' : 'manual';
+  if (process.env.FILESHARE_UPDATE_FEED) autoUpdater.forceDevUpdateConfig = true;      /* tests only: lets an unpackaged copy use a test feed */
+  autoUpdater.autoDownload = false;
+  autoUpdater.autoInstallOnAppQuit = false;
+  autoUpdater.allowPrerelease = false;
+  try { autoUpdater.setFeedURL({ provider: 'generic', url: UPDATE_FEED }); } catch (e) { return; }
+  autoUpdater.on('update-available', (info) => { if (process.env.FILESHARE_UPDATE_FEED) console.log('UPDATE available', info.version, updateMode); send('update:available', { version: info.version, mode: updateMode }); });
+  autoUpdater.on('update-not-available', () => { if (process.env.FILESHARE_UPDATE_FEED) console.log('UPDATE not available'); });
+  autoUpdater.on('download-progress', (p) => send('update:progress', { percent: Math.round(p.percent || 0) }));
+  autoUpdater.on('update-downloaded', () => send('update:ready', {}));
+  autoUpdater.on('error', (e) => send('update:error', { message: String(e && e.message || e).split('\n')[0].slice(0, 200) }));
+  const check = () => autoUpdater.checkForUpdates().catch(() => {});
+  setTimeout(check, 4000);
+  setInterval(check, 6 * 60 * 60 * 1000);
+}
+
 /* ------------------------------------------------------------------ window */
 function createWindow() {
   win = new BrowserWindow({
-    width: 1000, height: 720, minWidth: 760, minHeight: 560, backgroundColor: '#0b0b0c', title: APP_NAME,
+    width: 1040, height: 740, minWidth: 820, minHeight: 600, backgroundColor: '#0d0d10', title: APP_NAME,
+    /* No system title bar: the app draws its own. Windows and Linux keep the real minimise, maximise and close buttons,
+       drawn over our bar in our colours. On Mac the traffic lights sit inside our bar. */
+    titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'hidden',
+    trafficLightPosition: { x: 16, y: 15 },
+    titleBarOverlay: process.platform === 'darwin' ? undefined : { color: '#0d0d10', symbolColor: '#f2f2f4', height: 46 },
     webPreferences: { contextIsolation: true, sandbox: true, nodeIntegration: false, webSecurity: true, preload: path.join(__dirname, 'preload.js') }
   });
   if (process.platform !== 'darwin') win.removeMenu();
@@ -192,6 +239,7 @@ app.whenReady().then(async () => {
   if (process.platform === 'darwin') Menu.setApplicationMenu(Menu.buildFromTemplate([{ role: 'appMenu' }, { role: 'editMenu' }, { role: 'windowMenu' }]));
   try { await discovery.start(); discoveryOk = true; } catch (e) { /* the app still works with a link or an address */ }
   createWindow();
+  setupUpdates();
   if (process.argv.includes('--smoke')) {
     try { await require('./test/smoke')({ app, win, H, share, discovery, getSession: () => session_ }); }
     catch (e) { console.error('SMOKE FAILED', e && e.stack || e); app.exit(1); }

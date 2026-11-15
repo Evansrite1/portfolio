@@ -8,112 +8,177 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="top">
-  <div class="brand"><img class="logo-img" src="logo.svg" alt="" width="40" height="40"><div><h1>File Share <span class="by">by Evans Large</span></h1><p id="me" class="muted"></p></div></div>
-  <nav class="tabs" role="tablist" aria-label="Send or receive">
-    <button class="tab" role="tab" id="tab-send" aria-selected="true" aria-controls="view-send">Send</button>
-    <button class="tab" role="tab" id="tab-recv" aria-selected="false" aria-controls="view-recv">Receive</button>
-  </nav>
+<header class="titlebar" id="titlebar">
+  <img class="tb-logo" src="logo.svg" alt="" width="26" height="26">
+  <span class="tb-name">File Share <i>by Evans Large</i></span>
+  <span class="tb-spacer"></span>
+  <button class="tb-btn" id="tb-home" hidden>Home</button>
 </header>
 
-<main>
+<main id="main">
   <div id="alert" class="alert" role="alert" hidden></div>
-  <section id="net" class="net" hidden aria-live="polite">
-    <h2 id="net-title">Connection check</h2>
-    <ul id="net-list" class="net-list"></ul>
+
+  <section id="update" class="update" hidden aria-live="polite">
+    <span id="update-text"></span>
+    <button class="btn primary small-btn" id="update-btn">Update now</button>
   </section>
 
-  <section id="view-send" role="tabpanel" aria-labelledby="tab-send">
-    <div id="send-pick">
-      <div id="drop" class="drop" tabindex="0">
-        <p class="drop-title">Drop files or folders here</p>
-        <p class="muted">or choose them from your computer</p>
-        <div class="row center">
-          <button class="btn" id="pick-files">Choose files</button>
-          <button class="btn" id="pick-folder">Choose a folder</button>
+  <!-- HOME -->
+  <section id="home" class="view">
+    <h1 class="home-title">What would you like to do?</h1>
+    <p class="muted center">Both computers need File Share installed, and both must be on the same Wi-Fi.</p>
+    <div class="cards">
+      <button class="bigcard" id="go-send">
+        <svg viewBox="0 0 220 120" aria-hidden="true">
+          <rect x="14" y="40" width="64" height="44" rx="6" fill="#1d1d24" stroke="#3a3a45" stroke-width="2"/>
+          <rect x="8" y="88" width="76" height="6" rx="3" fill="#3a3a45"/>
+          <path d="M38 50h18l8 8v18H38z" fill="#fff"/><path d="M56 50v8h8z" fill="#ffc9c5"/>
+          <rect x="142" y="40" width="64" height="44" rx="6" fill="#1d1d24" stroke="#3a3a45" stroke-width="2"/>
+          <rect x="136" y="88" width="76" height="6" rx="3" fill="#3a3a45"/>
+          <path d="M92 66h26" stroke="#ff5b52" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 9"/>
+          <path d="M116 54l14 12-14 12" fill="none" stroke="#ff5b52" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M96 28a22 22 0 0 1 28 0M101 35a14 14 0 0 1 18 0" fill="none" stroke="#a3a3ad" stroke-width="3" stroke-linecap="round"/><circle cx="110" cy="42" r="2.5" fill="#a3a3ad"/>
+        </svg>
+        <b>Send files</b>
+        <span>Pick files or a folder, get a code, and the other computer receives them.</span>
+        <em>Start sending</em>
+      </button>
+      <button class="bigcard" id="go-recv">
+        <svg viewBox="0 0 220 120" aria-hidden="true">
+          <rect x="14" y="40" width="64" height="44" rx="6" fill="#1d1d24" stroke="#3a3a45" stroke-width="2"/>
+          <rect x="8" y="88" width="76" height="6" rx="3" fill="#3a3a45"/>
+          <rect x="142" y="40" width="64" height="44" rx="6" fill="#1d1d24" stroke="#3a3a45" stroke-width="2"/>
+          <rect x="136" y="88" width="76" height="6" rx="3" fill="#3a3a45"/>
+          <path d="M166 50h18l8 8v18h-26z" fill="#fff"/><path d="M184 50v8h8z" fill="#ffc9c5"/>
+          <path d="M126 66h-26" stroke="#ff5b52" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 9"/>
+          <path d="M102 54l-14 12 14 12" fill="none" stroke="#ff5b52" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M96 28a22 22 0 0 1 28 0M101 35a14 14 0 0 1 18 0" fill="none" stroke="#a3a3ad" stroke-width="3" stroke-linecap="round"/><circle cx="110" cy="42" r="2.5" fill="#a3a3ad"/>
+        </svg>
+        <b>Receive files</b>
+        <span>Choose the computer that is sharing, type its code, and save the files.</span>
+        <em>Start receiving</em>
+      </button>
+    </div>
+    <ol class="how">
+      <li><b>1</b><span>Connect both computers to the same Wi-Fi.</span></li>
+      <li><b>2</b><span>On one, press Send, pick files and start sharing.</span></li>
+      <li><b>3</b><span>On the other, press Receive and type the code.</span></li>
+    </ol>
+  </section>
+
+  <!-- GUIDED FLOW -->
+  <section id="flow" class="view" hidden>
+    <aside class="steps"><h2 id="flow-title"></h2><ol id="steps"></ol></aside>
+    <div class="stage">
+      <div class="panel" id="p-wifi" hidden>
+        <h2>Connect to Wi-Fi</h2>
+        <p class="muted">Both computers must be on the same Wi-Fi network, or plugged into the same router. A Guest network usually does not work.</p>
+        <div class="check" id="wifi-status"><span class="dot"></span><div><b id="wifi-title">Checking...</b><span id="wifi-detail" class="muted"></span></div></div>
+        <div id="wifi-help" hidden>
+          <h3>How to turn Wi-Fi on</h3>
+          <ol id="wifi-steps" class="help-list"></ol>
+          <button class="btn" id="wifi-open" hidden>Open Wi-Fi settings</button>
         </div>
       </div>
-      <div id="send-list-wrap" hidden>
-        <div class="list-head"><strong id="send-count"></strong><button class="link" id="send-clear">Remove all</button></div>
-        <ul id="send-list" class="files"></ul>
-        <button class="btn primary big" id="start">Start sharing</button>
-        <p class="muted small">Only the files above are shared. They are not uploaded anywhere. The other computer must be on the same Wi-Fi or network.</p>
-      </div>
-    </div>
 
-    <div id="send-live" hidden>
-      <div class="card">
-        <p class="muted">On the other computer, open File Share by Evans Large, press <b>Receive</b>, choose <b id="me2"></b> and type this code:</p>
+      <div class="panel" id="p-allow" hidden>
+        <h2>Let the other computer reach this one</h2>
+        <p class="muted" id="allow-intro"></p>
+        <div class="check" id="allow-status"><span class="dot"></span><div><b id="allow-title">Checking...</b><span id="allow-detail" class="muted"></span></div><button class="btn primary" id="allow-fix" hidden>Allow File Share</button></div>
+        <p id="allow-msg" class="net-msg" hidden></p>
+        <p class="muted small">You only do this once. Your computer shows its own permission window, and you press Yes. File Share does not change anything else.</p>
+      </div>
+
+      <div class="panel" id="p-choose" hidden>
+        <h2>Choose what to send</h2>
+        <div id="drop" class="drop" tabindex="0">
+          <p class="drop-title">Drop files or folders here</p>
+          <p class="muted">or choose them from your computer</p>
+          <div class="row center">
+            <button class="btn" id="pick-files">Choose files</button>
+            <button class="btn" id="pick-folder">Choose a folder</button>
+          </div>
+          <p class="muted small">External hard disk? Plug it in, press Choose a folder, and pick the folder on the disk.</p>
+        </div>
+        <div id="send-list-wrap" hidden>
+          <div class="list-head"><strong id="send-count"></strong><button class="link" id="send-clear">Remove all</button></div>
+          <ul id="send-list" class="files"></ul>
+          <button class="link" id="send-more">Add more files</button>
+        </div>
+      </div>
+
+      <div class="panel" id="p-share" hidden>
+        <h2>Share the code</h2>
+        <p class="muted">On the other computer: open File Share, press <b>Receive</b>, choose <b id="me2"></b> in the list, and type this code.</p>
         <p id="code" class="code" aria-live="polite"></p>
-        <p class="muted small">Computers not finding each other? On the other computer, press Receive, open "Nothing showing up?" and paste this link.</p>
-        <div class="row">
-          <select id="link-pick" aria-label="Which network address to use"></select>
-          <input id="link" class="input" readonly aria-label="Link to send">
-          <button class="btn" id="copy-link">Copy link</button>
-        </div>
         <p id="send-status" class="status" role="status">Waiting for the other computer...</p>
-      </div>
-      <ul id="live-list" class="files"></ul>
-      <div class="row between">
+        <details class="more">
+          <summary>The other computer cannot see me? Send a link instead</summary>
+          <div class="row">
+            <select id="link-pick" aria-label="Which network address to use"></select>
+            <input id="link" class="input" readonly aria-label="Link to send">
+            <button class="btn" id="copy-link">Copy link</button>
+          </div>
+          <p class="muted small">On the other computer, press Receive, open "Nothing showing up?" and paste this link.</p>
+        </details>
+        <ul id="live-list" class="files"></ul>
         <p class="muted small" id="expires"></p>
-        <button class="btn danger" id="stop">Stop sharing</button>
-      </div>
-    </div>
-  </section>
-
-  <section id="view-recv" role="tabpanel" aria-labelledby="tab-recv" hidden>
-    <div id="recv-find">
-      <h2>Computers sharing files nearby</h2>
-      <ul id="peers" class="peers"></ul>
-      <p id="peers-empty" class="muted">No one is sharing yet. Ask the sender to press <b>Start sharing</b>. Both computers must be on the same Wi-Fi or network, and both need this app.</p>
-      <p id="peers-hint" class="muted small" hidden>Still nothing? Check that both computers are on the same Wi-Fi (not a Guest network), that the sender pressed Start sharing, and run the connection check below.</p>
-
-      <div id="pair" class="card" hidden>
-        <p>Type the 6 digit code shown on <b id="pair-name"></b>:</p>
-        <div class="row">
-          <input id="code-in" class="input code-in" inputmode="numeric" autocomplete="off" maxlength="7" placeholder="000 000" aria-label="6 digit code">
-          <button class="btn primary" id="pair-go">Connect</button>
-          <button class="link" id="pair-cancel">Cancel</button>
-        </div>
       </div>
 
-      <details class="more">
-        <summary>Nothing showing up? Use a link or an address</summary>
-        <div class="row">
-          <input id="target" class="input" autocomplete="off" spellcheck="false" placeholder="http://192.168.1.5:5123/?t=...   or   192.168.1.5:5123" aria-label="Link or address">
+      <div class="panel" id="p-find" hidden>
+        <h2>Find the sender</h2>
+        <p class="muted">On the other computer: open File Share, press <b>Send</b>, choose the files and press <b>Start sharing</b>. It will appear here.</p>
+        <ul id="peers" class="peers"></ul>
+        <p id="peers-empty" class="muted">Looking for computers that are sharing...</p>
+        <p id="peers-hint" class="muted small" hidden>Still nothing? Check that both computers are on the same Wi-Fi (not Guest), that the sender pressed Start sharing, and that both have pressed Allow File Share.</p>
+        <div id="pair" class="card" hidden>
+          <p>Type the 6 digit code shown on <b id="pair-name"></b>:</p>
+          <div class="row">
+            <input id="code-in" class="input code-in" inputmode="numeric" autocomplete="off" maxlength="7" placeholder="000 000" aria-label="6 digit code">
+            <button class="btn primary" id="pair-go">Connect</button>
+            <button class="link" id="pair-cancel">Cancel</button>
+          </div>
         </div>
-        <div class="row">
-          <input id="target-code" class="input code-in" inputmode="numeric" autocomplete="off" maxlength="7" placeholder="000 000" aria-label="6 digit code (only if you typed an address)">
-          <button class="btn" id="target-go">Connect</button>
-        </div>
-        <p class="muted small">A full link already includes the secret, so no code is needed. An address needs the code.</p>
-      </details>
-    </div>
+        <details class="more">
+          <summary>Nothing showing up? Use a link or an address</summary>
+          <div class="row"><input id="target" class="input" autocomplete="off" spellcheck="false" placeholder="http://192.168.1.5:41874/?t=...   or   192.168.1.5:41874" aria-label="Link or address"></div>
+          <div class="row">
+            <input id="target-code" class="input code-in" inputmode="numeric" autocomplete="off" maxlength="7" placeholder="000 000" aria-label="6 digit code (only if you typed an address)">
+            <button class="btn" id="target-go">Connect</button>
+          </div>
+          <p class="muted small">A full link already includes the secret, so no code is needed. An address needs the code.</p>
+        </details>
+      </div>
 
-    <div id="recv-offer" hidden>
-      <div class="list-head"><strong id="offer-title"></strong><button class="link" id="offer-back">Disconnect</button></div>
-      <ul id="offer-list" class="files"></ul>
-      <div class="card">
-        <p class="muted small">Save to</p>
+      <div class="panel" id="p-get" hidden>
+        <div class="list-head"><h2 id="offer-title"></h2><button class="link" id="offer-back">Disconnect</button></div>
+        <ul id="offer-list" class="files"></ul>
+        <div class="card">
+          <p class="muted small">Save to</p>
+          <div class="row"><code id="dest" class="path"></code><button class="btn" id="dest-change">Change</button></div>
+        </div>
+        <div class="bar" id="total-bar" hidden><div class="fill" id="total-fill"></div></div>
+        <p id="recv-status" class="status" role="status"></p>
         <div class="row">
-          <code id="dest" class="path"></code>
-          <button class="btn" id="dest-change">Change</button>
+          <button class="btn primary big" id="download">Download all</button>
+          <button class="btn danger" id="cancel" hidden>Cancel</button>
+          <button class="btn" id="open-dest" hidden>Open the folder</button>
         </div>
       </div>
-      <div class="bar" id="total-bar" hidden><div class="fill" id="total-fill"></div></div>
-      <p id="recv-status" class="status" role="status"></p>
-      <div class="row">
-        <button class="btn primary big" id="download">Download all</button>
-        <button class="btn danger" id="cancel" hidden>Cancel</button>
-        <button class="btn" id="open-dest" hidden>Open the folder</button>
+
+      <div class="navbar" id="navbar">
+        <button class="btn" id="back">Back</button>
+        <span class="tb-spacer"></span>
+        <button class="link" id="skip" hidden>Skip this step</button>
+        <button class="btn primary" id="next">Next</button>
       </div>
     </div>
   </section>
 </main>
 
 <footer class="foot muted small">
-  Files go straight between the two computers over your Wi-Fi or network. Each file is checked on arrival. The connection is not encrypted, so use it on a network you trust.
-  <button class="link" id="net-toggle">Connection check</button>
+  Files go straight between the two computers over your Wi-Fi. Each file is checked on arrival. The connection is not encrypted, so use it on a network you trust.
+  <span id="version"></span>
 </footer>
 <script src="app.js"></script>
 </body>

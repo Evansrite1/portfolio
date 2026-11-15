@@ -1,7 +1,7 @@
 {
   "name": "file-share",
   "productName": "File Share by Evans Large",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "File Share by Evans Large: send files between computers over Wi-Fi. Windows, Mac and Linux. Nothing is uploaded.",
   "author": "Evans Ademilua",
   "homepage": "https://evansademilua.vercel.app/tools/send-app/",
@@ -50,12 +50,20 @@
       "artifactName": "File-Share-Setup.${ext}"
     },
     "nsis": {
-      "oneClick": true,
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": false,
       "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
       "runAfterFinish": true,
       "deleteAppDataOnUninstall": false,
       "shortcutName": "File Share by Evans Large",
-      "uninstallDisplayName": "File Share by Evans Large"
+      "uninstallDisplayName": "File Share by Evans Large",
+      "installerSidebar": "build/installerSidebar.bmp",
+      "uninstallerSidebar": "build/uninstallerSidebar.bmp",
+      "installerHeader": "build/installerHeader.bmp",
+      "include": "build/installer.nsh"
     },
     "mac": {
       "target": [
@@ -112,6 +120,15 @@
     "pkg": {
       "installLocation": "/Applications",
       "isRelocatable": false
-    }
+    },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "https://github.com/Evansrite1/portfolio/releases/download/send-latest/"
+      }
+    ]
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.11"
   }
 }

@@ -95,6 +95,8 @@ jobs:
             desktop/send-app/dist/File-Share-mac-*.pkg
             desktop/send-app/dist/File-Share-linux-x64.AppImage
             desktop/send-app/dist/File-Share-linux-x64.deb
+            desktop/send-app/dist/latest*.yml
+            desktop/send-app/dist/*.blockmap
           if-no-files-found: error
 
   release:
@@ -113,3 +115,8 @@ jobs:
           ls -la files
           gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --title "File Share app" --notes "File Share for Windows, Mac and Linux. Send files between computers on the same network." --latest=false
           gh release upload "$TAG" files/* --repo "$GITHUB_REPOSITORY" --clobber
+          # The newest version also goes to a release that never changes its name, "send-latest".
+          # Installed apps read latest.yml from there to find out that an update exists, and the download page links there.
+          gh release view send-latest --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create send-latest --repo "$GITHUB_REPOSITORY" --title "File Share by Evans Large (newest version)" --notes "Always the newest File Share. Installed apps check this release for updates." --latest=false
+          gh release upload send-latest $(ls files | grep -v '\.yml$' | sed 's#^#files/#') --repo "$GITHUB_REPOSITORY" --clobber
+          gh release upload send-latest files/*.yml --repo "$GITHUB_REPOSITORY" --clobber

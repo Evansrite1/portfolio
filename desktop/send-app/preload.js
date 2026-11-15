@@ -8,6 +8,8 @@ const on = (ch, cb) => {
   return () => ipcRenderer.removeListener(ch, f);
 };
 
+contextBridge.exposeInMainWorld('platform', process.platform);
+
 contextBridge.exposeInMainWorld('api', {
   info: () => call('app:info'),
   pick: (kind) => call('files:pick', kind),
@@ -25,6 +27,10 @@ contextBridge.exposeInMainWorld('api', {
   reveal: (p) => call('shell:reveal', p),
   copy: (t) => call('clip:copy', t),
   netCheck: () => call('net:check'),
+  netQuick: () => call('net:quick'),
   netFix: (id) => call('net:fix', id),
+  openWifi: () => call('net:wifi'),
+  updateNow: () => call('update:now'),
+  updateInstall: () => call('update:install'),
   on
 });
