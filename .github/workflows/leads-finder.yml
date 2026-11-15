@@ -95,8 +95,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${{ github.event.inputs.tag || github.ref_name }}"
-          ls -la files
+          find files -type f
+          mapfile -t F < <(find files -type f)
           gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --title "IG Leads Finder $TAG" --notes "IG Leads Finder for Windows and Mac." --latest=false
-          gh release upload "$TAG" files/* --repo "$GITHUB_REPOSITORY" --clobber
+          gh release upload "$TAG" "${F[@]}" --repo "$GITHUB_REPOSITORY" --clobber
           gh release view leads-latest --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create leads-latest --repo "$GITHUB_REPOSITORY" --title "IG Leads Finder (newest version)" --notes "Always the newest IG Leads Finder. The download page links here." --latest=false
-          gh release upload leads-latest files/* --repo "$GITHUB_REPOSITORY" --clobber
+          gh release upload leads-latest "${F[@]}" --repo "$GITHUB_REPOSITORY" --clobber
