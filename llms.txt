@@ -14,6 +14,7 @@
 - [Background remover](https://evansademilua.vercel.app/tools/remove-background/): Remove the background from any image. Exact for logos, AI cutout for photos. Transparent PNG.
 - [Audio mastering](https://evansademilua.vercel.app/tools/audio-mastering/): A free music workstation in your browser: unlimited tracks, MIDI, plugins, spectral repair, noise removal and loudness mastering.
 - [IG Leads Finder](https://evansademilua.vercel.app/tools/ig-leads-finder/): Find Instagram businesses that need your service, by kind of business, country, city and size. Windows and Mac.
+- [QuizBlast live quizzes](https://evansademilua.vercel.app/tools/quiz-live/): Make quizzes with 10 question types and play them live with a game PIN, on teams, or alone. Free, no account.
 - [Video compressor](https://evansademilua.vercel.app/tools/video-compressor/): Shrink a big video, like 2 GB down to 500 MB. Trim it or cut it into two parts.
 - [QR code scanner](https://evansademilua.vercel.app/tools/qr-code-scanner/): Read a code from a photo, a screenshot or your camera. Nothing is uploaded.
 - [Color picker](https://evansademilua.vercel.app/tools/color-picker/): Pick a color, copy HEX, RGB, HSL and CMYK, pull a palette from a photo, check contrast.

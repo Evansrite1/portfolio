@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QuizBlast: live quiz games</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#14122b">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header id="hdr" class="hdr">
+  <a class="brand" href="./"><span class="brand-mark">Q</span><span>QuizBlast</span></a>
+  <nav id="tabs" class="tabs" aria-label="Pages">
+    <button data-p="quizzes">My quizzes</button>
+    <button data-p="reports">Reports</button>
+    <button data-p="study">Study</button>
+    <button data-p="join">Join a game</button>
+  </nav>
+  <a class="hdr-link" href="/tools/quiz-live/">About</a>
+</header>
+<main id="page" class="page"></main>
+<div id="stage" class="stage-root" hidden></div>
+<script src="/tools/vendor/peerjs/peerjs.min.js"></script>
+<script src="/tools/vendor/qrcode.js"></script>
+<script src="core.js"></script>
+<script src="ui.js"></script>
+<script src="host.js"></script>
+<script src="player.js"></script>
+<script src="creator.js"></script>
+<script src="extras.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
