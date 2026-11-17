@@ -1,5 +1,5 @@
 INFO = dict(slug='video-editor', kicker='Video', tile_title='Video editor',
-            tile_desc='Cut, add auto captions, text, music and filters, then export an MP4. Works on your phone.',
+            tile_desc='Cut, auto edit with captions and transitions, add text, music and filters, then export an MP4. Free in the browser, or install the app.',
             nav='Video editor', pos=0)
 
 TOOL = '''<div class="tool" id="ve-tool" style="grid-template-columns:1fr">

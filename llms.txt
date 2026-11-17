@@ -7,7 +7,7 @@
 - [Full stack developer for hire](https://evansademilua.vercel.app/full-stack-developer/): what he builds, the stack he uses and how to hire him
 - [Web developer in Lagos, Nigeria](https://evansademilua.vercel.app/web-developer/): websites and web apps for businesses worldwide
 - [Free online tools](https://evansademilua.vercel.app/tools/): video, audio, PDF, image and QR code tools that run in the browser
-- [Video editor](https://evansademilua.vercel.app/tools/video-editor/): Cut, add auto captions, text, music and filters, then export an MP4. Works on your phone.
+- [Video editor](https://evansademilua.vercel.app/tools/video-editor/): Cut, auto edit with captions and transitions, add text, music and filters, then export an MP4. Free in the browser, or install the app.
 - [QR code generator](https://evansademilua.vercel.app/tools/qr-code-generator/): Links, text, WiFi, WhatsApp, email, phone, SMS, location and contact cards. Add a logo and colors.
 - [Video compressor, converter and trimmer](https://evansademilua.vercel.app/tools/video-tools/): Three video tools in one: shrink a big video, convert it to MP4, MP3, GIF and more, or cut it in seconds. Nothing is uploaded.
 - [Second screen presenter](https://evansademilua.vercel.app/tools/second-screen-presenter/): Bible verses, lyrics, PDFs, videos, cameras and countdowns on a TV or projector, with a stage display and phone remote.

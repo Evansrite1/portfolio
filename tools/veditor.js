@@ -1679,6 +1679,7 @@ function capSlider(key, label, min, max, unit, val) {
 function capPanelHtml() {
   const caps = capClips(), S = st.cap;
   let h = '<div class="fld"><label for="capLang">Language of the speech</label><select id="capLang">' + LANGS.map((l) => '<option value="' + l[0] + '"' + (l[0] === capLang ? ' selected' : '') + '>' + l[1] + '</option>').join('') + '</select></div>';
+  if (!capJob && mains().length) h += '<button class="btn pri" id="autoEdit" style="margin-bottom:6px">Auto edit the whole video</button><p class="hint" style="margin-top:0">Removes pauses, adds transitions at the cuts, and makes big captions that pop. You can change everything after.</p>';
   h += capJob ? capProgHtml(capJob.msg || 'Working...', capJob.frac == null ? null : capJob.frac) : '<button class="btn pri" id="capGen">' + (caps.length ? 'Make captions again' : 'Make captions automatically') + '</button>';
   if (!caps.length) h += '<h4>Words on screen at once</h4><div class="chips">' + CAP_CHUNKS.map((x) => '<span class="chip" data-capchunk="' + x[0] + '" aria-pressed="' + (S.chunk === x[0]) + '">' + x[1] + '</span>').join('') + '</div>';
   h += '<p class="hint">It listens to the speech in your video and voiceover, not the music. The first time, it downloads a 40 MB speech model, then it works from your browser. Clear speech works best, so check the words afterwards. Make captions after you finish cutting, because they do not move when you cut the video.</p>';
@@ -1754,6 +1755,30 @@ async function autoCaptions() {
     if (tool === 'cap') openTool('cap');
   }
 }
+/* Auto edit: one button that does the cutting for you. It removes the pauses, puts a transition at every cut, then listens to the
+   speech and makes big captions that pop. Every step is one the editor already has; this only runs them in the right order. */
+async function autoEdit() {
+  if (capJob || !mains().length) return;
+  setPlay(false);
+  toast('Auto edit: finding the pauses...');
+  const vids = st.clips.filter((c) => c.lane === 'main' && media.get(c.mid) && media.get(c.mid).type === 'video');
+  for (const c of vids) { try { await removeSilences(c); } catch (e) { /* a clip with no readable sound is left as it is */ } }
+  const order = ['fade', 'flash', 'blur', 'zoom'];
+  let k = 0, jump = 0;
+  const ms = mains();
+  ms.forEach((c, i) => {
+    if (i === 0) return;
+    if (c.mid === ms[i - 1].mid) { c.tr = (jump++ % 2) ? 'none' : 'zoom'; }        // a cut inside one shot: a quick punch-in on every other cut
+    else c.tr = order[k++ % order.length];                                            // a new shot: a transition
+  });
+  commit();
+  Object.assign(st.cap, { style: 'mix', anim: 'pop', chunk: '2', emph: true });
+  refresh();
+  toast('Auto edit: making captions...');
+  await autoCaptions();
+  if (tool === 'cap') openTool('cap');
+  toast('Auto edit finished. Press play, then change anything you like. Undo steps back.');
+}
 const srtInput = document.createElement('input'); srtInput.type = 'file'; srtInput.accept = '.srt,.vtt,text/plain'; srtInput.hidden = true; document.body.appendChild(srtInput);
 srtInput.onchange = async () => {
   const f = srtInput.files[0]; srtInput.value = ''; if (!f) return;
@@ -1765,6 +1790,7 @@ srtInput.onchange = async () => {
 function capClick(e) {
   let el;
   if (e.target.closest('#capGen')) { autoCaptions(); return true; }
+  if (e.target.closest('#autoEdit')) { autoEdit(); return true; }
   if (e.target.closest('#capCancel')) {
     if (capJob) { const j = capJob; j.cancelled = true; if (j.worker) j.worker.terminate(); capJob = null; toast('Stopped.'); if (tool === 'cap') openTool('cap'); }
     return true;
