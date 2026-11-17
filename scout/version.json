@@ -1,14 +1,13 @@
 {
-  "version": "1.2.0",
-  "code": "update/ig-scout-code-1.2.0.zip",
-  "sha256": "f6b82e87331771a1f7beec5ae8576575b3bc815812efe472bb991e15d694119c",
+  "version": "2.0.0",
+  "code": "update/ig-scout-code-2.0.0.zip",
+  "sha256": "fb9e9b04321c4452c634dce68a5b104e45c5c38306691d949d69f7bfdb70deeb",
   "notes": [
-    "Now called IG Leads Finder",
-    "Choose the service you offer: website design, website redesign, social media management, online booking, or any business",
-    "Choose your audience: kinds of business, country, city and the size of the account",
-    "Every service has its own honest message, which you can edit and save",
-    "Safer: only this app's own screen can control it",
-    "On Mac the app shows a download button for new versions and never runs downloaded code"
+    "Now called IG Outreach: find leads, send the messages and see who replied, in one app",
+    "New Send screen: every lead gets its message, you can edit it, and the app sends them slowly inside a daily limit",
+    "Replies are found by reading your Instagram inbox, and counted on the new Statistics screen",
+    "Statistics: leads found, messages sent today and this week, replies, reply rate, a chart of the last 14 days",
+    "The app stops by itself if Instagram pushes back, to protect your account"
   ],
-  "download": "https://github.com/Evansrite1/portfolio/releases/download/leads-latest/IG-Leads-Finder-Setup.exe"
+  "download": "https://github.com/Evansrite1/portfolio/releases/download/leads-latest/IG-Outreach-Setup.exe"
 }

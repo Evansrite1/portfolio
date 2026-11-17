@@ -1,11 +1,11 @@
-"""Build IG Leads Finder.exe, the installer, the code update package and the version file.
+"""Build IG Outreach.exe, the installer, the code update package and the version file.
 
     python build.py            builds everything
     python build.py --code     rebuilds only the code package and version file (use this for a normal update)
     python build.py --out DIR  writes the installer to DIR (the GitHub workflow uses this)
 
 Output goes to ../scout/ (the private download page of the portfolio site):
-    scout/download/IG-Leads-Finder-Setup.exe  the installer people download
+    scout/download/IG-Outreach-Setup.exe  the installer people download
     scout/update/ig-scout-code-<version>.zip  what installed apps download to update themselves
     scout/version.json                        what installed apps check
 """
@@ -66,22 +66,22 @@ def makensis():
 
 
 def exe():
-    """The app as a folder (starts fast), then wrapped into one installer: IG-Leads-Finder-Setup.exe."""
+    """The app as a folder (starts fast), then wrapped into one installer: IG-Outreach-Setup.exe."""
     if WORK.exists():
         shutil.rmtree(WORK)
-    cmd = [sys.executable, "-m", "PyInstaller", "--noconfirm", "--onedir", "--noconsole", "--name", "IG Leads Finder",
+    cmd = [sys.executable, "-m", "PyInstaller", "--noconfirm", "--onedir", "--noconsole", "--name", "IG Outreach",
            "--icon", str(HERE / "ui" / "icon.ico"),
            "--add-data", f"{HERE / 'app.py'};code", "--add-data", f"{HERE / 'core'};code/core",
            "--add-data", f"{HERE / 'ui'};code/ui", "--collect-all", "playwright", "--collect-all", "reportlab",
            "--distpath", str(WORK / "dist"), "--workpath", str(WORK / "work"), "--specpath", str(WORK),
            str(HERE / "launcher.py")]
     subprocess.run(cmd, check=True)
-    app_dir = WORK / "dist" / "IG Leads Finder"
+    app_dir = WORK / "dist" / "IG Outreach"
     dest = Path(sys.argv[sys.argv.index("--out") + 1]) if "--out" in sys.argv else SITE / "download"
     dest.mkdir(parents=True, exist_ok=True)
     for old in dest.glob("IG-*"):
         old.unlink()
-    out = dest / "IG-Leads-Finder-Setup.exe"
+    out = dest / "IG-Outreach-Setup.exe"
     side = HERE / "build_art" / "installerSidebar.bmp"
     extra = [f"/DSIDEBAR={side}"] if side.exists() else []
     subprocess.run([makensis(), "/V2", f"/DVERSION={VERSION}", f"/DSRC={app_dir}", f"/DOUT={out}",

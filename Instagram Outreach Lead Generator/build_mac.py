@@ -1,16 +1,16 @@
-"""Build IG Leads Finder for Mac (run on a Mac, normally by the GitHub workflow leads-finder.yml).
+"""Build IG Outreach for Mac (run on a Mac, normally by the GitHub workflow leads-finder.yml).
 
     python build_mac.py arm64     Apple chip
     python build_mac.py x64       Intel
 
 Result in build_out/:
-    IG-Leads-Finder-mac-<arch>.pkg   an installer: it puts the app in the Applications folder and nothing anywhere else
-    IG-Leads-Finder-mac-<arch>.dmg   the same app as a disk image (drag to Applications)
+    IG-Outreach-mac-<arch>.pkg   an installer: it puts the app in the Applications folder and nothing anywhere else
+    IG-Outreach-mac-<arch>.dmg   the same app as a disk image (drag to Applications)
 The app is not signed with a paid Apple certificate, so the first time the installer or the app is opened the person
 right-clicks it and presses Open.
 
-What the app does on a Mac (and nothing else): it writes its own files in ~/Library/Application Support/IG Leads Finder and
-its results in ~/Documents/IG Leads Finder. It opens Chrome, Edge or Brave in an app window with its own separate profile,
+What the app does on a Mac (and nothing else): it writes its own files in ~/Library/Application Support/IG Outreach and
+its results in ~/Documents/IG Outreach. It opens Chrome, Edge or Brave in an app window with its own separate profile,
 so the person's normal browser, bookmarks and logins are never touched. It never runs code downloaded from the internet:
 a new version is shown as a download button.
 """
@@ -22,8 +22,8 @@ from pathlib import Path
 HERE = Path(__file__).parent
 WORK = HERE / "build_out"
 ARCH = sys.argv[1] if len(sys.argv) > 1 else "arm64"
-NAME = "IG Leads Finder"
-SLUG = "IG-Leads-Finder"
+NAME = "IG Outreach"
+SLUG = "IG-Outreach"
 
 
 def icns():

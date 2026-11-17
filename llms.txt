@@ -14,7 +14,7 @@
 - [File Share by Evans Large](https://evansademilua.vercel.app/tools/send-app/): Send big files and folders between two computers over Wi-Fi. Install it on both. Windows, Mac and Linux.
 - [Background remover](https://evansademilua.vercel.app/tools/remove-background/): Remove the background from any image. Exact for logos, AI cutout for photos. Transparent PNG.
 - [Audio by Evans Large](https://evansademilua.vercel.app/tools/audio-mastering/): A music workstation: unlimited tracks, MIDI, plugins, spectral repair, noise removal and loudness mastering. Free in your browser, or install the app for Windows and Mac.
-- [IG Leads Finder](https://evansademilua.vercel.app/tools/ig-leads-finder/): Find Instagram businesses that need your service, by kind of business, country, city and size. Windows and Mac.
+- [IG Outreach](https://evansademilua.vercel.app/tools/ig-outreach/): Find Instagram businesses that need your service, message them from your own account, see who replies, and track your numbers. Windows and Mac.
 - [QuizBlast live quizzes](https://evansademilua.vercel.app/tools/quiz-live/): Make quizzes with 10 question types and play them live with a game PIN, on teams, or alone. Free, no account.
 - [Outreach Mailer](https://evansademilua.vercel.app/tools/mailer/): Send outreach emails from your own Gmail and see live stats: sent, opened, replied, bounced. Windows.
 - [QR code scanner](https://evansademilua.vercel.app/tools/qr-code-scanner/): Read a code from a photo, a screenshot or your camera. Nothing is uploaded.

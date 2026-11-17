@@ -1,6 +1,16 @@
 {
   "redirects": [
     {
+      "source": "/tools/ig-leads-finder",
+      "destination": "/tools/ig-outreach/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/ig-leads-finder/",
+      "destination": "/tools/ig-outreach/",
+      "permanent": true
+    },
+    {
       "source": "/tools/invoice-generator",
       "destination": "/tools/invoice-receipt-generator/#invoice",
       "permanent": true

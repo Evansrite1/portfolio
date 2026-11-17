@@ -1,4 +1,4 @@
-name: IG Leads Finder app
+name: IG Outreach app
 
 # Runs the checks, builds the Windows installer and the Mac installers (Apple chip and Intel), and publishes them to a
 # release called leads-vX.Y.Z and to a release called leads-latest (the download page links to leads-latest, so it never
@@ -11,7 +11,7 @@ on:
     inputs:
       tag:
         description: Release tag
-        default: leads-v1.2.0
+        default: leads-v2.0.0
 
 permissions:
   contents: write
@@ -77,9 +77,9 @@ jobs:
         with:
           name: leads-${{ matrix.label }}
           path: |
-            dist/IG-Leads-Finder-Setup.exe
-            Instagram Outreach Lead Generator/build_out/IG-Leads-Finder-mac-*.pkg
-            Instagram Outreach Lead Generator/build_out/IG-Leads-Finder-mac-*.dmg
+            dist/IG-Outreach-Setup.exe
+            Instagram Outreach Lead Generator/build_out/IG-Outreach-mac-*.pkg
+            Instagram Outreach Lead Generator/build_out/IG-Outreach-mac-*.dmg
           if-no-files-found: error
 
   release:
@@ -97,7 +97,7 @@ jobs:
           TAG="${{ github.event.inputs.tag || github.ref_name }}"
           find files -type f
           mapfile -t F < <(find files -type f)
-          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --title "IG Leads Finder $TAG" --notes "IG Leads Finder for Windows and Mac." --latest=false
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --title "IG Outreach $TAG" --notes "IG Outreach for Windows and Mac." --latest=false
           gh release upload "$TAG" "${F[@]}" --repo "$GITHUB_REPOSITORY" --clobber
-          gh release view leads-latest --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create leads-latest --repo "$GITHUB_REPOSITORY" --title "IG Leads Finder (newest version)" --notes "Always the newest IG Leads Finder. The download page links here." --latest=false
+          gh release view leads-latest --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create leads-latest --repo "$GITHUB_REPOSITORY" --title "IG Outreach (newest version)" --notes "Always the newest IG Outreach. The download page links here." --latest=false
           gh release upload leads-latest "${F[@]}" --repo "$GITHUB_REPOSITORY" --clobber

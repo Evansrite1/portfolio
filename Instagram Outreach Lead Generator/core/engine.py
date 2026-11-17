@@ -207,6 +207,30 @@ class Engine:
         handles = list(dict.fromkeys(re.findall(r'"username":"([A-Za-z0-9._]{2,30})"', body)))
         return 200, handles
 
+    # ---------- direct messages (see dm.py) ----------
+    async def _dm_page(self):
+        """A tab for messaging. Unlike the reading tabs it loads everything, because the message box needs it."""
+        await self._open()
+        pg = self._pages.get("dm")
+        if pg is None or pg.is_closed():
+            pg = await self._ctx.new_page()
+            self._pages["dm"] = pg
+        return pg
+
+    async def _send(self, handle, text):
+        from . import dm
+        return await dm.send_dm(await self._dm_page(), handle, text, self.log)
+
+    def send_dm(self, handle, text):
+        return self.call(self._send(handle, text), 240)
+
+    async def _inbox(self):
+        from . import dm
+        return await dm.read_inbox(await self._dm_page(), self.log)
+
+    def inbox(self):
+        return self.call(self._inbox(), 180)
+
     async def _close(self):
         try:
             if self._ctx:

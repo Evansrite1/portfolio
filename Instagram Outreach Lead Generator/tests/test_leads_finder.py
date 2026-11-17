@@ -1,4 +1,4 @@
-"""Checks for IG Leads Finder that need no Instagram login. Run:  python -m unittest discover -s tests -v"""
+"""Checks for IG Outreach that need no Instagram login. Run:  python -m unittest discover -s tests -v"""
 import json
 import os
 import sys
@@ -144,7 +144,7 @@ class App(unittest.TestCase):
         r = self.c.get("/")
         self.assertEqual(r.status_code, 200)
         html = r.get_data(as_text=True)
-        self.assertIn("IG Leads Finder", html)
+        self.assertIn("IG Outreach", html)
         self.assertIn("What do you offer?", html)
         self.assertIn("Who do you want to reach?", html)
         self.assertNotIn("—", html)
@@ -172,8 +172,8 @@ class MacSafety(unittest.TestCase):
         src = (ROOT / "launcher_mac.py").read_text(encoding="utf-8")
         for needle in ("rm -rf", "sudo", "defaults write", "killall", "launchctl", "chmod -R", "shutil.rmtree(Path.home()"):
             self.assertNotIn(needle, src)
-        self.assertIn('"Library" / "Application Support" / "IG Leads Finder"', src)
-        self.assertIn('"Documents" / "IG Leads Finder"', src)
+        self.assertIn('"Library" / "Application Support" / "IG Outreach"', src)
+        self.assertIn('"Documents" / "IG Outreach"', src)
         self.assertIn("--user-data-dir", src)                       # its own browser profile, never the person's
         build = (ROOT / "build_mac.py").read_text(encoding="utf-8")
         self.assertIn('"--install-location", "/Applications"', build)

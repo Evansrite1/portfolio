@@ -1,4 +1,4 @@
-"""IG Leads Finder: find Instagram businesses for the service you offer, and save them as a leads sheet.
+"""IG Outreach: find Instagram businesses for the service you offer, and save them as a leads sheet.
 
 Two ways to start it:
   run.bat          the console shows the live log, the screen opens in your browser
@@ -14,7 +14,8 @@ from pathlib import Path
 
 from flask import Flask, jsonify, request, send_file, send_from_directory, abort
 
-from core import services, updater
+from core import outbox, services, updater
+from core.sender import Sender
 from core.countries import country_names
 from core.engine import Engine
 from core.job import Job, load_known
@@ -56,6 +57,9 @@ def log(msg):
 
 engine = Engine(HOME / "profile", log)
 job = None
+HOME.mkdir(parents=True, exist_ok=True)
+outbox.open_db(HOME / "outreach.db")
+sender = Sender(engine, lambda: read_settings().get("send"), log)
 known_cache = {"at": 0, "set": set()}
 
 
@@ -128,6 +132,9 @@ def read_settings():
         return {}
 
 
+sender.boot()                                          # replies are checked even before sending is switched on
+
+
 @app.get("/api/settings")
 def get_settings():
     return jsonify(read_settings())
@@ -150,6 +157,112 @@ def save_settings():
     HOME.mkdir(parents=True, exist_ok=True)
     SETTINGS_FILE.write_text(json.dumps(cur), encoding="utf-8")
     return jsonify(ok=True)
+
+
+# ---------------------------------------------------------------- outreach: messages, sending, replies, statistics
+@app.get("/api/outbox")
+def outbox_list():
+    return jsonify(leads=outbox.list_leads(request.args.get("status") or None, (request.args.get("q") or "").strip() or None),
+                   sender=sender.status(), counts=outbox.stats()["by_status"])
+
+
+@app.post("/api/outbox/message")
+def outbox_message():
+    d = request.get_json(force=True) or {}
+    outbox.set_message(str(d.get("handle", "")).lower(), d.get("message", ""))
+    return jsonify(ok=True)
+
+
+@app.post("/api/outbox/status")
+def outbox_status():
+    d = request.get_json(force=True) or {}
+    outbox.set_status(str(d.get("handle", "")).lower(), d.get("status"))
+    return jsonify(ok=True)
+
+
+@app.post("/api/outbox/delete")
+def outbox_delete():
+    d = request.get_json(force=True) or {}
+    outbox.delete(str(d.get("handle", "")).lower())
+    return jsonify(ok=True)
+
+
+@app.post("/api/outbox/add")
+def outbox_add():
+    d = request.get_json(force=True) or {}
+    n = outbox.add_handles(clean_handles(d.get("handles") or ""), str(d.get("message") or "")[:2000])
+    return jsonify(ok=True, added=n)
+
+
+@app.get("/api/outbox.csv")
+def outbox_csv():
+    import csv
+    rows = outbox.q("SELECT handle,link,name,country,what,message,status,sent_at,replied_at,error FROM leads ORDER BY created")
+    buf = io.StringIO()
+    w = csv.writer(buf)
+    w.writerow(["handle", "link", "name", "country", "what_they_do", "message", "status", "sent_at", "replied_at", "error"])
+    fmt = lambda t: time.strftime("%Y-%m-%d %H:%M", time.localtime(t)) if t else ""
+    for r in rows:
+        w.writerow([r["handle"], r["link"], r["name"], r["country"], r["what"], r["message"], r["status"], fmt(r["sent_at"]), fmt(r["replied_at"]), r["error"]])
+    return send_file(io.BytesIO(("\ufeff" + buf.getvalue()).encode("utf-8")), mimetype="text/csv", as_attachment=True, download_name="outreach-results.csv")
+
+
+@app.post("/api/send/start")
+def send_start():
+    try:
+        sender.start()
+    except Exception as e:  # noqa
+        return jsonify(ok=False, error=str(e)), 400
+    return jsonify(ok=True, sender=sender.status())
+
+
+@app.post("/api/send/stop")
+def send_stop():
+    sender.stop("Stopped")
+    return jsonify(ok=True, sender=sender.status())
+
+
+@app.get("/api/send/status")
+def send_status():
+    return jsonify(sender.status())
+
+
+@app.get("/api/send/settings")
+def send_settings_get():
+    return jsonify(sender.cfg())
+
+
+@app.post("/api/send/settings")
+def send_settings_set():
+    import json
+    d = request.get_json(force=True) or {}
+    cur = read_settings()
+    s = cur.setdefault("send", {})
+    for k in ("daily_cap", "gap_min", "gap_max", "from_hour", "to_hour", "reply_check_minutes"):
+        if k in d:
+            try:
+                s[k] = int(d[k])
+            except Exception:
+                pass
+    if not (0 <= int(s.get("from_hour", 9)) < int(s.get("to_hour", 20)) <= 24):
+        return jsonify(ok=False, error="The start hour must be before the end hour."), 400
+    SETTINGS_FILE.write_text(json.dumps(cur), encoding="utf-8")
+    return jsonify(ok=True, settings=sender.cfg())
+
+
+@app.post("/api/replies/check")
+def replies_check():
+    if not engine.status()["logged_in"]:
+        return jsonify(ok=False, error="Log in to Instagram first"), 400
+    def go():
+        sender.check_replies()
+    threading.Thread(target=go, daemon=True).start()
+    return jsonify(ok=True)
+
+
+@app.get("/api/stats")
+def stats():
+    return jsonify(outbox.stats())
 
 
 @app.get("/api/version")
@@ -216,6 +329,7 @@ def run():
         "message": str(d.get("message", (saved.get("templates") or {}).get(service, "")))[:4000],
     }
     job = Job(engine, params, OUT, OUT / "usage.json", known() if params["skip_known"] else set(), log)
+    job.on_row = outbox.add_row            # every lead found is kept in the outreach list
     job.start()
     return jsonify(ok=True)
 
@@ -312,7 +426,7 @@ def main():
     HOME.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
     print("=" * 62)
-    print(f"  IG Leads Finder {VERSION} is running.  Keep this window open.")
+    print(f"  IG Outreach {VERSION} is running.  Keep this window open.")
     print(f"  Screen:  http://127.0.0.1:{PORT}")
     print("  Results are saved as they arrive in:  " + str(OUT))
     print("=" * 62, flush=True)

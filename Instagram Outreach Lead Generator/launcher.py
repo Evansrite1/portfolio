@@ -1,4 +1,4 @@
-"""IG Leads Finder.exe starts here. No console window: the screen opens in its own app window.
+"""IG Outreach.exe starts here. No console window: the screen opens in its own app window.
 
 The exe carries a copy of the code. If a newer copy was downloaded earlier (see core/updater.py) that one runs
 instead. If the newer copy fails to start, the built-in copy is used, so an update can never leave the app broken.
@@ -15,13 +15,13 @@ from pathlib import Path
 
 # Never executed. They tell the packager which libraries the app code needs inside the exe.
 if __name__ == "__never__":  # pragma: no cover
-    import bs4, csv, flask, glob, hashlib, io, json, openpyxl, queue, random, requests, shutil, urllib.request, zipfile  # noqa
+    import bs4, csv, flask, glob, hashlib, io, json, openpyxl, queue, random, requests, shutil, sqlite3, urllib.request, zipfile  # noqa
     import playwright.async_api, werkzeug.serving, reportlab.platypus  # noqa
 
 PORT = int(os.environ.get("IGSCOUT_PORT") or 5057)
 LOCAL = Path(os.environ.get("LOCALAPPDATA") or Path.home() / "AppData" / "Local")
 HOME = LOCAL / "IGScout"
-DOCS = Path.home() / "Documents" / "IG Leads Finder"
+DOCS = Path.home() / "Documents" / "IG Outreach"
 HOME.mkdir(parents=True, exist_ok=True)
 DOCS.mkdir(parents=True, exist_ok=True)
 
@@ -119,7 +119,7 @@ def main():
             raise
     server = app.make_server()
     threading.Thread(target=server.serve_forever, daemon=True).start()
-    app.log(f"IG Leads Finder {app.VERSION} started ({code})")
+    app.log(f"IG Outreach {app.VERSION} started ({code})")
 
     window = open_window()
     started = time.time()
@@ -164,5 +164,5 @@ if __name__ == "__main__":
             (HOME / "igscout-crash.log").write_text(err, encoding="utf-8")
         except Exception:
             pass
-        say("IG Leads Finder could not start", "Something went wrong while starting.\n\nDetails were saved to:\n"
+        say("IG Outreach could not start", "Something went wrong while starting.\n\nDetails were saved to:\n"
             + str(HOME / "igscout-crash.log"))

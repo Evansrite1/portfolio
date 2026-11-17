@@ -1,5 +1,15 @@
 [
   {
+    "version": "2.0.0",
+    "notes": [
+      "Now called IG Outreach: find leads, send the messages and see who replied, in one app",
+      "New Send screen: every lead gets its message, you can edit it, and the app sends them slowly inside a daily limit",
+      "Replies are found by reading your Instagram inbox, and counted on the new Statistics screen",
+      "Statistics: leads found, messages sent today and this week, replies, reply rate, a chart of the last 14 days",
+      "The app stops by itself if Instagram pushes back, to protect your account"
+    ]
+  },
+  {
     "version": "1.2.0",
     "notes": [
       "Now called IG Leads Finder",

@@ -1,4 +1,4 @@
-"""The message written for every lead (IG Leads Finder). The person writes one template, the app fills it in for each business.
+"""The message written for every lead (IG Outreach). The person writes one template, the app fills it in for each business.
 
 Placeholders (written in curly brackets):
     {first_name}  first name from the profile name, or "there" when there is no usable name

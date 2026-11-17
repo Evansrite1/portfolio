@@ -68,6 +68,7 @@ class Job:
         self.threads = []
         self.feeder_done = False
         self.active = 0
+        self.on_row = None          # called with every lead that is kept (the app saves it to the outreach list)
 
     # ---------- bookkeeping ----------
     def skip(self, why):
@@ -285,6 +286,11 @@ class Job:
                 if new:
                     w.writeheader()
                 w.writerow(row)
+        if self.on_row:
+            try:
+                self.on_row(row)
+            except Exception as e:  # noqa
+                self.log(f"Could not save @{row['handle']} to the outreach list: {e}")
         self.log(f"+ {row['handle']}  {row['country']}  {row['has_website']}  {row['what_they_do']}")
         return True
 
@@ -318,7 +324,7 @@ class Job:
         if p["keywords"]:
             bits.append("Kind: " + ", ".join(p["keywords"]))
         bits.append(f"Followers {p['min_followers']} to {p['max_followers']}")
-        story = [Paragraph("IG Leads Finder results", title), Spacer(1, 2 * mm),
+        story = [Paragraph("IG Outreach results", title), Spacer(1, 2 * mm),
                  Paragraph(t(f"{len(rows)} leads, {datetime.now().strftime('%Y-%m-%d %H:%M')}. " + ". ".join(bits)), small),
                  Spacer(1, 5 * mm)]
         cols = ["#", "Handle and Instagram link", "Country", "Website and link", "What they do", "Followers", "Last 3 posts", "Notes"]
@@ -357,11 +363,11 @@ class Job:
             canvas.saveState()
             canvas.setFont("Helvetica", 7)
             canvas.setFillColor(colors.HexColor("#777777"))
-            canvas.drawRightString(landscape(A4)[0] - 12 * mm, 7 * mm, f"IG Leads Finder   page {doc.page}")
+            canvas.drawRightString(landscape(A4)[0] - 12 * mm, 7 * mm, f"IG Outreach   page {doc.page}")
             canvas.restoreState()
         bio = BytesIO()
         SimpleDocTemplate(bio, pagesize=landscape(A4), leftMargin=12 * mm, rightMargin=12 * mm, topMargin=12 * mm,
-                          bottomMargin=14 * mm, title="IG Leads Finder results").build(story, onFirstPage=footer, onLaterPages=footer)
+                          bottomMargin=14 * mm, title="IG Outreach results").build(story, onFirstPage=footer, onLaterPages=footer)
         return bio.getvalue()
 
     def xlsx_bytes(self):

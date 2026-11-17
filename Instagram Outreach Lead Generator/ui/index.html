@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>IG Leads Finder</title>
+<title>IG Outreach</title>
 <link rel="icon" href="/favicon.ico">
 <style>
 :root{--bg:#0e1013;--panel:#171a1f;--raised:#1e2228;--line:#2a2f37;--ink:#eef1f5;--soft:#9aa3af;--accent:#e8412e;--ok:#2fbf71;--warn:#e8a92e;--bad:#e8412e}
@@ -75,15 +75,35 @@ pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:1
 .note{font-size:.78rem;color:var(--soft);margin-top:12px}
 .upd{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--raised);border-bottom:2px solid var(--accent);padding:10px 24px;font-size:.9rem}
 .upd[hidden]{display:none}.upd button{padding:6px 14px;background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.tabs{display:flex;gap:6px;padding:10px 24px 0;border-bottom:1px solid var(--line);background:var(--panel)}
+.tabs button{border:0;border-bottom:3px solid transparent;border-radius:0;background:none;padding:10px 18px;color:var(--soft);font-weight:600}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--accent)}
+.pgwrap{padding:20px 24px;max-width:1280px;margin:0 auto}
+.pgwrap .card{margin-bottom:16px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:900px){.two{grid-template-columns:1fr}}
+.sendbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.sub.bad,.bad{color:var(--bad)}
+.ob-msg{width:100%;min-height:70px;font-size:.84rem}
+.ob-sent{white-space:pre-wrap;font-size:.84rem;color:var(--soft);max-width:360px}
+.tag.st-sent{color:var(--accent);border-color:var(--accent)}.tag.st-replied{color:var(--ok);border-color:var(--ok)}.tag.st-failed{color:var(--bad);border-color:var(--bad)}
+.chart{display:flex;align-items:flex-end;gap:6px;height:150px}.col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:2px;min-width:0}
+.bars{display:flex;align-items:flex-end;gap:2px;height:118px;width:100%;justify-content:center}.bars i{display:block;width:38%;max-width:16px;border-radius:3px 3px 0 0;min-height:2px}
+.bars .s{background:var(--accent)}.bars .r{background:var(--ok)}.col small{font-size:.68rem;color:var(--soft)}
+.legend{display:flex;gap:16px;font-size:.8rem;color:var(--soft);margin-top:8px}.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px}
+.feed{max-height:320px;overflow:auto}.feed div{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:.88rem}.feed time{color:var(--soft);min-width:84px;font-size:.8rem}
+.stat small{display:block;font-size:.72rem;color:var(--soft)}
+.pgwrap [hidden],[hidden]{display:none!important}
 </style>
 </head>
 <body>
 <div class="upd" id="upd" hidden role="status"><span id="updtext"></span><button type="button" id="updbtn">Update and restart</button></div>
 <header>
-  <div><h1>IG Leads Finder</h1><div class="sub">Find the businesses that need what you offer, and save them as a leads sheet <span id="ver"></span></div></div>
+  <div><h1>IG Outreach</h1><div class="sub">Find businesses that need what you offer, message them and see who replies <span id="ver"></span></div></div>
   <div class="status"><span class="pill" id="ligt"></span><span id="litext">Checking</span>
     <button id="btnlogin" type="button">Log in to Instagram</button></div>
 </header>
+<nav class="tabs" id="tabs" aria-label="Screens"><button type="button" data-p="find" class="on">Find leads</button><button type="button" data-p="send">Send messages</button><button type="button" data-p="stats">Statistics</button></nav>
+<div id="pg-find">
 <main>
   <section class="card" aria-label="Setup">
     <h2>Setup</h2>
@@ -177,6 +197,68 @@ pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:1
     <details><summary>Live log</summary><pre id="log"></pre></details>
   </section>
 </main>
+</div>
+<section id="pg-send" hidden>
+  <div class="pgwrap">
+    <section class="card" aria-label="Sending">
+      <h2>Send the messages</h2>
+      <div class="sendbar">
+        <span class="pill" id="sd-pill"></span><b id="sd-state">Stopped</b>
+        <span class="grow sub" id="sd-msg"></span>
+        <button class="primary" id="sd-start" type="button" style="width:auto;margin:0;padding:10px 22px">Start sending</button>
+        <button class="stop" id="sd-stop" type="button" style="width:auto;margin:0;padding:10px 22px" hidden>Stop sending</button>
+      </div>
+      <div class="stats" style="margin:14px 0 0">
+        <div class="stat"><b id="sd-today">0</b><span>Sent today</span></div>
+        <div class="stat"><b id="sd-cap">12</b><span>Daily limit</span></div>
+        <div class="stat"><b id="sd-wait">0</b><span>Waiting to send</span></div>
+        <div class="stat"><b id="sd-next">-</b><span>Next message in</span></div>
+      </div>
+      <details style="margin-top:12px"><summary>Sending settings</summary>
+        <div class="row2" style="margin-top:8px">
+          <div><label for="sd-capi">Messages per day (1 to 25)</label><input type="number" id="sd-capi" min="1" max="25"></div>
+          <div><label for="sd-gap">Minutes between messages (shortest)</label><input type="number" id="sd-gap" min="1" max="60"></div>
+          <div><label for="sd-from">Send from hour</label><input type="number" id="sd-from" min="0" max="23"></div>
+          <div><label for="sd-to">Send until hour</label><input type="number" id="sd-to" min="1" max="24"></div>
+        </div>
+        <button type="button" id="sd-save" class="small" style="margin-top:8px">Save</button>
+        <p class="note">Instagram limits accounts that send many first messages quickly. A limited account cannot message anyone for hours or days. Keep the daily limit low, especially on a new account. The app waits a random time between messages and stops by itself if Instagram pushes back.</p>
+      </details>
+    </section>
+    <section class="card" aria-label="Messages">
+      <h2>Messages</h2>
+      <div class="tools">
+        <select id="ob-status" aria-label="Show"><option value="">All</option><option value="new">Waiting</option><option value="sent">Sent</option><option value="replied">Replied</option><option value="failed">Failed</option><option value="skipped">Skipped</option></select>
+        <input class="grow" type="text" id="ob-q" placeholder="Search a handle or business" aria-label="Search">
+        <button type="button" id="ob-check">Check for replies now</button>
+        <button type="button" id="ob-csv">Download CSV</button>
+      </div>
+      <div class="tools"><textarea id="ob-add" rows="2" class="grow" placeholder="Add handles by hand, one per line. They get the message below." aria-label="Handles"></textarea>
+        <button type="button" id="ob-addbtn">Add</button></div>
+      <div class="tablewrap" style="max-height:56vh"><table>
+        <thead><tr><th>Handle</th><th>What they do</th><th>Message</th><th>Status</th><th></th></tr></thead>
+        <tbody id="ob-rows"></tbody></table><div class="empty" id="ob-empty">Leads you find appear here with their message.</div></div>
+    </section>
+  </div>
+</section>
+<section id="pg-stats" hidden>
+  <div class="pgwrap">
+    <section class="card" aria-label="Statistics">
+      <h2>Your outreach in numbers</h2>
+      <div class="stats" id="st-top"></div>
+      <h2 style="margin-top:18px">Last 14 days</h2>
+      <div class="chart" id="st-chart"></div>
+      <div class="legend"><span><i style="background:var(--accent)"></i>Sent</span><span><i style="background:var(--ok)"></i>Replies</span></div>
+    </section>
+    <div class="two">
+      <section class="card"><h2>By service</h2><div id="st-service"></div></section>
+      <section class="card"><h2>By country</h2><div id="st-country"></div></section>
+    </div>
+    <section class="card"><h2>Latest activity</h2><div id="st-recent" class="feed"></div></section>
+    <p class="note">Replies are found by reading your Instagram inbox every few minutes while the app is open. A reply counts when the newest message in a conversation is theirs.</p>
+  </div>
+</section>
+
 <script>
 (function(){
   var $=function(i){return document.getElementById(i)};
@@ -338,6 +420,91 @@ pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:1
   }).catch(function(){});
   $('openf').onclick=function(){post('/api/open-folder')};
   setInterval(tick,1000);tick();
+})();
+</script>
+<script>
+(function(){
+  'use strict';
+  var $=function(i){return document.getElementById(i)};
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function post(u,b){return fetch(u,{method:'POST',headers:{'Content-Type':'application/json','X-IGLF':'1'},body:JSON.stringify(b||{})}).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error||'Something went wrong');return j})})}
+  function get(u){return fetch(u).then(function(r){return r.json()})}
+  function ago(ts){if(!ts)return '';var s=Math.max(0,Date.now()/1000-ts);if(s<90)return 'just now';if(s<3600)return Math.floor(s/60)+' min ago';if(s<86400)return Math.floor(s/3600)+' h ago';return new Date(ts*1000).toLocaleDateString()}
+  var page='find',timer=null;
+  var pages={find:$('pg-find'),send:$('pg-send'),stats:$('pg-stats')};
+  function go(p){
+    page=p;
+    Object.keys(pages).forEach(function(k){pages[k].hidden=(k!==p)});
+    [].forEach.call(document.querySelectorAll('#tabs button'),function(b){b.className=(b.dataset.p===p?'on':'')});
+    clearInterval(timer);
+    if(p==='send'){loadBox();timer=setInterval(function(){loadStatus();if(!document.activeElement||document.activeElement.tagName!=='TEXTAREA')loadBox()},6000)}
+    if(p==='stats'){loadStats();timer=setInterval(loadStats,10000)}
+    try{localStorage.setItem('igo.page',p)}catch(e){}
+  }
+  [].forEach.call(document.querySelectorAll('#tabs button'),function(b){b.addEventListener('click',function(){go(b.dataset.p)})});
+
+  /* ---------- send ---------- */
+  var cfgDone=false;
+  function drawStatus(s){
+    $('sd-pill').className='pill'+(s.running?(s.in_window?' on':' warn'):(s.paused_reason?' bad':''));
+    $('sd-state').textContent=s.running?'Sending is on':(s.paused_reason?'Stopped by itself':'Sending is off');
+    $('sd-msg').textContent=s.message||'';
+    $('sd-start').hidden=s.running;$('sd-stop').hidden=!s.running;
+    $('sd-today').textContent=s.sent_today;$('sd-cap').textContent=s.cap;$('sd-wait').textContent=s.waiting;
+    $('sd-next').textContent=s.running&&s.next_in?(s.next_in>=60?Math.ceil(s.next_in/60)+' min':s.next_in+' s'):'-';
+  }
+  function loadStatus(){return get('/api/send/status').then(drawStatus)}
+  function loadCfg(){if(cfgDone)return;cfgDone=true;get('/api/send/settings').then(function(c){$('sd-capi').value=c.daily_cap;$('sd-gap').value=Math.round(c.gap_min/60);$('sd-from').value=c.from_hour;$('sd-to').value=c.to_hour})}
+  var tags={new:'Waiting',sent:'Sent',replied:'Replied',failed:'Failed',skipped:'Skipped'};
+  function loadBox(){
+    loadCfg();
+    return get('/api/outbox?status='+encodeURIComponent($('ob-status').value)+'&q='+encodeURIComponent($('ob-q').value)).then(function(d){
+      drawStatus(d.sender);
+      var tb=$('ob-rows');tb.innerHTML='';
+      $('ob-empty').hidden=d.leads.length>0;
+      d.leads.forEach(function(l){
+        var tr=document.createElement('tr'),editable=(l.status==='new'||l.status==='failed');
+        var msg=editable?'<textarea class="ob-msg" rows="3" data-h="'+esc(l.handle)+'">'+esc(l.message)+'</textarea>':'<div class="ob-sent">'+esc(l.message)+'</div>';
+        var st='<span class="tag st-'+l.status+'">'+tags[l.status]+'</span>'+(l.sent_at?'<div class="sub">'+ago(l.sent_at)+'</div>':'')+(l.replied_at?'<div class="sub">replied '+ago(l.replied_at)+'</div>':'')+(l.error?'<div class="sub bad">'+esc(l.error)+'</div>':'');
+        var act='';
+        if(l.status==='new')act='<button class="small" data-skip="'+esc(l.handle)+'">Skip</button>';
+        if(l.status==='failed'||l.status==='skipped')act='<button class="small" data-retry="'+esc(l.handle)+'">Try again</button>';
+        tr.innerHTML='<td><a href="'+esc(l.link)+'" target="_blank" rel="noopener">@'+esc(l.handle)+'</a><div class="sub">'+esc(l.country||'')+'</div></td><td class="wrap">'+esc(l.what||'')+'</td><td class="wrap" style="min-width:300px">'+msg+'</td><td>'+st+'</td><td>'+act+'</td>';
+        tb.appendChild(tr);
+      });
+    });
+  }
+  $('ob-rows').addEventListener('change',function(e){var t=e.target;if(t.classList.contains('ob-msg'))post('/api/outbox/message',{handle:t.dataset.h,message:t.value})});
+  $('ob-rows').addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b)return;
+    if(b.dataset.skip)post('/api/outbox/status',{handle:b.dataset.skip,status:'skipped'}).then(loadBox);
+    if(b.dataset.retry)post('/api/outbox/status',{handle:b.dataset.retry,status:'new'}).then(loadBox);
+  });
+  $('ob-status').addEventListener('change',loadBox);
+  var qt;$('ob-q').addEventListener('input',function(){clearTimeout(qt);qt=setTimeout(loadBox,250)});
+  $('sd-start').addEventListener('click',function(){post('/api/send/start').then(function(r){drawStatus(r.sender)}).catch(function(e){$('sd-msg').textContent=e.message})});
+  $('sd-stop').addEventListener('click',function(){post('/api/send/stop').then(function(r){drawStatus(r.sender)})});
+  $('sd-save').addEventListener('click',function(){var g=Math.max(1,Number($('sd-gap').value)||4);post('/api/send/settings',{daily_cap:Number($('sd-capi').value),gap_min:g*60,gap_max:Math.round(g*60*1.75),from_hour:Number($('sd-from').value),to_hour:Number($('sd-to').value)}).then(function(){$('sd-msg').textContent='Saved';loadStatus()}).catch(function(e){$('sd-msg').textContent=e.message})});
+  $('ob-check').addEventListener('click',function(){post('/api/replies/check').then(function(){$('sd-msg').textContent='Reading your inbox. Replies appear here in a minute.';setTimeout(loadBox,15000)}).catch(function(e){$('sd-msg').textContent=e.message})});
+  $('ob-csv').addEventListener('click',function(){location.href='/api/outbox.csv'});
+  $('ob-addbtn').addEventListener('click',function(){post('/api/outbox/add',{handles:$('ob-add').value}).then(function(r){$('ob-add').value='';$('sd-msg').textContent=r.added+' added. Edit their message in the table.';loadBox()})});
+
+  /* ---------- statistics ---------- */
+  function stat(n,l,s){return '<div class="stat"><b>'+n+'</b><span>'+l+'</span>'+(s?'<small>'+s+'</small>':'')+'</div>'}
+  function table(rows,key){
+    if(!rows.length)return '<p class="sub">Nothing yet.</p>';
+    return '<table><thead><tr><th>'+key+'</th><th>Leads</th><th>Sent</th><th>Replies</th></tr></thead><tbody>'+rows.map(function(r){return '<tr><td>'+esc(r[key.toLowerCase()]||'Not set')+'</td><td>'+r.leads+'</td><td>'+(r.sent||0)+'</td><td>'+(r.replies||0)+'</td></tr>'}).join('')+'</tbody></table>';
+  }
+  var evn={sent:'Message sent',reply:'Replied',failed:'Could not send'};
+  function loadStats(){get('/api/stats').then(function(s){
+    $('st-top').innerHTML=stat(s.found,'Leads found')+stat(s.sent_all,'Messages sent',s.sent_today+' today, '+s.sent_week+' in 7 days')+stat(s.replies_all,'Replies',s.reply_rate+'% reply rate')+stat(s.by_status.new||0,'Waiting to send',s.failed?s.failed+' failed':'');
+    var mx=Math.max.apply(null,s.series.map(function(d){return Math.max(d.sent,d.replies)}).concat([1]));
+    $('st-chart').innerHTML=s.series.map(function(d){var D=new Date(d.date+'T00:00');return '<div class="col" title="'+d.date+': '+d.sent+' sent, '+d.replies+' replies"><div class="bars"><i class="s" style="height:'+Math.round(100*d.sent/mx)+'%"></i><i class="r" style="height:'+Math.round(100*d.replies/mx)+'%"></i></div><small>'+D.getDate()+'</small></div>'}).join('');
+    $('st-service').innerHTML=table(s.by_service,'Service');$('st-country').innerHTML=table(s.by_country,'Country');
+    $('st-recent').innerHTML=s.recent.length?s.recent.map(function(e){return '<div><time>'+ago(e.ts)+'</time><span><b>'+(evn[e.type]||e.type)+'</b> @'+esc(e.handle)+(e.type==='reply'&&e.detail?' : '+esc(e.detail):'')+(e.type==='failed'&&e.detail?' : '+esc(e.detail):'')+'</span></div>'}).join(''):'<p class="sub">Nothing yet. Messages and replies appear here.</p>';
+  })}
+  var start='find';try{start=localStorage.getItem('igo.page')||'find'}catch(e){}
+  go(pages[start]?start:'find');
 })();
 </script>
 </body>
