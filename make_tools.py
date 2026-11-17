@@ -432,7 +432,7 @@ def schema_nodes(slug, p):
         return [app, crumbs]          # a download page shows no FAQ, so it must not claim one in its schema
     return [app, faq, crumbs]
 
-KEYS_PAGES = ['qr-code-generator', 'qr-code-scanner', 'remove-background', 'wifi-qr-code-generator', 'whatsapp-link-generator', 'color-picker', 'currency-calculator', 'image-converter', 'invoice-generator', 'receipt-generator', 'pdf-converter', 'screen-recorder', 'video-compressor', 'video-converter', 'video-trimmer', 'watermark-maker']
+KEYS_PAGES = ['qr-code-generator', 'qr-code-scanner', 'remove-background', 'wifi-qr-code-generator', 'whatsapp-link-generator', 'color-picker', 'currency-calculator', 'image-converter', 'invoice-receipt-generator', 'pdf-converter', 'screen-recorder', 'video-tools', 'watermark-maker']
 
 def build_page(slug, p):
     h = head(p['title'], p['desc'], '/tools/%s/' % slug, schema_nodes(slug, p), p['vendor'], p['own'])
@@ -492,19 +492,22 @@ def load_new_tools():
             CARDS.insert(i.get('pos', len(CARDS)), card)
             NAMES[i['slug']] = i['nav']
         PAGES[i['slug']] = mod.PAGE
+        for _s, _p in getattr(mod, 'EXTRA_PAGES', {}).items():
+            PAGES[_s] = _p
 
 # Short "how to use" steps for the detailed view of the tools page. Tools without an entry use their page lead.
 HOWTO = {
     'qr-code-generator': ['Pick what the code should open: a link, WiFi, WhatsApp, a contact and more.', 'Type the details, then add a logo and colours if you like.', 'Download the code as PNG or SVG and print or share it.'],
     'remove-background': ['Add a photo or a logo.', 'Wait a moment while the background is removed on your device.', 'Download the cut-out as a transparent PNG.'],
-    'video-compressor': ['Add a video.', 'Pick a target size or quality, and trim it if you want.', 'Download the smaller video.'],
+    'video-tools': ['Press Compressor, Converter or Trimmer.', 'Add your video and pick a size, a format or the part to keep.', 'Download the result. Nothing is uploaded.'],
     'qr-code-scanner': ['Open a photo or screenshot of a code, or use your camera.', 'The result appears at once.', 'Copy it or open the link.'],
     'wifi-qr-code-generator': ['Type your network name and password.', 'Pick a style for the sign.', 'Download it and put it on the wall so guests can scan and join.'],
     'second-screen-presenter': ['Open the presenter and connect a TV or projector set to extend.', 'Add songs, Bible passages, photos, videos and countdowns to your service.', 'Click a song or double-click anything else to show it on the screen.'],
     'audio-mastering': ['Open the studio and drop in audio files, or add a MIDI track.', 'Edit, mix and add plugins, or repair noise in the spectral view.', 'Pick a loudness target in Mastering and export WAV or MP3.'],
-    'keyboard-key-finder': ['Pick a sound and play the keys with your mouse, finger or computer keyboard.', 'Press Listen to hear a song through the microphone or a tab, or drop in an audio file, to find its key.', 'Drop a song into Song breakdown to see the chords, bass, lead line and sections on a timeline.', 'Press play and follow along. The keyboard lights up with what you hear.'],
-    'invoice-generator': ['Pick an invoice design from the gallery.', 'Fill in your business, your customer and the items.', 'Check the live preview, then download the PDF.'],
-    'receipt-generator': ['Pick a receipt design, including festive ones.', 'Fill in your business and what was paid for.', 'Download or print the receipt.'],
+    'choir-assistant': ['Pick a sound and play the keys with your mouse, finger or computer keyboard.', 'Press Listen to hear a song through the microphone or a tab, or drop in an audio file, to find its key.', 'Drop a song into Song breakdown to see the chords, bass, lead line and sections on a timeline.', 'Press play and follow along. The keyboard lights up with what you hear.'],
+    'invoice-receipt-generator': ['Press Invoice or Receipt.', 'Pick a design and fill in your business, customer and items.', 'Download the PDF or PNG, or print it.'],
+    '_old_invoice': ['Pick an invoice design from the gallery.', 'Fill in your business, your customer and the items.', 'Check the live preview, then download the PDF.'],
+    '_old_receipt': ['Pick a receipt design, including festive ones.', 'Fill in your business and what was paid for.', 'Download or print the receipt.'],
     'pdf-converter': ['Choose To PDF, From PDF or Edit PDF.', 'Add your files with the plus button.', 'Press the main button and download the result.'],
     'whatsapp-link-generator': ['Pick your country and type your number.', 'Choose a ready message or write your own.', 'Copy the link or download the QR code.'],
     'video-converter': ['Add a video or an audio file.', 'Pick the format you want, such as MP4, MP3 or a video from your song.', 'Download the converted file.'],
@@ -600,9 +603,10 @@ def update_seo_lists():
     pages = [p for p in make_seo.PUBLIC_PAGES if not p[0].startswith('/tools/')]
     i = [p[0] for p in pages].index('/solutions.html') + 1
     import os
-    top = ('qr-code-generator', 'remove-background', 'video-compressor', 'video-editor')
+    top = ('qr-code-generator', 'remove-background', 'video-tools', 'video-editor')
     slugs = sorted(d for d in os.listdir(os.path.join(ROOT, 'tools')) if os.path.isfile(os.path.join(ROOT, 'tools', d, 'index.html')) and d not in ('church-presenter', 'am', 'css', 'vendor'))
     tool_pages = [('/tools/', '0.9')] + [('/tools/%s/' % d, '0.9' if d in top else '0.8') for d in slugs]
+    tool_pages += [('/tools/%s/' % d, '0.6') for d in sorted(PAGES) if '/' in d]
     make_seo.PUBLIC_PAGES = pages[:i] + tool_pages + pages[i:]
     lines = ['- [Free online tools]({site}/tools/): video, audio, PDF, image and QR code tools that run in the browser']
     lines += ['- [%s]({site}/tools/%s/): %s' % (c[2], c[0], c[3]) for c in CARDS]
@@ -612,7 +616,7 @@ def update_seo_lists():
     make_seo.write_static()
 
 # These tools were merged into the QR code generator (use ?type=wifi or ?type=whatsapp there). Keep them from coming back.
-MERGED = ('wifi-qr-code-generator', 'whatsapp-link-generator')
+MERGED = ('wifi-qr-code-generator', 'whatsapp-link-generator', 'video-compressor', 'video-converter', 'video-trimmer', 'invoice-generator', 'receipt-generator')
 CARDS[:] = [c for c in CARDS if c[0] not in MERGED]
 for _k in MERGED:
     PAGES.pop(_k, None)

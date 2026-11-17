@@ -1,6 +1,66 @@
 {
   "redirects": [
     {
+      "source": "/tools/invoice-generator",
+      "destination": "/tools/invoice-receipt-generator/#invoice",
+      "permanent": true
+    },
+    {
+      "source": "/tools/invoice-generator/",
+      "destination": "/tools/invoice-receipt-generator/#invoice",
+      "permanent": true
+    },
+    {
+      "source": "/tools/receipt-generator",
+      "destination": "/tools/invoice-receipt-generator/#receipt",
+      "permanent": true
+    },
+    {
+      "source": "/tools/receipt-generator/",
+      "destination": "/tools/invoice-receipt-generator/#receipt",
+      "permanent": true
+    },
+    {
+      "source": "/tools/keyboard-key-finder",
+      "destination": "/tools/choir-assistant/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/keyboard-key-finder/",
+      "destination": "/tools/choir-assistant/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/video-compressor",
+      "destination": "/tools/video-tools/#compress",
+      "permanent": true
+    },
+    {
+      "source": "/tools/video-compressor/",
+      "destination": "/tools/video-tools/#compress",
+      "permanent": true
+    },
+    {
+      "source": "/tools/video-converter",
+      "destination": "/tools/video-tools/#convert",
+      "permanent": true
+    },
+    {
+      "source": "/tools/video-converter/",
+      "destination": "/tools/video-tools/#convert",
+      "permanent": true
+    },
+    {
+      "source": "/tools/video-trimmer",
+      "destination": "/tools/video-tools/#trim",
+      "permanent": true
+    },
+    {
+      "source": "/tools/video-trimmer/",
+      "destination": "/tools/video-tools/#trim",
+      "permanent": true
+    },
+    {
       "source": "/instagram-plan/",
       "destination": "/ig-posts-for-evans/",
       "permanent": false

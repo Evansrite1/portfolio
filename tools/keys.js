@@ -8,15 +8,13 @@
   var MAIN = {
     'qr-code-generator': ['btn-png'], 'wifi-qr-code-generator': ['btn-png'], 'remove-background': ['bg-png'],
     'qr-code-scanner': ['scan-start', 'scan-open'], 'whatsapp-link-generator': ['wa-copy'], 'currency-calculator': ['fx-copy'],
-    'color-picker': ['cp-copy-css', 'cp-save'], 'image-converter': ['ic-zip', 'ic-pick'], 'invoice-generator': ['dg-pdf'],
-    'receipt-generator': ['dg-pdf'], 'pdf-converter': ['pc-to-go', 'pc-from-go', 'pc-edit-go'],
-    'screen-recorder': ['sr-stop', 'sr-dl', 'sr-start'], 'video-compressor': ['vc-go', 'vc-pick'],
-    'video-converter': ['cv-go', 'cv-pick'], 'video-trimmer': ['vt-go', 'vt-pick'], 'watermark-maker': ['wm-apply', 'wm-pickimg']
+    'color-picker': ['cp-copy-css', 'cp-save'], 'image-converter': ['ic-zip', 'ic-pick'], 'invoice-receipt-generator': ['dg-pdf'], 'pdf-converter': ['pc-to-go', 'pc-from-go', 'pc-edit-go'],
+    'screen-recorder': ['sr-stop', 'sr-dl', 'sr-start'], 'video-tools': ['vc-go', 'cv-go', 'vt-go', 'vc-pick', 'cv-pick', 'vt-pick'], 'watermark-maker': ['wm-apply', 'wm-pickimg']
   };
   /* the buttons that hand you a finished file, for Ctrl or Cmd + S */
   var SAVE = { 'qr-code-generator': ['btn-png'], 'wifi-qr-code-generator': ['btn-png'], 'remove-background': ['bg-png'], 'image-converter': ['ic-zip'],
-    'invoice-generator': ['dg-pdf'], 'receipt-generator': ['dg-pdf'], 'pdf-converter': ['pc-to-go', 'pc-from-go', 'pc-edit-go'],
-    'screen-recorder': ['sr-dl'], 'video-compressor': ['vc-go'], 'video-converter': ['cv-go'], 'video-trimmer': ['vt-go'], 'watermark-maker': ['wm-apply'] };
+    'invoice-receipt-generator': ['dg-pdf'], 'pdf-converter': ['pc-to-go', 'pc-from-go', 'pc-edit-go'],
+    'screen-recorder': ['sr-dl'], 'video-tools': ['vc-go', 'cv-go', 'vt-go'], 'watermark-maker': ['wm-apply'] };
   var ids = MAIN[slug];
   if (!ids) return;
   var mac = /Mac|iPhone|iPad/.test(navigator.platform || '');

@@ -73,4 +73,11 @@ PAGE = dict(
         ('What leaves my browser when I use the calculator?', 'Only the request for the list of rates. Your amount, your chosen currencies and your pinned list stay in your browser.'),
         ('Can I change the currencies in the table?', 'Yes. Remove any row with the x button and add others with the search box under the table. The list is saved in your browser.')
     ],
-    related=['invoice-generator', 'receipt-generator', 'whatsapp-link-generator', 'qr-code-generator'])
+    related=['invoice-receipt-generator', 'pdf-converter', 'qr-code-generator'])
+
+import _fxpairs
+EXTRA_PAGES = _fxpairs.build(TOOL, SECTIONS)
+
+_pop = [('USD', 'NGN'), ('GBP', 'NGN'), ('EUR', 'NGN'), ('NGN', 'USD'), ('USD', 'KES'), ('USD', 'GHS'), ('USD', 'ZAR'), ('USD', 'AED'), ('USD', 'KWD'), ('USD', 'INR'), ('EUR', 'USD'), ('GBP', 'USD'), ('CAD', 'USD'), ('AUD', 'USD'), ('USD', 'PHP'), ('SAR', 'USD')]
+PAGE['sections'] += '<section class="block prose"><h2>Popular currency pairs</h2><ul class="related">' + ''.join(
+    '<li><a href="/tools/%s/">%s to %s</a></li>' % (_fxpairs.slug(a, b), _fxpairs.CUR[a][0], _fxpairs.CUR[b][0]) for a, b in _pop) + '</ul></section>'

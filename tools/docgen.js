@@ -492,7 +492,7 @@ function init(cfg) {
   const WIDTH = { a4: 794, a5: 559, thermal: 302 };
   function docHtml(tp, d, mode) {
     const H = helpers(d, mode, kind);
-    return '<div class="dt t-' + tp.id + ' p-' + tp.paper + (mode === 'edit' ? ' is-edit' : '') + '" style="' + accentVars((mode !== 'thumb' && d.accent) || tp.accent) + '">' + tp.render(d, H) + '</div>';
+    return '<div class="dt t-' + (tp.base || tp.id) + (tp.base ? ' t-' + tp.id : '') + ' p-' + tp.paper + (mode === 'edit' ? ' is-edit' : '') + '" style="' + accentVars((mode !== 'thumb' && d.accent) || tp.accent) + '">' + tp.render(d, H) + '</div>';
   }
 
   /* gallery */

@@ -1,4 +1,4 @@
-/* invoicetool.js : the 10 invoice designs. Each one is plain HTML, styled in tools/css/docgen.css.
+/* invoicetool.js : the 18 invoice designs. Each one is plain HTML, styled in tools/css/docgen.css.
    H holds the shared pieces (business, customer, items table, totals) from docgen.js. */
 (function () {
 'use strict';
@@ -56,6 +56,20 @@ const T = [
       '<div><span class="ml">Issued</span> ' + H.esc(H.fdate(d.date)) + '</div>' + (d.due ? '<div><span class="ml">Due</span> ' + H.esc(H.fdate(d.due)) + '</div>' : '') + '</div></div>' +
       H.cust('Prepared for') + H.items({ heads: ['Work done', 'Qty', 'Rate', 'Amount'] }) + foot(H) + '</div>' },
 ];
+
+/* more designs: a purpose (pro forma, quote, tax invoice) or a colour, built on the layouts above */
+const R = (id) => T.find((t) => t.id === id).render;
+const retitle = (id, word) => (d, H) => R(id)(d, Object.assign({}, H, { title: (t) => H.title(t === 'Invoice' ? word : t) }));
+[
+  { id: 'proforma', base: 'classic', name: 'Pro forma invoice', paper: 'a4', accent: '#b45309', render: retitle('classic', 'Pro forma invoice') },
+  { id: 'quote', base: 'modern', name: 'Quote and estimate', paper: 'a4', accent: '#0e7490', render: retitle('modern', 'Quote') },
+  { id: 'taxinvoice', base: 'corporate', name: 'Tax invoice', paper: 'a4', accent: '#0f172a', render: retitle('corporate', 'Tax invoice') },
+  { id: 'printer', base: 'compact', name: 'Printer friendly black and white', paper: 'a4', accent: '#000000', render: (d, H) => R('compact')(d, H) },
+  { id: 'sunrise', base: 'coral', name: 'Sunrise orange', paper: 'a4', accent: '#ea580c', render: (d, H) => R('coral')(d, H) },
+  { id: 'ocean', base: 'sidebar', name: 'Ocean sidebar', paper: 'a4', accent: '#0369a1', render: (d, H) => R('sidebar')(d, H) },
+  { id: 'forest', base: 'elegant', name: 'Forest serif', paper: 'a4', accent: '#166534', render: (d, H) => R('elegant')(d, H) },
+  { id: 'royal', base: 'dark', name: 'Royal purple header', paper: 'a4', accent: '#7c3aed', render: (d, H) => R('dark')(d, H) },
+].forEach((t) => T.push(t));
 
 const sample = {
   biz: { name: 'Bright Path Studio', addr: '12 Admiralty Way, Lekki\nLagos, Nigeria', phone: '+234 803 123 4567', email: 'hello@brightpath.ng', logo: '' },

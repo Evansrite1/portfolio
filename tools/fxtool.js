@@ -258,6 +258,11 @@
       var q = JSON.parse(lsGet(KEYS.pair) || 'null');
       if (q && meta[q.from] && meta[q.to]) { state.from = q.from; state.to = q.to; }
     } catch (e) { /* ignore */ }
+    var el = $('fx-tool');
+    if (el && el.dataset.from && meta[el.dataset.from] && meta[el.dataset.to]) {
+      state.from = el.dataset.from; state.to = el.dataset.to;
+      if (el.dataset.amount) $('fx-amount').value = el.dataset.amount;
+    }
     pFrom.set(state.from); pTo.set(state.to);
   })();
   window.fxState = state;

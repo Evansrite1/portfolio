@@ -1,0 +1,6 @@
+.vh-tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:0 0 18px}
+.vh-tab{font:inherit;cursor:pointer;padding:11px 22px;border-radius:12px;border:1px solid var(--line,#2a2f37);background:var(--raised,#1d222b);color:inherit;font-weight:600}
+.vh-tab:hover{border-color:var(--accent,#e8412e)}
+.vh-tab.on{background:var(--accent,#e8412e);border-color:var(--accent,#e8412e);color:var(--accent-ink,#141414)}
+.vh-tab:focus-visible{outline:2px solid var(--accent,#e8412e);outline-offset:2px}
+.vh-panel[hidden]{display:none}

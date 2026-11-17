@@ -1,4 +1,4 @@
-/* receipttool.js : the 25 receipt designs (17 everyday, 8 festive). Plain HTML and CSS from
+/* receipttool.js : the 33 receipt designs (25 everyday, 8 festive). Plain HTML and CSS from
    tools/css/docgen.css, with small inline SVG drawings for decoration. */
 (function () {
 'use strict';
@@ -152,6 +152,18 @@ const T = [
   { id: 'independence', name: 'Independence Day', group: 'festive', paper: 'a5', accent: '#008751', render: (d, H) => card(d, H, { band: 'Happy Independence Day', bandSub: 'Proudly Nigerian', bandSvg: ngBand, end: ngStripe }) },
   { id: 'harvest', name: 'Thanksgiving and harvest', group: 'festive', paper: 'a5', accent: '#9a3412', render: (d, H) => card(d, H, { band: 'Happy Thanksgiving', bandSub: 'Grateful for you this harvest season', bandSvg: harvestBand }) },
 ];
+
+/* more everyday designs for common cases: church, donations, rent, school fees, services, deposits, parking, tickets */
+[
+  { id: 'church', name: 'Church offering and tithe', paper: 'a5', accent: '#4338ca', render: (d, H) => card(d, H, { center: 1, title: 'Offering and tithe receipt', icon: '<div class="ic">' + ICON.cross + '</div>' }) },
+  { id: 'donation', name: 'Donation', paper: 'a5', accent: '#be123c', render: (d, H) => card(d, H, { center: 1, title: 'Donation receipt', icon: '<div class="ic">' + svg(34, 34, heart(17, 16, 14, 'currentColor'), 'ico') + '</div>' }) },
+  { id: 'rent', name: 'Rent', paper: 'a5', accent: '#0f766e', render: (d, H) => card(d, H, { title: 'Rent receipt' }) },
+  { id: 'school', name: 'School fees', paper: 'a5', accent: '#1d4ed8', render: (d, H) => card(d, H, { center: 1, title: 'School fees receipt' }) },
+  { id: 'service', name: 'Service', paper: 'a5', accent: '#334155', render: (d, H) => card(d, H, { title: 'Service receipt' }) },
+  { id: 'deposit', name: 'Deposit', paper: 'a5', accent: '#a16207', render: (d, H) => card(d, H, { title: 'Deposit receipt' }) },
+  { id: 'parking', name: 'Parking', paper: 'thermal', accent: '#111111', render: (d, H) => roll(d, H, { title: 'Parking receipt' }) },
+  { id: 'ticket', name: 'Ticket', paper: 'thermal', accent: '#1e3a8a', render: (d, H) => roll(d, H, { title: 'Ticket receipt', top: hazard(302, 8) }) },
+].forEach((t) => T.push(t));
 
 const sample = {
   biz: { name: 'Mama Tee Kitchen', addr: '5 Allen Avenue, Ikeja, Lagos', phone: '+234 802 555 0147', email: 'orders@mamatee.ng', logo: '' },
