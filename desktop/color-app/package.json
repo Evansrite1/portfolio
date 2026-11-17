@@ -1,7 +1,7 @@
 {
   "name": "color-picker-app",
   "productName": "Color Picker by Evans Large",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Color Picker by Evans Large: pick the color of any pixel on your screen, in any app or window. Windows and Mac.",
   "author": "Evans Ademilua",
   "homepage": "https://evansademilua.vercel.app/tools/color-picker/",
@@ -25,10 +25,25 @@
     "appId": "com.evansademilua.colorpicker",
     "productName": "Color Picker by Evans Large",
     "copyright": "Evans Ademilua",
-    "directories": { "output": "dist", "buildResources": "build" },
-    "files": ["main.js", "preload.js", "renderer/**", "package.json"],
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**",
+      "package.json"
+    ],
     "win": {
-      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
       "artifactName": "Color-Picker-Setup.${ext}"
     },
     "nsis": {
@@ -40,10 +55,19 @@
       "runAfterFinish": true,
       "deleteAppDataOnUninstall": false,
       "shortcutName": "Color Picker by Evans Large",
-      "uninstallDisplayName": "Color Picker by Evans Large"
+      "uninstallDisplayName": "Color Picker by Evans Large",
+      "menuCategory": "Evans Large"
     },
     "mac": {
-      "target": [{ "target": "dmg", "arch": ["x64", "arm64"] }],
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
       "category": "public.app-category.graphics-design",
       "identity": null,
       "hardenedRuntime": false,
@@ -52,7 +76,12 @@
         "NSScreenCaptureUsageDescription": "Color Picker by Evans Large reads the color of the pixel you click on your screen. Nothing is saved or sent anywhere."
       }
     },
-    "dmg": { "title": "Color Picker by Evans Large" },
-    "pkg": { "installLocation": "/Applications", "isRelocatable": false }
+    "dmg": {
+      "title": "Color Picker by Evans Large"
+    },
+    "pkg": {
+      "installLocation": "/Applications/Evans Large",
+      "isRelocatable": false
+    }
   }
 }

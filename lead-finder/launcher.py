@@ -14,7 +14,7 @@ import traceback
 from pathlib import Path
 
 if __name__ == "__never__":  # pragma: no cover  (tells the packager which libraries the app needs)
-    import flask, requests, werkzeug.serving, csv, playwright.sync_api, playwright._impl._driver  # noqa
+    import flask, requests, werkzeug.serving, csv, playwright.sync_api, playwright._impl._driver, reportlab.platypus  # noqa
 
 LOCAL = Path(os.environ.get("LOCALAPPDATA") or Path.home() / "AppData" / "Local")
 HOME = LOCAL / "LargeLeadFinder"

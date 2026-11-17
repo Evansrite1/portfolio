@@ -63,7 +63,8 @@
       "installerSidebar": "build/installerSidebar.bmp",
       "uninstallerSidebar": "build/uninstallerSidebar.bmp",
       "installerHeader": "build/installerHeader.bmp",
-      "include": "build/installer.nsh"
+      "include": "build/installer.nsh",
+      "menuCategory": "Evans Large"
     },
     "mac": {
       "target": [
@@ -118,7 +119,7 @@
       "artifactName": "File-Share-linux-x64.deb"
     },
     "pkg": {
-      "installLocation": "/Applications",
+      "installLocation": "/Applications/Evans Large",
       "isRelocatable": false
     },
     "publish": [

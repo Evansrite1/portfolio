@@ -56,7 +56,8 @@
       "uninstallerSidebar": "build/uninstallerSidebar.bmp",
       "installerHeader": "build/installerHeader.bmp",
       "include": "build/installer.nsh",
-      "uninstallDisplayName": "Video Editor by Evans Large"
+      "uninstallDisplayName": "Video Editor by Evans Large",
+      "menuCategory": "Evans Large"
     },
     "mac": {
       "target": [
@@ -79,6 +80,10 @@
     },
     "dmg": {
       "title": "Video Editor"
+    },
+    "pkg": {
+      "installLocation": "/Applications/Evans Large",
+      "isRelocatable": false
     }
   }
 }

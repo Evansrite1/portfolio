@@ -9,7 +9,7 @@ from pathlib import Path
 
 from flask import Flask, Response, jsonify, request
 
-from . import browser, job as joblib, niches
+from . import browser, countries, job as joblib, niches
 from .version import VERSION
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -72,7 +72,7 @@ def create_app():
     @app.get("/api/info")
     def info():
         last_ping[0] = time.time()
-        return jsonify(version=VERSION, niches=niches.catalog(), columns={"essential": joblib.ESSENTIAL, "extra": joblib.EXTRA, "names": joblib.COLUMN_NAMES},
+        return jsonify(version=VERSION, niches=niches.catalog(), countries=countries.COUNTRIES, columns={"essential": joblib.ESSENTIAL, "extra": joblib.EXTRA, "names": joblib.COLUMN_NAMES},
                        browser=browser.installed(), modes=list(joblib.MODES))
 
     @app.get("/api/state")
@@ -105,8 +105,6 @@ def create_app():
             return jsonify(error="Choose what the leads must have."), 400
         if not (d.get("niches") or d.get("custom")):
             return jsonify(error="Choose at least one niche."), 400
-        if not str(d.get("places") or "").strip():
-            return jsonify(error="Type at least one place, such as Lagos or Kuwait City."), 400
         if state["renderer"] is None and browser.installed():
             state["renderer"] = browser.Renderer()
         state["job"] = joblib.Job(d, log, state["skip_emails"], state["skip_handles"], state["renderer"] if d.get("use_browser", True) else None)
@@ -126,6 +124,8 @@ def create_app():
         if not j or not j.rows:
             return jsonify(error="Nothing to download yet."), 404
         extras = [x for x in (request.args.get("extras") or "").split(",") if x] if request.args.get("extras") is not None else None
+        if kind == "pdf":
+            return Response(j.pdf_bytes(extras), mimetype="application/pdf", headers={"Content-Disposition": "attachment; filename=leads-%s.pdf" % time.strftime("%Y-%m-%d-%H%M")})
         body = {"all": lambda: j.csv_all(extras), "mailer": j.csv_for_mailer, "instagram": j.csv_for_instagram}.get(kind)
         if not body:
             return jsonify(error="unknown"), 404

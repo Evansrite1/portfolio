@@ -4,11 +4,11 @@ Unicode true
 SetCompressor /SOLID lzma
 RequestExecutionLevel user
 !include "MUI2.nsh"
+!include "LogicLib.nsh"
 
 Name "Outreach Mailer"
 OutFile "${OUT}"
-InstallDir "$LOCALAPPDATA\Programs\Outreach Mailer"
-InstallDirRegKey HKCU "Software\OutreachMailer" "InstallDir"
+InstallDir "$LOCALAPPDATA\Programs\Evans Large\Outreach Mailer"
 BrandingText "Outreach Mailer ${VERSION}"
 
 !define MUI_ICON "${ICON}"
@@ -38,12 +38,19 @@ Section "Install"
   ; Close a running copy so its files can be replaced (an upgrade install).
   nsExec::Exec 'taskkill /F /IM "Outreach Mailer.exe"'
   Sleep 800
+  ; An older version lived outside the Evans Large folder: remove it so there is only one copy.
+  ReadRegStr $R0 HKCU "Software\OutreachMailer" "InstallDir"
+  ${If} $R0 != ""
+  ${AndIf} $R0 != "$INSTDIR"
+    RMDir /r "$R0"
+  ${EndIf}
+  RMDir /r "$SMPROGRAMS\Outreach Mailer"
   SetOutPath "$INSTDIR"
   File /r "${SRC}\*.*"
   WriteUninstaller "$INSTDIR\Uninstall Outreach Mailer.exe"
-  CreateDirectory "$SMPROGRAMS\Outreach Mailer"
-  CreateShortcut "$SMPROGRAMS\Outreach Mailer\Outreach Mailer.lnk" "$INSTDIR\Outreach Mailer.exe" "" "$INSTDIR\Outreach Mailer.exe" 0
-  CreateShortcut "$SMPROGRAMS\Outreach Mailer\Uninstall Outreach Mailer.lnk" "$INSTDIR\Uninstall Outreach Mailer.exe"
+  CreateDirectory "$SMPROGRAMS\Evans Large"
+  CreateShortcut "$SMPROGRAMS\Evans Large\Outreach Mailer.lnk" "$INSTDIR\Outreach Mailer.exe" "" "$INSTDIR\Outreach Mailer.exe" 0
+  CreateShortcut "$SMPROGRAMS\Evans Large\Uninstall Outreach Mailer.lnk" "$INSTDIR\Uninstall Outreach Mailer.exe"
   CreateShortcut "$DESKTOP\Outreach Mailer.lnk" "$INSTDIR\Outreach Mailer.exe" "" "$INSTDIR\Outreach Mailer.exe" 0
   WriteRegStr HKCU "Software\OutreachMailer" "InstallDir" "$INSTDIR"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OutreachMailer" "DisplayName" "Outreach Mailer"
@@ -60,8 +67,11 @@ Section "Uninstall"
   nsExec::Exec 'taskkill /F /IM "Outreach Mailer.exe"'
   Sleep 800
   Delete "$DESKTOP\Outreach Mailer.lnk"
-  RMDir /r "$SMPROGRAMS\Outreach Mailer"
+  Delete "$SMPROGRAMS\Evans Large\Outreach Mailer.lnk"
+  Delete "$SMPROGRAMS\Evans Large\Uninstall Outreach Mailer.lnk"
+  RMDir "$SMPROGRAMS\Evans Large"
   RMDir /r "$INSTDIR"
+  RMDir "$LOCALAPPDATA\Programs\Evans Large"
   DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\OutreachMailer"
   DeleteRegKey HKCU "Software\OutreachMailer"
   ; Your leads, results and saved mailbox sign-ins in AppData\Local\OutreachMailer are left alone on purpose, so a reinstall keeps them.

@@ -73,7 +73,8 @@ def parse_osm(el):
     t = el.get("tags") or {}
     g = lambda *keys: next((str(t[k]).strip() for k in keys if t.get(k)), "")
     street = " ".join(x for x in (g("addr:housenumber"), g("addr:street")) if x)
-    return {"name": g("name"), "phone": g("phone", "contact:phone", "contact:mobile", "mobile"), "email": g("email", "contact:email"),
+    soc = {k: g("contact:" + k, k) for k in ("twitter", "youtube", "tiktok", "linkedin", "pinterest", "telegram", "whatsapp", "threads")}
+    return {"socials": {k: v for k, v in soc.items() if v}, "name": g("name"), "phone": g("phone", "contact:phone", "contact:mobile", "mobile"), "email": g("email", "contact:email"),
             "website": g("website", "contact:website", "url"), "instagram": g("contact:instagram", "instagram"), "facebook": g("contact:facebook", "facebook"),
             "address": ", ".join(x for x in (street, g("addr:suburb"), g("addr:city"), g("addr:postcode")) if x), "city": g("addr:city", "addr:town", "addr:village"),
             "source": "OpenStreetMap", "osm": "%s/%s" % (el.get("type", "node"), el.get("id"))}
@@ -94,7 +95,8 @@ def nominatim_places(term, place, limit=40):
         if not name:
             continue
         a = it.get("address") or {}
-        out.append({"name": name, "phone": x.get("phone") or x.get("contact:phone") or "", "email": x.get("email") or x.get("contact:email") or "",
+        out.append({"socials": {k: (x.get("contact:" + k) or x.get(k) or "") for k in ("twitter", "youtube", "tiktok", "linkedin", "pinterest", "telegram", "whatsapp", "threads") if (x.get("contact:" + k) or x.get(k))},
+                    "name": name, "phone": x.get("phone") or x.get("contact:phone") or "", "email": x.get("email") or x.get("contact:email") or "",
                     "website": x.get("website") or x.get("contact:website") or x.get("url") or "", "instagram": x.get("contact:instagram") or x.get("instagram") or "",
                     "facebook": x.get("contact:facebook") or x.get("facebook") or "",
                     "address": (it.get("display_name") or "")[:140], "city": a.get("city") or a.get("town") or a.get("village") or "", "source": "OpenStreetMap search",

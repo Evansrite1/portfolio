@@ -125,8 +125,8 @@ def test_needs_niche_and_place(fake_world):
 
 def test_csv_files_for_the_other_apps(fake_world):
     j = run({"mode": "both", "niches": ["bakery"], "places": "Lagos", "target": 50})
-    allc = list(csv.reader(io.StringIO(j.csv_all(["phone"]).lstrip("﻿"))))
-    assert allc[0][:4] == ["#", "Business", "Niche", "Country"] and "Phone" in allc[0] and "Facebook" not in allc[0]
+    allc = list(csv.reader(io.StringIO(j.csv_all(["address"]).lstrip("﻿"))))
+    assert allc[0][:4] == ["#", "Business", "Niche", "Country"] and "Facebook" in allc[0] and "LinkedIn" in allc[0] and "Email type" not in allc[0]
     mail = list(csv.DictReader(io.StringIO(j.csv_for_mailer().lstrip("﻿"))))
     assert set(mail[0]) == {"Email", "First name", "Business", "City", "Website", "Niche", "Phone", "Country"} and all(r["Email"] for r in mail)
     ig = list(csv.DictReader(io.StringIO(j.csv_for_instagram().lstrip("﻿"))))
@@ -136,15 +136,22 @@ def test_csv_files_for_the_other_apps(fake_world):
 def test_mailer_can_import_what_the_finder_makes(fake_world, tmp_path, monkeypatch):
     """The two apps must agree: the Mailer reads the Finder's file with no column fixing."""
     j = run({"mode": "email", "niches": ["bakery"], "places": "Lagos", "target": 50})
-    sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "mailer-app"))
-    os.environ["MAILER_HOME"] = str(tmp_path)
-    for m in [k for k in sys.modules if k == "engine" or k.startswith("engine.")]:
-        if "lead-finder" in str(getattr(sys.modules[m], "__file__", "")):
-            del sys.modules[m]
-    import importlib
-    leads = importlib.import_module("engine.leads")
-    a = leads.analyze(j.csv_for_mailer())
-    assert a["headers"][a["guess"]["email"]] == "Email" and a["headers"][a["guess"]["biz"]] == "Business" and a["headers"][a["guess"]["first"]] == "First name"
+    saved = {k: v for k, v in sys.modules.items() if k == "engine" or k.startswith("engine.")}
+    path_before = list(sys.path)
+    try:
+        sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "mailer-app"))
+        os.environ["MAILER_HOME"] = str(tmp_path)
+        for k in saved:
+            del sys.modules[k]
+        import importlib
+        leads = importlib.import_module("engine.leads")
+        a = leads.analyze(j.csv_for_mailer())
+        assert a["headers"][a["guess"]["email"]] == "Email" and a["headers"][a["guess"]["biz"]] == "Business" and a["headers"][a["guess"]["first"]] == "First name"
+    finally:
+        for k in [k for k in sys.modules if k == "engine" or k.startswith("engine.")]:
+            del sys.modules[k]
+        sys.modules.update(saved)
+        sys.path[:] = path_before
 
 
 def test_server_key_and_validation(fake_world):
@@ -155,7 +162,6 @@ def test_server_key_and_validation(fake_world):
     assert len(info["niches"]) >= 120 and "email_type" in info["columns"]["extra"]
     assert c.post("/api/run", headers=H, json={"mode": "x"}).status_code == 400
     assert c.post("/api/run", headers=H, json={"mode": "email", "niches": []}).status_code == 400
-    assert c.post("/api/run", headers=H, json={"mode": "email", "niches": ["bakery"], "places": " "}).status_code == 400
     assert c.get("/api/download/all", headers=H).status_code == 404
     r = c.post("/api/run", headers=H, json={"mode": "email", "niches": ["bakery"], "places": "Lagos", "target": 5, "use_browser": False})
     assert r.status_code == 200
@@ -168,3 +174,67 @@ def test_server_key_and_validation(fake_world):
     assert b"Email" in c.get("/api/download/mailer", headers=H).data
     sk = c.post("/api/skip", headers=H, json={"text": "email,handle\nold@x.com,@oldig\nsee https://instagram.com/another"}).get_json()
     assert sk["emails"] == 1 and sk["handles"] == 2
+
+
+SOCIAL_HTML = """<a href="https://www.facebook.com/tastybakesng">fb</a><a href="https://twitter.com/tastybakes_ng?lang=en">x</a><a href="https://x.com/intent/tweet?text=hi">share</a>
+<a href="https://www.linkedin.com/company/tasty-bakes-ltd/">li</a><a href="https://www.tiktok.com/@tastybakes">tt</a><a href="https://www.youtube.com/@TastyBakes">yt</a>
+<a href="https://www.pinterest.com/tastybakes/">pin</a><a href="https://wa.me/2348031234567">wa</a><a href="https://t.me/tastybakes_chat">tg</a><a href="https://www.threads.net/@tastybakes">th</a>
+<a href="https://www.instagram.com/tastybakes/">ig</a>"""
+
+
+def test_every_social_platform_is_found():
+    r = crawl.parse_page(SOCIAL_HTML)
+    s = r["socials"]
+    assert s["twitter"] == "https://x.com/tastybakes_ng" and s["linkedin"] == "https://www.linkedin.com/company/tasty-bakes-ltd"
+    assert s["tiktok"] == "https://www.tiktok.com/@tastybakes" and s["youtube"] == "https://www.youtube.com/@TastyBakes"
+    assert s["pinterest"] == "https://www.pinterest.com/tastybakes/" and s["whatsapp"] == "https://wa.me/2348031234567"
+    assert s["telegram"] == "https://t.me/tastybakes_chat" and s["threads"] == "https://www.threads.net/@tastybakes"
+    assert r["instagram"] == ["tastybakes"] and r["facebook"] == ["tastybakesng"]
+
+
+def test_osm_social_tags():
+    p = sources.parse_osm({"type": "node", "id": 1, "tags": {"name": "A", "contact:twitter": "ax", "contact:youtube": "https://youtube.com/@a"}})
+    assert p["socials"] == {"twitter": "ax", "youtube": "https://youtube.com/@a"}
+
+
+def test_all_social_media_reach_the_csv_and_the_pdf(fake_world, monkeypatch):
+    sites = {"http://biz2.ng": {"emails": ["ann@biz2.ng"], "instagram": ["biz2ig"], "facebook": [], "phones": [], "found_on": "http://biz2.ng", "socials": {"twitter": "https://x.com/biz2", "linkedin": "https://www.linkedin.com/company/biz2", "tiktok": "https://www.tiktok.com/@biz2"}}}
+    monkeypatch.setattr(crawl, "crawl_site", lambda url, render=None, pause=0: sites.get(url, {"emails": [], "instagram": [], "facebook": [], "phones": [], "found_on": "", "socials": {}}))
+    j = run({"mode": "email", "niches": ["bakery"], "places": "Lagos", "target": 50})
+    row = [r for r in j.rows if r["email"] == "ann@biz2.ng"][0]
+    assert row["twitter"] == "https://x.com/biz2" and row["linkedin"].endswith("company/biz2") and row["tiktok"].endswith("@biz2") and row["instagram"] == "biz2ig"
+    c = list(csv.DictReader(io.StringIO(j.csv_all().lstrip("﻿"))))
+    assert {"Instagram handle", "Facebook", "X (Twitter)", "LinkedIn", "TikTok", "YouTube", "Pinterest", "WhatsApp", "Telegram", "Threads"} <= set(c[0])
+    pdf = j.pdf_bytes()
+    assert pdf.startswith(b"%PDF") and len(pdf) > 1500
+
+
+def test_countries_and_any_country():
+    from engine import countries
+    assert len(countries.COUNTRIES) >= 190 and "Nigeria" in countries.COUNTRIES and "Kuwait" in countries.COUNTRIES
+    assert countries.order_for_any()[0] == "United States" and set(countries.order_for_any()) == set(countries.COUNTRIES)
+    j = joblib.Job({"mode": "email", "niches": ["bakery"], "countries": ["Nigeria", "Kuwait"], "places": "Lagos, Kuwait City", "target": 5}, lambda m: None)
+    assert j._places() == ["Lagos, Nigeria", "Kuwait City, Nigeria", "Lagos, Kuwait", "Kuwait City, Kuwait"]
+    assert joblib.Job({"mode": "email", "niches": ["bakery"], "countries": ["Nigeria"], "target": 5}, lambda m: None)._places() == ["Nigeria"]
+    assert joblib.Job({"mode": "email", "niches": ["bakery"], "places": "Lagos", "target": 5}, lambda m: None)._places() == ["Lagos"]
+    assert len(joblib.Job({"mode": "email", "niches": ["bakery"], "target": 5}, lambda m: None)._places()) == len(countries.COUNTRIES)      # none picked means any country
+
+
+def test_pdf_download_endpoint(fake_world):
+    c = server.create_app().test_client()
+    c.post("/api/run", headers=H, json={"mode": "email", "niches": ["bakery"], "places": "Lagos", "target": 3, "use_browser": False})
+    for _ in range(100):
+        s = c.get("/api/state", headers=H).get_json()
+        if s["job"]["state"] in ("done", "error", "stopped"):
+            break
+        time.sleep(0.1)
+    r = c.get("/api/download/pdf", headers=H)
+    assert r.status_code == 200 and r.data.startswith(b"%PDF") and r.mimetype == "application/pdf"
+    assert len(c.get("/api/info", headers=H).get_json()["countries"]) >= 190
+
+
+def test_a_niche_typed_by_hand_that_is_not_in_the_list_is_still_searched(fake_world, monkeypatch):
+    seen = []
+    monkeypatch.setattr(sources, "nominatim_places", lambda term, place, limit=40: seen.append(term) or [biz(1, email="owner1@biz1.ng")])
+    j = run({"mode": "email", "niches": [], "custom": "drone photography", "places": "Lagos", "target": 5})
+    assert seen == ["drone photography"] and [r["email"] for r in j.rows] == ["owner1@biz1.ng"] and j.rows[0]["niche"] == "drone photography"

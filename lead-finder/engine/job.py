@@ -9,13 +9,15 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urlparse
 
-from . import crawl, niches, sources, verify
+from . import countries as world, crawl, niches, sources, verify
 
-ESSENTIAL = ["business", "niche", "country", "city", "email", "instagram", "instagram_link", "website"]
-EXTRA = ["address", "phone", "email_type", "email_check", "first_name", "facebook", "source", "found_on"]
+SOCIAL_COLS = ["instagram", "instagram_link", "facebook", "twitter", "linkedin", "tiktok", "youtube", "pinterest", "whatsapp", "telegram", "threads"]
+ESSENTIAL = ["business", "niche", "country", "city", "email", "phone", "website"] + SOCIAL_COLS
+EXTRA = ["address", "email_type", "email_check", "first_name", "source", "found_on"]
 COLUMN_NAMES = {"business": "Business", "niche": "Niche", "country": "Country", "city": "City", "address": "Address", "phone": "Phone", "email": "Email",
                 "email_type": "Email type", "email_check": "Email check", "first_name": "First name", "website": "Website", "instagram": "Instagram handle",
-                "instagram_link": "Instagram link", "facebook": "Facebook", "source": "Found by", "found_on": "Email found on"}
+                "instagram_link": "Instagram link", "facebook": "Facebook", "twitter": "X (Twitter)", "linkedin": "LinkedIn", "tiktok": "TikTok", "youtube": "YouTube",
+                "pinterest": "Pinterest", "whatsapp": "WhatsApp", "telegram": "Telegram", "threads": "Threads", "source": "Found by", "found_on": "Email found on"}
 MODES = ("email", "instagram", "both")
 
 
@@ -73,9 +75,9 @@ class Job:
         try:
             self.state = "running"
             terms = self._niches()
-            places = [x.strip() for x in str(self.p.get("places") or "").replace("\n", ",").split(",") if x.strip()]
-            if not terms or not places:
-                self.state, self.message = "error", "Choose at least one niche and one place."
+            places = self._places()
+            if not terms:
+                self.state, self.message = "error", "Choose at least one niche."
                 return
             for place in places:
                 if self._done():
@@ -107,21 +109,35 @@ class Job:
             self.state, self.message = "error", str(e)[:200]
             self.log(f"Stopped: {e}")
 
+    def _places(self):
+        """The places to search, as questions for the map. Cities typed by hand are searched inside each picked country. With no country
+        and no city, every country in the world is tried, the best mapped ones first, until there are enough leads."""
+        cities = [x.strip() for x in str(self.p.get("places") or "").replace("\n", ",").split(",") if x.strip()]
+        picked = [c for c in (self.p.get("countries") or []) if c in world.COUNTRIES]
+        if cities and picked:
+            return ["%s, %s" % (ci, co) for co in picked for ci in cities]
+        if cities:
+            return cities
+        return picked or world.order_for_any()
+
     def _niches(self):
         out = []
         for i in self.p.get("niches") or []:
             if i in niches.BY_ID:
                 out.append(niches.BY_ID[i])
         for t in [x.strip() for x in str(self.p.get("custom") or "").split(",") if x.strip()]:
-            for n in niches.match_custom(t):
+            hits = niches.match_custom(t)
+            for n in hits:
                 if n not in out:
                     out.append(n)
+            if not hits:                              # a niche that is not in the list: searched by its words on the map
+                out.append({"id": "custom:" + t.lower(), "label": t, "group": "custom", "tags": []})
         return out
 
     def _candidates(self, n, geo):
         found, seen = [], set()
         try:
-            for c in sources.overpass(n["tags"], geo, limit=max(200, self.target * 6)):
+            for c in (sources.overpass(n["tags"], geo, limit=max(200, self.target * 6)) if n["tags"] else []):
                 if c["osm"] not in seen:
                     seen.add(c["osm"])
                     found.append(c)
@@ -155,17 +171,20 @@ class Job:
                 if dom in self.seen_dom:
                     return self.skip("same website as another lead")
         emails = [c["email"].lower()] if c["email"] else []
+        socials = dict(c.get("socials") or {})
         ig = [h for h in [handle_of(c["instagram"])] if h]
         fb = c["facebook"]
         phones = [c["phone"]] if c["phone"] else []
         found_on = "OpenStreetMap" if emails else ""
         need_email = self.mode in ("email", "both") and not emails
         need_ig = self.mode in ("instagram", "both") and not ig
-        if url and (need_email or need_ig):
+        if url:                                      # the website is always read, so every social page it links to is collected too
             try:
                 info = crawl.crawl_site(url, self.renderer if need_email else None)
             except Exception:
-                info = {"emails": [], "instagram": [], "facebook": [], "phones": [], "found_on": ""}
+                info = {"emails": [], "instagram": [], "facebook": [], "phones": [], "found_on": "", "socials": {}}
+            for k, v in (info.get("socials") or {}).items():
+                socials.setdefault(k, v)
             for e in crawl.best_email(info["emails"], dom):
                 if e not in emails:
                     emails.append(e)
@@ -204,6 +223,8 @@ class Job:
                    "email_check": ("domain accepts mail" if chk.get("checked") else "format ok, domain not checked") if chosen else "",
                    "first_name": verify.first_name(chosen) if chosen else "", "website": url, "instagram": handle,
                    "instagram_link": ("https://www.instagram.com/%s/" % handle) if handle else "", "facebook": fb, "source": c["source"], "found_on": found_on}
+            for k in ("twitter", "linkedin", "tiktok", "youtube", "pinterest", "whatsapp", "telegram", "threads"):
+                row[k] = socials.get(k, "")
             row["#"] = len(self.rows) + 1
             self.rows.append(row)
         self.log(f"+ {c['name']}  {chosen or '-'}  {('@' + handle) if handle else '-'}")
@@ -221,6 +242,39 @@ class Job:
         extras = [x for x in (extras if extras is not None else EXTRA) if x in EXTRA]
         cols = ["#"] + ESSENTIAL + extras
         return self._csv(cols, ["#"] + [COLUMN_NAMES[c] for c in cols[1:]], self.rows)
+
+    def pdf_bytes(self, extras=None):
+        """The leads as an easy to read PDF: one row per lead, the contact details first."""
+        from reportlab.lib import colors
+        from reportlab.lib.pagesizes import A4, landscape
+        from reportlab.lib.styles import ParagraphStyle
+        from reportlab.lib.units import mm
+        from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+        small = ParagraphStyle("s", fontName="Helvetica", fontSize=7.5, leading=9.5)
+        head = ParagraphStyle("h", fontName="Helvetica-Bold", fontSize=7.5, leading=9.5, textColor=colors.white)
+        esc = lambda t: str(t or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        def socials_of(r):
+            out = []
+            for k, label in (("instagram", "Instagram"), ("facebook", "Facebook"), ("twitter", "X"), ("linkedin", "LinkedIn"), ("tiktok", "TikTok"), ("youtube", "YouTube"),
+                             ("pinterest", "Pinterest"), ("whatsapp", "WhatsApp"), ("telegram", "Telegram"), ("threads", "Threads")):
+                v = r.get(k, "")
+                if v:
+                    out.append("%s: %s" % (label, (("@" + v) if k == "instagram" else v).replace("https://", "").replace("www.", "")))
+            return "<br/>".join(esc(x) for x in out)
+        data = [[Paragraph(x, head) for x in ("#", "Business", "Niche and place", "Email", "Phone", "Website", "Social media")]]
+        for r in self.rows:
+            data.append([Paragraph(str(r["#"]), small), Paragraph("<b>%s</b>" % esc(r["business"]), small), Paragraph(esc(r["niche"]) + "<br/>" + esc(r["city"]) + ", " + esc(r["country"]), small),
+                         Paragraph(esc(r["email"]) + (("<br/>" + esc(r["email_type"])) if r["email_type"] else ""), small), Paragraph(esc(r["phone"]), small),
+                         Paragraph(esc(r["website"].replace("https://", "").replace("http://", "").replace("www.", "")), small), Paragraph(socials_of(r), small)])
+        from io import BytesIO
+        buf = BytesIO()
+        doc = SimpleDocTemplate(buf, pagesize=landscape(A4), leftMargin=10 * mm, rightMargin=10 * mm, topMargin=12 * mm, bottomMargin=12 * mm, title="Large Lead Finder leads")
+        t = Table(data, repeatRows=1, colWidths=[9 * mm, 42 * mm, 40 * mm, 55 * mm, 28 * mm, 50 * mm, 52 * mm])
+        t.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#e8412e")), ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                               ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f3f4f6")]), ("GRID", (0, 0), (-1, -1), 0.25, colors.HexColor("#d1d5db"))]))
+        story = [Paragraph("Large Lead Finder: %d leads" % len(self.rows), ParagraphStyle("t", fontName="Helvetica-Bold", fontSize=14)), Spacer(1, 4 * mm), t]
+        doc.build(story)
+        return buf.getvalue()
 
     def csv_for_mailer(self):
         """Columns the Outreach Mailer reads on its own: Email, First name, Business, City, Website, plus the niche and phone as fields."""

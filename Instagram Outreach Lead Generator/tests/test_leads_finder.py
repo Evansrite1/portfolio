@@ -176,7 +176,7 @@ class MacSafety(unittest.TestCase):
         self.assertIn('"Documents" / "IG Outreach"', src)
         self.assertIn("--user-data-dir", src)                       # its own browser profile, never the person's
         build = (ROOT / "build_mac.py").read_text(encoding="utf-8")
-        self.assertIn('"--install-location", "/Applications"', build)
+        self.assertIn('"--install-location", "/Applications/Evans Large"', build)
         for needle in ("sudo", "rm -rf /", "launchctl", "defaults write"):
             self.assertNotIn(needle, build)
 

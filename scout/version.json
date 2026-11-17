@@ -1,12 +1,9 @@
 {
-  "version": "3.0.0",
-  "code": "update/ig-scout-code-3.0.0.zip",
-  "sha256": "c7960a62621aaf2d2a097ac81cd3a6fab47f88180cc111b55cd244073eb989e4",
+  "version": "3.0.1",
+  "code": "update/ig-scout-code-3.0.1.zip",
+  "sha256": "ef5a0b61302769f831371d183bc1da148b9e30122b6c0b10575141732b5d4371",
   "notes": [
-    "Up to 10 Instagram accounts, each with its own login and its own daily limit (20 by default)",
-    "Statistics for the whole outreach and for each account: sent today, this week, in total, replies, reply rate and failed",
-    "Lead finding moved to Large Lead Finder: add leads here from its spreadsheet or paste handles",
-    "Every account stops by itself if Instagram pushes back, and the others carry on"
+    "Installs into the Evans Large folder, together with the other Evans Large apps"
   ],
   "download": "https://github.com/Evansrite1/portfolio/releases/download/leads-latest/IG-Outreach-Setup.exe"
 }

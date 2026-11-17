@@ -53,7 +53,7 @@ def main():
 
     # 1) the installer package: installs the app into /Applications only
     pkg = WORK / f"{SLUG}-mac-{ARCH}.pkg"
-    subprocess.run(["pkgbuild", "--component", str(app), "--install-location", "/Applications",
+    subprocess.run(["pkgbuild", "--component", str(app), "--install-location", "/Applications/Evans Large",
                     "--identifier", "com.evansademilua.igleadsfinder.pkg", "--version", version(), str(pkg)], check=True)
 
     # 2) the disk image

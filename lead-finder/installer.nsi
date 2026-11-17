@@ -8,8 +8,7 @@ RequestExecutionLevel user
 
 Name "Large Lead Finder"
 OutFile "${OUT}"
-InstallDir "$LOCALAPPDATA\Programs\Large Lead Finder"
-InstallDirRegKey HKCU "Software\LargeLeadFinder" "InstallDir"
+InstallDir "$LOCALAPPDATA\Programs\Evans Large\Large Lead Finder"
 BrandingText "Large Lead Finder ${VERSION}"
 
 !define MUI_ICON "${ICON}"
@@ -39,20 +38,32 @@ Section "Install"
   ; Close a running copy so its files can be replaced (an upgrade install).
   nsExec::Exec 'taskkill /F /IM "Large Lead Finder.exe"'
   Sleep 800
+  ; An older version lived outside the Evans Large folder: remove it so there is only one copy.
+  ReadRegStr $R0 HKCU "Software\LargeLeadFinder" "InstallDir"
+  ${If} $R0 != ""
+  ${AndIf} $R0 != "$INSTDIR"
+    RMDir /r "$R0"
+  ${EndIf}
+  RMDir /r "$SMPROGRAMS\Large Lead Finder"
   SetOutPath "$INSTDIR"
   File /r "${SRC}\*.*"
-  DetailPrint "Installing the built-in browser (about 100 MB). This needs the internet and takes a few minutes."
+  ; Step 2: the built-in browser. The window header and the list both say what is happening while it downloads.
+  !insertmacro MUI_HEADER_TEXT "Installing the built-in browser" "Large Lead Finder is downloading its own browser (about 100 MB). Please keep this window open."
+  DetailPrint "Step 1 of 2: program files installed."
+  DetailPrint "Step 2 of 2: installing the built-in browser (about 100 MB). This needs the internet and can take a few minutes. Please wait..."
   nsExec::ExecToLog '"$INSTDIR\Large Lead Finder.exe" --install-browser'
   Pop $0
   ${If} $0 != 0
-    DetailPrint "The built-in browser could not be downloaded. The app still works; open Large Lead Finder and press Install the built-in browser when you are online."
+    DetailPrint "The built-in browser could not be installed."
+    MessageBox MB_OK|MB_ICONEXCLAMATION "The built-in browser could not be downloaded (are you online?).$\r$\n$\r$\nLarge Lead Finder still works. Open it and press Install the built-in browser when you are online."
   ${Else}
     DetailPrint "The built-in browser is installed."
   ${EndIf}
+  !insertmacro MUI_HEADER_TEXT "Finishing" "Adding shortcuts"
   WriteUninstaller "$INSTDIR\Uninstall Large Lead Finder.exe"
-  CreateDirectory "$SMPROGRAMS\Large Lead Finder"
-  CreateShortcut "$SMPROGRAMS\Large Lead Finder\Large Lead Finder.lnk" "$INSTDIR\Large Lead Finder.exe" "" "$INSTDIR\Large Lead Finder.exe" 0
-  CreateShortcut "$SMPROGRAMS\Large Lead Finder\Uninstall Large Lead Finder.lnk" "$INSTDIR\Uninstall Large Lead Finder.exe"
+  CreateDirectory "$SMPROGRAMS\Evans Large"
+  CreateShortcut "$SMPROGRAMS\Evans Large\Large Lead Finder.lnk" "$INSTDIR\Large Lead Finder.exe" "" "$INSTDIR\Large Lead Finder.exe" 0
+  CreateShortcut "$SMPROGRAMS\Evans Large\Uninstall Large Lead Finder.lnk" "$INSTDIR\Uninstall Large Lead Finder.exe"
   CreateShortcut "$DESKTOP\Large Lead Finder.lnk" "$INSTDIR\Large Lead Finder.exe" "" "$INSTDIR\Large Lead Finder.exe" 0
   WriteRegStr HKCU "Software\LargeLeadFinder" "InstallDir" "$INSTDIR"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\LargeLeadFinder" "DisplayName" "Large Lead Finder"
@@ -69,8 +80,11 @@ Section "Uninstall"
   nsExec::Exec 'taskkill /F /IM "Large Lead Finder.exe"'
   Sleep 800
   Delete "$DESKTOP\Large Lead Finder.lnk"
-  RMDir /r "$SMPROGRAMS\Large Lead Finder"
+  Delete "$SMPROGRAMS\Evans Large\Large Lead Finder.lnk"
+  Delete "$SMPROGRAMS\Evans Large\Uninstall Large Lead Finder.lnk"
+  RMDir "$SMPROGRAMS\Evans Large"
   RMDir /r "$INSTDIR"
+  RMDir "$LOCALAPPDATA\Programs\Evans Large"
   DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\LargeLeadFinder"
   DeleteRegKey HKCU "Software\LargeLeadFinder"
   ; Your leads, results and saved mailbox sign-ins in AppData\Local\LargeLeadFinder are left alone on purpose, so a reinstall keeps them.

@@ -1,7 +1,7 @@
 {
   "name": "audio-studio-app",
   "productName": "Audio by Evans Large",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Audio by Evans Large: a music workstation with unlimited tracks, MIDI, plugins, spectral repair, noise removal and loudness mastering. Windows and Mac. Works offline.",
   "author": "Evans Ademilua",
   "homepage": "https://evansademilua.vercel.app/tools/audio-mastering/",
@@ -61,7 +61,8 @@
       "runAfterFinish": true,
       "deleteAppDataOnUninstall": false,
       "shortcutName": "Audio by Evans Large",
-      "uninstallDisplayName": "Audio by Evans Large"
+      "uninstallDisplayName": "Audio by Evans Large",
+      "menuCategory": "Evans Large"
     },
     "mac": {
       "target": [
@@ -85,7 +86,7 @@
       "title": "Audio by Evans Large"
     },
     "pkg": {
-      "installLocation": "/Applications",
+      "installLocation": "/Applications/Evans Large",
       "isRelocatable": false
     }
   }

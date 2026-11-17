@@ -4,11 +4,11 @@ Unicode true
 SetCompressor /SOLID lzma
 RequestExecutionLevel user
 !include "MUI2.nsh"
+!include "LogicLib.nsh"
 
 Name "IG Outreach"
 OutFile "${OUT}"
-InstallDir "$LOCALAPPDATA\Programs\IG Outreach"
-InstallDirRegKey HKCU "Software\IGOutreach" "InstallDir"
+InstallDir "$LOCALAPPDATA\Programs\Evans Large\IG Outreach"
 BrandingText "IG Outreach ${VERSION}"
 
 !define MUI_ICON "${ICON}"
@@ -34,12 +34,19 @@ Section "Install"
   ; Close a running copy so its files can be replaced (an upgrade install).
   nsExec::Exec 'taskkill /F /IM "IG Outreach.exe"'
   Sleep 800
+  ; An older version lived outside the Evans Large folder: remove it so there is only one copy.
+  ReadRegStr $R0 HKCU "Software\IGOutreach" "InstallDir"
+  ${If} $R0 != ""
+  ${AndIf} $R0 != "$INSTDIR"
+    RMDir /r "$R0"
+  ${EndIf}
+  RMDir /r "$SMPROGRAMS\IG Outreach"
   SetOutPath "$INSTDIR"
   File /r "${SRC}\*.*"
   WriteUninstaller "$INSTDIR\Uninstall IG Outreach.exe"
-  CreateDirectory "$SMPROGRAMS\IG Outreach"
-  CreateShortcut "$SMPROGRAMS\IG Outreach\IG Outreach.lnk" "$INSTDIR\IG Outreach.exe" "" "$INSTDIR\IG Outreach.exe" 0
-  CreateShortcut "$SMPROGRAMS\IG Outreach\Uninstall IG Outreach.lnk" "$INSTDIR\Uninstall IG Outreach.exe"
+  CreateDirectory "$SMPROGRAMS\Evans Large"
+  CreateShortcut "$SMPROGRAMS\Evans Large\IG Outreach.lnk" "$INSTDIR\IG Outreach.exe" "" "$INSTDIR\IG Outreach.exe" 0
+  CreateShortcut "$SMPROGRAMS\Evans Large\Uninstall IG Outreach.lnk" "$INSTDIR\Uninstall IG Outreach.exe"
   CreateShortcut "$DESKTOP\IG Outreach.lnk" "$INSTDIR\IG Outreach.exe" "" "$INSTDIR\IG Outreach.exe" 0
   WriteRegStr HKCU "Software\IGOutreach" "InstallDir" "$INSTDIR"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\IGOutreach" "DisplayName" "IG Outreach"
@@ -56,8 +63,11 @@ Section "Uninstall"
   nsExec::Exec 'taskkill /F /IM "IG Outreach.exe"'
   Sleep 800
   Delete "$DESKTOP\IG Outreach.lnk"
-  RMDir /r "$SMPROGRAMS\IG Outreach"
+  Delete "$SMPROGRAMS\Evans Large\IG Outreach.lnk"
+  Delete "$SMPROGRAMS\Evans Large\Uninstall IG Outreach.lnk"
+  RMDir "$SMPROGRAMS\Evans Large"
   RMDir /r "$INSTDIR"
+  RMDir "$LOCALAPPDATA\Programs\Evans Large"
   DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\IGOutreach"
   DeleteRegKey HKCU "Software\IGOutreach"
   ; Results in Documents\IG Outreach and the saved Instagram login in AppData\Local\IGScout are left alone on purpose.

@@ -15,6 +15,18 @@ JUNK = ("example.", "sentry", "wixpress", "domain.com", "yourdomain", "email.com
         "godaddy", "schema.org", "w3.org", "your@", "name@", "user@")
 IG = re.compile(r"instagram\.com/(?!p/|reel/|explore|accounts|about|developer|legal|stories|tv/)([A-Za-z0-9._]{2,30})", re.I)
 FB = re.compile(r"facebook\.com/(?!sharer|share|plugins|tr\?|dialog|login|groups|events)([A-Za-z0-9.\-]{3,60})", re.I)
+SOCIAL = {
+    "twitter": re.compile(r"(?:twitter|x)\.com/(?!intent|share|home|i/|search|hashtag|login|signup|privacy|tos)@?([A-Za-z0-9_]{2,15})(?:[/?\"' ]|$)", re.I),
+    "linkedin": re.compile(r"linkedin\.com/((?:company|in|school)/[A-Za-z0-9._%-]{2,80})", re.I),
+    "tiktok": re.compile(r"tiktok\.com/(@[A-Za-z0-9._]{2,30})", re.I),
+    "youtube": re.compile(r"youtube\.com/((?:@|channel/|c/|user/)[A-Za-z0-9._%-]{2,60})", re.I),
+    "pinterest": re.compile(r"pinterest\.[a-z.]+/(?!pin/|pin$)([A-Za-z0-9_]{2,40})(?:[/?\"' ]|$)", re.I),
+    "whatsapp": re.compile(r"(?:wa\.me/|api\.whatsapp\.com/send\?phone=|whatsapp\.com/send\?phone=)\+?(\d{8,15})", re.I),
+    "telegram": re.compile(r"(?:t\.me|telegram\.me)/(?!share|joinchat)([A-Za-z0-9_]{4,32})", re.I),
+    "threads": re.compile(r"threads\.net/(@[A-Za-z0-9._]{2,30})", re.I),
+}
+SOCIAL_URL = {"twitter": "https://x.com/%s", "linkedin": "https://www.linkedin.com/%s", "tiktok": "https://www.tiktok.com/%s", "youtube": "https://www.youtube.com/%s",
+              "pinterest": "https://www.pinterest.com/%s/", "whatsapp": "https://wa.me/%s", "telegram": "https://t.me/%s", "threads": "https://www.threads.net/%s"}
 PHONE = re.compile(r"(?:\+|00)\d[\d\s().-]{7,17}\d")
 
 
@@ -68,6 +80,11 @@ def parse_page(html, url=""):
         p = re.sub(r"[^\d+]", "", m.group(0))
         if 9 <= len(p) <= 16 and p not in phones:
             phones.append(p)
+    socials = {}
+    for k, rx in SOCIAL.items():
+        m = rx.search(low)
+        if m:
+            socials[k] = SOCIAL_URL[k] % m.group(1)
     mailto = [x.lower() for x in re.findall(r"mailto:([^\"'?>\s]+)", low, re.I)]
     emails = []
     for e in mailto + emails_in(low):
@@ -75,7 +92,7 @@ def parse_page(html, url=""):
         if EMAIL.fullmatch(e) and not any(j in e for j in JUNK) and e not in emails:
             emails.append(e)
     links = re.findall(r"href=[\"']([^\"'#]+)[\"']", low, re.I)
-    return {"emails": emails, "instagram": ig, "facebook": fb, "phones": phones[:3], "links": links}
+    return {"emails": emails, "instagram": ig, "facebook": fb, "phones": phones[:3], "links": links, "socials": socials}
 
 
 def fetch(url, timeout=12):
@@ -89,7 +106,7 @@ def fetch(url, timeout=12):
 def crawl_site(url, render=None, pause=0.6):
     """Look at the home page and contact pages of one website. render(url) is an optional function that returns the page after
     scripts ran (the built-in browser), used when the plain page held no email."""
-    out = {"emails": [], "instagram": [], "facebook": [], "phones": [], "found_on": ""}
+    out = {"emails": [], "instagram": [], "facebook": [], "phones": [], "found_on": "", "socials": {}}
     host = urlparse(url).netloc
     if not host:
         return out
@@ -118,10 +135,12 @@ def crawl_site(url, render=None, pause=0.6):
             for v in info[k]:
                 if v not in out[k]:
                     out[k].append(v)
+        for k, v in info["socials"].items():
+            out["socials"].setdefault(k, v)
         if info["emails"] and not out["found_on"]:
             out["found_on"] = u
-        if out["emails"] and out["instagram"] and i >= 1:
-            break
+        if out["emails"] and i >= 2:
+            break                                          # the home page and the contact pages are enough
         time.sleep(pause)
     if not out["emails"] and render:
         for u in pages[:3]:

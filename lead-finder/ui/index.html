@@ -59,6 +59,13 @@ pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:1
 .skips{font-size:.8rem;color:var(--soft);margin-top:8px}
 .tag{display:inline-block;padding:1px 8px;border-radius:99px;font-size:.74rem;border:1px solid var(--line)}
 .tag.ok{color:var(--ok);border-color:var(--ok)}
+.combo{position:relative}
+.combo .list{position:absolute;left:0;right:0;top:100%;z-index:5;margin-top:4px;max-height:260px;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.combo .list div{padding:8px 12px;cursor:pointer;font-size:.9rem;display:flex;justify-content:space-between;gap:10px}
+.combo .list div small{color:var(--soft)}
+.combo .list div.on,.combo .list div:hover{background:var(--raised)}
+.chip .x{margin-left:6px;opacity:.8}
+.socials a{margin-right:6px;font-size:.78rem}
 </style>
 </head>
 <body>
@@ -75,16 +82,17 @@ pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:1
   </div>
   <div class="step">
     <h3><span class="num">2</span>Which niches?</h3>
-    <p class="hint">Pick as many as you like. <b id="nsel">0 chosen</b></p>
-    <input type="text" id="nq" placeholder="Search the niches" aria-label="Search the niches">
-    <div id="niches"></div>
-    <label for="custom">Another niche <span style="opacity:.7">(a word, like tattoo or wedding)</span></label>
-    <input type="text" id="custom" placeholder="Optional, separate with commas">
+    <p class="hint">Start typing and pick from the list, or type your own word and press Enter. Pick as many as you like. <b id="nsel">0 chosen</b></p>
+    <div class="combo" id="nc"><input type="text" id="nq" placeholder="Type a niche, for example bakery, dentist, lawyer" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="nlist"><div class="list" id="nlist" role="listbox" hidden></div></div>
+    <div class="chips" id="nchips"></div>
   </div>
   <div class="step">
     <h3><span class="num">3</span>Where?</h3>
-    <p class="hint">Cities or countries, separated by commas or new lines.</p>
-    <textarea id="places" rows="2" placeholder="Lagos, Abuja, Kuwait City"></textarea>
+    <p class="hint">Pick one or more countries. <b>If you pick none, every country in the world is searched.</b> <span id="csel"></span></p>
+    <div class="combo" id="cc"><input type="text" id="cq" placeholder="Type a country, for example Nigeria" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="clist"><div class="list" id="clist" role="listbox" hidden></div></div>
+    <div class="chips" id="cchips"></div>
+    <label for="places">City or region <span style="opacity:.7">(optional, separate with commas)</span></label>
+    <input type="text" id="places" placeholder="Lagos, Abuja. Leave empty to search the whole country.">
   </div>
   <div class="step">
     <h3><span class="num">4</span>How many leads?</h3>
@@ -93,7 +101,7 @@ pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:1
   </div>
   <div class="step">
     <h3><span class="num">5</span>What comes with each lead?</h3>
-    <p class="hint">Business, niche, country, city, email, Instagram and website always come. Tick the extras you want in the spreadsheet.</p>
+    <p class="hint">Business, niche, country, city, email, phone, website and every social page found (Instagram, Facebook, X, LinkedIn, TikTok, YouTube, Pinterest, WhatsApp, Telegram, Threads) always come. Tick the extras you want in the spreadsheet.</p>
     <div class="cols" id="cols"></div>
     <label class="chk"><input type="checkbox" id="usebrowser" checked><span>Use the built-in browser for sites that only show their email after loading <span id="bstate" class="sub"></span></span></label>
     <button type="button" class="small" id="binstall" hidden>Install the built-in browser</button>
@@ -112,11 +120,12 @@ pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:1
   <div class="bar" aria-hidden="true"><i id="prog"></i></div>
   <p class="msg" id="msg">Choose what the leads must have, your niches and places, then press Find leads.</p>
   <div class="tools">
-    <button id="dl-all" type="button" disabled>Download all leads (CSV)</button>
+    <button id="dl-all" type="button" disabled>Download CSV</button>
+    <button id="dl-pdf" type="button" disabled>Download PDF</button>
     <button id="dl-mailer" type="button" disabled>For the Outreach Mailer</button>
     <button id="dl-ig" type="button" disabled>For IG Outreach</button>
   </div>
-  <div class="tablewrap"><table><thead><tr><th>#</th><th>Business</th><th>Niche</th><th>City</th><th>Email</th><th>Instagram</th><th>Website</th></tr></thead><tbody id="rows"></tbody></table>
+  <div class="tablewrap"><table><thead><tr><th>#</th><th>Business</th><th>Niche</th><th>City</th><th>Email</th><th>Social media</th><th>Website</th></tr></thead><tbody id="rows"></tbody></table>
     <div class="empty" id="empty">Leads appear here as they are found.</div></div>
   <div class="skips" id="skips"></div>
   <details><summary>Live log</summary><pre id="log"></pre></details>
@@ -129,23 +138,37 @@ pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:1
 var KEY="__KEY__",$=function(i){return document.getElementById(i)};
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function api(p,b,m){return fetch('/api/'+p,{method:m||(b!==undefined?'POST':'GET'),headers:{'X-LLF-Key':KEY,'Content-Type':'application/json'},body:b!==undefined?JSON.stringify(b):undefined}).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error||'Something went wrong');return j})})}
-var catalog=[],chosen={},rowsSeen=0,logSeen=0,cols={},info=null,lastState='';
+var catalog=[],countries=[],chosen={},customs=[],pickedC={},rowsSeen=0,logSeen=0,cols={},info=null,lastState='';
 $('ver').textContent='';
+function combo(inputId,listId,items,isOn,add,extra){
+  var inp=$(inputId),list=$(listId),idx=-1,shown=[];
+  function draw(){
+    var q=inp.value.trim().toLowerCase();shown=items().filter(function(x){return !isOn(x)&&(!q||x.label.toLowerCase().indexOf(q)>=0||(x.group||'').toLowerCase().indexOf(q)>=0)}).slice(0,60);
+    list.innerHTML='';
+    shown.forEach(function(x,i){var d=document.createElement('div');d.setAttribute('role','option');d.innerHTML='<span>'+esc(x.label)+'</span>'+(x.group?'<small>'+esc(x.group)+'</small>':'');d.onmousedown=function(e){e.preventDefault();pick(x)};list.appendChild(d)});
+    if(extra&&q&&!shown.some(function(x){return x.label.toLowerCase()===q})){var d=document.createElement('div');d.innerHTML='<span>Add "'+esc(inp.value.trim())+'" as a niche</span><small>your own word</small>';d.onmousedown=function(e){e.preventDefault();extra(inp.value.trim());inp.value='';draw()};list.appendChild(d)}
+    list.hidden=!list.children.length;inp.setAttribute('aria-expanded',list.hidden?'false':'true');idx=-1;
+  }
+  function pick(x){add(x);inp.value='';draw();inp.focus()}
+  inp.addEventListener('input',draw);inp.addEventListener('focus',draw);inp.addEventListener('blur',function(){setTimeout(function(){list.hidden=true},120)});
+  inp.addEventListener('keydown',function(e){var rows=list.children;
+    if(e.key==='ArrowDown'){e.preventDefault();idx=Math.min(rows.length-1,idx+1)}else if(e.key==='ArrowUp'){e.preventDefault();idx=Math.max(0,idx-1)}
+    else if(e.key==='Enter'){e.preventDefault();if(idx>=0&&shown[idx])pick(shown[idx]);else if(shown[0]&&inp.value.trim())pick(shown[0]);else if(extra&&inp.value.trim()){extra(inp.value.trim());inp.value='';draw()}return}
+    else if(e.key==='Escape'){list.hidden=true;return}else return;
+    [].forEach.call(rows,function(r,i){r.className=i===idx?'on':''});if(rows[idx])rows[idx].scrollIntoView({block:'nearest'})});
+}
+function chipsFor(boxId,keys,labelOf,remove){var b=$(boxId);b.innerHTML='';keys.forEach(function(k){var c=document.createElement('button');c.type='button';c.className='chip on';c.innerHTML=esc(labelOf(k))+'<span class="x" aria-hidden="true">x</span>';c.setAttribute('aria-label','Remove '+labelOf(k));c.onclick=function(){remove(k);drawNiches();drawCountries()};b.appendChild(c)})}
 function drawNiches(){
-  var q=$('nq').value.toLowerCase(),box=$('niches');box.innerHTML='';
-  var groups={};catalog.forEach(function(n){if(q&&n.label.toLowerCase().indexOf(q)<0&&n.group.toLowerCase().indexOf(q)<0)return;(groups[n.group]=groups[n.group]||[]).push(n)});
-  Object.keys(groups).forEach(function(g){
-    var head=document.createElement('div');head.className='grp';head.innerHTML='<span>'+esc(g)+'</span>';
-    var b=document.createElement('button');b.type='button';b.textContent='Choose all';b.className='small';b.onclick=function(){groups[g].forEach(function(n){chosen[n.id]=1});drawNiches()};head.appendChild(b);box.appendChild(head);
-    var chips=document.createElement('div');chips.className='chips';
-    groups[g].forEach(function(n){var c=document.createElement('button');c.type='button';c.className='chip'+(chosen[n.id]?' on':'');c.textContent=n.label;c.setAttribute('aria-pressed',chosen[n.id]?'true':'false');c.onclick=function(){if(chosen[n.id])delete chosen[n.id];else chosen[n.id]=1;drawNiches()};chips.appendChild(c)});
-    box.appendChild(chips);
-  });
-  $('nsel').textContent=Object.keys(chosen).length+' chosen';
+  var keys=Object.keys(chosen).concat(customs);
+  chipsFor('nchips',keys,function(k){var n=catalog.filter(function(x){return x.id===k})[0];return n?n.label:k},function(k){if(chosen[k])delete chosen[k];else customs=customs.filter(function(c){return c!==k})});
+  $('nsel').textContent=keys.length+' chosen';
+}
+function drawCountries(){
+  var keys=Object.keys(pickedC);chipsFor('cchips',keys,function(k){return k},function(k){delete pickedC[k]});
+  $('csel').textContent=keys.length?keys.length+' chosen':'(none chosen: all countries)';
 }
 function drawCols(){var b=$('cols');b.innerHTML='';info.columns.extra.forEach(function(c){var l=document.createElement('label');l.className='chk';l.innerHTML='<input type="checkbox" data-c="'+c+'" '+(cols[c]!==false?'checked':'')+'><span>'+esc(info.columns.names[c])+'</span>';l.firstChild.onchange=function(){cols[c]=this.checked};b.appendChild(l)})}
 [].forEach.call(document.querySelectorAll('input[name=mode]'),function(r){r.addEventListener('change',function(){['email','instagram','both'].forEach(function(m){$('m-'+m).className='opt'+(r.value===m&&r.checked?' on':'')})})});
-$('nq').addEventListener('input',drawNiches);
 $('skippick').onclick=function(){$('skipfile').click()};
 $('skipfile').onchange=function(){var f=$('skipfile').files[0];if(!f)return;var r=new FileReader();r.onload=function(){api('skip',{text:r.result}).then(function(x){$('skipinfo').textContent=x.emails+' emails and '+x.handles+' handles will be skipped'})};r.readAsText(f)};
 $('skipclear').onclick=function(){api('skip/clear',{}).then(function(){$('skipinfo').textContent=''})};
@@ -156,12 +179,13 @@ function fmt(s){return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
 $('run').onclick=function(){
   var mode=document.querySelector('input[name=mode]:checked').value;
   var extras=info.columns.extra.filter(function(c){return cols[c]!==false});
-  api('run',{mode:mode,niches:Object.keys(chosen),custom:$('custom').value,places:$('places').value,target:Number($('target').value)||100,use_browser:$('usebrowser').checked}).then(function(){rowsSeen=0;em=0;ig=0;$('rows').innerHTML='';$('empty').style.display='';setMsg('Starting...')}).catch(function(e){setMsg(e.message,true)});
+  api('run',{mode:mode,niches:Object.keys(chosen),custom:customs.join(','),countries:Object.keys(pickedC),places:$('places').value,target:Number($('target').value)||100,use_browser:$('usebrowser').checked}).then(function(){rowsSeen=0;em=0;ig=0;$('rows').innerHTML='';$('empty').style.display='';setMsg('Starting...')}).catch(function(e){setMsg(e.message,true)});
 };
 $('stop').onclick=function(){api('stop',{})};
 function dl(kind){var extras=info.columns.extra.filter(function(c){return cols[c]!==false}).join(',');fetch('/api/download/'+kind+'?extras='+encodeURIComponent(extras),{headers:{'X-LLF-Key':KEY}}).then(function(r){var n=(r.headers.get('Content-Disposition')||'').match(/filename=(.+)$/);return r.blob().then(function(b){return [b,n?n[1]:'leads.csv']})}).then(function(x){var u=URL.createObjectURL(x[0]),a=document.createElement('a');a.href=u;a.download=x[1];document.body.appendChild(a);a.click();a.remove()})}
-$('dl-all').onclick=function(){dl('all')};$('dl-mailer').onclick=function(){dl('mailer')};$('dl-ig').onclick=function(){dl('instagram')};
+$('dl-all').onclick=function(){dl('all')};$('dl-pdf').onclick=function(){dl('pdf')};$('dl-mailer').onclick=function(){dl('mailer')};$('dl-ig').onclick=function(){dl('instagram')};
 var em=0,ig=0;
+function socialLinks(r){var out=[];[['instagram_link','Instagram'],['facebook','Facebook'],['twitter','X'],['linkedin','LinkedIn'],['tiktok','TikTok'],['youtube','YouTube'],['pinterest','Pinterest'],['whatsapp','WhatsApp'],['telegram','Telegram'],['threads','Threads']].forEach(function(p){if(r[p[0]])out.push('<a href="'+esc(r[p[0]])+'" target="_blank" rel="noopener">'+p[1]+'</a>')});return out.join(' ')}
 function tick(){
   api('state?since='+rowsSeen+'&log='+logSeen).then(function(s){
     var j=s.job;
@@ -171,16 +195,19 @@ function tick(){
       $('run').hidden=running;$('stop').hidden=!running;
       $('prog').style.width=Math.min(100,Math.round(100*j.found/j.target))+'%';
       setMsg((running?j.message+'  ('+fmt(j.elapsed)+')':j.message),j.state==='error');
-      var has=j.found>0;['dl-all','dl-mailer','dl-ig'].forEach(function(b){$(b).disabled=!has});
+      var has=j.found>0;['dl-all','dl-pdf','dl-mailer','dl-ig'].forEach(function(b){$(b).disabled=!has});
       var sk=Object.keys(j.skipped||{}).map(function(k){return j.skipped[k]+' left out: '+k}).join('  |  ');$('skips').textContent=sk;
     }
     s.rows.forEach(function(r){rowsSeen++;if(r.email)em++;if(r.instagram)ig++;$('empty').style.display='none';
-      var tr=document.createElement('tr');tr.innerHTML='<td>'+r['#']+'</td><td>'+esc(r.business)+'</td><td>'+esc(r.niche)+'</td><td>'+esc(r.city)+'</td><td>'+esc(r.email)+(r.email_type?' <span class="tag ok">'+esc(r.email_type)+'</span>':'')+'</td><td>'+(r.instagram?'<a href="'+esc(r.instagram_link)+'" target="_blank" rel="noopener">@'+esc(r.instagram)+'</a>':'')+'</td><td>'+(r.website?'<a href="'+esc(r.website)+'" target="_blank" rel="noopener">'+esc(r.website.replace(/^https?:\/\/(www\.)?/,'').slice(0,34))+'</a>':'')+'</td>';$('rows').appendChild(tr)});
+      var tr=document.createElement('tr');tr.innerHTML='<td>'+r['#']+'</td><td>'+esc(r.business)+'</td><td>'+esc(r.niche)+'</td><td>'+esc(r.city)+'</td><td>'+esc(r.email)+(r.email_type?' <span class="tag ok">'+esc(r.email_type)+'</span>':'')+'</td><td class="socials">'+socialLinks(r)+'</td><td>'+(r.website?'<a href="'+esc(r.website)+'" target="_blank" rel="noopener">'+esc(r.website.replace(/^https?:\/\/(www\.)?/,'').slice(0,34))+'</a>':'')+'</td>';$('rows').appendChild(tr)});
     $('s-em').textContent=em;$('s-ig').textContent=ig;
     if(s.log.length){logSeen=s.log_total;var pre=$('log');pre.textContent+=s.log.join('\n')+'\n';pre.scrollTop=pre.scrollHeight}
   }).catch(function(){});
 }
-api('info').then(function(i){info=i;catalog=i.niches;$('ver').textContent='version '+i.version;drawNiches();drawCols();showBrowser();setInterval(tick,1500);tick()});
+api('info').then(function(i){info=i;catalog=i.niches;countries=i.countries.map(function(c){return {id:c,label:c}});$('ver').textContent='version '+i.version;
+  combo('nq','nlist',function(){return catalog},function(x){return !!chosen[x.id]},function(x){chosen[x.id]=1;drawNiches()},function(t){if(customs.indexOf(t)<0)customs.push(t);drawNiches()});
+  combo('cq','clist',function(){return countries},function(x){return !!pickedC[x.id]},function(x){pickedC[x.id]=1;drawCountries()},null);
+  drawNiches();drawCountries();drawCols();showBrowser();setInterval(tick,1500);tick()});
 })();
 </script>
 </body>
