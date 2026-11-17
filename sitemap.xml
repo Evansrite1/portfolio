@@ -31,12 +31,22 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://evansademilua.vercel.app/tools/business-card/</loc>
+    <lastmod>2026-11-17</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://evansademilua.vercel.app/tools/choir-assistant/</loc>
     <lastmod>2026-11-17</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://evansademilua.vercel.app/tools/color-picker/</loc>
+    <lastmod>2026-11-17</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://evansademilua.vercel.app/tools/crypto-prices/</loc>
     <lastmod>2026-11-17</lastmod>
     <priority>0.8</priority>
   </url>
@@ -67,6 +77,11 @@
   </url>
   <url>
     <loc>https://evansademilua.vercel.app/tools/mailer/</loc>
+    <lastmod>2026-11-17</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://evansademilua.vercel.app/tools/offline-runner/</loc>
     <lastmod>2026-11-17</lastmod>
     <priority>0.8</priority>
   </url>
@@ -111,6 +126,16 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://evansademilua.vercel.app/tools/snake/</loc>
+    <lastmod>2026-11-17</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://evansademilua.vercel.app/tools/tic-tac-toe/</loc>
+    <lastmod>2026-11-17</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://evansademilua.vercel.app/tools/video-editor/</loc>
     <lastmod>2026-11-17</lastmod>
     <priority>0.9</priority>
@@ -122,6 +147,11 @@
   </url>
   <url>
     <loc>https://evansademilua.vercel.app/tools/watermark-maker/</loc>
+    <lastmod>2026-11-17</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://evansademilua.vercel.app/tools/weather/</loc>
     <lastmod>2026-11-17</lastmod>
     <priority>0.8</priority>
   </url>

@@ -20,13 +20,19 @@
 - [IG Outreach](https://evansademilua.vercel.app/tools/ig-outreach/): Send Instagram messages from up to 10 of your own accounts, 20 a day each, see who replies, and track the numbers for every account and for the whole outreach. Windows and Mac.
 - [QR code scanner](https://evansademilua.vercel.app/tools/qr-code-scanner/): Read a code from a photo, a screenshot or your camera. Nothing is uploaded.
 - [Invoice and receipt generator](https://evansademilua.vercel.app/tools/invoice-receipt-generator/): Make an invoice or a receipt in one tool: 18 invoice designs and 33 receipt designs, with PDF, PNG and print. No sign-up, no watermark.
+- [Digital business card](https://evansademilua.vercel.app/tools/business-card/): Design your own business card with your photo, logo and colours. Download it as a picture or PDF, save it as a phone contact, add a QR code, or share a link.
 - [Choir Assistant](https://evansademilua.vercel.app/tools/choir-assistant/): Play a keyboard with 5 sounds, find the key of a song, and see where the bass, chords, lead line and beat play in any song you upload.
 - [Color picker](https://evansademilua.vercel.app/tools/color-picker/): Pick any color on your screen, even outside the browser. Chrome extension and Windows and Mac app, plus palettes from photos and a contrast check.
+- [Crypto price tracker](https://evansademilua.vercel.app/tools/crypto-prices/): Live prices for the top 100 cryptocurrencies and any coin you search, in 18 currencies, with 24 hour and 7 day changes, charts and a watchlist.
 - [Currency calculator](https://evansademilua.vercel.app/tools/currency-calculator/): Convert between about 160 currencies with live reference rates, a margin option and a pinned table.
 - [Image converter and compressor](https://evansademilua.vercel.app/tools/image-converter/): Convert HEIC, PNG, WebP, AVIF and more to JPG, PNG or WebP. Shrink images in batches.
+- [Offline runner](https://evansademilua.vercel.app/tools/offline-runner/): The jump-and-duck runner you get when the internet drops, but you design it: your runner, the world, the speed, the jump and the obstacles.
 - [PDF converter](https://evansademilua.vercel.app/tools/pdf-converter/): Turn Word, Excel, PowerPoint, images and text into PDF, or PDF into JPG, Word, Excel and more. Merge, split and compress.
 - [Screen recorder](https://evansademilua.vercel.app/tools/screen-recorder/): Record your screen, a window or a tab with sound. Free in the browser, or install the Windows and Mac app to record any app. Saved on your computer.
+- [Snake](https://evansademilua.vercel.app/tools/snake/): The classic snake game with four speeds, three board sizes, walls or wrap-around, your own colour and a saved high score. Works with arrows, WASD or a swipe.
+- [Tic-tac-toe](https://evansademilua.vercel.app/tools/tic-tac-toe/): Play the computer on easy, hard or very hard, or play a friend on the same screen. The very hard level never loses.
 - [Watermark maker](https://evansademilua.vercel.app/tools/watermark-maker/): Add a text or logo watermark to one or many photos. Tile it or place it, then download a ZIP.
+- [Weather](https://evansademilua.vercel.app/tools/weather/): The weather for almost any place in the world: now, the next 24 hours and 7 days, from a free weather service. Search a place or use your location.
 - [Solutions](https://evansademilua.vercel.app/solutions.html): nine systems he builds, what each does and how it benefits the owner
 - [CareTRAC case study](https://evansademilua.vercel.app/work/caretrac.html): field and client coordination portal (FastAPI, React)
 - [Sky Team Ife case study](https://evansademilua.vercel.app/work/sky-team-ife.html): operations dashboard (Vercel, Supabase)

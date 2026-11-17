@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tic-Tac-Toe Online: Play the Computer (Easy, Hard, Very Hard) or a Friend</title>
+<meta name="description" content="Play tic-tac-toe free in your browser. Choose easy, hard or very hard against the computer, or play a friend on the same screen. No sign-up.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<link rel="canonical" href="https://evansademilua.vercel.app/tools/tic-tac-toe/">
+<meta name="author" content="Evans Ademilua">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Evans Ademilua">
+<meta property="og:title" content="Tic-Tac-Toe Online: Play the Computer (Easy, Hard, Very Hard) or a Friend">
+<meta property="og:description" content="Play tic-tac-toe free in your browser. Choose easy, hard or very hard against the computer, or play a friend on the same screen. No sign-up.">
+<meta property="og:url" content="https://evansademilua.vercel.app/tools/tic-tac-toe/">
+<meta property="og:image" content="https://evansademilua.vercel.app/tools/og-tools.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Evans Ademilua, full stack developer">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tic-Tac-Toe Online: Play the Computer (Easy, Hard, Very Hard) or a Friend">
+<meta name="twitter:description" content="Play tic-tac-toe free in your browser. Choose easy, hard or very hard against the computer, or play a friend on the same screen. No sign-up.">
+<meta name="twitter:image" content="https://evansademilua.vercel.app/tools/og-tools.jpg">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://evansademilua.vercel.app/#website","url":"https://evansademilua.vercel.app/","name":"Evans Ademilua","description":"Evans Ademilua, also known as Olufemi Evans Ademilua and Evans Large, is a full stack developer and web developer and the CEO of Large Technologies in Lagos, Nigeria. He builds websites, web apps, booking systems, client portals, internal dashboards, workflow automation and AI features for businesses, and runs a set of free online tools including a QR code generator, a video compressor, PDF tools and image tools.","inLanguage":"en","publisher":{"@id":"https://evansademilua.vercel.app/#person"}},{"@type":"Person","@id":"https://evansademilua.vercel.app/#person","name":"Evans Ademilua","alternateName":["Olufemi Ademilua","Olufemi Evans Ademilua","Evans Large"],"url":"https://evansademilua.vercel.app/","image":"https://evansademilua.vercel.app/images/evans-headshot.jpg","jobTitle":"Full Stack Developer and Web Developer","description":"Evans Ademilua, also known as Olufemi Evans Ademilua and Evans Large, is a full stack developer and web developer and the CEO of Large Technologies in Lagos, Nigeria. He builds websites, web apps, booking systems, client portals, internal dashboards, workflow automation and AI features for businesses, and runs a set of free online tools including a QR code generator, a video compressor, PDF tools and image tools.","address":{"@type":"PostalAddress","addressLocality":"Lagos","addressCountry":"NG"},"worksFor":{"@id":"https://evansademilua.vercel.app/#org"},"alumniOf":{"@type":"CollegeOrUniversity","name":"Obafemi Awolowo University"},"knowsAbout":["Full-stack web development","Web development","Web design","Video, PDF, image and QR code tools","Python","FastAPI","React","Next.js","TypeScript","PostgreSQL","Supabase","Workflow automation","n8n","LLM and AI integration","Bubble.io","Client portals","Booking systems"],"sameAs":["https://www.linkedin.com/in/evansademilua","https://www.upwork.com/freelancers/~018567da5396e7b2fe"]},{"@type":"Organization","@id":"https://evansademilua.vercel.app/#org","name":"Large Technologies","url":"https://evansademilua.vercel.app/","logo":"https://evansademilua.vercel.app/favicon-192.png","founder":{"@id":"https://evansademilua.vercel.app/#person"},"description":"Software studio that builds booking systems, client portals, dashboards and AI automation for businesses.","sameAs":["https://www.linkedin.com/in/evansademilua","https://www.upwork.com/freelancers/~018567da5396e7b2fe"]},{"@type":"WebApplication","@id":"https://evansademilua.vercel.app/tools/tic-tac-toe/#app","name":"Tic-Tac-Toe","url":"https://evansademilua.vercel.app/tools/tic-tac-toe/","description":"Play tic-tac-toe free in your browser. Choose easy, hard or very hard against the computer, or play a friend on the same screen. No sign-up.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"creator":{"@id":"https://evansademilua.vercel.app/#person"},"isAccessibleForFree":true},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I beat the very hard level?","acceptedAnswer":{"@type":"Answer","text":"No. Very hard checks every possible game, so the best result you can get is a draw."}},{"@type":"Question","name":"What is the difference between hard and very hard?","acceptedAnswer":{"@type":"Answer","text":"Hard always wins when it can and always blocks you, but it only looks one move ahead, so a fork can beat it. Very hard looks at the whole game."}},{"@type":"Question","name":"Can two people play?","acceptedAnswer":{"@type":"Answer","text":"Yes. Choose A friend under Play against, and take turns on the same screen."}},{"@type":"Question","name":"Is my score saved?","acceptedAnswer":{"@type":"Answer","text":"Yes, in your own browser, until you press Reset the score."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://evansademilua.vercel.app/"},{"@type":"ListItem","position":2,"name":"Free tools","item":"https://evansademilua.vercel.app/tools/"},{"@type":"ListItem","position":3,"name":"Tic-Tac-Toe","item":"https://evansademilua.vercel.app/tools/tic-tac-toe/"}]}]}</script>
+<link rel="stylesheet" href="/tools/tools.css">
+<link rel="stylesheet" href="/tools/css/games.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to the tool</a>
+<header class="th"><div class="wrap top"><a class="brand" href="/" title="Evans Ademilua, portfolio"><img src="/favicon-32.png" width="30" height="30" alt=""><span>Evans Ademilua</span></a><nav aria-label="Site"><a href="/#work">Recent builds</a><a href="/tools/" aria-current="page">Tools</a><a href="/#embedded" class="nav-fab" aria-label="Embedded systems, coming soon" title="Embedded systems, coming soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1.6"/><path d="M9.5 3v4M14.5 3v4M9.5 17v4M14.5 17v4M3 9.5h4M3 14.5h4M17 9.5h4M17 14.5h4"/></svg></a></nav><a class="cta" href="/#book" title="Book a call with Evans"><span class="cta-long">Book a call with Evans</span><span class="cta-short">Book a call</span></a></div></header>
+<main id="main">
+<div class="wrap">
+<section class="hero-t center">
+  <h1>Tic-tac-toe</h1>
+  <p class="lead">Play the computer on easy, hard or very hard, or play a friend on the same screen. The very hard level never loses.</p>
+</section>
+<div class="tool" id="ttt"><div class="card"><div class="gm-stats"><div><b id="ttt-w">0</b><span id="ttt-wl">You</span></div><div><b id="ttt-d">0</b><span>Draws</span></div><div><b id="ttt-l">0</b><span id="ttt-ll">Computer</span></div></div><p class="gm-msg" id="ttt-status" role="status" aria-live="polite"></p><div class="ttt-grid" id="ttt-grid" role="group" aria-label="Tic-tac-toe board"></div><div class="btns" style="margin-top:16px;justify-content:center"><button type="button" class="btn primary" id="ttt-new">New game</button><button type="button" class="btn" id="ttt-reset">Reset the score</button></div></div><div class="card gm-card"><h2 style="margin:0 0 6px;font-size:1.1rem">Settings</h2><span class="gm-label">Play against</span><div class="seg-row" id="ttt-mode" role="group" aria-label="Play against"><button type="button" class="chip" data-v="cpu" aria-pressed="false">The computer</button><button type="button" class="chip" data-v="two" aria-pressed="false">A friend</button></div><div id="ttt-cpuopts"><span class="gm-label">How smart is the computer?</span><div class="seg-row" id="ttt-level" role="group" aria-label="How smart is the computer?"><button type="button" class="chip" data-v="easy" aria-pressed="false">Easy</button><button type="button" class="chip" data-v="hard" aria-pressed="false">Hard</button><button type="button" class="chip" data-v="veryhard" aria-pressed="false">Very hard</button></div><span class="gm-label">You play</span><div class="seg-row" id="ttt-me" role="group" aria-label="You play"><button type="button" class="chip" data-v="X" aria-pressed="false">X</button><button type="button" class="chip" data-v="O" aria-pressed="false">O</button></div><span class="gm-label">Who goes first?</span><div class="seg-row" id="ttt-first" role="group" aria-label="Who goes first?"><button type="button" class="chip" data-v="me" aria-pressed="false">Me</button><button type="button" class="chip" data-v="cpu" aria-pressed="false">Computer</button><button type="button" class="chip" data-v="alt" aria-pressed="false">Take turns</button></div></div><p class="help">Easy plays mostly at random. Hard always takes a win and always blocks yours, but a clever fork can beat it. Very hard looks at every possible game to the end, so the best you can do against it is a draw.</p></div></div>
+<section class="block prose"><h2>How to play</h2>
+<p>Take turns putting your mark in a square. The first to get three in a row, across, down or diagonally, wins. If all nine squares fill up with no line, it is a draw.</p>
+<h3>The three levels</h3>
+<ul><li><b>Easy:</b> the computer mostly plays at random, so you should win often.</li>
+<li><b>Hard:</b> it always takes a winning move and always blocks yours, but it does not plan ahead. Try to make a fork: a move that gives you two ways to win at once.</li>
+<li><b>Very hard:</b> it checks every possible game from the current position, so it never loses. Tic-tac-toe is a solved game: with perfect play from both sides it always ends in a draw.</li></ul>
+<p>Choose X or O, choose who goes first, or switch to two players and play a friend on the same screen. Your score is kept in your browser.</p></section>
+<section class="block prose faq"><h2>Frequently asked questions</h2><details><summary>Can I beat the very hard level?</summary><p>No. Very hard checks every possible game, so the best result you can get is a draw.</p></details><details><summary>What is the difference between hard and very hard?</summary><p>Hard always wins when it can and always blocks you, but it only looks one move ahead, so a fork can beat it. Very hard looks at the whole game.</p></details><details><summary>Can two people play?</summary><p>Yes. Choose A friend under Play against, and take turns on the same screen.</p></details><details><summary>Is my score saved?</summary><p>Yes, in your own browser, until you press Reset the score.</p></details></section>
+<section class="block prose"><h2>More free tools</h2><ul class="related"><li><a href="/tools/snake/">Snake</a></li><li><a href="/tools/offline-runner/">Offline runner</a></li><li><a href="/tools/quiz-live/">QuizBlast</a></li><li><a href="/tools/color-picker/">Color picker</a></li><li><a href="/tools/">All tools</a></li></ul></section>
+</div>
+</main>
+<footer>
+<section class="contact" id="contact" aria-labelledby="contact-h">
+  <div class="wrap">
+    <div>
+      <h2 id="contact-h">Contact me</h2>
+      <p>Need a website, a web app, a booking system or a custom tool like these built for your business? I build them. Tell me what you need and I will reply fast.</p>
+      <div class="by"><img src="/favicon-192.png" width="38" height="38" alt="Evans Ademilua"><span>Built by <a href="/">Evans Ademilua</a>, full stack developer and CEO of Large Technologies, Lagos, Nigeria.</span></div>
+    </div>
+    <div class="btns">
+      <a class="btn primary" href="https://wa.me/2347035940200?text=Hi%20Evans%2C%20I%20found%20you%20through%20your%20free%20tools.%20I%20need%20help%20with%3A%20" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5z"/></svg> WhatsApp me</a>
+      <a class="btn" href="mailto:ademiluaolufemi2@gmail.com?subject=From%20your%20free%20tools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg> Email me</a>
+      <a class="btn" href="https://www.linkedin.com/in/evansademilua/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg> LinkedIn</a>
+      <a class="btn" href="/">See my portfolio</a>
+    </div>
+  </div>
+</section>
+<div class="legal"><div class="wrap"><span>&copy; Evans Ademilua. These tools are free to use. Your data stays in your browser.</span><span><a href="/">Portfolio</a> &nbsp;|&nbsp; <a href="/tools/">All tools</a> &nbsp;|&nbsp; </span></div></div>
+</footer>
+<div id="print-sheet" aria-hidden="true"></div>
+<script src="/tools/ttt-ai.js" defer></script>
+<script src="/tools/ttt.js" defer></script>
+</body>
+</html>
