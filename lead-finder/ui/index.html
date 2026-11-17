@@ -61,6 +61,7 @@ pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:1
 .tag.ok{color:var(--ok);border-color:var(--ok)}
 .combo{position:relative}
 .combo .list{position:absolute;left:0;right:0;top:100%;z-index:5;margin-top:4px;max-height:260px;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.combo .list.up{top:auto;bottom:100%;margin:0 0 4px}
 .combo .list div{padding:8px 12px;cursor:pointer;font-size:.9rem;display:flex;justify-content:space-between;gap:10px}
 .combo .list div small{color:var(--soft)}
 .combo .list div.on,.combo .list div:hover{background:var(--raised)}
@@ -148,6 +149,7 @@ function combo(inputId,listId,items,isOn,add,extra){
     shown.forEach(function(x,i){var d=document.createElement('div');d.setAttribute('role','option');d.innerHTML='<span>'+esc(x.label)+'</span>'+(x.group?'<small>'+esc(x.group)+'</small>':'');d.onmousedown=function(e){e.preventDefault();pick(x)};list.appendChild(d)});
     if(extra&&q&&!shown.some(function(x){return x.label.toLowerCase()===q})){var d=document.createElement('div');d.innerHTML='<span>Add "'+esc(inp.value.trim())+'" as a niche</span><small>your own word</small>';d.onmousedown=function(e){e.preventDefault();extra(inp.value.trim());inp.value='';draw()};list.appendChild(d)}
     list.hidden=!list.children.length;inp.setAttribute('aria-expanded',list.hidden?'false':'true');idx=-1;
+    if(!list.hidden){var r=inp.getBoundingClientRect(),below=window.innerHeight-r.bottom,above=r.top,up=below<290&&above>below;list.classList.toggle('up',up);list.style.maxHeight=Math.max(120,Math.min(260,(up?above:below)-16))+'px'}
   }
   function pick(x){add(x);inp.value='';draw();inp.focus()}
   inp.addEventListener('input',draw);inp.addEventListener('focus',draw);inp.addEventListener('blur',function(){setTimeout(function(){list.hidden=true},120)});

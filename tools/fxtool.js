@@ -126,7 +126,12 @@
   function makePicker(id, onChange) {
     var input = $(id), list = $(id + '-list'), active = -1, items = [], value = '';
     function label(c) { var m = meta[c]; return c + ' - ' + m.name + (m.sym && m.sym !== c ? ' (' + m.sym + ')' : ''); }
-    function open() { list.hidden = false; input.setAttribute('aria-expanded', 'true'); }
+    function place() {   /* open upward when the list would run off the bottom of the screen */
+      var r = input.getBoundingClientRect(), below = window.innerHeight - r.bottom, above = r.top, up = below < 280 && above > below;
+      list.style.top = up ? 'auto' : ''; list.style.bottom = up ? 'calc(100% + 4px)' : '';
+      list.style.maxHeight = Math.max(120, Math.min(260, (up ? above : below) - 16)) + 'px';
+    }
+    function open() { list.hidden = false; place(); input.setAttribute('aria-expanded', 'true'); }
     function close() { list.hidden = true; input.setAttribute('aria-expanded', 'false'); active = -1; input.removeAttribute('aria-activedescendant'); input.value = value ? label(value) : ''; }
     function fill(q) {
       q = (q || '').toLowerCase().trim();
