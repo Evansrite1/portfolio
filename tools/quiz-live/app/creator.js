@@ -278,7 +278,7 @@
     }
     function generator() {
       var ta = h('textarea', { class: 'input', rows: 9, placeholder: 'Paste a few paragraphs of notes or an article here', 'aria-label': 'Text to make questions from' });
-      var n = h('select', { class: 'input small', 'aria-label': 'How many' }); [3, 5, 8, 10].forEach(function (x) { n.appendChild(h('option', { value: x, text: x + ' questions' })); });
+      var n = h('select', { class: 'input small', 'aria-label': 'How many' }); [3, 5, 8, 10, 20, 30, 50].forEach(function (x) { n.appendChild(h('option', { value: x, text: x + ' questions' })); });
       QL.modal('Make questions from text', h('div', { class: 'stack' }, h('p', { class: 'muted', text: 'This picks sentences and hides a key word, with 3 wrong choices taken from the same text. It does not use AI, so read each question and fix anything odd.' }), ta, n),
         [{ label: 'Make the questions', primary: true, fn: function () { var qs = QL.quickGenerate(ta.value, Number(n.value)); if (!qs.length) { QL.toast('That text is too short. Paste at least a paragraph with full sentences.', true); return false; } if (k.questions.length === 1 && !k.questions[0].text) k.questions = []; qs.forEach(function (x) { k.questions.push(x); }); sel = Math.max(0, k.questions.length - qs.length); touch(); draw(); QL.toast(qs.length + ' questions added. Check them.'); } }]);
     }
