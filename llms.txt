@@ -16,7 +16,7 @@
 - [Audio by Evans Large](https://evansademilua.vercel.app/tools/audio-mastering/): A music workstation: unlimited tracks, MIDI, plugins, spectral repair, noise removal and loudness mastering. Free in your browser, or install the app for Windows and Mac.
 - [IG Outreach](https://evansademilua.vercel.app/tools/ig-outreach/): Find Instagram businesses that need your service, message them from your own account, see who replies, and track your numbers. Windows and Mac.
 - [QuizBlast live quizzes](https://evansademilua.vercel.app/tools/quiz-live/): Make quizzes with 10 question types and play them live with a game PIN, on teams, or alone. Free, no account.
-- [Outreach Mailer](https://evansademilua.vercel.app/tools/mailer/): Send outreach emails from your own Gmail and see live stats: sent, opened, replied, bounced. Windows.
+- [Outreach Mailer](https://evansademilua.vercel.app/tools/mailer/): A Gmail app with outreach built in: read your inbox, import and fix leads, send emails at a safe pace and see live sent, opened, replied and bounced numbers. Windows.
 - [QR code scanner](https://evansademilua.vercel.app/tools/qr-code-scanner/): Read a code from a photo, a screenshot or your camera. Nothing is uploaded.
 - [Invoice and receipt generator](https://evansademilua.vercel.app/tools/invoice-receipt-generator/): Make an invoice or a receipt in one tool: 18 invoice designs and 33 receipt designs, with PDF, PNG and print. No sign-up, no watermark.
 - [Choir Assistant](https://evansademilua.vercel.app/tools/choir-assistant/): Play a keyboard with 5 sounds, find the key of a song, and see where the bass, chords, lead line and beat play in any song you upload.

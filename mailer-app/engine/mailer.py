@@ -9,7 +9,7 @@ import ssl
 from email.header import decode_header, make_header
 from email.message import EmailMessage
 
-from . import db, secrets_store
+from . import config, db, secrets_store
 
 UNSUB_RE = re.compile(r"\b(unsubscribe|stop emailing|stop sending|remove me|do not email|don'?t (ever )?email|dont (ever )?email|take me off|توقف|إيقاف|ايقاف|لا ترسل)\b", re.I)
 BOUNCE_FROM = re.compile(r"(mailer-daemon|postmaster|mail delivery)", re.I)
@@ -91,7 +91,9 @@ def smtp_send(acct, msg):
         raise RuntimeError(f"No saved password for {acct['email']}")
     host, port = acct["smtp_host"], int(acct["smtp_port"] or 587)
     ctx = ssl.create_default_context()
-    if port == 465:
+    if config.plain(host):
+        s = smtplib.SMTP(host, port, timeout=60)
+    elif port == 465:
         s = smtplib.SMTP_SSL(host, port, context=ctx, timeout=60)
     else:
         s = smtplib.SMTP(host, port, timeout=60)
@@ -124,13 +126,14 @@ def test_connection(acct):
         pw = secrets_store.get_secret(acct["email"])
         ctx = ssl.create_default_context()
         port = int(acct["smtp_port"] or 587)
-        s = smtplib.SMTP_SSL(acct["smtp_host"], port, context=ctx, timeout=30) if port == 465 else smtplib.SMTP(acct["smtp_host"], port, timeout=30)
-        if port != 465:
+        plain = config.plain(acct["smtp_host"])
+        s = smtplib.SMTP_SSL(acct["smtp_host"], port, context=ctx, timeout=30) if (port == 465 and not plain) else smtplib.SMTP(acct["smtp_host"], port, timeout=30)
+        if port != 465 and not plain:
             s.starttls(context=ctx)
         s.login(acct.get("username") or acct["email"], pw)
         s.quit()
         out["smtp"] = True
-        m = imaplib.IMAP4_SSL(acct["imap_host"], int(acct["imap_port"] or 993), timeout=30)
+        m = imaplib.IMAP4(acct["imap_host"], int(acct["imap_port"] or 993), timeout=30) if config.plain(acct["imap_host"]) else imaplib.IMAP4_SSL(acct["imap_host"], int(acct["imap_port"] or 993), timeout=30)
         m.login(acct.get("username") or acct["email"], pw)
         m.logout()
         out["imap"] = True
@@ -188,18 +191,24 @@ def sync_account(acct, limit=200):
     """Pull new inbox mail over IMAP. Returns counts."""
     pw = secrets_store.get_secret(acct["email"])
     counts = {"new": 0, "reply": 0, "bounce_hard": 0, "bounce_soft": 0, "unsub": 0}
-    m = imaplib.IMAP4_SSL(acct["imap_host"], int(acct["imap_port"] or 993), timeout=60)
+    m = imaplib.IMAP4(acct["imap_host"], int(acct["imap_port"] or 993), timeout=60) if config.plain(acct["imap_host"]) else imaplib.IMAP4_SSL(acct["imap_host"], int(acct["imap_port"] or 993), timeout=60)
     try:
         m.login(acct.get("username") or acct["email"], pw)
         m.select("INBOX", readonly=True)
         last = int(acct.get("last_imap_uid") or 0)
         if last == 0:
             # First sync: start from now. Old mail in the inbox is none of this app's business.
-            typ, data = m.uid("search", None, "ALL")
-            ids = [int(x) for x in (data[0].split() if data and data[0] else [])]
-            db.run("UPDATE accounts SET last_imap_uid=? WHERE id=?", (max(ids) if ids else 1, acct["id"]))
+            typ, data = m.status("INBOX", "(UIDNEXT)")
+            mm = re.search(r"UIDNEXT (\d+)", data[0].decode() if isinstance(data[0], bytes) else str(data[0]))
+            if mm:
+                top = int(mm.group(1)) - 1
+            else:
+                typ, data = m.uid("search", None, "ALL")
+                ids = [int(x) for x in (data[0].split() if data and data[0] else [])]
+                top = max(ids) if ids else 0
+            db.run("UPDATE accounts SET last_imap_uid=? WHERE id=?", (top if top > 0 else -1, acct["id"]))   # -1 means: started, nothing yet
             return counts
-        typ, data = m.uid("search", None, f"UID {last + 1}:*")
+        typ, data = m.uid("search", None, f"UID {max(1, last + 1)}:*")
         uids = [int(x) for x in (data[0].split() if data and data[0] else []) if int(x) > last][-limit:]
         top = last
         for uid in uids:

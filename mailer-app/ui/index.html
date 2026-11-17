@@ -81,6 +81,19 @@ tr:last-child td{border-bottom:0}
 .bar{height:7px;background:var(--raised);border-radius:99px;overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;background:var(--accent)}
 a{color:var(--accent)}
 .pause{background:var(--warn);border-color:var(--warn);color:#1a1405}
+.mailgrid{display:grid;grid-template-columns:190px 330px 1fr;gap:12px;align-items:start}
+@media(max-width:1100px){.mailgrid{grid-template-columns:1fr}}
+.mailgrid .card{margin:0;padding:10px;min-height:300px}
+.mfold .fold{display:flex;justify-content:space-between;width:100%;border:0;background:none;text-align:left;padding:8px 10px;border-radius:8px}
+.mfold .fold.on{background:var(--raised);font-weight:700}
+.mlist{max-height:72vh;overflow:auto}
+.mrow{display:grid;grid-template-columns:1fr auto;gap:2px 8px;padding:8px;border-bottom:1px solid var(--line);cursor:pointer}
+.mrow:hover,.mrow.on{background:var(--raised)}
+.mrow .mfrom{font-weight:500}.mrow.unread .mfrom,.mrow.unread .msub{font-weight:700}
+.mrow .msub{grid-column:1;color:var(--soft);font-size:.84rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mrow .mdate{grid-row:1;grid-column:2;color:var(--soft);font-size:.76rem}
+.mframe{width:100%;height:55vh;border:1px solid var(--line);border-radius:10px;background:#fff;margin-top:8px}
+.mread{min-height:400px}
 </style>
 </head>
 <body>
@@ -88,6 +101,7 @@ a{color:var(--accent)}
   <nav>
     <div class="brand"><img src="icon.png" alt=""><span>Outreach Mailer</span></div>
     <button class="tab" data-p="home"><span class="t">Dashboard</span></button>
+    <button class="tab" data-p="inbox"><span class="t">Inbox</span><span class="badge hide" id="b-inbox"></span></button>
     <button class="tab" data-p="leads"><span class="t">Leads</span><span class="badge hide" id="b-leads"></span></button>
     <button class="tab" data-p="message"><span class="t">Message</span></button>
     <button class="tab" data-p="boxes"><span class="t">Mailboxes</span></button>
@@ -101,7 +115,7 @@ a{color:var(--accent)}
 var KEY="__KEY__";
 var S=null, page=localStorage.getItem('om.page')||'home', range=localStorage.getItem('om.range')||'week';
 function $(s,r){return (r||document).querySelector(s)}
-function h(tag,attrs){var e=document.createElement(tag);attrs=attrs||{};for(var k in attrs){if(k==='text')e.textContent=attrs[k];else if(k.slice(0,2)==='on')e.addEventListener(k.slice(2),attrs[k]);else if(k==='class')e.className=attrs[k];else e.setAttribute(k,attrs[k])}
+function h(tag,attrs){var e=document.createElement(tag);attrs=attrs||{};for(var k in attrs){if(attrs[k]==null)continue;if(k==='text')e.textContent=attrs[k];else if(k.slice(0,2)==='on')e.addEventListener(k.slice(2),attrs[k]);else if(k==='class')e.className=attrs[k];else e.setAttribute(k,attrs[k])}
   for(var i=2;i<arguments.length;i++){var c=arguments[i];if(c==null)continue;if(Array.isArray(c))c.forEach(function(x){x&&e.appendChild(x)});else e.appendChild(typeof c==='string'?document.createTextNode(c):c)}return e}
 function api(path,body,method){
   return fetch('/api/'+path,{method:method||(body!==undefined?'POST':'GET'),headers:{'X-Mailer-Key':KEY,'Content-Type':'application/json'},body:body!==undefined?JSON.stringify(body):undefined})
@@ -122,7 +136,7 @@ function draw(){
   var focus=document.activeElement;
   if(page!=='home'&&focus&&/INPUT|TEXTAREA|SELECT/.test(focus.tagName)&&main.contains(focus)&&drawn===page)return; // do not disturb typing
   var m=$('#main');m.innerHTML='';drawn=page;
-  ({home:home,leads:leadsPage,message:messagePage,boxes:boxesPage,settings:settingsPage}[page]||home)(m);
+  ({home:home,inbox:inboxPage,leads:leadsPage,message:messagePage,boxes:boxesPage,settings:settingsPage}[page]||home)(m);
 }
 var main=document.getElementById('main'),drawn='';
 
@@ -198,8 +212,7 @@ var lf={q:'',status:'',list:''};
 function leadsPage(m){
   m.appendChild(h('h1',{text:'Leads'}));
   m.appendChild(h('p',{class:'lead',text:'The people you will email. Import a spreadsheet saved as CSV.'}));
-  var file=h('input',{type:'file',accept:'.csv,.txt',class:'hide',onchange:function(){var f=file.files[0];if(!f)return;var r=new FileReader();r.onload=function(){
-      api('leads/import',{text:r.result,name:f.name.replace(/\.[^.]+$/,'')}).then(function(x){toast(x.added+' added, '+x.duplicate+' already there, '+x.invalid+' without a valid email'+(x.suppressed?', '+x.suppressed+' asked not to be emailed':''));refresh().then(function(){loadLeads()})}).catch(function(e){toast(e.message,true)})};r.readAsText(f)}});
+  var file=h('input',{type:'file',accept:'.csv,.txt',class:'hide',onchange:function(){var f=file.files[0];if(!f)return;var r=new FileReader();r.onload=function(){importWizard(f.name.replace(/\.[^.]+$/,''),r.result);file.value=''};r.readAsText(f)}});
   var em=h('input',{type:'email',placeholder:'name@company.com'}),fi=h('input',{type:'text',placeholder:'First name'}),bz=h('input',{type:'text',placeholder:'Business'});
   m.appendChild(h('div',{class:'card'},h('h2',{text:'Add leads'}),
     h('div',{class:'row'},file,h('button',{class:'primary',onclick:function(){file.click()},text:'Import a CSV file'}),
@@ -220,8 +233,8 @@ function loadLeads(){
     t.innerHTML='';
     if(!rows.length){t.appendChild(h('p',{class:'help',text:'No leads here yet.'}));return}
     var names={new:'Waiting',sent:'Emailed',replied:'Replied',bounced:'Bounced',unsub:'Asked to stop',sending:'Sending'};
-    t.appendChild(h('table',{},h('tr',{},['Email','Name','Business','Status','Emails','Opened','Last sent'].map(function(x){return h('th',{text:x})})),
-      rows.map(function(r){return h('tr',{},h('td',{text:r.email}),h('td',{text:r.first}),h('td',{text:r.biz}),h('td',{},h('span',{class:'tag '+r.status,text:names[r.status]||r.status})),h('td',{text:String(r.emails)}),h('td',{text:r.opened?'Yes':''}),h('td',{text:r.last_sent?ago(r.last_sent):''}))})));
+    t.appendChild(h('table',{},h('tr',{},['Email','Name','Business','Status','Emails','Opened','Last sent',''].map(function(x){return h('th',{text:x})})),
+      rows.map(function(r){return h('tr',{},h('td',{text:r.email}),h('td',{text:r.first}),h('td',{text:r.biz}),h('td',{},h('span',{class:'tag '+r.status,text:names[r.status]||r.status})),h('td',{text:String(r.emails)}),h('td',{text:r.opened?'Yes':''}),h('td',{text:r.last_sent?ago(r.last_sent):''}),h('td',{},r.status==='new'?h('button',{class:'small',text:'Edit',onclick:function(){editLead(r)}}):null))})));
     if(rows.length>=500)t.appendChild(h('p',{class:'help',text:'Showing the newest 500. Use search or download the spreadsheet for all of them.'}));
   });
 }
@@ -299,6 +312,139 @@ function settingsPage(m){
     m.appendChild(h('div',{class:'row'},h('button',{class:'primary',text:'Save settings',onclick:function(){api('settings',{send_window:[Number(lo.value),Number(hi.value)],followup_after_days:Number(fd.value),max_followups:Number(mf.value),track_opens:tr.checked,tracker_url:tu.value}).then(function(){toast('Saved');refresh()}).catch(function(e){toast(e.message,true)})}})));
   });
 }
+/* ---------------- inbox ---------------- */
+var mb={acct:null,folder:null,folders:[],page:0,q:'',list:null,sel:null,showImg:false};
+function modal(title,body,buttons){
+  var ov=h('div',{style:'position:fixed;inset:0;background:rgba(0,0,0,.6);display:grid;place-items:center;z-index:20;padding:16px'});
+  var card=h('div',{class:'card',style:'max-width:860px;width:100%;max-height:90vh;overflow:auto;margin:0'},h('h2',{text:title}),body,
+    h('div',{class:'row',style:'margin-top:14px;justify-content:flex-end'},buttons.map(function(b){return h('button',{class:b.primary?'primary':'',text:b.label,onclick:function(){if(b.fn&&b.fn()===false)return;if(!b.keep)ov.remove()}})})));
+  ov.appendChild(card);document.body.appendChild(ov);return ov;
+}
+function inboxPage(m){
+  m.appendChild(h('h1',{text:'Inbox'}));
+  if(!S.accounts.length){m.appendChild(h('div',{class:'card'},h('p',{text:'Connect a Gmail account first, then your mail shows here.'}),h('button',{class:'primary',text:'Connect Gmail',onclick:function(){go('boxes')}})));return}
+  if(!mb.acct||!S.accounts.some(function(a){return a.id===mb.acct}))mb.acct=S.accounts[0].id;
+  var sel=h('select',{onchange:function(){mb.acct=Number(sel.value);mb.folder=null;mb.sel=null;mb.page=0;loadFolders()}},S.accounts.map(function(a){return h('option',{value:a.id,text:a.email})}));sel.value=String(mb.acct);
+  var q=h('input',{type:'text',placeholder:'Search mail',value:mb.q,onkeydown:function(e){if(e.key==='Enter'){mb.q=q.value;mb.page=0;loadList()}}});
+  m.appendChild(h('div',{class:'row',style:'margin-bottom:10px'},h('div',{style:'min-width:240px'},sel),h('div',{class:'grow'},q),h('button',{class:'primary',text:'Write an email',onclick:function(){compose()}}),h('button',{text:'Refresh',onclick:function(){loadFolders()}})));
+  m.appendChild(h('div',{class:'mailgrid'},h('div',{class:'card mfold',id:'mfold'}),h('div',{class:'card mlist',id:'mlist'}),h('div',{class:'card mread',id:'mread'},h('p',{class:'help',text:'Choose a message to read it.'}))));
+  loadFolders();
+}
+function loadFolders(){
+  api('mail/folders?account='+mb.acct).then(function(fl){
+    mb.folders=fl;if(!mb.folder||!fl.some(function(f){return f.name===mb.folder}))mb.folder=(fl[0]||{}).name;
+    var box=$('#mfold');if(!box)return;box.innerHTML='';
+    fl.forEach(function(f){box.appendChild(h('button',{class:'fold'+(f.name===mb.folder?' on':''),onclick:function(){mb.folder=f.name;mb.page=0;mb.sel=null;mb.q='';loadFolders()}},h('span',{text:f.title}),f.unread?h('b',{class:'badge',text:String(f.unread)}):null))});
+    var ib=fl.filter(function(f){return f.role==='inbox'})[0];var b=$('#b-inbox');if(b){b.textContent=ib?ib.unread:0;b.classList.toggle('hide',!(ib&&ib.unread))}
+    loadList();
+  }).catch(function(e){var b=$('#mfold');if(b){b.innerHTML='';b.appendChild(h('p',{style:'color:var(--bad)',text:e.message}))}});
+}
+function loadList(){
+  var box=$('#mlist');if(!box)return;box.innerHTML='';box.appendChild(h('p',{class:'help',text:'Loading...'}));
+  api('mail/list?account='+mb.acct+'&folder='+encodeURIComponent(mb.folder)+'&page='+mb.page+'&q='+encodeURIComponent(mb.q)).then(function(r){
+    mb.list=r;box.innerHTML='';
+    if(!r.messages.length)box.appendChild(h('p',{class:'help',text:mb.q?'Nothing matches that search.':'This folder is empty.'}));
+    r.messages.forEach(function(x){
+      var row=h('div',{class:'mrow'+(x.seen?'':' unread')+(mb.sel===x.uid?' on':''),onclick:function(){openMsg(x.uid)}},
+        h('div',{class:'mfrom',text:(x.starred?'* ':'')+(x.from_name||x.from)}),h('div',{class:'msub',text:x.subject}),h('div',{class:'mdate',text:x.ts?new Date(x.ts*1000).toLocaleDateString(undefined,{month:'short',day:'numeric'}):''}));
+      box.appendChild(row);
+    });
+    var pages=Math.ceil(r.total/r.per);
+    if(pages>1)box.appendChild(h('div',{class:'row',style:'justify-content:center;margin-top:8px'},h('button',{class:'small',text:'Newer',disabled:r.page===0?'disabled':null,onclick:function(){mb.page--;loadList()}}),h('span',{class:'help',text:'Page '+(r.page+1)+' of '+pages}),h('button',{class:'small',text:'Older',disabled:r.page+1>=pages?'disabled':null,onclick:function(){mb.page++;loadList()}})));
+  }).catch(function(e){box.innerHTML='';box.appendChild(h('p',{style:'color:var(--bad)',text:e.message}))});
+}
+function openMsg(uid){
+  mb.sel=uid;mb.showImg=false;
+  var box=$('#mread');box.innerHTML='';box.appendChild(h('p',{class:'help',text:'Opening...'}));
+  api('mail/message?account='+mb.acct+'&folder='+encodeURIComponent(mb.folder)+'&uid='+uid).then(function(msg){
+    mb.cur=msg;drawMsg();
+    [].forEach.call(document.querySelectorAll('.mrow.unread'),function(r){});
+    loadList();
+  }).catch(function(e){box.innerHTML='';box.appendChild(h('p',{style:'color:var(--bad)',text:e.message}))});
+}
+function frameDoc(msg,img){
+  var csp="default-src 'none'; style-src 'unsafe-inline'; img-src data:"+(img?" https: http:":"");
+  var body=msg.html||('<pre style="white-space:pre-wrap;font:14px system-ui">'+esc(msg.text)+'</pre>');
+  return '<!doctype html><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="'+csp+'"><base target="_blank"><style>body{font:14px system-ui,sans-serif;color:#111;background:#fff;margin:12px;overflow-wrap:anywhere}img{max-width:100%;height:auto}</style>'+body;
+}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function drawMsg(){
+  var msg=mb.cur,box=$('#mread');if(!box||!msg)return;box.innerHTML='';
+  var act=function(a,after){return function(){api('mail/action',{account:mb.acct,folder:mb.folder,uid:msg.uid,action:a}).then(function(){toast('Done');mb.cur=null;mb.sel=null;box.innerHTML='';box.appendChild(h('p',{class:'help',text:'Choose a message to read it.'}));loadFolders()}).catch(function(e){toast(e.message,true)})}};
+  var inSpam=(mb.folders.filter(function(f){return f.name===mb.folder})[0]||{}).role==='spam';
+  box.appendChild(h('div',{class:'row',style:'margin-bottom:8px'},
+    h('button',{class:'primary small',text:'Reply',onclick:function(){compose({to:msg.from,subject:/^re:/i.test(msg.subject)?msg.subject:'Re: '+msg.subject,quote:msg,in_reply_to:msg.message_id,references:(msg.references+' '+msg.message_id).trim()})}}),
+    h('button',{class:'small',text:'Forward',onclick:function(){compose({subject:'Fwd: '+msg.subject,quote:msg})}}),
+    h('button',{class:'small',text:inSpam?'Not spam':'Report spam',onclick:act(inSpam?'notspam':'spam')}),
+    h('button',{class:'small danger',text:'Delete',onclick:act('delete')}),
+    h('button',{class:'small',text:'Mark unread',onclick:function(){api('mail/action',{account:mb.acct,folder:mb.folder,uid:msg.uid,action:'unseen'}).then(function(){toast('Marked unread');loadList()})}}),
+    h('button',{class:'small',text:'Star',onclick:function(){api('mail/action',{account:mb.acct,folder:mb.folder,uid:msg.uid,action:'star'}).then(function(){toast('Starred');loadList()})}})));
+  box.appendChild(h('h3',{style:'margin:6px 0 2px',text:msg.subject}));
+  box.appendChild(h('div',{class:'help',text:'From '+msg.from_name+' <'+msg.from+'>  To '+msg.to+(msg.ts?'  '+new Date(msg.ts*1000).toLocaleString():'')}));
+  if(msg.html&&!mb.showImg)box.appendChild(h('div',{class:'help',style:'margin:8px 0'},'Pictures are hidden so senders cannot see when you open an email. ',h('a',{href:'#',text:'Show pictures',onclick:function(e){e.preventDefault();mb.showImg=true;drawMsg()}})));
+  var f=h('iframe',{class:'mframe',sandbox:'allow-popups allow-popups-to-escape-sandbox',referrerpolicy:'no-referrer'});f.srcdoc=frameDoc(msg,mb.showImg);box.appendChild(f);
+  if(msg.attachments.length)box.appendChild(h('div',{style:'margin-top:8px'},h('b',{text:'Attachments: '}),msg.attachments.map(function(a,i){return h('button',{class:'small',style:'margin:2px',text:a.name+' ('+Math.max(1,Math.round(a.size/1024))+' KB)',onclick:function(){
+    fetch('/api/mail/attachment?account='+mb.acct+'&folder='+encodeURIComponent(mb.folder)+'&uid='+msg.uid+'&i='+i,{headers:{'X-Mailer-Key':KEY}}).then(function(r){return r.blob()}).then(function(b){var u=URL.createObjectURL(b),el=document.createElement('a');el.href=u;el.download=a.name;document.body.appendChild(el);el.click();el.remove()})}})})));
+}
+function compose(o){
+  o=o||{};
+  var to=h('input',{type:'text',value:o.to||'',placeholder:'name@example.com'}),sub=h('input',{type:'text',value:o.subject||'',placeholder:'Subject'});
+  var quote=o.quote?'\n\n\nOn '+(o.quote.ts?new Date(o.quote.ts*1000).toLocaleString():'')+', '+o.quote.from_name+' wrote:\n'+String(o.quote.text||'').split('\n').slice(0,60).map(function(l){return '> '+l}).join('\n'):'';
+  var body=h('textarea',{style:'min-height:240px'});body.value=quote;
+  var from=h('select',{},S.accounts.map(function(a){return h('option',{value:a.id,text:a.email})}));from.value=String(mb.acct||S.accounts[0].id);
+  modal(o.in_reply_to?'Reply':'New email',h('div',{},h('label',{text:'From'}),from,h('label',{text:'To'}),to,h('label',{text:'Subject'}),sub,h('label',{text:'Message'}),body),
+    [{label:'Cancel'},{label:'Send',primary:true,keep:true,fn:function(){
+      var btn=this;api('mail/send',{account:Number(from.value),to:to.value,subject:sub.value,body:body.value,in_reply_to:o.in_reply_to,references:o.references}).then(function(){toast('Sent');document.querySelectorAll('div[style*="z-index:20"]').forEach(function(x){x.remove()})}).catch(function(e){toast(e.message,true)});return false}}]);
+  setTimeout(function(){(o.to?body:to).focus()},50);
+}
+
+/* ---------------- import with column mapping ---------------- */
+function importWizard(name,text){
+  api('leads/analyze',{text:text}).then(function(a){
+    var roles=[['email','Email address'],['first','First name'],['biz','Business'],['city','City'],['website','Website']];
+    var sels={},fixes={},skip={};
+    var opts=function(){return [h('option',{value:'',text:'Not in this file'})].concat(a.headers.map(function(x,i){return h('option',{value:i,text:x})}))};
+    var map=h('div',{class:'grid g2'});
+    roles.forEach(function(r){var s=h('select',{},opts());s.value=a.guess[r[0]]==null?'':String(a.guess[r[0]]);sels[r[0]]=s;map.appendChild(h('div',{},h('label',{text:r[1]}),s));s.addEventListener('change',recheck)});
+    var prev=h('div',{class:'tablewrap'});
+    var probs=h('div',{});
+    function mapping(){var o={};roles.forEach(function(r){o[r[0]]=sels[r[0]].value===''?null:Number(sels[r[0]].value)});return o}
+    function drawPrev(){
+      var mp=mapping();prev.innerHTML='';
+      prev.appendChild(h('table',{},h('tr',{},roles.map(function(r){return h('th',{text:r[1]})})),
+        a.sample.slice(0,5).map(function(row){return h('tr',{},roles.map(function(r){var i=mp[r[0]];return h('td',{text:i==null?'':row[i]})}))})));
+    }
+    function recheck(){drawPrev();api('leads/check',{text:text,email_col:mapping().email}).then(function(r){drawProbs(r.problems)})}
+    function drawProbs(list){
+      probs.innerHTML='';
+      if(!list.length){probs.appendChild(h('p',{class:'help',text:'Every email address looks fine.'}));return}
+      probs.appendChild(h('p',{style:'color:var(--warn);margin:10px 0 4px',text:list.length+' address'+(list.length===1?'':'es')+' to check. Fix or skip them, or import as they are.'}));
+      var t=h('table',{},h('tr',{},['Row','What the file says','Fix it to','Skip'].map(function(x){return h('th',{text:x})})));
+      list.slice(0,200).forEach(function(p){
+        var inp=h('input',{type:'text',value:p.suggestion||'',placeholder:p.suggestion?'':'type the right address',oninput:function(){if(inp.value.trim())fixes[p.row]=Object.assign(fixes[p.row]||{},{email:inp.value.trim()});else if(fixes[p.row])delete fixes[p.row].email}});
+        if(p.suggestion)fixes[p.row]={email:p.suggestion};
+        var chk=h('input',{type:'checkbox',onchange:function(){if(chk.checked)skip[p.row]=1;else delete skip[p.row]}});
+        t.appendChild(h('tr',{},h('td',{text:String(p.row+2)}),h('td',{text:(p.value||'(empty)')+'  ('+p.why+')'}),h('td',{},inp),h('td',{},chk)));
+      });
+      probs.appendChild(h('div',{class:'tablewrap'},t));
+    }
+    var nm=h('input',{type:'text',value:name});
+    var body=h('div',{},h('p',{class:'help',text:a.total+' rows found. Check which column is which. The app picked these by looking at what is inside each column.'}),map,h('label',{text:'Preview, the first rows'}),prev,probs,h('label',{text:'Name this list'}),nm);
+    drawPrev();recheck();
+    modal('Import leads',body,[{label:'Cancel'},{label:'Import',primary:true,keep:true,fn:function(){
+      if(mapping().email==null&&!confirm('No email column is chosen. The app will look for an address in any column. Continue?'))return false;
+      api('leads/import_mapped',{text:text,name:nm.value,mapping:mapping(),fixes:fixes,skip:Object.keys(skip).map(Number)}).then(function(x){document.querySelectorAll('div[style*="z-index:20"]').forEach(function(o){o.remove()});toast(x.added+' added, '+x.duplicate+' already there, '+x.invalid+' without a usable address'+(x.skipped?', '+x.skipped+' skipped':''));refresh().then(function(){loadLeads()})}).catch(function(e){toast(e.message,true)});return false}}]);
+  }).catch(function(e){toast(e.message,true)});
+}
+function editLead(r){
+  var f={first:h('input',{type:'text',value:r.first||''}),biz:h('input',{type:'text',value:r.biz||''}),email:h('input',{type:'text',value:r.email}),city:h('input',{type:'text',value:r.city||''}),website:h('input',{type:'text',value:r.website||''})};
+  var sug=h('p',{class:'help'});
+  api('leads/suggest?email='+encodeURIComponent(r.email)).then(function(x){if(x.suggestion){sug.textContent='Did you mean ';sug.appendChild(h('a',{href:'#',text:x.suggestion,onclick:function(e){e.preventDefault();f.email.value=x.suggestion}}));sug.appendChild(document.createTextNode('?'))}});
+  modal('Edit this lead',h('div',{},h('label',{text:'Email address'}),f.email,sug,h('div',{class:'grid g2'},h('div',{},h('label',{text:'First name'}),f.first),h('div',{},h('label',{text:'Business'}),f.biz),h('div',{},h('label',{text:'City'}),f.city),h('div',{},h('label',{text:'Website'}),f.website)),
+    h('p',{class:'help',text:'The next email to this person uses what you type here.'})),
+    [{label:'Cancel'},{label:'Save',primary:true,keep:true,fn:function(){api('leads/'+r.id+'/update',{email:f.email.value,first:f.first.value,biz:f.biz.value,city:f.city.value,website:f.website.value}).then(function(){document.querySelectorAll('div[style*="z-index:20"]').forEach(function(o){o.remove()});toast('Saved');loadLeads()}).catch(function(e){toast(e.message,true)});return false}}]);
+}
+
 var UPD=null;api('update').then(function(u){UPD=u;if(u.newer)draw()}).catch(function(){});
 refresh();setInterval(poll,8000);
 </script>

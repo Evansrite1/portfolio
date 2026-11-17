@@ -4,12 +4,13 @@ import csv
 import datetime
 import io
 import os
+import re
 import secrets
 import time
 
 from flask import Flask, Response, jsonify, request
 
-from . import config, db, leads, mailer, scheduler, secrets_store, stats, templates, tracking
+from . import config, db, inbox, leads, mailer, scheduler, secrets_store, stats, templates, tracking
 from .version import VERSION
 
 UI = os.path.join(config.ROOT, "ui")
@@ -92,6 +93,76 @@ def create_app():
                        series=stats.series(14), lists=stats.by_list(), activity=stats.activity(40),
                        log=engine.log[-25:], tracking=bool(db.get_setting("track_opens", True)),
                        tracker_configured=db.get_setting("tracker_configured", True))
+
+    # ---------- the mailbox: read, reply, delete ----------
+    def acct_of(aid):
+        a = db.one("SELECT * FROM accounts WHERE id=?", (int(aid or 0),))
+        if not a:
+            raise LookupError("Choose a mailbox first.")
+        return a
+
+    def mail_error(e):
+        return jsonify(error=mailer.friendly_error(e)), (404 if isinstance(e, LookupError) else 502)
+
+    @app.get("/api/mail/folders")
+    def mail_folders():
+        try:
+            return jsonify(inbox.folders(acct_of(request.args.get("account"))))
+        except Exception as e:
+            return mail_error(e)
+
+    @app.get("/api/mail/list")
+    def mail_list():
+        try:
+            a = acct_of(request.args.get("account"))
+            return jsonify(inbox.list_messages(a, request.args.get("folder") or "INBOX", int(request.args.get("page", 0)), 30, (request.args.get("q") or "").strip()))
+        except Exception as e:
+            return mail_error(e)
+
+    @app.get("/api/mail/message")
+    def mail_message():
+        try:
+            a = acct_of(request.args.get("account"))
+            return jsonify(inbox.get_message(a, request.args.get("folder") or "INBOX", int(request.args.get("uid"))))
+        except Exception as e:
+            return mail_error(e)
+
+    @app.get("/api/mail/attachment")
+    def mail_attachment():
+        try:
+            a = acct_of(request.args.get("account"))
+            name, ctype, data = inbox.attachment(a, request.args.get("folder") or "INBOX", int(request.args.get("uid")), int(request.args.get("i", 0)))
+        except Exception as e:
+            return mail_error(e)
+        safe = "".join(ch for ch in name if ch not in '\\/:*?"<>|\r\n')[:120] or "attachment"
+        return Response(data, mimetype="application/octet-stream", headers={"Content-Disposition": "attachment; filename=\"%s\"" % safe, "X-Content-Type-Options": "nosniff"})
+
+    @app.post("/api/mail/action")
+    def mail_action():
+        d = request.json or {}
+        try:
+            a = acct_of(d.get("account"))
+            inbox.act(a, d.get("folder") or "INBOX", int(d.get("uid")), str(d.get("action")))
+            return jsonify(ok=True)
+        except Exception as e:
+            return mail_error(e)
+
+    @app.post("/api/mail/send")
+    def mail_send():
+        d = request.json or {}
+        try:
+            a = acct_of(d.get("account"))
+            to = [x for x in re.split(r"[,;\s]+", str(d.get("to") or "")) if x]
+            if not to or not all(leads.EMAIL_RE.fullmatch(x) for x in to):
+                return jsonify(error="Type a valid email address in To."), 400
+            msg = mailer.build_message(a, ", ".join(to), str(d.get("subject") or "(no subject)")[:300], str(d.get("body") or ""),
+                                       in_reply_to=d.get("in_reply_to") or None, references=d.get("references") or d.get("in_reply_to") or None)
+            if "List-Unsubscribe" in msg:
+                del msg["List-Unsubscribe"]        # a personal message, not a campaign email
+            mailer.smtp_send(a, msg)
+            return jsonify(ok=True)
+        except Exception as e:
+            return mail_error(e)
 
     @app.get("/api/update")
     def update():
@@ -219,6 +290,42 @@ def create_app():
             return jsonify(error="The file is empty."), 400
         res = leads.import_csv(text, (d.get("name") or "Imported list")[:60])
         return jsonify(res)
+
+    @app.post("/api/leads/analyze")
+    def leads_analyze():
+        d = request.json or {}
+        text = d.get("text") or ""
+        if not text.strip():
+            return jsonify(error="The file is empty."), 400
+        a = leads.analyze(text)
+        if not a["headers"]:
+            return jsonify(error="No rows were found in that file."), 400
+        a["problems"] = leads.check_rows(text, a["guess"].get("email"))
+        return jsonify(a)
+
+    @app.post("/api/leads/check")
+    def leads_check():
+        d = request.json or {}
+        return jsonify(problems=leads.check_rows(d.get("text") or "", d.get("email_col")))
+
+    @app.post("/api/leads/import_mapped")
+    def leads_import_mapped():
+        d = request.json or {}
+        mp = {k: (int(v) if v not in (None, "", -1) else None) for k, v in (d.get("mapping") or {}).items()}
+        res = leads.import_mapped(d.get("text") or "", mp, (d.get("name") or "Imported list")[:60], d.get("fixes") or {}, d.get("skip") or [])
+        return jsonify(res)
+
+    @app.post("/api/leads/<int:lid>/update")
+    def leads_update(lid):
+        res = leads.update_lead(lid, request.json or {})
+        if res != "ok":
+            return jsonify(error={"invalid": "That is not a valid email address.", "duplicate": "Another lead already has that address.",
+                                  "locked": "This lead was already emailed, so it cannot be changed.", "missing": "No such lead."}.get(res, res)), 400
+        return jsonify(ok=True)
+
+    @app.get("/api/leads/suggest")
+    def leads_suggest():
+        return jsonify(suggestion=leads.suggest_fix(request.args.get("email", "")))
 
     @app.post("/api/leads/add")
     def leads_add():
