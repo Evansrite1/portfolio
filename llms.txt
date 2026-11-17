@@ -13,18 +13,18 @@
 - [Second screen presenter](https://evansademilua.vercel.app/tools/second-screen-presenter/): Bible verses, lyrics, PDFs, videos, cameras and countdowns on a TV or projector, with a stage display and phone remote.
 - [File Share by Evans Large](https://evansademilua.vercel.app/tools/send-app/): Send big files and folders between two computers over Wi-Fi. Install it on both. Windows, Mac and Linux.
 - [Background remover](https://evansademilua.vercel.app/tools/remove-background/): Remove the background from any image. Exact for logos, AI cutout for photos. Transparent PNG.
-- [Audio mastering](https://evansademilua.vercel.app/tools/audio-mastering/): A free music workstation in your browser: unlimited tracks, MIDI, plugins, spectral repair, noise removal and loudness mastering.
+- [Audio by Evans Large](https://evansademilua.vercel.app/tools/audio-mastering/): A music workstation: unlimited tracks, MIDI, plugins, spectral repair, noise removal and loudness mastering. Free in your browser, or install the app for Windows and Mac.
 - [IG Leads Finder](https://evansademilua.vercel.app/tools/ig-leads-finder/): Find Instagram businesses that need your service, by kind of business, country, city and size. Windows and Mac.
 - [QuizBlast live quizzes](https://evansademilua.vercel.app/tools/quiz-live/): Make quizzes with 10 question types and play them live with a game PIN, on teams, or alone. Free, no account.
 - [Outreach Mailer](https://evansademilua.vercel.app/tools/mailer/): Send outreach emails from your own Gmail and see live stats: sent, opened, replied, bounced. Windows.
 - [QR code scanner](https://evansademilua.vercel.app/tools/qr-code-scanner/): Read a code from a photo, a screenshot or your camera. Nothing is uploaded.
 - [Invoice and receipt generator](https://evansademilua.vercel.app/tools/invoice-receipt-generator/): Make an invoice or a receipt in one tool: 18 invoice designs and 33 receipt designs, with PDF, PNG and print. No sign-up, no watermark.
 - [Choir Assistant](https://evansademilua.vercel.app/tools/choir-assistant/): Play a keyboard with 5 sounds, find the key of a song, and see where the bass, chords, lead line and beat play in any song you upload.
-- [Color picker](https://evansademilua.vercel.app/tools/color-picker/): Pick a color, copy HEX, RGB, HSL and CMYK, pull a palette from a photo, check contrast.
+- [Color picker](https://evansademilua.vercel.app/tools/color-picker/): Pick any color on your screen, even outside the browser. Chrome extension and Windows and Mac app, plus palettes from photos and a contrast check.
 - [Currency calculator](https://evansademilua.vercel.app/tools/currency-calculator/): Convert between about 160 currencies with live reference rates, a margin option and a pinned table.
 - [Image converter and compressor](https://evansademilua.vercel.app/tools/image-converter/): Convert HEIC, PNG, WebP, AVIF and more to JPG, PNG or WebP. Shrink images in batches.
 - [PDF converter](https://evansademilua.vercel.app/tools/pdf-converter/): Turn Word, Excel, PowerPoint, images and text into PDF, or PDF into JPG, Word, Excel and more. Merge, split and compress.
-- [Screen recorder](https://evansademilua.vercel.app/tools/screen-recorder/): Record your screen, a window or a tab with sound and a webcam circle. Save WebM or MP4.
+- [Screen recorder](https://evansademilua.vercel.app/tools/screen-recorder/): Record your screen, a window or a tab with sound. Free in the browser, or install the Windows and Mac app to record any app. Saved on your computer.
 - [Watermark maker](https://evansademilua.vercel.app/tools/watermark-maker/): Add a text or logo watermark to one or many photos. Tile it or place it, then download a ZIP.
 - [Solutions](https://evansademilua.vercel.app/solutions.html): nine systems he builds, what each does and how it benefits the owner
 - [CareTRAC case study](https://evansademilua.vercel.app/work/caretrac.html): field and client coordination portal (FastAPI, React)

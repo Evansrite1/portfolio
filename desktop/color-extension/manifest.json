@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Color Picker by Evans Large",
+  "version": "1.0.0",
+  "description": "Pick the color of any pixel on your screen, even outside the browser. Copy HEX, RGB, HSL and more.",
+  "author": "Evans Ademilua",
+  "homepage_url": "https://evansademilua.vercel.app/tools/color-picker/",
+  "icons": { "16": "icon16.png", "32": "icon32.png", "48": "icon48.png", "128": "icon128.png" },
+  "action": { "default_title": "Color Picker by Evans Large", "default_icon": { "16": "icon16.png", "32": "icon32.png" } },
+  "background": { "service_worker": "background.js" },
+  "permissions": ["storage", "clipboardWrite"],
+  "minimum_chrome_version": "95"
+}

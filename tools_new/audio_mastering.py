@@ -1,8 +1,15 @@
-INFO = dict(slug='audio-mastering', kicker='Audio', tile_title='Audio mastering',
-            tile_desc='A free music workstation in your browser: unlimited tracks, MIDI, plugins, spectral repair, noise removal and loudness mastering.',
-            nav='Audio mastering', pos=2)
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import _getapp
 
-TOOL = '''<div class="tool" id="am-tool" style="grid-template-columns:1fr">
+INFO = dict(slug='audio-mastering', kicker='Audio', tile_title='Audio by Evans Large',
+            tile_desc='A music workstation: unlimited tracks, MIDI, plugins, spectral repair, noise removal and loudness mastering. Free in your browser, or install the app for Windows and Mac.',
+            nav='Audio by Evans Large', pos=2)
+
+GET = _getapp.card('audio', 'Audio by Evans Large', 'audio-latest', {'win': 'Audio-by-Evans-Large-Setup.exe', 'macArm': 'Audio-by-Evans-Large-mac-arm64.pkg', 'macIntel': 'Audio-by-Evans-Large-mac-x64.pkg'},
+                   'The same studio as an app for Windows and Mac. It works with no internet, opens and saves files on your computer, and records from your microphone. Unlimited tracks, MIDI, plugins, spectral repair and loudness mastering.')
+
+TOOL = GET + '''<div class="tool" id="am-tool" style="grid-template-columns:1fr">
   <div class="card" style="text-align:center;padding:34px 20px">
     <h2 style="margin:0 0 8px">Open the studio</h2>
     <p class="help" style="max-width:60ch;margin:0 auto 20px">A full-screen workstation like the desktop programs. Tracks on the left, your project on a timeline, a mixer, a piano roll, a spectral editor and a mastering panel at the bottom. It opens on its own without the browser around it.</p>
@@ -37,11 +44,11 @@ SECTIONS = '''
 </ol></section>'''
 
 PAGE = dict(
-    title='Free Online Audio Mastering and Music Workstation',
+    title='Audio by Evans Large: Music Workstation and Audio Mastering, Free',
     desc='Free audio mastering and multi-track music workstation in your browser. Unlimited tracks, MIDI, plugins, spectral repair, noise and hum removal, LUFS loudness and WAV or MP3 export. Nothing is uploaded.',
-    h1='Audio mastering', app='Audio Mastering',
+    h1='Audio by Evans Large', app='Audio by Evans Large',
     lead='A free music workstation in your browser. Record and edit unlimited tracks, write MIDI, add plugins, repair noise in a spectral editor and master your mix to the right loudness. Nothing is uploaded.',
-    tool=TOOL, vendor=[], own=[], module=[], css=[],
+    tool=TOOL, vendor=[], own=['appdl.js', 'getapp.js'], module=[], css=[],
     sections=SECTIONS,
     faq=[
         ('Is it free?', 'Yes. There is no sign-up, no watermark and no limit on tracks.'),

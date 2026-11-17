@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'">
+<title>Recording</title>
+<style>
+html,body{margin:0;height:100%;background:#14171c;color:#eef1f6;font:14px system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden}
+.bar{display:flex;align-items:center;gap:10px;height:100%;padding:0 12px;-webkit-app-region:drag}
+.dot{width:12px;height:12px;border-radius:50%;background:#ff3b3b;animation:b 1.2s infinite}
+.paused .dot{animation:none;background:#e8a92e}
+@keyframes b{50%{opacity:.35}}
+.t{font:600 16px ui-monospace,Consolas,monospace;flex:1}
+button{-webkit-app-region:no-drag;font:inherit;cursor:pointer;border-radius:9px;border:1px solid #323945;background:#252a33;color:#eef1f6;padding:6px 12px}
+button.stop{background:#ff3b3b;border-color:#ff3b3b;color:#fff;font-weight:700}
+button:focus-visible{outline:2px solid #ff5b52;outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="bar" id="bar"><span class="dot"></span><span class="t" id="t">00:00</span><button type="button" id="p">Pause</button><button type="button" class="stop" id="s">Stop</button></div>
+<script src="controller.js"></script>
+</body>
+</html>

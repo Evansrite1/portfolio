@@ -1,0 +1,88 @@
+{
+  "name": "screen-recorder-app",
+  "productName": "Screen Recorder by Evans Large",
+  "version": "1.0.0",
+  "description": "Screen Recorder by Evans Large: record your whole screen or any window, with sound, saved on your computer. Windows and Mac.",
+  "author": "Evans Ademilua",
+  "homepage": "https://evansademilua.vercel.app/tools/screen-recorder/",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test \"test/*.test.js\"",
+    "dist:win": "electron-builder --win --x64 --publish never",
+    "dist:mac:arm64": "electron-builder --mac --arm64 --publish never",
+    "dist:mac:x64": "electron-builder --mac --x64 --publish never",
+    "dist:pkg:arm64": "electron-builder --mac pkg --arm64 --publish never",
+    "dist:pkg:x64": "electron-builder --mac pkg --x64 --publish never"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.evansademilua.screenrecorder",
+    "productName": "Screen Recorder by Evans Large",
+    "copyright": "Evans Ademilua",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "Screen-Recorder-Setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false,
+      "shortcutName": "Screen Recorder by Evans Large",
+      "uninstallDisplayName": "Screen Recorder by Evans Large"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.video",
+      "identity": null,
+      "hardenedRuntime": false,
+      "artifactName": "Screen-Recorder-mac-${arch}.${ext}",
+      "extendInfo": {
+        "NSScreenCaptureUsageDescription": "Screen Recorder by Evans Large records your screen or a window when you press Record. Recordings are saved on this computer only.",
+        "NSMicrophoneUsageDescription": "Screen Recorder by Evans Large can record your voice when you turn the microphone on.",
+        "NSCameraUsageDescription": "Screen Recorder by Evans Large can show your camera when you turn it on."
+      }
+    },
+    "dmg": {
+      "title": "Screen Recorder by Evans Large"
+    },
+    "pkg": {
+      "installLocation": "/Applications",
+      "isRelocatable": false
+    }
+  }
+}

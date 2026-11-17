@@ -1,7 +1,14 @@
-INFO = dict(slug='screen-recorder', kicker='Video', tile_title='Screen recorder',
-            tile_desc='Record your screen, a window or a tab with sound and a webcam circle. Save WebM or MP4.', nav='Screen recorder')
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import _getapp
 
-TOOL = '''<div class="tool" id="sr-tool">
+INFO = dict(slug='screen-recorder', kicker='Video', tile_title='Screen recorder',
+            tile_desc='Record your screen, a window or a tab with sound. Free in the browser, or install the Windows and Mac app to record any app. Saved on your computer.', nav='Screen recorder')
+
+GET = _getapp.card('rec', 'Screen Recorder by Evans Large', 'rec-latest', {'win': 'Screen-Recorder-Setup.exe', 'macArm': 'Screen-Recorder-mac-arm64.pkg', 'macIntel': 'Screen-Recorder-mac-x64.pkg'},
+                   'Record your whole screen or any window, including apps outside the browser, with computer sound and your microphone. The video is saved in your Videos folder on your computer, never online. Windows and Mac.')
+
+TOOL = GET + '''<div class="tool" id="sr-tool">
   <div class="card">
     <p class="sr-note" id="sr-unsupported" role="alert" hidden></p>
     <div id="sr-setup">
@@ -66,7 +73,7 @@ PAGE = dict(
     desc='Record your screen, a window or a browser tab with sound and a webcam circle. Free, in your browser. Save as WebM or convert to MP4. Nothing is uploaded, no watermark.',
     h1='Free online screen recorder', app='Free Screen Recorder',
     lead='Record your whole screen, one window or one browser tab, with computer sound, your microphone and an optional webcam circle. Save it as WebM or MP4. The recording stays on your computer.',
-    tool=TOOL, vendor=[], own=[], module=['srtool.js'], css=['screen-recorder.css'],
+    tool=TOOL, vendor=[], own=['appdl.js', 'getapp.js'], module=['srtool.js'], css=['screen-recorder.css'],
     sections=SECTIONS,
     faq=[
         ('Is this screen recorder free?', 'Yes. There is no sign-up, no watermark and no time limit set by the tool.'),

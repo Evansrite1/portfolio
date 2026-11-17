@@ -1,0 +1,136 @@
+name: Desktop tool apps
+
+# Builds the Color Picker, Screen Recorder and Audio apps for Windows and Mac (Apple chip and Intel) and publishes them to
+# a release named after the tag (for example color-v1.0.0) and to a release that never changes its name (color-latest,
+# rec-latest, audio-latest) that the download pages link to. Never marked as the latest release, because the Presenter
+# download uses "latest".
+# Start it by pushing a tag: color-v1.0.0, rec-v1.0.0 or audio-v1.0.0, or run it by hand from the Actions tab.
+on:
+  push:
+    tags: ['color-v*', 'rec-v*', 'audio-v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag, for example color-v1.0.0
+        default: color-v1.0.0
+
+permissions:
+  contents: write
+
+jobs:
+  meta:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.m.outputs.tag }}
+      app: ${{ steps.m.outputs.app }}
+      latest: ${{ steps.m.outputs.latest }}
+      title: ${{ steps.m.outputs.title }}
+    steps:
+      - id: m
+        run: |
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          case "$TAG" in
+            color-v*) APP=color-app; LATEST=color-latest; TITLE="Color Picker by Evans Large" ;;
+            rec-v*)   APP=recorder-app; LATEST=rec-latest; TITLE="Screen Recorder by Evans Large" ;;
+            audio-v*) APP=audio-app; LATEST=audio-latest; TITLE="Audio by Evans Large" ;;
+            *) echo "Unknown tag $TAG"; exit 1 ;;
+          esac
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "app=$APP" >> "$GITHUB_OUTPUT"
+          echo "latest=$LATEST" >> "$GITHUB_OUTPUT"
+          echo "title=$TITLE" >> "$GITHUB_OUTPUT"
+
+  test:
+    needs: meta
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: desktop/${{ needs.meta.outputs.app }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: if [ -d test ]; then node --test "test/*.test.js"; else echo "no tests for this app"; fi
+
+  build:
+    needs: [meta, test]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            script: dist:win
+            label: win
+          - os: macos-latest
+            script: dist:mac:arm64
+            pkgscript: dist:pkg:arm64
+            label: mac-arm64
+          - os: macos-latest
+            script: dist:mac:x64
+            pkgscript: dist:pkg:x64
+            label: mac-x64
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: desktop/${{ needs.meta.outputs.app }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop/${{ needs.meta.outputs.app }}/package-lock.json
+      - if: runner.os == 'macOS'
+        run: sudo mdutil -a -i off
+        working-directory: .
+      - run: npm ci
+      - name: Build (the Mac disk image step fails now and then, so it is tried up to four times)
+        shell: bash
+        run: |
+          for i in 1 2 3 4; do
+            rm -rf dist
+            if npm run ${{ matrix.script }}; then exit 0; fi
+            echo "Attempt $i failed, trying again"; sleep 10
+          done
+          exit 1
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - name: Build the Mac .pkg installer
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          for i in 1 2 3; do
+            if npm run ${{ matrix.pkgscript }}; then exit 0; fi
+            echo "Attempt $i failed, trying again"; sleep 10
+          done
+          exit 1
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ matrix.label }}
+          path: |
+            desktop/${{ needs.meta.outputs.app }}/dist/*-Setup.exe
+            desktop/${{ needs.meta.outputs.app }}/dist/*-mac-*.dmg
+            desktop/${{ needs.meta.outputs.app }}/dist/*-mac-*.pkg
+          if-no-files-found: error
+
+  release:
+    needs: [meta, build]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: files
+          merge-multiple: true
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ needs.meta.outputs.tag }}"; LATEST="${{ needs.meta.outputs.latest }}"; TITLE="${{ needs.meta.outputs.title }}"
+          ls -la files
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --title "$TITLE $TAG" --notes "$TITLE for Windows and Mac." --latest=false
+          gh release upload "$TAG" files/* --repo "$GITHUB_REPOSITORY" --clobber
+          gh release view "$LATEST" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create "$LATEST" --repo "$GITHUB_REPOSITORY" --title "$TITLE (newest version)" --notes "Always the newest $TITLE. The download page links here." --latest=false
+          gh release upload "$LATEST" files/* --repo "$GITHUB_REPOSITORY" --clobber

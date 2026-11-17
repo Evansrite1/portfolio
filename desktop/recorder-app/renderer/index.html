@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self' blob:">
+<title>Screen Recorder by Evans Large</title>
+<style>
+:root{--bg:#14171c;--panel:#1d2128;--raised:#252a33;--line:#323945;--ink:#eef1f6;--soft:#9aa4b2;--accent:#ff5b52;--ok:#3ddc84;--rec:#ff3b3b}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column}
+header{padding:16px 22px 8px;display:flex;align-items:baseline;gap:12px}
+h1{margin:0;font-size:1.15rem}
+.sub{color:var(--soft);font-size:.82rem}
+.wrap{flex:1;overflow:auto;padding:6px 22px 18px;display:grid;grid-template-columns:1fr 290px;gap:18px;align-items:start}
+@media(max-width:860px){.wrap{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+.card h2{margin:0 0 10px;font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;color:var(--soft)}
+.tabs{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:12px}
+.tabs button{border:0;border-radius:0;background:var(--raised);padding:7px 16px}
+.tabs button.on{background:var(--accent);color:#161616;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:10px}
+.src{border:2px solid var(--line);border-radius:12px;background:var(--raised);padding:6px;cursor:pointer;text-align:left;display:block;width:100%}
+.src:hover{border-color:var(--soft)}
+.src.on{border-color:var(--accent)}
+.src img{width:100%;aspect-ratio:16/9;object-fit:contain;background:#000;border-radius:8px;display:block}
+.src span{display:block;font-size:.78rem;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--ink);padding:8px 14px}
+button:hover{border-color:var(--accent)}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.rec{width:100%;background:var(--rec);border-color:var(--rec);color:#fff;font-weight:700;font-size:1.05rem;padding:14px}
+.rec:disabled{opacity:.45;cursor:not-allowed}
+label{display:block;color:var(--soft);font-size:.8rem;margin:10px 0 4px}
+select{width:100%;background:var(--raised);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px}
+.chk{display:flex;gap:8px;align-items:center;margin:8px 0;color:var(--ink);font-size:.86rem}
+.hint{color:var(--soft);font-size:.78rem}
+.notice{background:#3a2a12;border:1px solid #7a5a1c;color:#ffd58a;border-radius:10px;padding:10px;margin-bottom:12px;font-size:.82rem}
+.saved{border-color:var(--ok)}
+.saved b{color:var(--ok)}
+.hide{display:none}
+.row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<header><h1>Screen Recorder by Evans Large</h1><span class="sub">Records your screen or any window. Saved on this computer, never uploaded.</span></header>
+<div class="wrap">
+  <div>
+    <div id="notice" class="notice hide" role="alert"></div>
+    <div class="card" id="saved-card" hidden>
+      <h2>Saved</h2>
+      <p style="margin:0 0 6px"><b>Your recording is saved.</b></p>
+      <p class="hint" id="saved-path" style="word-break:break-all;margin:0"></p>
+      <div class="row"><button type="button" id="open-file">Play it</button><button type="button" id="show-file">Show in folder</button></div>
+    </div>
+    <div class="card">
+      <h2>What do you want to record?</h2>
+      <div class="tabs" role="tablist"><button type="button" data-k="screen" class="on">Whole screen</button><button type="button" data-k="window">A window or app</button></div>
+      <button type="button" id="refresh" style="float:right">Refresh</button>
+      <div class="grid" id="grid" role="radiogroup" aria-label="Choose what to record"></div>
+      <p class="hint" id="empty" hidden>Nothing to show. Press Refresh.</p>
+    </div>
+  </div>
+  <div>
+    <div class="card">
+      <h2>Sound and quality</h2>
+      <div class="chk"><input type="checkbox" id="sys"><label for="sys" style="margin:0;color:var(--ink)">Computer sound</label></div>
+      <p class="hint" id="sys-note" style="margin:0 0 6px">Records what you hear from the computer. Windows only.</p>
+      <div class="chk"><input type="checkbox" id="mic"><label for="mic" style="margin:0;color:var(--ink)">Microphone</label></div>
+      <label for="mic-dev" id="mic-l" class="hide">Microphone</label><select id="mic-dev" class="hide"></select>
+      <label for="q">Quality</label>
+      <select id="q"><option value="1080">1080p, sharp</option><option value="720">720p, smaller file</option><option value="0">Original size</option></select>
+      <label for="fps">Frames per second</label>
+      <select id="fps"><option value="30">30</option><option value="60">60, smoother</option><option value="15">15, smallest</option></select>
+      <label for="fmt">File type</label>
+      <select id="fmt"><option value="mp4">MP4</option><option value="webm">WebM</option></select>
+      <div class="chk" style="margin-top:12px"><input type="checkbox" id="cd" checked><label for="cd" style="margin:0;color:var(--ink)">3 second countdown</label></div>
+    </div>
+    <button type="button" class="rec" id="rec" disabled>Choose what to record</button>
+    <p class="hint" style="text-align:center;margin-top:8px">Shortcut to start and stop: <b id="key">Ctrl+Shift+R</b></p>
+    <div class="row" style="justify-content:center"><button type="button" id="folder">Open my recordings</button></div>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

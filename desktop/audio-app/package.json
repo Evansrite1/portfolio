@@ -1,0 +1,92 @@
+{
+  "name": "audio-studio-app",
+  "productName": "Audio by Evans Large",
+  "version": "1.0.0",
+  "description": "Audio by Evans Large: a music workstation with unlimited tracks, MIDI, plugins, spectral repair, noise removal and loudness mastering. Windows and Mac. Works offline.",
+  "author": "Evans Ademilua",
+  "homepage": "https://evansademilua.vercel.app/tools/audio-mastering/",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test \"test/*.test.js\"",
+    "dist:win": "electron-builder --win --x64 --publish never",
+    "dist:mac:arm64": "electron-builder --mac --arm64 --publish never",
+    "dist:mac:x64": "electron-builder --mac --x64 --publish never",
+    "dist:pkg:arm64": "electron-builder --mac pkg --arm64 --publish never",
+    "dist:pkg:x64": "electron-builder --mac pkg --x64 --publish never",
+    "sync": "node scripts/sync.js",
+    "prestart": "node scripts/sync.js",
+    "predist:win": "node scripts/sync.js",
+    "predist:mac:arm64": "node scripts/sync.js",
+    "predist:mac:x64": "node scripts/sync.js",
+    "predist:pkg:arm64": "node scripts/sync.js",
+    "predist:pkg:x64": "node scripts/sync.js"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.evansademilua.audiostudio",
+    "productName": "Audio by Evans Large",
+    "copyright": "Evans Ademilua",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "web/**",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "Audio-by-Evans-Large-Setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false,
+      "shortcutName": "Audio by Evans Large",
+      "uninstallDisplayName": "Audio by Evans Large"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.music",
+      "identity": null,
+      "hardenedRuntime": false,
+      "artifactName": "Audio-by-Evans-Large-mac-${arch}.${ext}",
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "Audio by Evans Large records your voice or an instrument when you press record."
+      }
+    },
+    "dmg": {
+      "title": "Audio by Evans Large"
+    },
+    "pkg": {
+      "installLocation": "/Applications",
+      "isRelocatable": false
+    }
+  }
+}

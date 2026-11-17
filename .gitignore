@@ -90,3 +90,8 @@ mailer-app/__pycache__/
 mailer-app/engine/__pycache__/
 mailer-app/tests/__pycache__/
 mailer-app/.pytest_cache/
+
+desktop/color-app/dist/
+desktop/recorder-app/dist/
+desktop/audio-app/dist/
+desktop/audio-app/web/

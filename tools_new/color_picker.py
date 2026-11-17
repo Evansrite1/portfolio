@@ -1,8 +1,16 @@
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import _getapp
+
 INFO = dict(slug='color-picker', kicker='Design', tile_title='Color picker',
-            tile_desc='Pick a color, copy HEX, RGB, HSL and CMYK, pull a palette from a photo, check contrast.',
+            tile_desc='Pick any color on your screen, even outside the browser. Chrome extension and Windows and Mac app, plus palettes from photos and a contrast check.',
             nav='Color picker')
 
-TOOL = '''<div id="cp-tool">
+GET = _getapp.card('color', 'Color Picker by Evans Large', 'color-latest', {'win': 'Color-Picker-Setup.exe', 'macArm': 'Color-Picker-mac-arm64.pkg', 'macIntel': 'Color-Picker-mac-x64.pkg'},
+                   'Pick the color of any pixel on your screen, in any app, video or windowed game. Press Ctrl+Alt+C (Cmd+Option+C on a Mac) from anywhere, click a pixel, and the color is copied. Windows and Mac.')
+EXT = '<div class="card" style="text-align:center;margin:0 0 16px;padding:18px 16px"><h2 style="margin:0 0 6px;font-size:1.1rem">Chrome extension</h2><p class="help" style="max-width:60ch;margin:0 auto 12px">Pick any color on your screen from the Chrome or Edge toolbar, even outside the browser. Download it, open <b>chrome://extensions</b>, turn on Developer mode, press Load unpacked and choose the unzipped folder.</p><a class="btn" href="/tools/color-picker/color-picker-extension.zip" download>Download the extension (zip)</a></div>'
+
+TOOL = GET + EXT + '''<div id="cp-tool">
 <div class="tool">
   <div class="card">
     <h2 class="cp-h">Pick a color</h2>
@@ -111,7 +119,7 @@ PAGE = dict(
     desc='Free color picker with HEX, RGB, HSL, HSV and CMYK values, screen eyedropper, palette from an image, contrast checker, shades and harmonies. Runs in your browser.',
     h1='Color picker', app='Color Picker',
     lead='Pick any color and copy it as HEX, RGB, HSL, HSV or CMYK. Pull a palette from a photo, check text contrast, and build shades and matching colors. It runs in your browser and nothing is uploaded.',
-    tool=TOOL, vendor=[], own=['cptool.js'], css=['color-picker.css'],
+    tool=TOOL, vendor=[], own=['appdl.js', 'getapp.js', 'cptool.js'], css=['color-picker.css'],
     sections=SECTIONS,
     faq=[
         ('Is this color picker free?', 'Yes. There is no sign-up and no limit. It runs in your browser.'),
