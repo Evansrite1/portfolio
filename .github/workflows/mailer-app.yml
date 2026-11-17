@@ -1,0 +1,74 @@
+name: Outreach Mailer app
+
+# Runs the tests, builds the Windows installer and publishes it to a release called mailer-vX.Y.Z and to a release called
+# mailer-latest (the download page links to mailer-latest, so it never needs a new link). Never marked as the latest
+# release, because the Presenter download uses "latest".
+# Start it by pushing a tag such as mailer-v1.0.0, or run it by hand from the Actions tab.
+on:
+  push:
+    tags: ['mailer-v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag
+        default: mailer-v1.0.0
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mailer-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt pytest
+      - run: python -m pytest tests -q
+
+  build:
+    needs: test
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: mailer-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt pyinstaller pillow
+      - name: Windows installer
+        shell: pwsh
+        run: |
+          if (-not (Get-Command makensis -ErrorAction SilentlyContinue)) { choco install nsis -y --no-progress }
+          $env:Path += ";C:\Program Files (x86)\NSIS"
+          python build.py --out ../dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mailer-win
+          path: dist/Outreach-Mailer-Setup.exe
+          if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: files
+          merge-multiple: true
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          find files -type f
+          mapfile -t F < <(find files -type f)
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --title "Outreach Mailer $TAG" --notes "Outreach Mailer for Windows." --latest=false
+          gh release upload "$TAG" "${F[@]}" --repo "$GITHUB_REPOSITORY" --clobber
+          gh release view mailer-latest --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create mailer-latest --repo "$GITHUB_REPOSITORY" --title "Outreach Mailer (newest version)" --notes "Always the newest Outreach Mailer. The download page links here." --latest=false
+          gh release upload mailer-latest "${F[@]}" --repo "$GITHUB_REPOSITORY" --clobber

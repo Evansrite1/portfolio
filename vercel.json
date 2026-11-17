@@ -131,6 +131,7 @@
       "permanent": true
     }
   ],
+  "rewrites": [{ "source": "/o/:token", "destination": "/api/o?token=:token" }],
   "headers": [
     {
       "source": "/scout/(.*)",

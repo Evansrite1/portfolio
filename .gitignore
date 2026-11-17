@@ -82,3 +82,11 @@ Instagram Outreach Lead Generator/download_url*.txt
 Instagram Outreach Lead Generator/igscout.log
 Instagram Outreach Lead Generator/settings.json
 Instagram Outreach Lead Generator/already-have/
+
+# Outreach Mailer build output
+mailer-app/build_out/
+mailer-app/dist/
+mailer-app/__pycache__/
+mailer-app/engine/__pycache__/
+mailer-app/tests/__pycache__/
+mailer-app/.pytest_cache/

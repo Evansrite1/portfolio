@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Outreach Mailer</title>
+<link rel="icon" href="icon.png">
+<style>
+:root{--bg:#0e1116;--panel:#161a21;--raised:#1d222b;--line:#2a303b;--ink:#eef1f6;--soft:#97a1b1;--accent:#3b82f6;--accent-ink:#fff;--ok:#2fbf71;--warn:#e8a92e;--bad:#e5484d}
+@media (prefers-color-scheme:light){:root{--bg:#f3f5f9;--panel:#fff;--raised:#eef1f6;--line:#d9dee7;--ink:#121620;--soft:#566073}}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.app{display:grid;grid-template-columns:220px 1fr;min-height:100%}
+nav{background:var(--panel);border-right:1px solid var(--line);padding:18px 12px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 10px 16px;font-weight:700;font-size:1.02rem}
+.brand img{width:30px;height:30px;border-radius:8px}
+nav button.tab{display:flex;justify-content:space-between;align-items:center;text-align:left;background:none;border:0;color:var(--soft);padding:10px 12px;border-radius:10px;font:inherit;cursor:pointer}
+nav button.tab:hover{background:var(--raised);color:var(--ink)}
+nav button.tab.on{background:var(--raised);color:var(--ink);font-weight:600}
+.badge{background:var(--accent);color:var(--accent-ink);border-radius:99px;font-size:.72rem;padding:1px 8px;font-weight:700}
+.navfoot{margin-top:auto;padding:10px;color:var(--soft);font-size:.78rem}
+main{padding:24px 28px;max-width:1100px;width:100%}
+h1{margin:0 0 4px;font-size:1.5rem}
+.lead{color:var(--soft);margin:0 0 20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
+.card h2{margin:0 0 12px;font-size:.78rem;text-transform:uppercase;letter-spacing:.09em;color:var(--soft)}
+.grid{display:grid;gap:12px}
+.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:1fr 1fr}
+@media(max-width:980px){.g4{grid-template-columns:repeat(2,1fr)}.app{grid-template-columns:70px 1fr}.brand span,nav button.tab span.t,.navfoot{display:none}.g2,.g3{grid-template-columns:1fr}}
+.stat{background:var(--raised);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.stat b{display:block;font-size:1.7rem;line-height:1.15}
+.stat span{font-size:.78rem;color:var(--soft)}
+.stat small{display:block;font-size:.75rem;color:var(--soft);margin-top:2px}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--ink);padding:9px 14px}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+button.danger{color:var(--bad)}
+button.small{padding:5px 10px;font-size:.82rem}
+button:disabled{opacity:.5;cursor:not-allowed}
+label{display:block;font-size:.85rem;color:var(--soft);margin:12px 0 5px}
+input[type=text],input[type=email],input[type=password],input[type=number],textarea,select{width:100%;background:var(--raised);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font:inherit}
+textarea{resize:vertical;min-height:130px;line-height:1.45}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.grow{flex:1;min-width:150px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--soft);margin-right:7px}
+.dot.on{background:var(--ok)}.dot.bad{background:var(--bad)}.dot.warn{background:var(--warn)}
+.todo{border-color:var(--accent)}
+.todo li{margin:6px 0}
+.help{color:var(--soft);font-size:.86rem}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{text-align:left;color:var(--soft);font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.06em;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.tag{display:inline-block;border-radius:99px;padding:1px 9px;font-size:.76rem;background:var(--raised);border:1px solid var(--line)}
+.tag.replied{border-color:var(--ok);color:var(--ok)}.tag.bounced,.tag.unsub{border-color:var(--bad);color:var(--bad)}.tag.sent{border-color:var(--accent);color:var(--accent)}
+.chart{display:flex;align-items:flex-end;gap:6px;height:150px;padding-top:8px}
+.col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:2px;min-width:0}
+.bars{display:flex;align-items:flex-end;gap:2px;height:118px;width:100%;justify-content:center}
+.bars i{display:block;width:34%;max-width:14px;border-radius:3px 3px 0 0;min-height:2px}
+.bars .s{background:var(--accent)}.bars .o{background:var(--warn)}.bars .r{background:var(--ok)}
+.col small{font-size:.68rem;color:var(--soft)}
+.legend{display:flex;gap:16px;font-size:.8rem;color:var(--soft);margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px}
+.feed{max-height:340px;overflow:auto}
+.feed div{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:.88rem}
+.feed div:last-child{border-bottom:0}
+.feed time{color:var(--soft);min-width:78px;font-size:.8rem}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;border-radius:0;background:var(--raised);padding:6px 14px}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+.step{display:flex;gap:12px;margin:12px 0}
+.step .n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:.85rem;font-weight:700}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.chip{padding:3px 10px;border-radius:99px;background:var(--raised);border:1px solid var(--line);font-size:.8rem;cursor:pointer}
+.preview{white-space:pre-wrap;background:var(--raised);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:.9rem}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--panel);border:1px solid var(--accent);padding:10px 18px;border-radius:12px;z-index:9;max-width:80vw}
+.toast.bad{border-color:var(--bad)}
+.hide{display:none}
+.bar{height:7px;background:var(--raised);border-radius:99px;overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;background:var(--accent)}
+a{color:var(--accent)}
+.pause{background:var(--warn);border-color:var(--warn);color:#1a1405}
+</style>
+</head>
+<body>
+<div class="app">
+  <nav>
+    <div class="brand"><img src="icon.png" alt=""><span>Outreach Mailer</span></div>
+    <button class="tab" data-p="home"><span class="t">Dashboard</span></button>
+    <button class="tab" data-p="leads"><span class="t">Leads</span><span class="badge hide" id="b-leads"></span></button>
+    <button class="tab" data-p="message"><span class="t">Message</span></button>
+    <button class="tab" data-p="boxes"><span class="t">Mailboxes</span></button>
+    <button class="tab" data-p="settings"><span class="t">Settings</span></button>
+    <div class="navfoot">Version <span id="ver">__VERSION__</span><br>Everything stays on this computer.</div>
+  </nav>
+  <main id="main"></main>
+</div>
+<div id="toast" class="toast hide"></div>
+<script>
+var KEY="__KEY__";
+var S=null, page=localStorage.getItem('om.page')||'home', range=localStorage.getItem('om.range')||'week';
+function $(s,r){return (r||document).querySelector(s)}
+function h(tag,attrs){var e=document.createElement(tag);attrs=attrs||{};for(var k in attrs){if(k==='text')e.textContent=attrs[k];else if(k.slice(0,2)==='on')e.addEventListener(k.slice(2),attrs[k]);else if(k==='class')e.className=attrs[k];else e.setAttribute(k,attrs[k])}
+  for(var i=2;i<arguments.length;i++){var c=arguments[i];if(c==null)continue;if(Array.isArray(c))c.forEach(function(x){x&&e.appendChild(x)});else e.appendChild(typeof c==='string'?document.createTextNode(c):c)}return e}
+function api(path,body,method){
+  return fetch('/api/'+path,{method:method||(body!==undefined?'POST':'GET'),headers:{'X-Mailer-Key':KEY,'Content-Type':'application/json'},body:body!==undefined?JSON.stringify(body):undefined})
+   .then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok)throw new Error(j.error||'Something went wrong.');return j})})}
+function toast(t,bad){var e=$('#toast');e.textContent=t;e.className='toast'+(bad?' bad':'');clearTimeout(toast.t);toast.t=setTimeout(function(){e.className='toast hide'},bad?7000:3500)}
+function ago(ts){var s=Math.max(0,Date.now()/1000-ts);if(s<60)return 'just now';if(s<3600)return Math.floor(s/60)+' min ago';if(s<86400)return Math.floor(s/3600)+' h ago';return new Date(ts*1000).toLocaleDateString()}
+function stat(n,label,sub){return h('div',{class:'stat'},h('b',{text:String(n)}),h('span',{text:label}),sub?h('small',{text:sub}):null)}
+
+function refresh(){return api('state').then(function(s){S=s;draw()}).catch(function(e){})}
+function poll(){if(document.hidden)return;api('state').then(function(s){S=s;if(page==='home'||page==='boxes')draw();else{var b=$('#b-leads');b.textContent=(S.leads.new||0);b.classList.toggle('hide',!(S.leads.new||0))}}).catch(function(){})}
+function go(p){page=p;localStorage.setItem('om.page',p);draw()}
+document.querySelectorAll('nav .tab').forEach(function(b){b.addEventListener('click',function(){go(b.dataset.p)})});
+
+function draw(){
+  if(!S)return;
+  document.querySelectorAll('nav .tab').forEach(function(b){b.classList.toggle('on',b.dataset.p===page)});
+  var nl=(S.leads.new||0),bl=$('#b-leads');bl.textContent=nl;bl.classList.toggle('hide',!nl);
+  var focus=document.activeElement;
+  if(page!=='home'&&focus&&/INPUT|TEXTAREA|SELECT/.test(focus.tagName)&&main.contains(focus)&&drawn===page)return; // do not disturb typing
+  var m=$('#main');m.innerHTML='';drawn=page;
+  ({home:home,leads:leadsPage,message:messagePage,boxes:boxesPage,settings:settingsPage}[page]||home)(m);
+}
+var main=document.getElementById('main'),drawn='';
+
+/* ---------------- dashboard ---------------- */
+function home(m){
+  if(UPD&&UPD.newer)m.appendChild(h('div',{class:'card todo'},h('b',{text:'Version '+UPD.version+' is ready. '}),h('a',{href:UPD.page,target:'_blank',rel:'noopener',text:'Download it'}),UPD.notes&&UPD.notes.length?h('div',{class:'help',text:UPD.notes.join('. ')}):null));
+  m.appendChild(h('h1',{text:'Dashboard'}));
+  m.appendChild(h('p',{class:'lead',text:'Live numbers for every email this app sends.'}));
+  if(S.todo.length){
+    m.appendChild(h('div',{class:'card todo'},h('h2',{text:'Before you can send'}),
+      h('ol',{},S.todo.map(function(t){return h('li',{text:t})})),
+      h('div',{class:'row'},h('button',{class:'small',onclick:function(){go('boxes')},text:'Mailboxes'}),h('button',{class:'small',onclick:function(){go('leads')},text:'Leads'}),h('button',{class:'small',onclick:function(){go('message')},text:'Message'}))));
+  }
+  var ctl=h('div',{class:'card'});
+  var st=S.sending?(S.in_window?'Sending now':'Waiting for the send window ('+S.window[0]+':00 to '+S.window[1]+':00)'):'Paused';
+  ctl.appendChild(h('div',{class:'row'},
+    h('span',{class:'dot '+(S.sending&&S.in_window?'on':S.sending?'warn':'')}),h('b',{text:st}),
+    h('span',{class:'help grow',text:(S.leads.new||0)+' leads waiting. Replies and opens are checked every minute or two, even when paused.'}),
+    S.sending?h('button',{class:'pause',onclick:function(){api('engine/stop',{}).then(refresh)},text:'Pause sending'})
+             :h('button',{class:'primary',onclick:function(){api('engine/start',{}).then(refresh).catch(function(e){toast(e.message,true)})},text:'Start sending'})));
+  m.appendChild(ctl);
+
+  var seg=h('div',{class:'seg'},[['today','Today'],['week','7 days'],['all','All time']].map(function(r){return h('button',{class:range===r[0]?'on':'',text:r[1],onclick:function(){range=r[0];localStorage.setItem('om.range',r[0]);draw()}})}));
+  var t=range==='today'?S.today:range==='all'?S.all:S.week;
+  m.appendChild(h('div',{class:'row',style:'margin-bottom:10px'},h('b',{text:'Results'}),seg));
+  m.appendChild(h('div',{class:'grid g4',style:'margin-bottom:12px'},
+    stat(t.sent,'Emails sent',t.people+' people'),
+    stat(t.opened,'Opened',t.open_rate+'% of delivered'),
+    stat(t.replies,'Replied',t.reply_rate+'% of delivered'),
+    stat(t.bounces,'Bounced',t.bounce_rate+'% of sent')));
+  m.appendChild(h('div',{class:'grid g4'},
+    stat(t.delivered,'Delivered','sent minus bounced'),
+    stat(t.optouts,'Asked to stop','never emailed again'),
+    stat((S.leads.new||0),'Leads waiting',''),
+    stat(S.accounts.reduce(function(a,x){return a+x.sent_today},0),'Sent today','of '+S.accounts.reduce(function(a,x){return a+(x.enabled?x.allowed_today:0)},0)+' allowed')));
+  if(S.tracking&&S.tracker_configured===false)m.appendChild(h('p',{class:'help',style:'color:var(--warn)',text:'The open tracker is not switched on yet, so opens stay at zero for now. Replies and bounces are not affected.'}));
+  if(!S.tracking)m.appendChild(h('p',{class:'help',text:'Open tracking is off in Settings, so the Opened number stays at zero. Replies and bounces still count.'}));
+
+  var mx=Math.max.apply(null,S.series.map(function(d){return Math.max(d.sent,d.opens,d.replies)}).concat([1]));
+  var ch=h('div',{class:'chart'},S.series.map(function(d){var D=new Date(d.date+'T00:00');
+    return h('div',{class:'col',title:d.date+': '+d.sent+' sent, '+d.opens+' opened, '+d.replies+' replied'},
+      h('div',{class:'bars'},h('i',{class:'s',style:'height:'+Math.round(100*d.sent/mx)+'%'}),h('i',{class:'o',style:'height:'+Math.round(100*d.opens/mx)+'%'}),h('i',{class:'r',style:'height:'+Math.round(100*d.replies/mx)+'%'})),
+      h('small',{text:String(D.getDate())}))}));
+  m.appendChild(h('div',{class:'card',style:'margin-top:16px'},h('h2',{text:'Last 14 days'}),ch,
+    h('div',{class:'legend'},h('span',{},h('i',{style:'background:var(--accent)'}),'Sent'),h('span',{},h('i',{style:'background:var(--warn)'}),'Opened'),h('span',{},h('i',{style:'background:var(--ok)'}),'Replied'))));
+
+  var two=h('div',{class:'grid g2'});
+  var boxes=h('div',{class:'card'},h('h2',{text:'Mailboxes today'}));
+  if(!S.accounts.length)boxes.appendChild(h('p',{class:'help',text:'No mailbox connected yet.'}));
+  S.accounts.forEach(function(a){boxes.appendChild(h('div',{style:'margin-bottom:12px'},
+    h('div',{class:'row'},h('span',{class:'dot '+(a.paused?'bad':a.enabled?'on':'')}),h('b',{text:a.email}),h('span',{class:'help',text:a.sent_today+' of '+a.allowed_today+' today'})),
+    h('div',{class:'bar'},h('i',{style:'width:'+Math.min(100,Math.round(100*a.sent_today/Math.max(1,a.allowed_today)))+'%'})),
+    a.paused?h('div',{class:'help',style:'color:var(--bad)',text:'Paused: '+a.paused_reason}):null,
+    a.paused?h('button',{class:'small',style:'margin-top:6px',onclick:function(){api('accounts/'+a.id+'/resume',{}).then(refresh)},text:'Resume this mailbox'}):null))});
+  two.appendChild(boxes);
+  var feed=h('div',{class:'card'},h('h2',{text:'Live activity'}));
+  var fl=h('div',{class:'feed'});
+  if(!S.activity.length)fl.appendChild(h('p',{class:'help',text:'Nothing yet. Sent emails, opens and replies appear here.'}));
+  S.activity.forEach(function(a){fl.appendChild(h('div',{},h('time',{text:ago(a.ts)}),h('span',{},h('b',{text:a.what}),' '+(a.biz?a.biz+' ':'')+(a.who?'('+a.who+')':''))))});
+  feed.appendChild(fl);two.appendChild(feed);m.appendChild(two);
+
+  if(S.lists.length){
+    var tb=h('table',{},h('tr',{},['List','Leads','Sent','Opened','Replied','Bounced'].map(function(x){return h('th',{text:x})})),
+      S.lists.map(function(l){return h('tr',{},h('td',{text:l.name}),h('td',{text:String(l.leads)}),h('td',{text:String(l.people)}),h('td',{text:l.opened+' ('+l.open_rate+'%)'}),h('td',{text:l.replies+' ('+l.reply_rate+'%)'}),h('td',{text:String(l.bounces)}))}));
+    m.appendChild(h('div',{class:'card'},h('h2',{text:'By lead list'}),tb));
+  }
+  m.appendChild(h('div',{class:'row'},h('a',{href:'/api/export.csv',onclick:function(e){e.preventDefault();dl()},text:'Download all results as a spreadsheet'})));
+}
+function dl(){fetch('/api/export.csv',{headers:{'X-Mailer-Key':KEY}}).then(function(r){return r.blob()}).then(function(b){var u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='outreach-results.csv';document.body.appendChild(a);a.click();a.remove()})}
+
+/* ---------------- leads ---------------- */
+var lf={q:'',status:'',list:''};
+function leadsPage(m){
+  m.appendChild(h('h1',{text:'Leads'}));
+  m.appendChild(h('p',{class:'lead',text:'The people you will email. Import a spreadsheet saved as CSV.'}));
+  var file=h('input',{type:'file',accept:'.csv,.txt',class:'hide',onchange:function(){var f=file.files[0];if(!f)return;var r=new FileReader();r.onload=function(){
+      api('leads/import',{text:r.result,name:f.name.replace(/\.[^.]+$/,'')}).then(function(x){toast(x.added+' added, '+x.duplicate+' already there, '+x.invalid+' without a valid email'+(x.suppressed?', '+x.suppressed+' asked not to be emailed':''));refresh().then(function(){loadLeads()})}).catch(function(e){toast(e.message,true)})};r.readAsText(f)}});
+  var em=h('input',{type:'email',placeholder:'name@company.com'}),fi=h('input',{type:'text',placeholder:'First name'}),bz=h('input',{type:'text',placeholder:'Business'});
+  m.appendChild(h('div',{class:'card'},h('h2',{text:'Add leads'}),
+    h('div',{class:'row'},file,h('button',{class:'primary',onclick:function(){file.click()},text:'Import a CSV file'}),
+      h('span',{class:'help grow',text:'Needs an email column. Other columns you can use: first, business, city, website. Any extra column becomes a field, for example a column called niche is {{niche}} in your message.'})),
+    h('div',{class:'row',style:'margin-top:14px'},h('div',{class:'grow'},em),h('div',{class:'grow'},fi),h('div',{class:'grow'},bz),
+      h('button',{onclick:function(){api('leads/add',{email:em.value,first:fi.value,biz:bz.value}).then(function(){em.value='';fi.value='';bz.value='';toast('Added');refresh().then(loadLeads)}).catch(function(e){toast(e.message,true)})},text:'Add one'}))));
+  var box=h('div',{class:'card'});
+  var q=h('input',{type:'text',placeholder:'Search email, name or business',value:lf.q,oninput:function(){lf.q=q.value;clearTimeout(q.t);q.t=setTimeout(loadLeads,250)}});
+  var sel=h('select',{onchange:function(){lf.status=sel.value;loadLeads()}},[['','All leads'],['new','Waiting'],['sent','Emailed'],['replied','Replied'],['bounced','Bounced'],['unsub','Asked to stop']].map(function(o){return h('option',{value:o[0],text:o[1]})}));sel.value=lf.status;
+  var ls=h('select',{onchange:function(){lf.list=ls.value;loadLeads()}},[h('option',{value:'',text:'All lists'})].concat(S.lists.map(function(l){return h('option',{value:l.source||'__hand__',text:l.name})})));ls.value=lf.list;
+  box.appendChild(h('div',{class:'row',style:'margin-bottom:10px'},h('div',{class:'grow'},q),sel,ls,
+    h('button',{class:'danger small',onclick:function(){if(confirm('Remove every lead that has not been emailed yet?'))api('leads/delete',{status:'new'}).then(function(x){toast(x.removed+' removed');refresh().then(loadLeads)})},text:'Clear waiting leads'})));
+  var tbl=h('div',{id:'leadtbl'});box.appendChild(tbl);m.appendChild(box);loadLeads();
+}
+function loadLeads(){
+  var t=$('#leadtbl');if(!t)return;
+  api('leads?status='+encodeURIComponent(lf.status)+'&q='+encodeURIComponent(lf.q)+'&list='+encodeURIComponent(lf.list)).then(function(rows){
+    t.innerHTML='';
+    if(!rows.length){t.appendChild(h('p',{class:'help',text:'No leads here yet.'}));return}
+    var names={new:'Waiting',sent:'Emailed',replied:'Replied',bounced:'Bounced',unsub:'Asked to stop',sending:'Sending'};
+    t.appendChild(h('table',{},h('tr',{},['Email','Name','Business','Status','Emails','Opened','Last sent'].map(function(x){return h('th',{text:x})})),
+      rows.map(function(r){return h('tr',{},h('td',{text:r.email}),h('td',{text:r.first}),h('td',{text:r.biz}),h('td',{},h('span',{class:'tag '+r.status,text:names[r.status]||r.status})),h('td',{text:String(r.emails)}),h('td',{text:r.opened?'Yes':''}),h('td',{text:r.last_sent?ago(r.last_sent):''}))})));
+    if(rows.length>=500)t.appendChild(h('p',{class:'help',text:'Showing the newest 500. Use search or download the spreadsheet for all of them.'}));
+  });
+}
+
+/* ---------------- message ---------------- */
+var cfg=null;
+function messagePage(m){
+  m.appendChild(h('h1',{text:'Message'}));
+  m.appendChild(h('p',{class:'lead',text:'Write the email once. Each person gets their own version.'}));
+  api('settings').then(function(c){cfg=c;
+    var sn=h('input',{type:'text',value:c.sender_name,placeholder:'Your name, it signs every email'});
+    var pa=h('input',{type:'text',value:c.postal_address,placeholder:'Optional: your business address, shown under the email'});
+    var fs=h('input',{type:'text',value:c.templates.first_subject}),fb=h('textarea',{},c.templates.first_body);fb.value=c.templates.first_body;
+    var ws=h('input',{type:'text',value:c.templates.follow_subject}),wb=h('textarea',{style:'min-height:100px'});wb.value=c.templates.follow_body;
+    var pv=h('div',{class:'preview'}),pvs=h('b');
+    var fields=(c.fields||[]).filter(function(f){return f!=='email'&&f!=='orig_subject'});
+        var chips=h('div',{class:'chips'},fields.map(function(f){return h('span',{class:'chip',title:'Click to add to the message',text:'{{'+f+'}}',onclick:function(){var t=document.activeElement===fs?fs:(document.activeElement===ws?ws:(document.activeElement===wb?wb:fb));var p='{{'+f+'}}';var a=t.selectionStart||0;t.value=t.value.slice(0,a)+p+t.value.slice(t.selectionEnd||a);t.focus();t.selectionStart=t.selectionEnd=a+p.length;upd()}})}));
+    function body(){return {templates:{first_subject:fs.value,first_body:fb.value,follow_subject:ws.value,follow_body:wb.value},sender_name:sn.value,postal_address:pa.value}}
+    function upd(){clearTimeout(upd.t);upd.t=setTimeout(function(){var b=body();b.kind='first';api('preview',b).then(function(p){pvs.textContent=p.subject;pv.textContent=p.body}).catch(function(e){pvs.textContent='';pv.textContent=e.message})},200)}
+    [sn,pa,fs,fb,ws,wb].forEach(function(e){e.addEventListener('input',upd)});
+    var test=h('input',{type:'email',placeholder:'your own email address'});
+    m.appendChild(h('div',{class:'card'},h('h2',{text:'About you'}),h('div',{class:'grid g2'},h('div',{},h('label',{text:'Your name'}),sn),h('div',{},h('label',{text:'Address (recommended)'}),pa)),
+      h('p',{class:'help',text:'Every email ends with a line that lets the person ask you to stop. Replying "stop" is detected and that person is never emailed again.'})));
+    m.appendChild(h('div',{class:'card'},h('h2',{text:'First email'}),h('label',{text:'Subject'}),fs,h('label',{text:'Message'}),fb,
+      h('div',{class:'help',style:'margin-top:8px',text:'Click a field to add it. Wording variants: {good|great|nice} picks one per person.'}),chips));
+    m.appendChild(h('div',{class:'card'},h('h2',{text:'Follow-up (sent once to people who did not reply)'}),h('label',{text:'Subject'}),ws,h('label',{text:'Message'}),wb,
+      h('div',{class:'help',style:'margin-top:8px',text:'It goes in the same email thread. {{orig_subject}} is the subject of the first email.'})));
+    m.appendChild(h('div',{class:'card'},h('h2',{text:'What the first email looks like'}),pvs,h('div',{style:'height:8px'}),pv,
+      h('div',{class:'row',style:'margin-top:12px'},h('div',{class:'grow'},test),h('button',{onclick:function(){api('test_send',{to:test.value}).then(function(){toast('Sent. Check your inbox.')}).catch(function(e){toast(e.message,true)})},text:'Send me a test'}))));
+    m.appendChild(h('div',{class:'row'},h('button',{class:'primary',onclick:function(){api('settings',body()).then(function(){toast('Saved');refresh()}).catch(function(e){toast(e.message,true)})},text:'Save the message'})));
+    upd();
+  });
+}
+
+/* ---------------- mailboxes ---------------- */
+function boxesPage(m){
+  m.appendChild(h('h1',{text:'Mailboxes'}));
+  m.appendChild(h('p',{class:'lead',text:'Connect your Gmail. The app sends from it and reads replies in it.'}));
+  S.accounts.forEach(function(a){
+    var cap=h('input',{type:'number',min:5,max:300,value:a.daily_cap,style:'width:90px'});
+    m.appendChild(h('div',{class:'card'},h('div',{class:'row'},h('span',{class:'dot '+(a.paused?'bad':'on')}),h('b',{class:'grow',text:a.email}),
+      h('button',{class:'small',onclick:function(){api('accounts/'+a.id+'/sync',{}).then(function(){toast('Checked for replies and opens');refresh()}).catch(function(e){toast(e.message,true)})},text:'Check now'}),
+      h('button',{class:'small danger',onclick:function(){if(confirm('Disconnect '+a.email+'? Its saved sign-in is deleted from this computer.'))api('accounts/'+a.id,undefined,'DELETE').then(refresh)},text:'Disconnect'})),
+      h('div',{class:'row',style:'margin-top:10px'},h('span',{class:'help',text:'Emails per day, at most:'}),cap,
+        h('button',{class:'small',onclick:function(){api('accounts/'+a.id+'/update',{daily_cap:Number(cap.value),skip_warmup:a.skip_warmup}).then(function(){toast('Saved');refresh()})},text:'Save'}),
+        h('span',{class:'help',text:'A new mailbox starts at 10 a day and grows by 5 every 2 days. Today it may send '+a.allowed_today+'.'})),
+      a.paused?h('p',{style:'color:var(--bad)',text:'Paused: '+a.paused_reason}):null));
+  });
+  var em=h('input',{type:'email',placeholder:'you@gmail.com'}),pw=h('input',{type:'password',placeholder:'16 letter app password',autocomplete:'off'});
+  var prov=h('select',{},[['gmail','Gmail or Google Workspace'],['outlook','Outlook or Microsoft 365'],['yahoo','Yahoo']].map(function(o){return h('option',{value:o[0],text:o[1]})}));
+  var go1=h('button',{class:'primary',text:'Connect',onclick:function(){go1.disabled=true;go1.textContent='Signing in...';
+    api('accounts',{email:em.value,password:pw.value,provider:prov.value}).then(function(){toast('Connected');pw.value='';refresh()}).catch(function(e){toast(e.message,true)}).then(function(){go1.disabled=false;go1.textContent='Connect'})}});
+  m.appendChild(h('div',{class:'card'},h('h2',{text:S.accounts.length?'Add another mailbox':'Connect a mailbox'}),
+    h('div',{class:'step'},h('div',{class:'n',text:'1'}),h('div',{},h('b',{text:'Turn on 2-Step Verification'}),h('div',{class:'help',text:'Google only gives out app passwords for accounts that have it. Open myaccount.google.com, then Security, then 2-Step Verification.'}))),
+    h('div',{class:'step'},h('div',{class:'n',text:'2'}),h('div',{},h('b',{text:'Create an app password'}),h('div',{class:'help'},'Go to ',h('a',{href:'https://myaccount.google.com/apppasswords',target:'_blank',rel:'noopener',text:'myaccount.google.com/apppasswords'}),', type "Outreach Mailer" as the name and press Create. Google shows 16 letters. Copy them.'))),
+    h('div',{class:'step'},h('div',{class:'n',text:'3'}),h('div',{},h('b',{text:'Paste it here'}),h('div',{class:'help',text:'This is not your Google password. It is saved encrypted on this computer only and you can delete it any time from Google or here.'}))),
+    h('label',{text:'Email provider'}),prov,h('label',{text:'Email address'}),em,h('label',{text:'App password'}),pw,h('div',{style:'margin-top:14px'},go1)));
+}
+
+/* ---------------- settings ---------------- */
+function settingsPage(m){
+  m.appendChild(h('h1',{text:'Settings'}));
+  m.appendChild(h('p',{class:'lead',text:'How and when the app sends.'}));
+  api('settings').then(function(c){
+    var lo=h('input',{type:'number',min:0,max:23,value:c.send_window[0]}),hi=h('input',{type:'number',min:1,max:24,value:c.send_window[1]});
+    var fd=h('input',{type:'number',min:1,max:60,value:c.followup_after_days}),mf=h('select',{},[0,1,2].map(function(n){return h('option',{value:n,text:n===0?'No follow-up':n+(n===1?' follow-up':' follow-ups')})}));mf.value=String(c.max_followups);
+    var tr=h('input',{type:'checkbox'});tr.checked=c.track_opens;var tu=h('input',{type:'text',value:c.tracker_url});
+    m.appendChild(h('div',{class:'card'},h('h2',{text:'When to send'}),
+      h('div',{class:'row'},h('span',{text:'Send between'}),h('div',{style:'width:80px'},lo),h('span',{text:'and'}),h('div',{style:'width:80px'},hi),h('span',{class:'help',text:'o\'clock, computer time. The app only sends while it is open and sending is on.'})),
+      h('div',{class:'row',style:'margin-top:12px'},h('span',{text:'Follow up after'}),h('div',{style:'width:80px'},fd),h('span',{text:'days, with'}),mf)));
+    m.appendChild(h('div',{class:'card'},h('h2',{text:'Open tracking'}),
+      h('label',{class:'row',style:'color:var(--ink);margin:0'},tr,h('span',{text:'Show when people open the email'})),
+      h('p',{class:'help',text:'A tiny invisible picture is added to each email. When it loads, the tracker records the time and a random code for that email. It stores only that code, the time and the kind of mail program, no names and no email addresses. Some mail programs load pictures early or block them, so opens are a guide. Replies and bounces are exact.'}),
+      h('label',{text:'Tracker address'}),tu));
+    m.appendChild(h('div',{class:'row'},h('button',{class:'primary',text:'Save settings',onclick:function(){api('settings',{send_window:[Number(lo.value),Number(hi.value)],followup_after_days:Number(fd.value),max_followups:Number(mf.value),track_opens:tr.checked,tracker_url:tu.value}).then(function(){toast('Saved');refresh()}).catch(function(e){toast(e.message,true)})}})));
+  });
+}
+var UPD=null;api('update').then(function(u){UPD=u;if(u.newer)draw()}).catch(function(){});
+refresh();setInterval(poll,8000);
+</script>
+</body>
+</html>
