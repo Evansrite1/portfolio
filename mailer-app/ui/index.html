@@ -212,13 +212,24 @@ var lf={q:'',status:'',list:''};
 function leadsPage(m){
   m.appendChild(h('h1',{text:'Leads'}));
   m.appendChild(h('p',{class:'lead',text:'The people you will email. Import a spreadsheet saved as CSV.'}));
-  var file=h('input',{type:'file',accept:'.csv,.txt',class:'hide',onchange:function(){var f=file.files[0];if(!f)return;var r=new FileReader();r.onload=function(){importWizard(f.name.replace(/\.[^.]+$/,''),r.result);file.value=''};r.readAsText(f)}});
+  var file=h('input',{type:'file',accept:'.csv,.txt,.pdf',class:'hide',onchange:function(){var f=file.files[0];if(!f)return;var nm=f.name.replace(/\.[^.]+$/,'');var r=new FileReader();if(/\.pdf$/i.test(f.name)){r.onload=function(){var b=new Uint8Array(r.result),bin='';for(var i=0;i<b.length;i+=32768)bin+=String.fromCharCode.apply(null,b.subarray(i,i+32768));importWizard(nm,null,btoa(bin));file.value=''};r.readAsArrayBuffer(f)}else{r.onload=function(){importWizard(nm,r.result);file.value=''};r.readAsText(f)}}});
   var em=h('input',{type:'email',placeholder:'name@company.com'}),fi=h('input',{type:'text',placeholder:'First name'}),bz=h('input',{type:'text',placeholder:'Business'});
   m.appendChild(h('div',{class:'card'},h('h2',{text:'Add leads'}),
     h('div',{class:'row'},file,h('button',{class:'primary',onclick:function(){file.click()},text:'Import a CSV file'}),
       h('span',{class:'help grow',text:'Needs an email column. Other columns you can use: first, business, city, website. Any extra column becomes a field, for example a column called niche is {{niche}} in your message.'})),
     h('div',{class:'row',style:'margin-top:14px'},h('div',{class:'grow'},em),h('div',{class:'grow'},fi),h('div',{class:'grow'},bz),
       h('button',{onclick:function(){api('leads/add',{email:em.value,first:fi.value,biz:bz.value}).then(function(){em.value='';fi.value='';bz.value='';toast('Added');refresh().then(loadLeads)}).catch(function(e){toast(e.message,true)})},text:'Add one'}))));
+
+  if(S.accounts.length){
+    var rows=h('div',{});var inputs={};
+    S.accounts.forEach(function(a){var lo=h('input',{type:'number',min:1,placeholder:'from',style:'width:90px'}),hi=h('input',{type:'number',min:1,placeholder:'to',style:'width:90px'});inputs[a.id]={lo:lo,hi:hi};rows.appendChild(h('div',{class:'row',style:'margin:6px 0'},h('span',{style:'min-width:220px',text:a.email}),h('span',{class:'help',text:'Leads number'}),lo,h('span',{class:'help',text:'to'}),hi))});
+    var blk=h('input',{type:'number',min:1,max:1000,value:10,style:'width:90px'});
+    m.appendChild(h('div',{class:'card'},h('h2',{text:'Which mailbox sends to which leads'}),
+      h('p',{class:'help',text:'Every lead has a number (the # column). Say which numbers each mailbox sends to, for example leads 1 to 10 from the first mailbox and 11 to 20 from the second. Leads you do not set aside go out from whichever mailbox is free.'}),rows,
+      h('div',{class:'row',style:'margin-top:8px'},h('button',{class:'primary small',text:'Save these ranges',onclick:function(){var rules=[];S.accounts.forEach(function(a){var x=inputs[a.id];if(x.lo.value&&x.hi.value)rules.push({account:a.id,from:Number(x.lo.value),to:Number(x.hi.value)})});if(!rules.length)return toast('Type at least one range.',true);api('assign',{rules:rules}).then(function(){toast('Saved');loadLeads()}).catch(function(e){toast(e.message,true)})}}),
+        h('span',{class:'help',text:'or split everything in blocks of'}),blk,h('button',{class:'small',text:'Split across all mailboxes',onclick:function(){api('assign',{split:{accounts:S.accounts.map(function(a){return a.id}),block:Number(blk.value)||10}}).then(function(){toast('Split');loadLeads()}).catch(function(e){toast(e.message,true)})}}),
+        h('button',{class:'small',text:'Clear',onclick:function(){api('assign',{clear:true}).then(function(){toast('Cleared');loadLeads()})}}))));
+  }
   var box=h('div',{class:'card'});
   var q=h('input',{type:'text',placeholder:'Search email, name or business',value:lf.q,oninput:function(){lf.q=q.value;clearTimeout(q.t);q.t=setTimeout(loadLeads,250)}});
   var sel=h('select',{onchange:function(){lf.status=sel.value;loadLeads()}},[['','All leads'],['new','Waiting'],['sent','Emailed'],['replied','Replied'],['bounced','Bounced'],['unsub','Asked to stop']].map(function(o){return h('option',{value:o[0],text:o[1]})}));sel.value=lf.status;
@@ -233,8 +244,8 @@ function loadLeads(){
     t.innerHTML='';
     if(!rows.length){t.appendChild(h('p',{class:'help',text:'No leads here yet.'}));return}
     var names={new:'Waiting',sent:'Emailed',replied:'Replied',bounced:'Bounced',unsub:'Asked to stop',sending:'Sending'};
-    t.appendChild(h('table',{},h('tr',{},['Email','Name','Business','Status','Emails','Opened','Last sent',''].map(function(x){return h('th',{text:x})})),
-      rows.map(function(r){return h('tr',{},h('td',{text:r.email}),h('td',{text:r.first}),h('td',{text:r.biz}),h('td',{},h('span',{class:'tag '+r.status,text:names[r.status]||r.status})),h('td',{text:String(r.emails)}),h('td',{text:r.opened?'Yes':''}),h('td',{text:r.last_sent?ago(r.last_sent):''}),h('td',{},r.status==='new'?h('button',{class:'small',text:'Edit',onclick:function(){editLead(r)}}):null))})));
+    t.appendChild(h('table',{},h('tr',{},['#','Email','Name','Business','Mailbox','Status','Emails','Opened','Last sent',''].map(function(x){return h('th',{text:x})})),
+      rows.map(function(r){return h('tr',{},h('td',{text:String(r.num||'')}),h('td',{text:r.email}),h('td',{text:r.first}),h('td',{text:r.biz}),h('td',{text:r.mailbox||'any'}),h('td',{},h('span',{class:'tag '+r.status,text:names[r.status]||r.status})),h('td',{text:String(r.emails)}),h('td',{text:r.opened?'Yes':''}),h('td',{text:r.last_sent?ago(r.last_sent):''}),h('td',{},r.status==='new'?h('button',{class:'small',text:'Edit',onclick:function(){editLead(r)}}):null))})));
     if(rows.length>=500)t.appendChild(h('p',{class:'help',text:'Showing the newest 500. Use search or download the spreadsheet for all of them.'}));
   });
 }
@@ -274,11 +285,11 @@ function boxesPage(m){
   m.appendChild(h('h1',{text:'Mailboxes'}));
   m.appendChild(h('p',{class:'lead',text:'Connect your Gmail. The app sends from it and reads replies in it.'}));
   S.accounts.forEach(function(a){
-    var cap=h('input',{type:'number',min:5,max:300,value:a.daily_cap,style:'width:90px'});
+    var cap=h('input',{type:'number',min:5,max:150,value:a.daily_cap,style:'width:90px'});
     m.appendChild(h('div',{class:'card'},h('div',{class:'row'},h('span',{class:'dot '+(a.paused?'bad':'on')}),h('b',{class:'grow',text:a.email}),
       h('button',{class:'small',onclick:function(){api('accounts/'+a.id+'/sync',{}).then(function(){toast('Checked for replies and opens');refresh()}).catch(function(e){toast(e.message,true)})},text:'Check now'}),
       h('button',{class:'small danger',onclick:function(){if(confirm('Disconnect '+a.email+'? Its saved sign-in is deleted from this computer.'))api('accounts/'+a.id,undefined,'DELETE').then(refresh)},text:'Disconnect'})),
-      h('div',{class:'row',style:'margin-top:10px'},h('span',{class:'help',text:'Emails per day, at most:'}),cap,
+      h('div',{class:'row',style:'margin-top:10px'},h('span',{class:'help',text:'Emails per day, at most (up to 150):'}),cap,
         h('button',{class:'small',onclick:function(){api('accounts/'+a.id+'/update',{daily_cap:Number(cap.value),skip_warmup:a.skip_warmup}).then(function(){toast('Saved');refresh()})},text:'Save'}),
         h('span',{class:'help',text:'A new mailbox starts at 10 a day and grows by 5 every 2 days. Today it may send '+a.allowed_today+'.'})),
       a.paused?h('p',{style:'color:var(--bad)',text:'Paused: '+a.paused_reason}):null));
@@ -287,7 +298,7 @@ function boxesPage(m){
   var prov=h('select',{},[['gmail','Gmail or Google Workspace'],['outlook','Outlook or Microsoft 365'],['yahoo','Yahoo']].map(function(o){return h('option',{value:o[0],text:o[1]})}));
   var go1=h('button',{class:'primary',text:'Connect',onclick:function(){go1.disabled=true;go1.textContent='Signing in...';
     api('accounts',{email:em.value,password:pw.value,provider:prov.value}).then(function(){toast('Connected');pw.value='';refresh()}).catch(function(e){toast(e.message,true)}).then(function(){go1.disabled=false;go1.textContent='Connect'})}});
-  m.appendChild(h('div',{class:'card'},h('h2',{text:S.accounts.length?'Add another mailbox':'Connect a mailbox'}),
+  m.appendChild(h('div',{class:'card'},h('h2',{text:S.accounts.length?'Add another mailbox ('+S.accounts.length+' of 25 connected)':'Connect a mailbox'}),
     h('div',{class:'step'},h('div',{class:'n',text:'1'}),h('div',{},h('b',{text:'Turn on 2-Step Verification'}),h('div',{class:'help',text:'Google only gives out app passwords for accounts that have it. Open myaccount.google.com, then Security, then 2-Step Verification.'}))),
     h('div',{class:'step'},h('div',{class:'n',text:'2'}),h('div',{},h('b',{text:'Create an app password'}),h('div',{class:'help'},'Go to ',h('a',{href:'https://myaccount.google.com/apppasswords',target:'_blank',rel:'noopener',text:'myaccount.google.com/apppasswords'}),', type "Outreach Mailer" as the name and press Create. Google shows 16 letters. Copy them.'))),
     h('div',{class:'step'},h('div',{class:'n',text:'3'}),h('div',{},h('b',{text:'Paste it here'}),h('div',{class:'help',text:'This is not your Google password. It is saved encrypted on this computer only and you can delete it any time from Google or here.'}))),
@@ -399,8 +410,9 @@ function compose(o){
 }
 
 /* ---------------- import with column mapping ---------------- */
-function importWizard(name,text){
-  api('leads/analyze',{text:text}).then(function(a){
+function importWizard(name,text,pdf){
+  api('leads/analyze',pdf?{pdf_b64:pdf}:{text:text}).then(function(a){
+    text=a.text||text;
     var roles=[['email','Email address'],['first','First name'],['biz','Business'],['city','City'],['website','Website']];
     var sels={},fixes={},skip={};
     var opts=function(){return [h('option',{value:'',text:'Not in this file'})].concat(a.headers.map(function(x,i){return h('option',{value:i,text:x})}))};
@@ -429,11 +441,11 @@ function importWizard(name,text){
       probs.appendChild(h('div',{class:'tablewrap'},t));
     }
     var nm=h('input',{type:'text',value:name});
-    var body=h('div',{},h('p',{class:'help',text:a.total+' rows found. Check which column is which. The app picked these by looking at what is inside each column.'}),map,h('label',{text:'Preview, the first rows'}),prev,probs,h('label',{text:'Name this list'}),nm);
+    var body=h('div',{},h('p',{class:'help',text:a.total+' rows found. Check which column is which. The app picked these by looking at what is inside each column.'}),(a.already_sent&&a.already_sent.length)?h('p',{style:'color:var(--warn)',text:a.already_sent.length+' address'+(a.already_sent.length===1?' was':'es were')+' emailed before ('+a.already_sent.slice(0,3).map(function(x){return x.email}).join(', ')+(a.already_sent.length>3?', ...':'')+'). They are noted and will not be emailed again.'}):null,map,h('label',{text:'Preview, the first rows'}),prev,probs,h('label',{text:'Name this list'}),nm);
     drawPrev();recheck();
     modal('Import leads',body,[{label:'Cancel'},{label:'Import',primary:true,keep:true,fn:function(){
       if(mapping().email==null&&!confirm('No email column is chosen. The app will look for an address in any column. Continue?'))return false;
-      api('leads/import_mapped',{text:text,name:nm.value,mapping:mapping(),fixes:fixes,skip:Object.keys(skip).map(Number)}).then(function(x){document.querySelectorAll('div[style*="z-index:20"]').forEach(function(o){o.remove()});toast(x.added+' added, '+x.duplicate+' already there, '+x.invalid+' without a usable address'+(x.skipped?', '+x.skipped+' skipped':''));refresh().then(function(){loadLeads()})}).catch(function(e){toast(e.message,true)});return false}}]);
+      api('leads/import_mapped',{text:text,name:nm.value,mapping:mapping(),fixes:fixes,skip:Object.keys(skip).map(Number)}).then(function(x){document.querySelectorAll('div[style*="z-index:20"]').forEach(function(o){o.remove()});toast(x.added+' added, '+x.duplicate+' repeated, '+(x.sent_before||0)+' emailed before and left out, '+x.invalid+' without a usable address'+(x.skipped?', '+x.skipped+' skipped':''));refresh().then(function(){loadLeads()})}).catch(function(e){toast(e.message,true)});return false}}]);
   }).catch(function(e){toast(e.message,true)});
 }
 function editLead(r){

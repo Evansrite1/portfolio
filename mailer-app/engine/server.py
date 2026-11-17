@@ -31,6 +31,22 @@ def readiness():
     return todo
 
 
+def _already_sent(text, email_col):
+    """Addresses in an uploaded table that were emailed before, with the date. Shown before importing."""
+    if email_col is None:
+        return []
+    out = []
+    _h, rows = leads.parse_table(text)
+    for r in rows:
+        e = leads.extract_email(r[email_col]) if email_col < len(r) else None
+        t = leads.sent_info(e) if e else None
+        if t:
+            out.append({"email": e, "when": t})
+        if len(out) >= 50:
+            break
+    return out
+
+
 def create_app():
     app = Flask(__name__, static_folder=None)
 
@@ -233,6 +249,7 @@ def create_app():
         a = db.one("SELECT email FROM accounts WHERE id=?", (aid,))
         if a:
             secrets_store.delete_secret(a["email"])
+            db.run("UPDATE leads SET account_id=NULL WHERE account_id=? AND status='new'", (aid,))
             db.run("DELETE FROM accounts WHERE id=?", (aid,))
         return jsonify(ok=True)
 
@@ -275,11 +292,11 @@ def create_app():
         if qy:
             where.append("(l.email LIKE ? OR LOWER(l.biz) LIKE ? OR LOWER(l.first) LIKE ?)"); args += [f"%{qy}%"] * 3
         w = ("WHERE " + " AND ".join(where)) if where else ""
-        rows = db.q(f"""SELECT l.id,l.email,l.first,l.biz,l.city,l.website,l.status,l.source,
+        rows = db.q(f"""SELECT l.id,l.num,l.account_id,(SELECT email FROM accounts a WHERE a.id=l.account_id) mailbox,l.email,l.first,l.biz,l.city,l.website,l.status,l.source,
                         (SELECT MAX(ts) FROM messages m WHERE m.lead_id=l.id AND m.direction='out') last_sent,
                         (SELECT COUNT(*) FROM messages m WHERE m.lead_id=l.id AND m.direction='out') emails,
                         EXISTS(SELECT 1 FROM events e WHERE e.lead_id=l.id AND e.type='open') opened
-                        FROM leads l {w} ORDER BY l.id DESC LIMIT 500""", tuple(args))
+                        FROM leads l {w} ORDER BY COALESCE(l.num, l.id) DESC LIMIT 500""", tuple(args))
         return jsonify(rows)
 
     @app.post("/api/leads/import")
@@ -295,12 +312,23 @@ def create_app():
     def leads_analyze():
         d = request.json or {}
         text = d.get("text") or ""
+        if d.get("pdf_b64"):
+            import base64
+            from . import docs
+            try:
+                text = docs.pdf_to_csv(base64.b64decode(d["pdf_b64"]))
+            except Exception as e:
+                return jsonify(error="That PDF could not be read: " + str(e)[:120]), 400
+            if text.count("\n") < 2:
+                return jsonify(error="No email addresses were found in that PDF. If it is a scanned picture, export it as text or CSV first."), 400
         if not text.strip():
             return jsonify(error="The file is empty."), 400
         a = leads.analyze(text)
         if not a["headers"]:
             return jsonify(error="No rows were found in that file."), 400
         a["problems"] = leads.check_rows(text, a["guess"].get("email"))
+        a["text"] = text            # the table the screen should import (a PDF becomes one)
+        a["already_sent"] = _already_sent(text, a["guess"].get("email"))
         return jsonify(a)
 
     @app.post("/api/leads/check")
@@ -326,6 +354,30 @@ def create_app():
     @app.get("/api/leads/suggest")
     def leads_suggest():
         return jsonify(suggestion=leads.suggest_fix(request.args.get("email", "")))
+
+    @app.post("/api/assign")
+    def assign():
+        """Set leads aside for a mailbox. rules: [{account, from, to}] by lead number, or split: {accounts: [ids], block: 10}."""
+        d = request.json or {}
+        n = 0
+        if d.get("clear"):
+            db.run("UPDATE leads SET account_id=NULL WHERE status='new'")
+        for r in d.get("rules") or []:
+            lo, hi = int(r.get("from") or 0), int(r.get("to") or 0)
+            if lo < 1 or hi < lo or not db.one("SELECT 1 FROM accounts WHERE id=?", (int(r.get("account") or 0),)):
+                return jsonify(error="Check the numbers: the first lead must be 1 or more and the last must not be smaller."), 400
+            cur = db.run("UPDATE leads SET account_id=? WHERE status='new' AND num>=? AND num<=?", (int(r["account"]), lo, hi))
+        sp = d.get("split")
+        if sp:
+            ids = [int(x) for x in sp.get("accounts") or [] if db.one("SELECT 1 FROM accounts WHERE id=?", (int(x),))]
+            block = max(1, min(1000, int(sp.get("block") or 10)))
+            if not ids:
+                return jsonify(error="Choose at least one mailbox."), 400
+            rows = db.q("SELECT id FROM leads WHERE status='new' ORDER BY COALESCE(num, id)")
+            for i, r in enumerate(rows):
+                db.run("UPDATE leads SET account_id=? WHERE id=?", (ids[(i // block) % len(ids)], r["id"]))
+        counts = db.q("SELECT account_id, COUNT(*) n, MIN(num) lo, MAX(num) hi FROM leads WHERE status='new' AND account_id IS NOT NULL GROUP BY account_id")
+        return jsonify(ok=True, counts=counts)
 
     @app.post("/api/leads/add")
     def leads_add():

@@ -14,7 +14,7 @@ import traceback
 from pathlib import Path
 
 if __name__ == "__never__":  # pragma: no cover  (tells the packager which libraries the app needs)
-    import flask, requests, werkzeug.serving, sqlite3, imaplib, smtplib, email.message, csv  # noqa
+    import flask, requests, werkzeug.serving, sqlite3, imaplib, smtplib, email.message, csv, pypdf  # noqa
 
 LOCAL = Path(os.environ.get("LOCALAPPDATA") or Path.home() / "AppData" / "Local")
 HOME = LOCAL / "OutreachMailer"

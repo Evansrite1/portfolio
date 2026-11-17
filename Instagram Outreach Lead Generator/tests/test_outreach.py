@@ -16,11 +16,14 @@ def fresh():
 
 
 class FakeEngine:
-    def __init__(self, results=None, inbox=None):
-        self.results, self.inbox_rows, self.sent = list(results or []), inbox or [], []
+    def __init__(self, results=None, inbox=None, logged_in=True):
+        self.results, self.inbox_rows, self.sent, self.logged_in = list(results or []), inbox or [], [], logged_in
 
     def status(self):
-        return {"logged_in": True, "browser_open": True}
+        return {"logged_in": self.logged_in, "browser_open": True}
+
+    def open_browser(self):
+        pass
 
     def send_dm(self, handle, text):
         self.sent.append((handle, text))
@@ -30,8 +33,22 @@ class FakeEngine:
         return self.inbox_rows
 
 
-def make_sender(engine, **cfg):
-    s = sender.Sender(engine, lambda: dict({"from_hour": 0, "to_hour": 24, "gap_min": 60, "gap_max": 60}, **cfg), lambda m: None)
+class FakeManager:
+    def __init__(self, engines, daily=20):
+        self.items = [{"id": "a%d" % (i + 1), "label": "Account %d" % (i + 1), "enabled": True, "daily": daily} for i in range(len(engines))]
+        self.engines = {"a%d" % (i + 1): e for i, e in enumerate(engines)}
+
+    def engine(self, aid):
+        return self.engines[aid]
+
+    def status(self):
+        return [dict(a, **self.engines[a["id"]].status()) for a in self.items]
+
+
+def make_sender(engine, daily=20, **cfg):
+    engines = engine if isinstance(engine, list) else [engine]
+    mgr = FakeManager(engines, daily)
+    s = sender.Sender(mgr, lambda: dict({"from_hour": 0, "to_hour": 24, "gap_min": 60, "gap_max": 60}, **cfg), lambda m: None)
     s.running = True
     return s
 
@@ -105,12 +122,12 @@ class Sending(unittest.TestCase):
         self.assertEqual(outbox.stats()["sent_today"], 2)
 
     def test_daily_cap(self):
-        e = FakeEngine(); s = make_sender(e, daily_cap=2)
+        e = FakeEngine(); s = make_sender(e, daily=2)
         for i in range(6):
-            s.next_at = 0
+            s.next_at = {}
             s.tick()
         self.assertEqual(len(e.sent), 2)
-        self.assertIn("Daily limit", s.message)
+        self.assertIn("daily limit", s.message)
 
     def test_outside_hours(self):
         h = time.localtime().tm_hour
@@ -123,8 +140,7 @@ class Sending(unittest.TestCase):
     def test_stops_by_itself_when_blocked(self):
         e = FakeEngine(results=[{"ok": False, "error": "Instagram is limiting this account", "blocked": True}]); s = make_sender(e)
         s.tick()
-        self.assertFalse(s.running)
-        self.assertIn("limiting", s.paused_reason)
+        self.assertIn("limiting", s.paused["a1"])
         self.assertEqual(outbox.one("SELECT status FROM leads WHERE handle='a'")["status"], "new")   # still waiting, not lost
         s.tick()
         self.assertEqual(len(e.sent), 1)                     # nothing more is sent while stopped
@@ -133,9 +149,9 @@ class Sending(unittest.TestCase):
         bad = {"ok": False, "error": "no box"}
         e = FakeEngine(results=[bad, bad, bad]); s = make_sender(e)
         for _ in range(3):
-            s.next_at = 0
+            s.next_at = {}
             s.tick()
-        self.assertFalse(s.running)
+        self.assertIn("a1", s.paused)
 
     def test_missing_message_button_is_final(self):
         e = FakeEngine(results=[{"ok": False, "error": "No Message button on this profile"}]); s = make_sender(e)
@@ -148,6 +164,36 @@ class Sending(unittest.TestCase):
         e.inbox_rows = [{"thread": "1001", "name": "A", "snippet": "Interested", "outgoing": False}]
         self.assertEqual(s.check_replies(), 1)
         self.assertEqual(outbox.one("SELECT status FROM leads WHERE handle='a'")["status"], "replied")
+
+    def test_two_accounts_take_turns_and_have_their_own_numbers(self):
+        e1, e2 = FakeEngine(), FakeEngine()
+        s = make_sender([e1, e2], daily=2)
+        for _ in range(8):
+            s.next_at = {}
+            s.tick()
+        self.assertEqual((len(e1.sent), len(e2.sent)), (2, 2))               # each stopped at its own limit of 2
+        by = {r["account"]: r["n"] for r in outbox.q("SELECT account, COUNT(*) n FROM events WHERE type='sent' GROUP BY account")}
+        self.assertEqual(by, {"a1": 2, "a2": 2})
+        rows = {r["id"]: r for r in outbox.per_account({"a1": "One", "a2": "Two"})}
+        self.assertEqual((rows["a1"]["sent_today"], rows["a2"]["sent_week"], rows["a1"]["sent_all"]), (2, 2, 2))
+        self.assertEqual(outbox.stats(14, "a1")["sent_today"], 2)
+        self.assertEqual(outbox.stats()["sent_today"], 4)
+
+    def test_one_blocked_account_does_not_stop_the_others(self):
+        bad = FakeEngine(results=[{"ok": False, "error": "limited", "blocked": True}]); good = FakeEngine()
+        s = make_sender([bad, good], daily=5)
+        for _ in range(6):
+            s.next_at = {}
+            s.tick()
+        self.assertIn("a1", s.paused)
+        self.assertGreaterEqual(len(good.sent), 3)
+        self.assertEqual(len(bad.sent), 1)
+
+    def test_logged_out_account_is_skipped_with_a_reason(self):
+        e = FakeEngine(logged_in=False); s = make_sender(e)
+        s.tick()
+        self.assertEqual(e.sent, [])
+        self.assertIn("Not logged in", s.paused["a1"])
 
     def test_empty_messages_are_never_sent(self):
         fresh()

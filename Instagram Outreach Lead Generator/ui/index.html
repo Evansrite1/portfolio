@@ -98,12 +98,11 @@ pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:1
 <body>
 <div class="upd" id="upd" hidden role="status"><span id="updtext"></span><button type="button" id="updbtn">Update and restart</button></div>
 <header>
-  <div><h1>IG Outreach</h1><div class="sub">Find businesses that need what you offer, message them and see who replies <span id="ver"></span></div></div>
-  <div class="status"><span class="pill" id="ligt"></span><span id="litext">Checking</span>
-    <button id="btnlogin" type="button">Log in to Instagram</button></div>
+  <div><h1>IG Outreach</h1><div class="sub">Send your Instagram messages from up to 10 accounts and see who replies <span id="ver"></span></div></div>
+  <div class="status"><span class="sub" id="litext"></span></div>
 </header>
-<nav class="tabs" id="tabs" aria-label="Screens"><button type="button" data-p="find" class="on">Find leads</button><button type="button" data-p="send">Send messages</button><button type="button" data-p="stats">Statistics</button></nav>
-<div id="pg-find">
+<nav class="tabs" id="tabs" aria-label="Screens"><button type="button" data-p="send" class="on">Send messages</button><button type="button" data-p="stats">Statistics</button></nav>
+<div id="pg-find" hidden style="display:none">
 <main>
   <section class="card" aria-label="Setup">
     <h2>Setup</h2>
@@ -200,6 +199,22 @@ pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:1
 </div>
 <section id="pg-send" hidden>
   <div class="pgwrap">
+    <section class="card" aria-label="Accounts">
+      <h2>Instagram accounts <span class="sub" id="ac-count"></span></h2>
+      <div id="ac-list"></div>
+      <div class="tools" style="margin-top:10px"><input class="grow" type="text" id="ac-new" maxlength="40" placeholder="Name for a new account, for example Shop account" aria-label="New account name"><button type="button" id="ac-add" class="primary" style="width:auto;margin:0;padding:9px 18px">Add account</button></div>
+      <p class="note">Each account has its own saved login in its own window, so they never share a session. Press Log in, sign in to Instagram yourself in the window that opens, then close nothing. This app never sees your passwords. Each account sends up to 20 a day by default (30 at most).</p>
+    </section>
+    <section class="card" aria-label="Add leads">
+      <h2>Add Instagram leads</h2>
+      <p class="hint">Upload the CSV that Large Lead Finder made, or paste handles or profile links. Every lead gets the message below.</p>
+      <div class="tools"><input type="file" id="il-file" accept=".csv,.txt" class="hide"><button type="button" id="il-pick">Choose a CSV file</button><span class="sub" id="il-name"></span></div>
+      <textarea id="il-text" rows="3" placeholder="Or paste handles here, one per line"></textarea>
+      <label for="il-tpl">Message for these leads <span style="opacity:.7">(you can use {first_name} {niche} {city} {country} {handle})</span></label>
+      <textarea id="il-tpl" rows="5" placeholder="Hi {first_name}, I came across your page and had an idea for your {niche} business. Would you like me to send it?"></textarea>
+      <button type="button" id="il-add" class="primary" style="width:auto;margin-top:10px;padding:10px 22px">Add these leads</button>
+      <span class="sub" id="il-msg"></span>
+    </section>
     <section class="card" aria-label="Sending">
       <h2>Send the messages</h2>
       <div class="sendbar">
@@ -216,7 +231,7 @@ pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:1
       </div>
       <details style="margin-top:12px"><summary>Sending settings</summary>
         <div class="row2" style="margin-top:8px">
-          <div><label for="sd-capi">Messages per day (1 to 25)</label><input type="number" id="sd-capi" min="1" max="25"></div>
+          
           <div><label for="sd-gap">Minutes between messages (shortest)</label><input type="number" id="sd-gap" min="1" max="60"></div>
           <div><label for="sd-from">Send from hour</label><input type="number" id="sd-from" min="0" max="23"></div>
           <div><label for="sd-to">Send until hour</label><input type="number" id="sd-to" min="1" max="24"></div>
@@ -244,8 +259,9 @@ pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:1
 <section id="pg-stats" hidden>
   <div class="pgwrap">
     <section class="card" aria-label="Statistics">
-      <h2>Your outreach in numbers</h2>
+      <div class="tools"><h2 style="margin:0">Your outreach in numbers</h2><select id="st-acc" aria-label="Show numbers for" style="width:auto"><option value="">All accounts together</option></select></div>
       <div class="stats" id="st-top"></div>
+      <div id="st-byacc" class="tablewrap" style="margin-top:12px"></div>
       <h2 style="margin-top:18px">Last 14 days</h2>
       <div class="chart" id="st-chart"></div>
       <div class="legend"><span><i style="background:var(--accent)"></i>Sent</span><span><i style="background:var(--ok)"></i>Replies</span></div>
@@ -343,7 +359,7 @@ pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:1
     if(saved.last&&saved.last.offer)$('offer').value=saved.last.offer;
     loaded=true;
   });
-  $('btnlogin').onclick=function(){post('/api/login')};
+  if($('btnlogin'))$('btnlogin').onclick=function(){post('/api/login')};
   $('btnrun').onclick=function(){
     templates[svc]=$('msg-tpl').value;
     var b={service:svc,offer:$('offer').value,city:$('city').value,country:$('country').value,keywords:$('keywords').value,message:$('msg-tpl').value,handles:$('handles').value,expand:$('expand').checked,
@@ -377,9 +393,9 @@ pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:1
   function tick(){
     fetch('/api/state?since='+since+'&log='+logSince).then(function(r){return r.json()}).then(function(s){
       var e=s.engine, li=e.logged_in;
-      $('ligt').className='pill '+(li?'on':(e.browser_open?'warn':'bad'));
+      if($('ligt'))$('ligt').className='pill '+(li?'on':(e.browser_open?'warn':'bad'));
       $('litext').textContent=li?'Logged in to Instagram':(e.browser_open?'Waiting for you to log in':'Not logged in');
-      $('btnlogin').textContent=li?'Open Instagram window':'Log in to Instagram';
+      if($('btnlogin'))$('btnlogin').textContent=li?'Open Instagram window':'Log in to Instagram';
       if(s.rows.length){all=all.concat(s.rows);since+=s.rows.length;draw()}
       if(s.log.length){var p=$('log');p.textContent+=s.log.join('\n')+'\n';p.scrollTop=p.scrollHeight;logSince=s.log_total}
       var j=s.job;
@@ -450,11 +466,11 @@ pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:1
     $('sd-state').textContent=s.running?'Sending is on':(s.paused_reason?'Stopped by itself':'Sending is off');
     $('sd-msg').textContent=s.message||'';
     $('sd-start').hidden=s.running;$('sd-stop').hidden=!s.running;
-    $('sd-today').textContent=s.sent_today;$('sd-cap').textContent=s.cap;$('sd-wait').textContent=s.waiting;
+    $('sd-today').textContent=s.sent_today;$('sd-cap').textContent=s.cap;drawAccounts(s.accounts||[]);$('sd-wait').textContent=s.waiting;
     $('sd-next').textContent=s.running&&s.next_in?(s.next_in>=60?Math.ceil(s.next_in/60)+' min':s.next_in+' s'):'-';
   }
   function loadStatus(){return get('/api/send/status').then(drawStatus)}
-  function loadCfg(){if(cfgDone)return;cfgDone=true;get('/api/send/settings').then(function(c){$('sd-capi').value=c.daily_cap;$('sd-gap').value=Math.round(c.gap_min/60);$('sd-from').value=c.from_hour;$('sd-to').value=c.to_hour})}
+  function loadCfg(){if(cfgDone)return;cfgDone=true;get('/api/send/settings').then(function(c){$('sd-gap').value=Math.round(c.gap_min/60);$('sd-from').value=c.from_hour;$('sd-to').value=c.to_hour})}
   var tags={new:'Waiting',sent:'Sent',replied:'Replied',failed:'Failed',skipped:'Skipped'};
   function loadBox(){
     loadCfg();
@@ -481,14 +497,46 @@ pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:1
     if(b.dataset.retry)post('/api/outbox/status',{handle:b.dataset.retry,status:'new'}).then(loadBox);
   });
   $('ob-status').addEventListener('change',loadBox);
+  $('st-acc').addEventListener('change',loadStats);
   var qt;$('ob-q').addEventListener('input',function(){clearTimeout(qt);qt=setTimeout(loadBox,250)});
   $('sd-start').addEventListener('click',function(){post('/api/send/start').then(function(r){drawStatus(r.sender)}).catch(function(e){$('sd-msg').textContent=e.message})});
   $('sd-stop').addEventListener('click',function(){post('/api/send/stop').then(function(r){drawStatus(r.sender)})});
-  $('sd-save').addEventListener('click',function(){var g=Math.max(1,Number($('sd-gap').value)||4);post('/api/send/settings',{daily_cap:Number($('sd-capi').value),gap_min:g*60,gap_max:Math.round(g*60*1.75),from_hour:Number($('sd-from').value),to_hour:Number($('sd-to').value)}).then(function(){$('sd-msg').textContent='Saved';loadStatus()}).catch(function(e){$('sd-msg').textContent=e.message})});
+  $('sd-save').addEventListener('click',function(){var g=Math.max(1,Number($('sd-gap').value)||4);post('/api/send/settings',{gap_min:g*60,gap_max:Math.round(g*60*1.75),from_hour:Number($('sd-from').value),to_hour:Number($('sd-to').value)}).then(function(){$('sd-msg').textContent='Saved';loadStatus()}).catch(function(e){$('sd-msg').textContent=e.message})});
   $('ob-check').addEventListener('click',function(){post('/api/replies/check').then(function(){$('sd-msg').textContent='Reading your inbox. Replies appear here in a minute.';setTimeout(loadBox,15000)}).catch(function(e){$('sd-msg').textContent=e.message})});
   $('ob-csv').addEventListener('click',function(){location.href='/api/outbox.csv'});
   $('ob-addbtn').addEventListener('click',function(){post('/api/outbox/add',{handles:$('ob-add').value}).then(function(r){$('ob-add').value='';$('sd-msg').textContent=r.added+' added. Edit their message in the table.';loadBox()})});
 
+
+  /* ---------- accounts ---------- */
+  function drawAccounts(list){
+    $('ac-count').textContent='('+list.length+' of 10)';
+    var box=$('ac-list');if(!box)return;if(document.activeElement&&box.contains(document.activeElement)&&/INPUT/.test(document.activeElement.tagName))return;
+    box.innerHTML='';
+    list.forEach(function(a){
+      var row=document.createElement('div');row.className='sendbar';row.style.margin='8px 0';
+      var st=a.logged_in?'Logged in':(a.browser_open?'Window open, not logged in':'Not logged in');
+      row.innerHTML='<span class="pill'+(a.logged_in?' on':(a.paused_reason?' bad':''))+'"></span><b style="min-width:150px">'+esc(a.label)+'</b><span class="sub grow">'+st+' | sent today '+a.sent_today+' of '+a.daily+(a.paused_reason?' | <span class="bad">'+esc(a.paused_reason)+'</span>':'')+(a.next_in?' | next in '+(a.next_in>=60?Math.ceil(a.next_in/60)+' min':a.next_in+' s'):'')+'</span>'+
+        '<button class="small" data-login="'+esc(a.id)+'">Log in</button><label class="sub" style="margin:0">Per day <input type="number" min="1" max="30" value="'+a.daily+'" data-daily="'+esc(a.id)+'" style="width:64px"></label>'+
+        '<label class="sub" style="margin:0"><input type="checkbox" data-on="'+esc(a.id)+'"'+(a.enabled?' checked':'')+'> On</label><button class="small" data-rm="'+esc(a.id)+'">Remove</button>';
+      box.appendChild(row);
+    });
+  }
+  $('ac-list').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+    if(b.dataset.login)post('/api/ig/accounts/'+b.dataset.login+'/login').then(function(){$('sd-msg').textContent='A window opened. Log in to Instagram in it.'});
+    if(b.dataset.rm&&confirm('Remove this account and its saved login?'))post('/api/ig/accounts/'+b.dataset.rm+'/remove').then(loadStatus).catch(function(x){$('sd-msg').textContent=x.message})});
+  $('ac-list').addEventListener('change',function(e){var t=e.target;
+    if(t.dataset.daily)post('/api/ig/accounts/'+t.dataset.daily,{daily:Number(t.value)}).then(loadStatus);
+    if(t.dataset.on)post('/api/ig/accounts/'+t.dataset.on,{enabled:t.checked}).then(loadStatus)});
+  $('ac-add').addEventListener('click',function(){post('/api/ig/accounts',{label:$('ac-new').value}).then(function(){$('ac-new').value='';loadStatus()}).catch(function(x){$('sd-msg').textContent=x.message})});
+  /* ---------- add leads ---------- */
+  var ilText='';
+  $('il-pick').addEventListener('click',function(){$('il-file').click()});
+  $('il-file').addEventListener('change',function(){var f=$('il-file').files[0];if(!f)return;var r=new FileReader();r.onload=function(){ilText=r.result;$('il-name').textContent=f.name};r.readAsText(f)});
+  try{$('il-tpl').value=localStorage.getItem('igo.tpl')||''}catch(e){}
+  $('il-add').addEventListener('click',function(){var text=ilText||$('il-text').value;if(!text.trim()){$('il-msg').textContent='Choose a file or paste some handles.';return}
+    try{localStorage.setItem('igo.tpl',$('il-tpl').value)}catch(e){}
+    post('/api/ig/import',{text:text,template:$('il-tpl').value}).then(function(r){$('il-msg').textContent=r.added+' added, '+r.duplicates+' already in your list.';ilText='';$('il-name').textContent='';$('il-text').value='';loadBox()}).catch(function(e){$('il-msg').textContent=e.message})});
+  loadStatus();
   /* ---------- statistics ---------- */
   function stat(n,l,s){return '<div class="stat"><b>'+n+'</b><span>'+l+'</span>'+(s?'<small>'+s+'</small>':'')+'</div>'}
   function table(rows,key){
@@ -496,15 +544,17 @@ pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:1
     return '<table><thead><tr><th>'+key+'</th><th>Leads</th><th>Sent</th><th>Replies</th></tr></thead><tbody>'+rows.map(function(r){return '<tr><td>'+esc(r[key.toLowerCase()]||'Not set')+'</td><td>'+r.leads+'</td><td>'+(r.sent||0)+'</td><td>'+(r.replies||0)+'</td></tr>'}).join('')+'</tbody></table>';
   }
   var evn={sent:'Message sent',reply:'Replied',failed:'Could not send'};
-  function loadStats(){get('/api/stats').then(function(s){
+  function loadStats(){get('/api/stats'+($('st-acc').value?'?account='+encodeURIComponent($('st-acc').value):'')).then(function(s){
+    var sel=$('st-acc'),cur=sel.value;if(sel.options.length!==(s.accounts||[]).length+1){sel.innerHTML='<option value="">All accounts together</option>'+(s.accounts||[]).map(function(a){return '<option value="'+esc(a.id)+'">'+esc(a.label)+'</option>'}).join('');sel.value=cur}
+    $('st-byacc').innerHTML=(s.accounts||[]).length>1||true?'<table><thead><tr><th>Account</th><th>Sent today</th><th>This week</th><th>In total</th><th>Replies</th><th>Reply rate</th><th>Failed</th></tr></thead><tbody>'+(s.accounts||[]).map(function(a){return '<tr><td>'+esc(a.label)+'</td><td>'+a.sent_today+'</td><td>'+a.sent_week+'</td><td>'+a.sent_all+'</td><td>'+a.replies+'</td><td>'+a.reply_rate+'%</td><td>'+a.failed+'</td></tr>'}).join('')+'</tbody></table>':'';
     $('st-top').innerHTML=stat(s.found,'Leads found')+stat(s.sent_all,'Messages sent',s.sent_today+' today, '+s.sent_week+' in 7 days')+stat(s.replies_all,'Replies',s.reply_rate+'% reply rate')+stat(s.by_status.new||0,'Waiting to send',s.failed?s.failed+' failed':'');
     var mx=Math.max.apply(null,s.series.map(function(d){return Math.max(d.sent,d.replies)}).concat([1]));
     $('st-chart').innerHTML=s.series.map(function(d){var D=new Date(d.date+'T00:00');return '<div class="col" title="'+d.date+': '+d.sent+' sent, '+d.replies+' replies"><div class="bars"><i class="s" style="height:'+Math.round(100*d.sent/mx)+'%"></i><i class="r" style="height:'+Math.round(100*d.replies/mx)+'%"></i></div><small>'+D.getDate()+'</small></div>'}).join('');
     $('st-service').innerHTML=table(s.by_service,'Service');$('st-country').innerHTML=table(s.by_country,'Country');
     $('st-recent').innerHTML=s.recent.length?s.recent.map(function(e){return '<div><time>'+ago(e.ts)+'</time><span><b>'+(evn[e.type]||e.type)+'</b> @'+esc(e.handle)+(e.type==='reply'&&e.detail?' : '+esc(e.detail):'')+(e.type==='failed'&&e.detail?' : '+esc(e.detail):'')+'</span></div>'}).join(''):'<p class="sub">Nothing yet. Messages and replies appear here.</p>';
   })}
-  var start='find';try{start=localStorage.getItem('igo.page')||'find'}catch(e){}
-  go(pages[start]?start:'find');
+  var start='send';try{start=localStorage.getItem('igo.page')||'send'}catch(e){}
+  go(start==='stats'?'stats':'send');
 })();
 </script>
 </body>

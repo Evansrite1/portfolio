@@ -29,7 +29,7 @@ def mk_acct(**kw):
 
 def test_csv_import_extra_columns_and_dupes():
     r = leads.import_csv("Email,First Name,Business,City,Niche\na@x.com,Ann,Ann Cafe,Austin,coffee\na@x.com,Ann,Ann Cafe,Austin,coffee\nbad,B,B,C,D\n", "list1")
-    assert r == {"added": 1, "duplicate": 1, "invalid": 1, "suppressed": 0}
+    assert r == {"added": 1, "duplicate": 1, "invalid": 1, "suppressed": 0, "sent_before": 0}
     lead = db.one("SELECT * FROM leads")
     assert lead["biz"] == "Ann Cafe" and lead["source"] == "list1"
     s = {"sender_name": "Evans", "templates": {"first_subject": "{{biz}} in {{city}}", "first_body": "Hi {{first}}, about {{niche}}. {{sender_name}}"}}

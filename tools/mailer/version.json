@@ -1,4 +1,4 @@
 {
-  "version": "1.1.0",
-  "notes": ["Read, reply, delete and report spam from up to 5 Gmail accounts inside the app", "Import a spreadsheet with automatic column detection and fixes for misspelt addresses", "Edit a lead and the next email uses the change"]
+  "version": "1.2.0",
+  "notes": ["Up to 25 mailboxes and 150 emails a day from each", "Lead numbers, and setting leads aside for a mailbox by number or in blocks", "Every address ever emailed is remembered and never emailed twice", "Upload leads from CSV, text or PDF files", "The installer asks you to accept the terms and does not open the app by itself"]
 }

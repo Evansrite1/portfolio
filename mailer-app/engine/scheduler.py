@@ -69,8 +69,11 @@ def next_job(acct):
             orig = db.one("SELECT * FROM messages WHERE lead_id=? AND direction='out' AND kind='first' ORDER BY ts LIMIT 1", (l["id"],))
             if orig:
                 return "follow", l, orig
+    # leads set aside for this mailbox first, then leads nobody has claimed, in the order of their numbers
     lead = db.one("""SELECT * FROM leads WHERE status='new' AND email NOT IN (SELECT email FROM suppression)
-                     AND email LIKE '%@%' ORDER BY id LIMIT 1""")
+                     AND email NOT IN (SELECT email FROM sent_log)
+                     AND email LIKE '%@%' AND (account_id IS NULL OR account_id=?)
+                     ORDER BY (account_id IS NULL), COALESCE(num, id) LIMIT 1""", (acct["id"],))
     if lead:
         return "first", lead, None
     return None
@@ -157,6 +160,7 @@ def send_one(acct, sender=None):
            (acct["id"], lead["id"], "out", kind, msg["Message-ID"], msg.get("In-Reply-To") or "", subj, body,
             lead["email"], acct["email"], db.now(), token))
     db.run("UPDATE leads SET status='sent' WHERE id=?", (lead["id"],))
+    db.run("INSERT OR IGNORE INTO sent_log(email, first_ts, account) VALUES(?,?,?)", (lead["email"], db.now(), acct["email"]))
     db.run("UPDATE accounts SET last_send_ts=? WHERE id=?", (db.now(), acct["id"]))
     return "sent"
 

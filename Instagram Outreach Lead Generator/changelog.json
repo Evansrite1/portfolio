@@ -1,5 +1,14 @@
 [
   {
+    "version": "3.0.0",
+    "notes": [
+      "Up to 10 Instagram accounts, each with its own login and its own daily limit (20 by default)",
+      "Statistics for the whole outreach and for each account: sent today, this week, in total, replies, reply rate and failed",
+      "Lead finding moved to Large Lead Finder: add leads here from its spreadsheet or paste handles",
+      "Every account stops by itself if Instagram pushes back, and the others carry on"
+    ]
+  },
+  {
     "version": "2.0.0",
     "notes": [
       "Now called IG Outreach: find leads, send the messages and see who replied, in one app",

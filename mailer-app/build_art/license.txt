@@ -1,0 +1,24 @@
+OUTREACH MAILER BY EVANS LARGE
+LICENSE AND TERMS OF USE
+
+Please read this before you install. You must accept it to continue.
+
+1. What this program is
+Outreach Mailer is a program that runs on your own computer. It signs in to your own mailboxes with an app password that you create, sends the emails you write, and reads replies from your own inbox. Your mailbox sign-ins, your leads and your results are kept on this computer only.
+
+2. You are responsible for what you send
+You will only email people you have a lawful reason to contact. You will follow the email and anti-spam laws that apply where you and your recipients are, such as CAN-SPAM, GDPR and similar laws. Every email the program sends includes a line that lets a person ask you to stop, and the program stops emailing anyone who asks. You will not use this program to send spam, to deceive anyone, to send harmful or illegal content, or to break the rules of your email provider.
+
+3. Limits of your email provider
+Providers such as Google can limit or close accounts that send too many emails too fast. The program starts slowly and keeps to daily limits, but it cannot promise that your provider will accept your emails or keep your account open. You use the program at your own risk.
+
+4. Open tracking
+The program can add a small invisible picture to your emails to show when they are opened. It stores only a random code, the time and the kind of mail program, never a name or an email address. Opens are a guide, because some mail programs load pictures early or block them. You can turn this off in Settings.
+
+5. No warranty
+The program is provided as it is, without any promise that it will be free of errors or suit your purpose. To the fullest extent allowed by law, Evans Ademilua and Large Technologies are not liable for any loss, including lost emails, lost leads, blocked accounts or lost business, that comes from using it.
+
+6. Your data
+You can remove the program at any time. Uninstalling leaves your data folder in place so a reinstall keeps it. Delete the folder named OutreachMailer in your AppData Local folder if you want everything gone.
+
+By pressing I Agree you confirm that you have read these terms and accept them.

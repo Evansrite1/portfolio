@@ -1,0 +1,24 @@
+LARGE LEAD FINDER BY EVANS LARGE
+LICENSE AND TERMS OF USE
+
+Please read this before you install. You must accept it to continue.
+
+1. What this program is
+Large Lead Finder runs on your own computer. You choose what every lead must have (a working email, an Instagram page, or either), the niches and the places, and it builds a spreadsheet of businesses. It reads open map data (OpenStreetMap) and the public pages of each business's own website. Your searches and your results stay on this computer.
+
+2. The built-in browser
+During installation the program downloads its own copy of the Chromium browser into its own folder. It uses it in the background, without a window, to read pages that only show their contact details after scripts run. It does not touch your own browser, your passwords or your history.
+
+3. Use it lawfully
+You are responsible for how you use the leads. Contact people only where you have a lawful reason, follow the email and anti-spam laws that apply (such as CAN-SPAM and GDPR), honour every request to stop, and follow the rules of the platforms you use, including Instagram. Do not use the program to harass anyone, to collect private personal data, or to break any law or terms of a website.
+
+4. Be kind to the services it uses
+The program asks the map services and websites for small amounts of data, one request at a time, with pauses. Do not change it to send many more requests than that.
+
+5. Accuracy
+The data comes from public sources and can be missing, old or wrong. Emails are checked for a working mail domain, but only sending can prove that a mailbox exists. Coverage differs by country, so a poorly mapped place gives fewer leads. Nothing is promised about how many leads you will find or how good they are.
+
+6. No warranty
+The program is provided as it is. To the fullest extent allowed by law, Evans Ademilua and Large Technologies are not liable for any loss, including lost business, blocked accounts or bounced emails, that comes from using it.
+
+By pressing I Agree you confirm that you have read these terms and accept them.

@@ -95,3 +95,12 @@ desktop/color-app/dist/
 desktop/recorder-app/dist/
 desktop/audio-app/dist/
 desktop/audio-app/web/
+
+# Large Lead Finder build output
+lead-finder/build_out/
+lead-finder/dist/
+lead-finder/__pycache__/
+lead-finder/engine/__pycache__/
+lead-finder/tests/__pycache__/
+lead-finder/.pytest_cache/
+mailer-app/tests/__pycache__/

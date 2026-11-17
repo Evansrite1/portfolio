@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS events(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   token TEXT, lead_id INTEGER, type TEXT, ts REAL, detail TEXT
 );
+CREATE TABLE IF NOT EXISTS sent_log(email TEXT PRIMARY KEY, first_ts REAL, account TEXT DEFAULT '');
 CREATE TABLE IF NOT EXISTS suppression(email TEXT PRIMARY KEY, reason TEXT, ts REAL);
 CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY, value TEXT);
 """
@@ -58,6 +59,13 @@ def _migrate(c):
     lcols = {r[1] for r in c.execute("PRAGMA table_info(leads)")}
     if "data" not in lcols:
         c.execute("ALTER TABLE leads ADD COLUMN data TEXT DEFAULT ''")
+    if "num" not in lcols:
+        c.execute("ALTER TABLE leads ADD COLUMN num INTEGER")
+        c.execute("UPDATE leads SET num=id WHERE num IS NULL")
+    if "account_id" not in lcols:
+        c.execute("ALTER TABLE leads ADD COLUMN account_id INTEGER")
+    # every address ever emailed stays on record, even if the lead is deleted later, so it is never emailed twice
+    c.execute("INSERT OR IGNORE INTO sent_log(email, first_ts, account) SELECT to_addr, MIN(ts), '' FROM messages WHERE direction='out' GROUP BY to_addr")
     c.commit()
 
 

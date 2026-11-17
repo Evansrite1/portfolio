@@ -34,7 +34,7 @@ def main():
     if WORK.exists():
         shutil.rmtree(WORK)
     subprocess.run([sys.executable, "-m", "PyInstaller", "--noconfirm", "--onedir", "--noconsole", "--name", "Outreach Mailer",
-                    "--icon", str(HERE / "ui" / "icon.ico"), "--add-data", f"{HERE / 'ui'};ui",
+                    "--icon", str(HERE / "ui" / "icon.ico"), "--exclude-module", "tkinter", "--exclude-module", "pytest", "--exclude-module", "numpy", "--exclude-module", "unittest", "--add-data", f"{HERE / 'ui'};ui",
                     "--distpath", str(WORK / "dist"), "--workpath", str(WORK / "work"), "--specpath", str(WORK),
                     str(HERE / "launcher.py")], check=True)
     app_dir = WORK / "dist" / "Outreach Mailer"
@@ -44,7 +44,7 @@ def main():
     side = HERE / "build_art" / "installerSidebar.bmp"
     extra = [f"/DSIDEBAR={side}"] if side.exists() else []
     subprocess.run([makensis(), "/V2", f"/DVERSION={VERSION}", f"/DSRC={app_dir}", f"/DOUT={out}",
-                    f"/DICON={HERE / 'ui' / 'icon.ico'}"] + extra + [str(HERE / "installer.nsi")], check=True)
+                    f"/DICON={HERE / 'ui' / 'icon.ico'}", f"/DLICENSE={HERE / 'build_art' / 'license.txt'}"] + extra + [str(HERE / "installer.nsi")], check=True)
     print(f"installer {out}  {out.stat().st_size // 1048576} MB  version {VERSION}")
 
 

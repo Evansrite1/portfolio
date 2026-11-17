@@ -1,13 +1,12 @@
 {
-  "version": "2.0.0",
-  "code": "update/ig-scout-code-2.0.0.zip",
-  "sha256": "fb9e9b04321c4452c634dce68a5b104e45c5c38306691d949d69f7bfdb70deeb",
+  "version": "3.0.0",
+  "code": "update/ig-scout-code-3.0.0.zip",
+  "sha256": "c7960a62621aaf2d2a097ac81cd3a6fab47f88180cc111b55cd244073eb989e4",
   "notes": [
-    "Now called IG Outreach: find leads, send the messages and see who replied, in one app",
-    "New Send screen: every lead gets its message, you can edit it, and the app sends them slowly inside a daily limit",
-    "Replies are found by reading your Instagram inbox, and counted on the new Statistics screen",
-    "Statistics: leads found, messages sent today and this week, replies, reply rate, a chart of the last 14 days",
-    "The app stops by itself if Instagram pushes back, to protect your account"
+    "Up to 10 Instagram accounts, each with its own login and its own daily limit (20 by default)",
+    "Statistics for the whole outreach and for each account: sent today, this week, in total, replies, reply rate and failed",
+    "Lead finding moved to Large Lead Finder: add leads here from its spreadsheet or paste handles",
+    "Every account stops by itself if Instagram pushes back, and the others carry on"
   ],
   "download": "https://github.com/Evansrite1/portfolio/releases/download/leads-latest/IG-Outreach-Setup.exe"
 }

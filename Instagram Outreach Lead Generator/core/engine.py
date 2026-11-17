@@ -80,6 +80,9 @@ class Engine:
         except Exception as e:  # noqa
             self.log(f"Could not load the login page: {e}")
 
+    def open_browser(self):
+        self.call(self._open(), 90)
+
     def open_login(self):
         self.call(self._show_login(), 90)
 

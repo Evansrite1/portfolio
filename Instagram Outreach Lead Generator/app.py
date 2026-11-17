@@ -15,6 +15,7 @@ from pathlib import Path
 from flask import Flask, jsonify, request, send_file, send_from_directory, abort
 
 from core import outbox, services, updater
+from core.accounts import Accounts
 from core.sender import Sender
 from core.countries import country_names
 from core.engine import Engine
@@ -55,11 +56,12 @@ def log(msg):
         pass
 
 
-engine = Engine(HOME / "profile", log)
+accounts = Accounts(HOME, log)
+engine = accounts.engine("a1")                              # the first account, also used for finding leads and for the old screens
 job = None
 HOME.mkdir(parents=True, exist_ok=True)
 outbox.open_db(HOME / "outreach.db")
-sender = Sender(engine, lambda: read_settings().get("send"), log)
+sender = Sender(accounts, lambda: read_settings().get("send"), log)
 known_cache = {"at": 0, "set": set()}
 
 
@@ -262,7 +264,89 @@ def replies_check():
 
 @app.get("/api/stats")
 def stats():
-    return jsonify(outbox.stats())
+    acc = request.args.get("account") or None
+    out = outbox.stats(14, acc)
+    out["accounts"] = outbox.per_account({a["id"]: a["label"] for a in accounts.items})
+    return jsonify(out)
+
+
+# ---------------------------------------------------------------- Instagram accounts (up to 10)
+@app.get("/api/ig/accounts")
+def ig_accounts():
+    return jsonify(sender.status())
+
+
+@app.post("/api/ig/accounts")
+def ig_account_add():
+    d = request.get_json(force=True) or {}
+    try:
+        a = accounts.add(d.get("label"))
+    except ValueError as e:
+        return jsonify(ok=False, error=str(e)), 400
+    return jsonify(ok=True, account=a)
+
+
+@app.post("/api/ig/accounts/<aid>")
+def ig_account_update(aid):
+    d = request.get_json(force=True) or {}
+    try:
+        accounts.update(aid, **{k: d[k] for k in ("label", "enabled", "daily") if k in d})
+    except KeyError:
+        return jsonify(ok=False, error="No such account"), 404
+    return jsonify(ok=True)
+
+
+@app.post("/api/ig/accounts/<aid>/remove")
+def ig_account_remove(aid):
+    try:
+        accounts.remove(aid)
+    except ValueError as e:
+        return jsonify(ok=False, error=str(e)), 400
+    return jsonify(ok=True)
+
+
+@app.post("/api/ig/accounts/<aid>/login")
+def ig_account_login(aid):
+    if not accounts.get(aid):
+        return jsonify(ok=False, error="No such account"), 404
+
+    def go():
+        try:
+            accounts.engine(aid).open_login()
+            log(f"Log in to Instagram in the window that opened for {accounts.get(aid)['label']}. This app never sees your password.")
+        except Exception as e:  # noqa
+            log(f"Could not open the browser: {e}")
+    threading.Thread(target=go, daemon=True).start()
+    return jsonify(ok=True)
+
+
+@app.post("/api/ig/import")
+def ig_import():
+    """Add Instagram leads from a spreadsheet (a handle column, for example from Large Lead Finder) or a list of handles."""
+    import csv as _csv
+    from core import message as M
+    d = request.get_json(force=True) or {}
+    tpl = str(d.get("template") or "")[:3000]
+    text = str(d.get("text") or "")
+    rows = []
+    if "," in text.split("\n")[0] or "\t" in text.split("\n")[0]:
+        rows = [{k.strip().lower(): (v or "").strip() for k, v in r.items() if k} for r in _csv.DictReader(io.StringIO(text))]
+    else:
+        rows = [{"handle": h} for h in clean_handles(text)]
+    added = dupes = 0
+    for r in rows:
+        h = clean_handles(r.get("handle") or r.get("instagram") or r.get("instagram_link") or "")
+        if not h:
+            continue
+        row = {"handle": h[0], "instagram_link": f"https://www.instagram.com/{h[0]}/", "country": r.get("country", ""), "name": r.get("business") or r.get("name", ""),
+               "what_they_do": r.get("niche") or r.get("what_they_do", ""), "niche": r.get("niche", ""), "city": r.get("city", ""), "service": r.get("service", ""),
+               "website": r.get("website", ""), "has_website": r.get("has_website", "")}
+        row["message"] = r.get("message") or (M.message_for(tpl, row) if tpl.strip() else "")
+        if outbox.add_row(row):
+            added += 1
+        else:
+            dupes += 1
+    return jsonify(ok=True, added=added, duplicates=dupes)
 
 
 @app.get("/api/version")
@@ -435,7 +519,7 @@ def main():
     try:
         app.run(host="127.0.0.1", port=PORT, threaded=True, debug=False)
     finally:
-        engine.close()
+        accounts.close_all()
 
 
 if __name__ == "__main__":

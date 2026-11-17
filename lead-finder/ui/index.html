@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Large Lead Finder</title>
+<link rel="icon" href="icon.png">
+<style>
+:root{--bg:#0e1013;--panel:#171a1f;--raised:#1e2228;--line:#2a2f37;--ink:#eef1f5;--soft:#9aa3af;--accent:#e8412e;--ok:#2fbf71;--warn:#e8a92e;--bad:#e8412e}
+@media (prefers-color-scheme:light){:root{--bg:#f4f5f7;--panel:#fff;--raised:#f0f2f5;--line:#dde1e7;--ink:#14171c;--soft:#5b6572}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{display:flex;align-items:center;gap:14px;padding:14px 24px;border-bottom:1px solid var(--line);background:var(--panel)}
+header img{width:34px;height:34px;border-radius:9px}
+h1{margin:0;font-size:1.15rem}.sub{color:var(--soft);font-size:.85rem}
+main{display:grid;grid-template-columns:420px 1fr;gap:20px;padding:20px 24px;align-items:start}
+@media(max-width:1060px){main{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+.card h2{margin:0 0 12px;font-size:.78rem;text-transform:uppercase;letter-spacing:.09em;color:var(--soft)}
+.step{margin:0 0 18px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.step:last-of-type{border-bottom:0}
+.step h3{margin:0 0 4px;font-size:1rem}.hint{margin:0 0 10px;color:var(--soft);font-size:.85rem}
+.num{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:.78rem;margin-right:8px}
+label{display:block;font-size:.85rem;color:var(--soft);margin:10px 0 5px}
+input[type=text],input[type=number],textarea,select{width:100%;background:var(--raised);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font:inherit}
+textarea{resize:vertical;min-height:60px}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.opt{display:block;margin:0 0 8px;padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:var(--raised);cursor:pointer;color:var(--ink)}
+.opt input{position:absolute;opacity:0}.opt b{display:block}.opt span{display:block;color:var(--soft);font-size:.8rem}
+.opt.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.opt:has(input:focus-visible){outline:2px solid var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}
+.chip{padding:4px 11px;border-radius:99px;border:1px solid var(--line);background:var(--raised);color:var(--ink);font-size:.8rem;cursor:pointer}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.grp{margin-top:10px;font-size:.78rem;color:var(--soft);display:flex;justify-content:space-between}
+.grp button{font-size:.72rem;padding:1px 8px}
+.chk{display:flex;gap:9px;align-items:flex-start;margin:7px 0;font-size:.88rem;color:var(--ink)}
+.chk input{margin-top:3px;accent-color:var(--accent)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:2px 14px}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--ink);padding:8px 14px}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;width:100%;padding:12px;margin-top:6px}
+button.primary:disabled{opacity:.45;cursor:not-allowed}
+button.small{padding:4px 10px;font-size:.8rem}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.stat{background:var(--raised);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.stat b{display:block;font-size:1.35rem}.stat span{font-size:.75rem;color:var(--soft)}
+.bar{height:6px;background:var(--raised);border-radius:99px;overflow:hidden;margin:6px 0 12px}.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .4s}
+.msg{font-size:.88rem;color:var(--soft);margin:0 0 10px;min-height:1.3em}.msg.bad{color:var(--bad)}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tablewrap{overflow:auto;max-height:58vh;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:.84rem}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;white-space:nowrap}
+th{position:sticky;top:0;background:var(--raised);color:var(--soft);font-weight:600;font-size:.74rem;text-transform:uppercase;letter-spacing:.06em}
+td a{color:var(--accent);text-decoration:none}
+.empty{padding:34px 16px;text-align:center;color:var(--soft)}
+details{margin-top:12px}summary{cursor:pointer;color:var(--soft);font-size:.85rem}
+pre{margin:8px 0 0;background:#0a0c0e;color:#c8d0da;border-radius:10px;padding:10px 12px;max-height:200px;overflow:auto;font:12px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap}
+.skips{font-size:.8rem;color:var(--soft);margin-top:8px}
+.tag{display:inline-block;padding:1px 8px;border-radius:99px;font-size:.74rem;border:1px solid var(--line)}
+.tag.ok{color:var(--ok);border-color:var(--ok)}
+</style>
+</head>
+<body>
+<header><img src="icon.png" alt=""><div><h1>Large Lead Finder</h1><div class="sub">Find leads for any niche, with the email or Instagram page you need <span id="ver"></span></div></div></header>
+<main>
+<section class="card" aria-label="Setup">
+  <h2>Setup</h2>
+  <div class="step">
+    <h3><span class="num">1</span>What must every lead have?</h3>
+    <p class="hint">Leads that miss it are left out, so you never get an empty row.</p>
+    <label class="opt on" id="m-email"><input type="radio" name="mode" value="email" checked><b>A working email</b><span>For the Outreach Mailer. Every lead has an email that was checked.</span></label>
+    <label class="opt" id="m-instagram"><input type="radio" name="mode" value="instagram"><b>An Instagram page</b><span>For IG Outreach. Every lead has an Instagram handle.</span></label>
+    <label class="opt" id="m-both"><input type="radio" name="mode" value="both"><b>Either one</b><span>Keep a lead that has an email, an Instagram page, or both.</span></label>
+  </div>
+  <div class="step">
+    <h3><span class="num">2</span>Which niches?</h3>
+    <p class="hint">Pick as many as you like. <b id="nsel">0 chosen</b></p>
+    <input type="text" id="nq" placeholder="Search the niches" aria-label="Search the niches">
+    <div id="niches"></div>
+    <label for="custom">Another niche <span style="opacity:.7">(a word, like tattoo or wedding)</span></label>
+    <input type="text" id="custom" placeholder="Optional, separate with commas">
+  </div>
+  <div class="step">
+    <h3><span class="num">3</span>Where?</h3>
+    <p class="hint">Cities or countries, separated by commas or new lines.</p>
+    <textarea id="places" rows="2" placeholder="Lagos, Abuja, Kuwait City"></textarea>
+  </div>
+  <div class="step">
+    <h3><span class="num">4</span>How many leads?</h3>
+    <input type="number" id="target" value="100" min="1" max="5000">
+    <p class="hint" style="margin-top:6px">Some places have fewer matching businesses on the map. The app tells you when it runs out.</p>
+  </div>
+  <div class="step">
+    <h3><span class="num">5</span>What comes with each lead?</h3>
+    <p class="hint">Business, niche, country, city, email, Instagram and website always come. Tick the extras you want in the spreadsheet.</p>
+    <div class="cols" id="cols"></div>
+    <label class="chk"><input type="checkbox" id="usebrowser" checked><span>Use the built-in browser for sites that only show their email after loading <span id="bstate" class="sub"></span></span></label>
+    <button type="button" class="small" id="binstall" hidden>Install the built-in browser</button>
+  </div>
+  <div class="step">
+    <h3><span class="num">6</span>Skip leads I already have</h3>
+    <p class="hint">Choose an earlier spreadsheet. Its emails and Instagram handles are not found again.</p>
+    <div class="tools"><input type="file" id="skipfile" accept=".csv,.txt" hidden><button type="button" class="small" id="skippick">Choose a file</button><button type="button" class="small" id="skipclear">Forget them</button><span class="sub" id="skipinfo"></span></div>
+  </div>
+  <button class="primary" id="run" type="button">Find leads</button>
+  <button id="stop" type="button" style="width:100%;margin-top:8px" hidden>Stop</button>
+</section>
+<section class="card" aria-label="Results">
+  <h2>Leads</h2>
+  <div class="stats"><div class="stat"><b id="s-found">0</b><span>Leads found</span></div><div class="stat"><b id="s-checked">0</b><span>Businesses checked</span></div><div class="stat"><b id="s-em">0</b><span>With an email</span></div><div class="stat"><b id="s-ig">0</b><span>With Instagram</span></div></div>
+  <div class="bar" aria-hidden="true"><i id="prog"></i></div>
+  <p class="msg" id="msg">Choose what the leads must have, your niches and places, then press Find leads.</p>
+  <div class="tools">
+    <button id="dl-all" type="button" disabled>Download all leads (CSV)</button>
+    <button id="dl-mailer" type="button" disabled>For the Outreach Mailer</button>
+    <button id="dl-ig" type="button" disabled>For IG Outreach</button>
+  </div>
+  <div class="tablewrap"><table><thead><tr><th>#</th><th>Business</th><th>Niche</th><th>City</th><th>Email</th><th>Instagram</th><th>Website</th></tr></thead><tbody id="rows"></tbody></table>
+    <div class="empty" id="empty">Leads appear here as they are found.</div></div>
+  <div class="skips" id="skips"></div>
+  <details><summary>Live log</summary><pre id="log"></pre></details>
+  <p class="skips">Leads come from the open map (OpenStreetMap) and from each business's own public website. Emails are checked for a working domain. Coverage differs by country: places that are well mapped give many more leads.</p>
+</section>
+</main>
+<script>
+(function(){
+'use strict';
+var KEY="__KEY__",$=function(i){return document.getElementById(i)};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function api(p,b,m){return fetch('/api/'+p,{method:m||(b!==undefined?'POST':'GET'),headers:{'X-LLF-Key':KEY,'Content-Type':'application/json'},body:b!==undefined?JSON.stringify(b):undefined}).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error||'Something went wrong');return j})})}
+var catalog=[],chosen={},rowsSeen=0,logSeen=0,cols={},info=null,lastState='';
+$('ver').textContent='';
+function drawNiches(){
+  var q=$('nq').value.toLowerCase(),box=$('niches');box.innerHTML='';
+  var groups={};catalog.forEach(function(n){if(q&&n.label.toLowerCase().indexOf(q)<0&&n.group.toLowerCase().indexOf(q)<0)return;(groups[n.group]=groups[n.group]||[]).push(n)});
+  Object.keys(groups).forEach(function(g){
+    var head=document.createElement('div');head.className='grp';head.innerHTML='<span>'+esc(g)+'</span>';
+    var b=document.createElement('button');b.type='button';b.textContent='Choose all';b.className='small';b.onclick=function(){groups[g].forEach(function(n){chosen[n.id]=1});drawNiches()};head.appendChild(b);box.appendChild(head);
+    var chips=document.createElement('div');chips.className='chips';
+    groups[g].forEach(function(n){var c=document.createElement('button');c.type='button';c.className='chip'+(chosen[n.id]?' on':'');c.textContent=n.label;c.setAttribute('aria-pressed',chosen[n.id]?'true':'false');c.onclick=function(){if(chosen[n.id])delete chosen[n.id];else chosen[n.id]=1;drawNiches()};chips.appendChild(c)});
+    box.appendChild(chips);
+  });
+  $('nsel').textContent=Object.keys(chosen).length+' chosen';
+}
+function drawCols(){var b=$('cols');b.innerHTML='';info.columns.extra.forEach(function(c){var l=document.createElement('label');l.className='chk';l.innerHTML='<input type="checkbox" data-c="'+c+'" '+(cols[c]!==false?'checked':'')+'><span>'+esc(info.columns.names[c])+'</span>';l.firstChild.onchange=function(){cols[c]=this.checked};b.appendChild(l)})}
+[].forEach.call(document.querySelectorAll('input[name=mode]'),function(r){r.addEventListener('change',function(){['email','instagram','both'].forEach(function(m){$('m-'+m).className='opt'+(r.value===m&&r.checked?' on':'')})})});
+$('nq').addEventListener('input',drawNiches);
+$('skippick').onclick=function(){$('skipfile').click()};
+$('skipfile').onchange=function(){var f=$('skipfile').files[0];if(!f)return;var r=new FileReader();r.onload=function(){api('skip',{text:r.result}).then(function(x){$('skipinfo').textContent=x.emails+' emails and '+x.handles+' handles will be skipped'})};r.readAsText(f)};
+$('skipclear').onclick=function(){api('skip/clear',{}).then(function(){$('skipinfo').textContent=''})};
+$('binstall').onclick=function(){$('binstall').disabled=true;$('binstall').textContent='Downloading (about 100 MB)...';api('browser/install',{}).then(function(r){return api('info')}).then(function(i){info=i;showBrowser()}).catch(function(e){$('bstate').textContent=e.message})};
+function showBrowser(){$('bstate').textContent=info.browser?'(installed)':'(not installed)';$('binstall').hidden=info.browser;$('binstall').disabled=false;$('binstall').textContent='Install the built-in browser'}
+function setMsg(t,bad){$('msg').textContent=t;$('msg').className='msg'+(bad?' bad':'')}
+function fmt(s){return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+$('run').onclick=function(){
+  var mode=document.querySelector('input[name=mode]:checked').value;
+  var extras=info.columns.extra.filter(function(c){return cols[c]!==false});
+  api('run',{mode:mode,niches:Object.keys(chosen),custom:$('custom').value,places:$('places').value,target:Number($('target').value)||100,use_browser:$('usebrowser').checked}).then(function(){rowsSeen=0;em=0;ig=0;$('rows').innerHTML='';$('empty').style.display='';setMsg('Starting...')}).catch(function(e){setMsg(e.message,true)});
+};
+$('stop').onclick=function(){api('stop',{})};
+function dl(kind){var extras=info.columns.extra.filter(function(c){return cols[c]!==false}).join(',');fetch('/api/download/'+kind+'?extras='+encodeURIComponent(extras),{headers:{'X-LLF-Key':KEY}}).then(function(r){var n=(r.headers.get('Content-Disposition')||'').match(/filename=(.+)$/);return r.blob().then(function(b){return [b,n?n[1]:'leads.csv']})}).then(function(x){var u=URL.createObjectURL(x[0]),a=document.createElement('a');a.href=u;a.download=x[1];document.body.appendChild(a);a.click();a.remove()})}
+$('dl-all').onclick=function(){dl('all')};$('dl-mailer').onclick=function(){dl('mailer')};$('dl-ig').onclick=function(){dl('instagram')};
+var em=0,ig=0;
+function tick(){
+  api('state?since='+rowsSeen+'&log='+logSeen).then(function(s){
+    var j=s.job;
+    if(j){
+      $('s-found').textContent=j.found;$('s-checked').textContent=j.checked;
+      var running=/running|starting|stopping/.test(j.state);
+      $('run').hidden=running;$('stop').hidden=!running;
+      $('prog').style.width=Math.min(100,Math.round(100*j.found/j.target))+'%';
+      setMsg((running?j.message+'  ('+fmt(j.elapsed)+')':j.message),j.state==='error');
+      var has=j.found>0;['dl-all','dl-mailer','dl-ig'].forEach(function(b){$(b).disabled=!has});
+      var sk=Object.keys(j.skipped||{}).map(function(k){return j.skipped[k]+' left out: '+k}).join('  |  ');$('skips').textContent=sk;
+    }
+    s.rows.forEach(function(r){rowsSeen++;if(r.email)em++;if(r.instagram)ig++;$('empty').style.display='none';
+      var tr=document.createElement('tr');tr.innerHTML='<td>'+r['#']+'</td><td>'+esc(r.business)+'</td><td>'+esc(r.niche)+'</td><td>'+esc(r.city)+'</td><td>'+esc(r.email)+(r.email_type?' <span class="tag ok">'+esc(r.email_type)+'</span>':'')+'</td><td>'+(r.instagram?'<a href="'+esc(r.instagram_link)+'" target="_blank" rel="noopener">@'+esc(r.instagram)+'</a>':'')+'</td><td>'+(r.website?'<a href="'+esc(r.website)+'" target="_blank" rel="noopener">'+esc(r.website.replace(/^https?:\/\/(www\.)?/,'').slice(0,34))+'</a>':'')+'</td>';$('rows').appendChild(tr)});
+    $('s-em').textContent=em;$('s-ig').textContent=ig;
+    if(s.log.length){logSeen=s.log_total;var pre=$('log');pre.textContent+=s.log.join('\n')+'\n';pre.scrollTop=pre.scrollHeight}
+  }).catch(function(){});
+}
+api('info').then(function(i){info=i;catalog=i.niches;$('ver').textContent='version '+i.version;drawNiches();drawCols();showBrowser();setInterval(tick,1500);tick()});
+})();
+</script>
+</body>
+</html>

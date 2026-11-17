@@ -16,8 +16,8 @@ RAMP_START = 10        # sends/day on day 1 of a new mailbox
 RAMP_STEP = 5          # added every RAMP_EVERY_DAYS
 RAMP_EVERY_DAYS = 2
 DEFAULT_DAILY_CAP = 40
-HARD_DAILY_CAP = 300
-MAX_ACCOUNTS = 5
+HARD_DAILY_CAP = 150
+MAX_ACCOUNTS = 25
 
 SEND_WINDOW = (8, 18)  # local hours emails may go out
 FOLLOWUP_AFTER_DAYS = 5

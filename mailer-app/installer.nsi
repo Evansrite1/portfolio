@@ -20,9 +20,13 @@ BrandingText "Outreach Mailer ${VERSION}"
 !endif
 !define MUI_FINISHPAGE_RUN "$INSTDIR\Outreach Mailer.exe"
 !define MUI_FINISHPAGE_RUN_TEXT "Open Outreach Mailer now"
+!define MUI_FINISHPAGE_RUN_NOTCHECKED
+!define MUI_LICENSEPAGE_CHECKBOX
+!define MUI_LICENSEPAGE_TEXT_TOP "Read these terms. You must tick the box to agree before Next is available."
 !define MUI_WELCOMEPAGE_TEXT "This installs Outreach Mailer on your computer.$\r$\n$\r$\nSend your outreach emails from your own Gmail and watch the results live: sent, opened, replied and bounced. It adds a Start Menu entry and a Desktop shortcut, and it shows an update at the top of the app when a new version is ready."
 
 !insertmacro MUI_PAGE_WELCOME
+!insertmacro MUI_PAGE_LICENSE "${LICENSE}"
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH

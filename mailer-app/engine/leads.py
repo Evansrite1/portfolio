@@ -18,24 +18,32 @@ def clean_email(e):
     return e
 
 
+def sent_info(e):
+    r = db.one("SELECT first_ts FROM sent_log WHERE email=?", (e,))
+    return r["first_ts"] if r else None
+
+
 def add_lead(email, first="", biz="", city="", website="", source="", data=None):
     e = clean_email(email)
     if not e:
         return "invalid"
     if db.one("SELECT 1 FROM suppression WHERE email=?", (e,)):
         return "suppressed"
+    if sent_info(e):
+        return "sent_before"            # this address was emailed before: it is noted and never goes out again
     if db.one("SELECT 1 FROM leads WHERE email=?", (e,)):
         return "duplicate"
-    db.run("INSERT INTO leads(email,first,biz,city,website,site_status,source,status,created,data) VALUES(?,?,?,?,?,?,?,?,?,?)",
+    num = (db.one("SELECT COALESCE(MAX(num),0)+1 n FROM leads") or {"n": 1})["n"]
+    db.run("INSERT INTO leads(email,first,biz,city,website,site_status,source,status,created,data,num) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
            (e, first.strip(), biz.strip(), city.strip(), website.strip(), "UNKNOWN", source, "new", db.now(),
-            json.dumps(data, ensure_ascii=False) if data else ""))
+            json.dumps(data, ensure_ascii=False) if data else "", num))
     return "added"
 
 
 def import_csv(text, source="csv"):
     """Columns in any order and any case: email (required), first, business, city, website. Other columns become
     fields you can use in the message, for example a column called niche is {{niche}}."""
-    out = {"added": 0, "duplicate": 0, "invalid": 0, "suppressed": 0}
+    out = {"added": 0, "duplicate": 0, "invalid": 0, "suppressed": 0, "sent_before": 0}
     text = text.lstrip("\ufeff")
     try:
         dialect = csv.Sniffer().sniff(text[:4000], delimiters=",;\t")
@@ -180,7 +188,8 @@ def import_mapped(text, mapping, source="csv", fixes=None, skip=None):
     """Import with the columns the person confirmed. fixes: {row: {email, first, biz, city, website}} typed on the screen."""
     headers, rows = parse_table(text)
     fixes, skip = fixes or {}, set(skip or [])
-    out = {"added": 0, "duplicate": 0, "invalid": 0, "suppressed": 0, "skipped": 0}
+    out = {"added": 0, "duplicate": 0, "invalid": 0, "suppressed": 0, "skipped": 0, "sent_before": 0, "sent_before_list": []}
+    seen_in_file = set()
     used = {v for v in mapping.values() if isinstance(v, int)}
     extras = [i for i in range(len(headers)) if i not in used]
 
@@ -200,8 +209,15 @@ def import_mapped(text, mapping, source="csv", fixes=None, skip=None):
         if isinstance(fi, int) and re.search(r"\s", first or "") and "first" not in headers[fi].lower() and not fx.get("first"):
             first = first.split()[0]
         extra = {headers[i].lower().replace(" ", "_"): r[i].strip() for i in extras if i < len(r) and r[i].strip()}
+        if em and em in seen_in_file:
+            out["duplicate"] += 1                    # the same address twice in this file
+            continue
+        if em:
+            seen_in_file.add(em)
         res = add_lead(em or "", first, fx.get("biz", cell(r, "biz")), fx.get("city", cell(r, "city")), fx.get("website", cell(r, "website")), source, extra or None)
         out[res] += 1
+        if res == "sent_before" and len(out["sent_before_list"]) < 30:
+            out["sent_before_list"].append({"email": em, "when": sent_info(em)})
     return out
 
 
