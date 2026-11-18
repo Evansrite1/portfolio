@@ -218,3 +218,121 @@ html,body{overflow-x:hidden}
 .hx-portrait{width:min(100%,400px)}
 @media (max-width:860px){.hero.hx{grid-template-columns:1fr}.hx-portrait{width:min(66%,250px)}}
 .hero.hx{padding-left:max(clamp(20px,5vw,80px),calc((100vw - 1080px)/2))!important;padding-right:max(clamp(20px,5vw,80px),calc((100vw - 1080px)/2))!important}
+
+/* ================= round four ================= */
+/* no dots, no underline dashes, no moving strip under the hero */
+.hx-kick i,.fast-line i,.dsb-feed i{display:none!important}
+.hx-marquee{display:none!important}
+.section-head::after{display:none!important}
+.hero.hx{padding-bottom:40px!important;min-height:auto}
+.hx h1{font-size:clamp(2.05rem,min(5.4vw,8.4vw),5.1rem)!important;max-width:100%;overflow-wrap:normal}
+.hx h1 .rot{white-space:nowrap}
+.hx h1 .w{-webkit-text-stroke:0!important;color:var(--ink)!important;font-weight:900;text-shadow:0 0 36px color-mix(in srgb,var(--accent) 30%,transparent)}
+.hx-copy,.hx-portrait{min-width:0}
+@media (max-width:860px){.hx h1{font-size:clamp(2rem,10.4vw,3.2rem)!important}}
+
+/* recent builds: short, and never taller than the picture */
+#work .section-head{margin-bottom:10px}
+.cases{gap:clamp(34px,5vw,64px)!important;margin-top:20px!important}
+.case{align-items:stretch!important}
+.case-shot{aspect-ratio:auto!important;min-height:clamp(240px,30vw,380px);height:100%}
+.case-text{display:flex;flex-direction:column;justify-content:center;min-width:0}
+.case-n{font-size:clamp(2.4rem,5vw,3.8rem)!important;margin-bottom:6px!important}
+.case h3{font-size:clamp(1.5rem,3vw,2.2rem)!important;margin:6px 0 10px!important}
+.case-line{margin:0 0 10px;font-size:.98rem;line-height:1.5}
+.case-line b{display:block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint,#8a8a8a);margin-bottom:2px;font-weight:600}
+.case-link{margin-top:8px;align-self:flex-start}
+@media (max-width:760px){.case-shot{min-height:0;aspect-ratio:16/10!important;height:auto}}
+
+/* the section under the three cases */
+.work-actions{margin-top:clamp(30px,5vw,56px)!important}
+
+/* ---------- animated pictures ---------- */
+.art{display:block;color:var(--c)}
+.art svg{width:100%;height:auto;overflow:visible}
+.a-snake rect{animation:a-snk 3.2s steps(1,end) infinite}
+.a-snake .t1{animation-delay:-.2s}.a-snake .t2{animation-delay:-.4s}
+@keyframes a-snk{0%{transform:translate(0,0)}25%{transform:translate(56px,0)}50%{transform:translate(56px,28px)}75%{transform:translate(0,28px)}100%{transform:translate(0,0)}}
+.a-food{animation:a-pulse 1.4s ease-in-out infinite;transform-origin:86px 58px}
+@keyframes a-pulse{50%{transform:scale(1.35);opacity:.6}}
+.a-cards rect{animation:a-up 3.6s ease-in-out infinite}.a-cards rect:nth-child(2){animation-delay:-1.2s}.a-cards rect:nth-child(3){animation-delay:-2.4s}
+@keyframes a-up{50%{transform:translateY(-6px)}}
+.a-bars rect{transform-box:fill-box;transform-origin:bottom;animation:a-grow 2.8s ease-in-out infinite}.a-bars rect:nth-child(2){animation-delay:-.7s}.a-bars rect:nth-child(3){animation-delay:-1.4s}.a-bars rect:nth-child(4){animation-delay:-2.1s}
+@keyframes a-grow{0%,100%{transform:scaleY(.55)}50%{transform:scaleY(1)}}
+.a-line{stroke-dasharray:140;animation:a-draw 3.4s ease-in-out infinite}@keyframes a-draw{0%{stroke-dashoffset:140}60%,100%{stroke-dashoffset:0}}
+.a-scroll{animation:a-scr 6s ease-in-out infinite}@keyframes a-scr{0%,15%{transform:translateY(0)}55%,80%{transform:translateY(-38px)}100%{transform:translateY(0)}}
+.a-spin{transform-box:fill-box;transform-origin:center;animation:a-rot 9s linear infinite}@keyframes a-rot{to{transform:rotate(360deg)}}
+.a-pulse{transform-box:fill-box;transform-origin:center;animation:a-pulse 2s ease-in-out infinite}
+.a-eq rect{transform-box:fill-box;transform-origin:bottom;animation:a-eq 1.1s ease-in-out infinite}.a-eq rect:nth-child(2){animation-delay:-.2s}.a-eq rect:nth-child(3){animation-delay:-.5s}.a-eq rect:nth-child(4){animation-delay:-.8s}.a-eq rect:nth-child(5){animation-delay:-.35s}
+@keyframes a-eq{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1.5)}}
+.a-piece{animation:a-snap 3.4s ease-in-out infinite}@keyframes a-snap{0%,100%{transform:translate(0,0)}50%{transform:translate(-26px,6px)}}
+.a-float1{animation:a-fl 5s ease-in-out infinite}.a-float2{animation:a-fl 5s ease-in-out -2.5s infinite}@keyframes a-fl{50%{transform:translateY(-5px)}}
+.a-sp1,.a-sp2,.a-sp3{transform-box:fill-box;transform-origin:center;animation:a-tw 2.6s ease-in-out infinite}.a-sp2{animation-delay:-.9s}.a-sp3{animation-delay:-1.7s}
+@keyframes a-tw{0%,100%{transform:scale(.6) rotate(0);opacity:.5}50%{transform:scale(1.1) rotate(20deg);opacity:1}}
+@media (prefers-reduced-motion:reduce){.art *{animation:none!important}}
+
+/* ---------- home: the bento ---------- */
+.bento{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;margin-top:22px}
+.bt{position:relative;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;min-height:210px;padding:clamp(18px,2.4vw,28px);border-radius:26px;text-decoration:none;color:var(--ink);border:1px solid color-mix(in srgb,var(--c) 28%,var(--line-strong));background:radial-gradient(120% 120% at 100% 0%,color-mix(in srgb,var(--c) 26%,transparent),transparent 58%),color-mix(in srgb,var(--paper-raised) 92%,transparent);transition:transform .5s var(--ease-expo),box-shadow .4s,border-color .3s}
+.bt:hover{transform:translateY(-6px);border-color:var(--c);box-shadow:0 30px 60px -30px var(--c)}
+.bt:focus-visible{outline:2px solid var(--c);outline-offset:3px}
+.bt .art{position:absolute;right:clamp(8px,2vw,22px);top:clamp(8px,2vw,18px);width:min(46%,200px);opacity:.95}
+.bt h3{margin:0 0 6px;font-size:clamp(1.25rem,2.2vw,1.8rem);letter-spacing:-.02em;line-height:1.1;max-width:75%}
+.bt p{margin:0 0 12px;color:var(--ink-soft,#b0b0b0);font-size:.95rem;line-height:1.45;max-width:30ch}
+.bt .go{font-size:.85rem;font-weight:600;color:var(--c)}
+.bt:nth-child(1){grid-column:span 3;min-height:260px}.bt:nth-child(2){grid-column:span 3;min-height:260px}
+.bt:nth-child(n+3):nth-child(-n+8){grid-column:span 2}.bt:nth-child(9){grid-column:span 6;min-height:190px}
+.bt:nth-child(9) .art{width:min(24%,150px)}
+@media (max-width:860px){.bento{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.bt,.bt:nth-child(n){grid-column:span 1;min-height:190px;padding:16px;border-radius:22px}.bt:nth-child(1),.bt:nth-child(9){grid-column:span 2}.bt .art{width:42%}.bt h3{max-width:100%;font-size:1.15rem}.bt p{font-size:.84rem}}
+@media (hover:none){.bt:hover{transform:none;box-shadow:none}}
+.fast-line{border:0!important;padding:0!important;font-size:.98rem;color:var(--ink-soft,#b5b5b5)}
+
+/* ---------- the solutions page: nine circles and the sections they open ---------- */
+.sol-hero2{padding:clamp(30px,6vw,70px) 0 10px;text-align:center}
+.sol-hero2 h1{font-size:clamp(2rem,6vw,4.2rem);letter-spacing:-.04em;line-height:1.02;margin:10px auto 14px;max-width:18ch}
+.sol-hero2 p{max-width:56ch;margin:0 auto;color:var(--ink-soft,#b5b5b5);line-height:1.6;font-size:clamp(1rem,1.6vw,1.15rem)}
+.circles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(18px,4vw,44px) clamp(10px,3vw,40px);max-width:760px;margin:clamp(28px,5vw,54px) auto 0;padding:0 8px}
+.cir{display:flex;flex-direction:column;align-items:center;gap:12px;text-decoration:none;color:var(--ink);text-align:center;cursor:pointer;background:none;border:0;font:inherit;padding:0}
+.cir-disc{position:relative;width:min(100%,170px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--c) 45%,var(--line-strong));background:radial-gradient(circle at 50% 30%,color-mix(in srgb,var(--c) 30%,transparent),color-mix(in srgb,var(--paper-raised) 94%,transparent) 70%);transition:transform .5s var(--ease-expo),box-shadow .4s}
+.cir-disc::before{content:"";position:absolute;inset:-9px;border-radius:50%;border:1px dashed color-mix(in srgb,var(--c) 50%,transparent);animation:a-rot 22s linear infinite}
+.cir-disc .art{width:62%}
+.cir b{font-size:clamp(.88rem,1.5vw,1.05rem);line-height:1.2;max-width:15ch}
+.cir small{display:block;margin-top:3px;color:var(--ink-soft,#a8a8a8);font-size:.8rem;line-height:1.35;max-width:20ch;font-weight:400}
+.cir:hover .cir-disc,.cir.on .cir-disc{transform:scale(1.07);box-shadow:0 0 0 6px color-mix(in srgb,var(--c) 18%,transparent),0 24px 50px -24px var(--c)}
+.cir:focus-visible .cir-disc{outline:2px solid var(--c);outline-offset:6px}
+@media (max-width:520px){.circles{gap:22px 8px}.cir small{display:none}}
+.sol-secs{margin-top:clamp(40px,7vw,90px)}
+.ssec{padding:clamp(34px,6vw,76px) 0;border-top:1px solid var(--line);scroll-margin-top:84px;opacity:0;transform:translateY(26px);transition:opacity .7s,transform .8s var(--ease-expo)}
+.ssec.in{opacity:1;transform:none}
+.ssec-head{display:flex;gap:clamp(14px,3vw,34px);align-items:center;margin-bottom:22px}
+.ssec-head .art{width:clamp(70px,12vw,120px);flex:none}
+.ssec-head .k{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--c)}
+.ssec-head h2{margin:4px 0 8px;font-size:clamp(1.7rem,4.4vw,3rem);letter-spacing:-.03em;line-height:1.05}
+.ssec-head p{margin:0;max-width:58ch;color:var(--ink-soft,#b5b5b5);line-height:1.6}
+.ssec.focus .ssec-head h2{color:var(--c)}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.scard{display:flex;flex-direction:column;overflow:hidden;border-radius:18px;border:1px solid var(--line-strong);background:color-mix(in srgb,var(--paper-raised) 90%,transparent);text-decoration:none;color:var(--ink);transition:transform .4s var(--ease-expo),border-color .25s}
+.scard:hover{transform:translateY(-4px);border-color:var(--c)}
+.scard img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;display:block;background:#111}
+.scard .tx{padding:14px 16px 16px;display:flex;flex-direction:column;gap:5px;flex:1}
+.scard b{font-size:1.02rem}.scard span{font-size:.86rem;color:var(--ink-soft,#a8a8a8);line-height:1.45}
+.scard em{font-style:normal;font-size:.82rem;color:var(--c);margin-top:auto;padding-top:6px;font-weight:600}
+.scard.noimg{padding:18px}.scard.noimg .tx{padding:0}
+.ssec-cta{margin-top:22px}
+@media (prefers-reduced-motion:reduce){.ssec{opacity:1;transform:none;transition:none}}
+/* the lines between the sections of the home page are gone, so the page flows */
+body > .wrap > section,.wrap > section{border-bottom:0!important;border-top:0!important}
+#about,#solutions,#work,#reviews,#book{border:0!important}
+.ssec{border-top:1px solid var(--line)!important}
+.bt:nth-child(n+3):nth-child(-n+8){min-height:240px}
+.bt:nth-child(n+3):nth-child(-n+8) .art{width:min(40%,108px)}
+.bt h3{max-width:100%}
+
+/* round five: mobile hero waves stay behind the text, fab does not cover buttons */
+.hx-copy{position:relative;z-index:3}
+@media (max-width:860px){
+  @keyframes hxwave{0%{transform:scale(1);opacity:.45}100%{transform:scale(1.9);opacity:0}}
+  .hero.hx{overflow:hidden}
+  .hx{padding-bottom:96px}
+}
+@media (max-width:640px){.bento{grid-template-columns:1fr!important}.bento .bt,.bento .bt:nth-child(n){grid-column:auto!important;grid-row:auto!important;min-height:150px!important}.bento .bt .art{width:92px!important}}

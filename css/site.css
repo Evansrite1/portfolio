@@ -753,3 +753,6 @@
   .case-body p, .case-body li { font-size: 1rem; line-height: 1.7; color: var(--ink-soft); }
   .case-body ul { padding-left: 20px; margin: 0 0 16px; }
   .case-cta { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 30px; }
+
+/* phones: the plain header (case study pages) wraps instead of overflowing */
+@media (max-width:640px){header.site{flex-wrap:wrap}nav.site{flex-wrap:wrap;gap:8px 16px;width:100%}.mark .agency{display:none}}
