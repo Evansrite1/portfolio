@@ -60,7 +60,7 @@
 .dg-pv .help { margin-top: 8px; }
 .dg-host { position: absolute; left: -30000px; top: 0; pointer-events: none; }
 .dg-pbreak { position: absolute; left: 0; right: 0; border-top: 2px dashed #9aa3b2; height: 0; }
-.dg-pbreak span { position: absolute; right: 8px; top: 2px; font: 600 11px DGNoto, sans-serif; color: #6b7280; background: #fff; padding: 0 4px; }
+.dg-pbreak span { position: absolute; right: 8px; top: 2px; font: 600 11px DGNoto, sans-serif; color: #4b5563; background: #fff; padding: 0 4px; }
 
 /* print */
 #print-sheet.dg-print { padding: 0; text-align: left; color: inherit; }
@@ -78,10 +78,10 @@
 .dt.p-a5 .pad { padding: 34px 36px; }
 .dt table { border-collapse: collapse; width: 100%; }
 .dt th, .dt td { padding: 9px 10px; text-align: left; vertical-align: top; font-weight: 400; }
-.dt th { font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #6b7280; }
+.dt th { font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #4b5563; }
 .dt .r, .dt th.r { text-align: right; }
 .dt .c { text-align: center; }
-.dt .c-n { width: 34px; color: #9ca3af; }
+.dt .c-n { width: 34px; color: #6b7280; }
 .dt .c-q { width: 56px; }
 .dt .c-p { width: 120px; }
 .dt .c-a { width: 128px; }
@@ -89,14 +89,14 @@
 .dt.p-a5 th, .dt.p-a5 td { padding: 7px 6px; }
 .dt .it { margin: 26px 0 18px; }
 .dt .it td { border-bottom: 1px solid #e6e8ec; }
-.dt .lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6b7280; margin: 0 0 4px; }
+.dt .lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #4b5563; margin: 0 0 4px; }
 .dt .bn { font-size: 19px; font-weight: 700; line-height: 1.25; color: #111827; }
 .dt .biz { color: #4b5563; }
 .dt .biz .bn { margin-bottom: 2px; }
 .dt .cn { font-weight: 700; color: #111827; font-size: 14px; }
 .dt .cc { color: #4b5563; }
 .dt .meta .mr { display: flex; justify-content: space-between; gap: 18px; }
-.dt .meta .ml { color: #6b7280; }
+.dt .meta .ml { color: #4b5563; }
 .dt .meta .mv { font-weight: 700; color: #111827; text-align: right; }
 .dt .hd { display: flex; justify-content: space-between; align-items: flex-start; gap: 28px; }
 .dt .hl { display: flex; gap: 16px; align-items: flex-start; min-width: 0; }
@@ -114,10 +114,10 @@
 .dt .thx { margin-top: 34px; color: #4b5563; }
 .dt .due { text-align: right; }
 .dt .due .amt { font-size: 26px; font-weight: 700; color: var(--ac); line-height: 1.2; }
-.dt .due .sm, .dt .sm { color: #6b7280; font-size: 12px; }
+.dt .due .sm, .dt .sm { color: #4b5563; font-size: 12px; }
 .dt .logo { display: block; max-width: 150px; max-height: 70px; width: auto; height: auto; }
 .dt .mono { width: 54px; height: 54px; border-radius: 50%; background: var(--ac); color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 19px; flex: none; letter-spacing: 0.02em; }
-.dt .cur { color: #6b7280; }
+.dt .cur { color: #4b5563; }
 .dt .ttl { font-weight: 700; }
 .dt .ic { color: var(--ac); }
 .dt .ico { display: block; width: 34px; height: 34px; }
@@ -126,7 +126,7 @@
 .dt.is-edit .ek { border-radius: 3px; cursor: text; outline: none; }
 .dt.is-edit .ek:hover { background: rgba(37, 99, 235, 0.08); box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.35); }
 .dt.is-edit .ek:focus { background: #fffbe6; box-shadow: 0 0 0 2px #2563eb; color: #111; }
-.dt.is-edit .ek.is-ph { color: #9aa0a6; font-weight: 400; }
+.dt.is-edit .ek.is-ph { color: #6b7280; font-weight: 400; }
 .dt.is-edit [data-n] { display: inline-block; min-width: 14px; }
 
 /* ------------------------------------------------------------------ invoice designs */
@@ -152,7 +152,7 @@
 .t-minimal .hd { align-items: center; }
 .t-minimal .hl { align-items: center; }
 .t-minimal .bn { font-size: 17px; letter-spacing: 0.02em; }
-.t-minimal .ttl { font-size: 13px; font-weight: 400; letter-spacing: 0.4em; text-transform: uppercase; color: #6b7280; }
+.t-minimal .ttl { font-size: 13px; font-weight: 400; letter-spacing: 0.4em; text-transform: uppercase; color: #4b5563; }
 .t-minimal .row3 { margin-top: 64px; }
 .t-minimal .it { margin-top: 56px; }
 .t-minimal .it thead th { font-weight: 400; letter-spacing: 0.16em; border-bottom: 1px solid #111; }
@@ -204,7 +204,7 @@
 .t-dark .top .bn { color: #ffffff; }
 .t-dark .top .biz { color: #c7ccd4; }
 .t-dark .top .ttl { font-size: 40px; color: var(--ac); text-align: right; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1; margin-bottom: 14px; }
-.t-dark .top .ml { color: #9ca3af; }
+.t-dark .top .ml { color: #6b7280; }
 .t-dark .top .mv { color: #ffffff; }
 .t-dark .row { margin-top: 0; }
 .t-dark .it thead th { background: #111827; color: #ffffff; }
@@ -252,7 +252,7 @@
 .t-freelancer .hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin: 34px 0 30px; padding: 26px 30px; border-radius: 16px; background: var(--ac1); border-left: 6px solid var(--ac); }
 .t-freelancer .hero .amt { font-size: 38px; font-weight: 700; color: var(--acd); line-height: 1.1; }
 .t-freelancer .hero .hm { text-align: right; font-weight: 700; color: #111827; }
-.t-freelancer .hero .ml { color: #6b7280; font-weight: 400; }
+.t-freelancer .hero .ml { color: #4b5563; font-weight: 400; }
 .t-freelancer .it thead th { border-bottom: 1px solid #d1d5db; }
 .t-freelancer .notes { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; }
 .t-freelancer .tot .g { color: var(--acd); border-top-color: var(--ac); }
@@ -264,7 +264,7 @@
 .p-thermal .biz, .p-thermal .ba, .p-thermal .bp, .p-thermal .be { color: #374151; }
 .p-thermal .hr { border-top: 1px dashed #6b7280; margin: 10px 0; min-width: 0; }
 .p-thermal .ttl { font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 6px; }
-.p-thermal .sub { font-size: 11px; color: #6b7280; margin: -4px 0 6px; }
+.p-thermal .sub { font-size: 11px; color: #4b5563; margin: -4px 0 6px; }
 .p-thermal .meta .mr { gap: 8px; }
 .p-thermal .meta .mv { font-weight: 400; }
 .p-thermal .cust { margin-top: 6px; }
@@ -300,7 +300,7 @@
 .t-fuel .tot .g { background: var(--ac1); padding: 6px 8px; color: var(--acd); }
 .t-pos { background: #fafafa; color: #374151; font-size: 11.5px; }
 .t-pos .bn { font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; }
-.t-pos .ttl { font-size: 11px; color: #6b7280; }
+.t-pos .ttl { font-size: 11px; color: #4b5563; }
 .t-pos .tot .g { font-size: 14px; }
 .t-pos .ok { margin-top: 10px; border: 2px solid #374151; border-radius: 6px; padding: 5px; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; }
 
@@ -363,7 +363,7 @@
 .t-restaurant .tot .g { color: var(--ac); border-top: 3px double var(--ac); }
 /* pharmacy */
 .t-pharmacy .pad { border-top: 10px solid var(--ac); }
-.t-pharmacy .ic { color: #16a34a; }
+.t-pharmacy .ic { color: #15803d; }
 .t-pharmacy .ttl { color: var(--ac); }
 .t-pharmacy .it thead th { background: var(--ac1); color: var(--acd); }
 .t-pharmacy .tot .g { background: var(--ac1); color: var(--acd); border: 0; padding: 8px 10px; border-radius: 6px; }
@@ -395,11 +395,11 @@
 /* minimal */
 .t-minimal.p-a5 .pad { padding: 46px 44px; }
 .t-minimal.p-a5 .mono { display: none; }
-.t-minimal.p-a5 .ttl { font-size: 12px; font-weight: 400; letter-spacing: 0.4em; text-transform: uppercase; color: #6b7280; }
+.t-minimal.p-a5 .ttl { font-size: 12px; font-weight: 400; letter-spacing: 0.4em; text-transform: uppercase; color: #4b5563; }
 .t-minimal.p-a5 .it thead th { font-weight: 400; border-bottom: 1px solid #111; }
 .t-minimal.p-a5 .it td { border-bottom-color: #f0f0f0; }
 .t-minimal.p-a5 .tot .g { border-top-width: 1px; font-weight: 400; font-size: 18px; }
-.t-minimal.p-a5 .thx { color: #6b7280; font-weight: 400; }
+.t-minimal.p-a5 .thx { color: #4b5563; font-weight: 400; }
 /* paid stamp */
 .t-paid .ttl { color: var(--ac); }
 .t-paid .it thead th { border-bottom: 2px solid var(--ac); }
@@ -489,3 +489,7 @@
 .t-harvest .it thead th { border-bottom: 2px solid #f59e0b; color: #9a3412; }
 .t-harvest .tot .g { color: #9a3412; border-top: 2px solid #c2410c; }
 .t-harvest .thx { color: #9a3412; }
+
+.dg-tool>*,.dg-form,.dg-form .field{min-width:0}
+@media (max-width:900px){.dg-tool{grid-template-columns:minmax(0,1fr)}}
+.dg-form input,.dg-form select,.dg-form textarea{max-width:100%}

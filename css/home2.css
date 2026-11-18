@@ -18,7 +18,7 @@
 .case-shot img{width:100%;height:100%;object-fit:cover;object-position:top;transition:transform .9s var(--ease-expo)}
 .case-shot:hover img{transform:scale(1.05)}
 .case-shot .build-badge{position:absolute;left:14px;top:14px}
-.case-n{display:block;font-size:clamp(3.4rem,9vw,6.5rem);line-height:.9;font-weight:800;letter-spacing:-.05em;color:transparent;-webkit-text-stroke:1.5px color-mix(in srgb,var(--ink) 28%,transparent);margin-bottom:10px}
+.case-n{display:block;font-size:clamp(3.4rem,9vw,6.5rem);line-height:.9;font-weight:800;letter-spacing:-.05em;color:transparent;-webkit-text-stroke:1.5px color-mix(in srgb,var(--ink) 60%,transparent);margin-bottom:10px}
 .case-kind{font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent)}
 .case h3{margin:8px 0 2px;font-size:clamp(1.7rem,3.6vw,2.6rem);letter-spacing:-.025em;line-height:1.08}
 .case h3 a{color:inherit;text-decoration:none}
@@ -336,3 +336,9 @@ body > .wrap > section,.wrap > section{border-bottom:0!important;border-top:0!im
   .hx{padding-bottom:96px}
 }
 @media (max-width:640px){.bento{grid-template-columns:1fr!important}.bento .bt,.bento .bt:nth-child(n){grid-column:auto!important;grid-row:auto!important;min-height:150px!important}.bento .bt .art{width:92px!important}}
+
+/* round six: the home and solutions pages are designed dark, so they keep the dark palette on light systems too */
+:root:has(.hx),:root:has(.sol-hero2){color-scheme:dark;--paper:#0a0a0a;--paper-raised:#171717;--ink:#f2f2f2;--ink-soft:#c4c4c4;--ink-faint:#9a9a9a;--line:#2a2a2a;--line-strong:#3c3c3c;--accent:#ff5b52;--accent-ink:#141414;--accent2:#ff8a80}
+:root:has(.hx) body,:root:has(.sol-hero2) body{background:#0a0a0a;color:#f2f2f2}
+/* small grey text a little brighter everywhere on these pages */
+.label,.review-role,.to-top,small{color:#a8a8a8}
