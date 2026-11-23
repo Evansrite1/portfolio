@@ -70,7 +70,6 @@ main{position:relative;z-index:2}
 section{position:relative}
 .wrap{padding-inline:var(--pad);max-width:1500px;margin-inline:auto}
 .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);display:inline-flex;gap:14px;align-items:center}
-.kicker::before{content:"";width:34px;height:1px;background:linear-gradient(90deg,var(--rose),transparent)}
 
 /* hero */
 .hero{min-height:100svh;display:grid;align-content:end;padding-block:120px 7vh}
@@ -88,9 +87,6 @@ section{position:relative}
 .btn.ghost:hover{border-color:var(--rose)}
 .btn:hover{transform:translateY(-2px)}
 .btn svg{width:14px;height:14px}
-.scrollhint{position:absolute;right:var(--pad);top:50%;writing-mode:vertical-rl;font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;display:flex;align-items:center;gap:12px}
-.scrollhint::after{content:"";width:1px;height:70px;background:linear-gradient(var(--rose),transparent)}
-@media (max-width:760px){.scrollhint{display:none}}
 
 /* marquee */
 .marq{border-block:1px solid var(--line);background:rgba(5,5,7,.6);backdrop-filter:blur(8px);overflow:hidden;padding:20px 0;transform:rotate(-1.2deg);margin-block:8vh}
@@ -139,14 +135,10 @@ section{position:relative}
 .gal-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
 .gal-track{display:flex;gap:22px;padding-inline:var(--pad);width:max-content;will-change:transform}
 .tile{width:clamp(240px,26vw,420px);aspect-ratio:3/4;border-radius:28px;position:relative;overflow:hidden;border:1px solid var(--line);flex:none;background:#0d0d12}
-.tile .bg{position:absolute;inset:0;transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
-.tile:hover .bg{transform:scale(1.08)}
-.tile .nail{position:absolute;left:50%;top:46%;width:34%;aspect-ratio:.55;transform:translate(-50%,-50%) rotate(var(--r,0deg));
-  background:var(--ng);filter:drop-shadow(0 22px 30px rgba(0,0,0,.6));
-  border-radius:50% 50% 46% 46%/64% 64% 36% 36%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),inset 0 -22px 40px rgba(0,0,0,.18),inset 12px 18px 30px rgba(255,255,255,.35);overflow:hidden}
-.tile .nail::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.65) 46%,transparent 58%);transform:translateX(-100%);animation:sheen 4.5s ease-in-out infinite}
-@keyframes sheen{55%,100%{transform:translateX(120%)}}
-.tile figcaption{position:absolute;left:22px;bottom:20px;right:22px;display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.8,.2,1);filter:saturate(1.05) contrast(1.04)}
+.tile:hover img{transform:scale(1.07)}
+.tile::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(5,5,7,.85));pointer-events:none}
+.tile figcaption{z-index:2;position:absolute;left:22px;bottom:20px;right:22px;display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
 .tile figcaption b{font-family:var(--serif);font-weight:400;font-size:28px;line-height:1}
 .tile figcaption span{font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--muted)}
 .gal-note{color:var(--muted);font-size:14px;max-width:34ch}
@@ -173,7 +165,7 @@ section{position:relative}
 }
 .js .rv{opacity:0;transform:translateY(40px)}
 @media (prefers-reduced-motion:reduce){
-  .grain,.marq-track,.tile .nail::after{animation:none}
+  .grain,.marq-track
   .js .rv{opacity:1;transform:none}
 }
 </style>
@@ -208,7 +200,6 @@ section{position:relative}
         </div>
       </div>
     </div>
-    <div class="scrollhint">Scroll</div>
   </section>
 
   <div class="marq" aria-hidden="true"><div class="marq-track">
@@ -249,16 +240,16 @@ section{position:relative}
     <div class="wrap" style="width:100%">
       <div class="gal-head">
         <div><div class="kicker" style="margin-bottom:18px">The work</div><h2 class="h2">Set by set</h2></div>
-        <p class="gal-note">A preview of the highlights. Real client sets live on Instagram.</p>
+        <p class="gal-note">Real designs from the NAVA KW Instagram, one set at a time.</p>
       </div>
     </div>
     <div class="gal-track" id="track">
-      <figure class="tile"><div class="bg" style="background:radial-gradient(80% 60% at 50% 30%,#3a1e2a,#0b0a0f 70%)"></div><div class="nail" style="--ng:linear-gradient(150deg,#fbe6ec,#e9b5c2 55%,#b8788c);--r:-8deg"></div><figcaption><b>Client</b><span>01</span></figcaption></figure>
-      <figure class="tile"><div class="bg" style="background:radial-gradient(80% 60% at 50% 30%,#1c2a44,#08090e 70%)"></div><div class="nail" style="--ng:linear-gradient(150deg,#e7efff,#8db6ff 55%,#4a6fb8);--r:6deg"></div><figcaption><b>New</b><span>02</span></figcaption></figure>
-      <figure class="tile"><div class="bg" style="background:radial-gradient(80% 60% at 50% 30%,#2e2a22,#0a0a0b 70%)"></div><div class="nail" style="--ng:linear-gradient(150deg,#fff6e6,#dcbb92 55%,#a0763e);--r:-4deg"></div><figcaption><b>Before and After</b><span>03</span></figcaption></figure>
-      <figure class="tile"><div class="bg" style="background:radial-gradient(80% 60% at 50% 30%,#2a2230,#0b0a10 70%)"></div><div class="nail" style="--ng:linear-gradient(150deg,#ffffff 0%,#f1e9ee 60%,#d8c8d0 100%);--r:10deg"></div><figcaption><b>French</b><span>04</span></figcaption></figure>
-      <figure class="tile"><div class="bg" style="background:radial-gradient(80% 60% at 50% 30%,#14302f,#07090a 70%)"></div><div class="nail" style="--ng:linear-gradient(150deg,#e3fbf5,#8fd7c4 55%,#3f8f7e);--r:-10deg"></div><figcaption><b>Lift and Laminate</b><span>05</span></figcaption></figure>
-      <figure class="tile"><div class="bg" style="background:radial-gradient(80% 60% at 50% 30%,#3a1a1f,#0b0709 70%)"></div><div class="nail" style="--ng:linear-gradient(150deg,#f3c9cf,#a23a52 55%,#5a1426);--r:5deg"></div><figcaption><b>Manicure</b><span>06</span></figcaption></figure>
+            <figure class="tile"><img src="img/t1.jpg" alt="Cat Eye nails by NAVA KW" loading="lazy" style="object-position:50% 40%"><figcaption><b>Cat Eye</b><span>01</span></figcaption></figure>
+      <figure class="tile"><img src="img/t2.jpg" alt="Red French nails by NAVA KW" loading="lazy" style="object-position:50% 60%"><figcaption><b>Red French</b><span>02</span></figcaption></figure>
+      <figure class="tile"><img src="img/t3.jpg" alt="Chrome Tip nails by NAVA KW" loading="lazy" style="object-position:50% 55%"><figcaption><b>Chrome Tip</b><span>03</span></figcaption></figure>
+      <figure class="tile"><img src="img/t4.jpg" alt="Lime Chrome nails by NAVA KW" loading="lazy" style="object-position:50% 60%"><figcaption><b>Lime Chrome</b><span>04</span></figcaption></figure>
+      <figure class="tile"><img src="img/t5.jpg" alt="Nude Glaze nails by NAVA KW" loading="lazy" style="object-position:50% 55%"><figcaption><b>Nude Glaze</b><span>05</span></figcaption></figure>
+      <figure class="tile"><img src="img/t6.jpg" alt="Midnight nails by NAVA KW" loading="lazy" style="object-position:50% 55%"><figcaption><b>Midnight</b><span>06</span></figcaption></figure>
       <a class="tile" href="https://www.instagram.com/navanaiils/" target="_blank" rel="noopener" style="display:grid;place-items:center;text-align:center;background:linear-gradient(140deg,#e9b5c2,#dcbb92);color:#180c11"><div><div style="font-family:var(--serif);font-size:44px;line-height:1">See it all</div><div style="font-family:var(--mono);font-size:11px;letter-spacing:.22em;margin-top:14px">ON INSTAGRAM</div></div></a>
     </div>
   </section>
@@ -389,11 +380,46 @@ try{
     p.setZ(i, z - 0.42*x*x + 0.1*y*y);
   }
   geo.computeVertexNormals();
+  /* planar UVs so designs can be painted on the nail (tip at the top) */
+  { let mnx=1e9,mxx=-1e9,mny=1e9,mxy=-1e9;
+    for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i);mnx=Math.min(mnx,x);mxx=Math.max(mxx,x);mny=Math.min(mny,y);mxy=Math.max(mxy,y)}
+    const uv=new Float32Array(p.count*2);
+    for(let i=0;i<p.count;i++){uv[i*2]=(p.getX(i)-mnx)/(mxx-mnx);uv[i*2+1]=(p.getY(i)-mny)/(mxy-mny)}
+    geo.setAttribute('uv',new THREE.BufferAttribute(uv,2)); }
 
-  const mat=(c,iri=1)=>new THREE.MeshPhysicalMaterial({color:c,roughness:0.07,metalness:0.05,clearcoat:1,clearcoatRoughness:0.025,iridescence:iri,iridescenceIOR:1.6,iridescenceThicknessRange:[180,720],sheen:0.8,sheenRoughness:0.3,sheenColor:new THREE.Color(0xffffff),envMapIntensity:1.5});
+  /* nail designs taken from the NAVA KW Instagram: red French, navy cat eye, nude glaze, lime chrome, chrome tip */
+  const designCache={};
+  function design(kind){
+    if(designCache[kind]) return designCache[kind];
+    const W=512,H=1024,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
+    const base=(a,b)=>{const gr=g.createLinearGradient(0,H,0,0);gr.addColorStop(0,a);gr.addColorStop(1,b);g.fillStyle=gr;g.fillRect(0,0,W,H)};
+    const smile=(y0,y1)=>{g.beginPath();g.moveTo(0,0);g.lineTo(W,0);g.lineTo(W,y0);g.quadraticCurveTo(W/2,y1,0,y0);g.closePath()};
+    if(kind==='redFrench'){
+      base('#d9aea4','#ecc7be'); smile(H*0.11,H*0.23);
+      const r=g.createLinearGradient(0,0,0,H*0.36);r.addColorStop(0,'#c1121f');r.addColorStop(1,'#8a0b16');g.fillStyle=r;g.fill();
+    }else if(kind==='catEye'){
+      base('#08111f','#16263f');
+      g.save();g.translate(W*0.55,H*0.5);g.rotate(-0.55);
+      const gr=g.createLinearGradient(-W,0,W,0);gr.addColorStop(0.34,'rgba(120,160,230,0)');gr.addColorStop(0.5,'rgba(170,200,255,.95)');gr.addColorStop(0.66,'rgba(120,160,230,0)');
+      g.fillStyle=gr;g.fillRect(-W,-H,W*2,H*2);g.restore();
+    }else if(kind==='nude'){
+      base('#d3a79d','#e9c4ba');
+      const gr=g.createRadialGradient(W*0.35,H*0.3,10,W*0.35,H*0.3,W*0.7);gr.addColorStop(0,'rgba(255,255,255,.45)');gr.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gr;g.fillRect(0,0,W,H);
+    }else if(kind==='chromeLime'){
+      base('#d3aca3','#e9c6bd'); smile(H*0.13,H*0.26);
+      const m=g.createLinearGradient(0,0,W,H*0.4);m.addColorStop(0,'#e7dde8');m.addColorStop(0.5,'#8d7f98');m.addColorStop(1,'#d9cfe0');g.fillStyle=m;g.fill();
+      g.fillStyle='#d8ff3a';g.fillRect(0,H*0.3,W*0.46,H*0.14);
+    }else{ /* chromeFrench */
+      base('#d3aca3','#e9c6bd'); smile(H*0.12,H*0.25);
+      const m=g.createLinearGradient(0,0,W,H*0.4);m.addColorStop(0,'#f1e7ee');m.addColorStop(0.45,'#9a8ea6');m.addColorStop(1,'#cfc4d6');g.fillStyle=m;g.fill();
+    }
+    const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;designCache[kind]=t;return t;
+  }
+
+  const mat=(kind)=>new THREE.MeshPhysicalMaterial({color:0xffffff,map:design(kind),roughness:0.06,metalness:0.0,clearcoat:1,clearcoatRoughness:0.02,iridescence:0.35,iridescenceIOR:1.5,iridescenceThicknessRange:[150,500],sheen:0.4,sheenRoughness:0.3,sheenColor:new THREE.Color(0xffffff),envMapIntensity:0.95});
 
   const hero=new THREE.Group(); scene.add(hero);
-  const nail=new THREE.Mesh(geo,mat(0xf1cdd7)); nail.scale.setScalar(1.55); hero.add(nail);
+  const nail=new THREE.Mesh(geo,mat('redFrench')); nail.scale.setScalar(1.55); hero.add(nail);
 
   /* halo rings */
   const ringMat=new THREE.MeshBasicMaterial({color:new THREE.Color(2.4,2.3,2.2),toneMapped:false});
@@ -411,8 +437,8 @@ try{
   glow.position.z=-1.6; hero.add(glow);
 
   /* satellites */
-  const sats=[]; [[0xdcbb92,3.1,0.0,0.55],[0x8db6ff,3.7,2.1,0.42],[0x7a2a40,2.7,4.0,0.36]].forEach(([c,r,ph,s])=>{
-    const m=new THREE.Mesh(geo,mat(c,0.8)); m.scale.setScalar(s); hero.add(m); sats.push({m,r,ph,s});
+  const sats=[]; [['chromeLime',3.1,0.0,0.55],['nude',3.7,2.1,0.42],['catEye',2.7,4.0,0.36]].forEach(([c,r,ph,s])=>{
+    const m=new THREE.Mesh(geo,mat(c)); m.scale.setScalar(s); hero.add(m); sats.push({m,r,ph,s});
   });
 
   /* dust */
@@ -452,6 +478,12 @@ try{
       .to(S,{x:off*1.3,y:isWide?1.1:1.3,s:isWide?0.4:0.4,rot:Math.PI*2.5,tilt:.1,ringS:1.2,glow:.3,duration:1,ease:'power1.inOut'})
       .to(S,{x:off*4.3,y:isWide?-0.2:-1.6,s:isWide?0.95:0.7,rot:Math.PI*3.2,tilt:0,ringS:1,glow:.4,duration:1,ease:'power1.inOut'});
   };
+  const order=['redFrench','catEye','nude','chromeLime','chromeFrench'];
+  let stage=-1;
+  ScrollTrigger.create({trigger:'main',start:'top top',end:'bottom bottom',onUpdate:self=>{
+    const k=Math.min(order.length-1,Math.floor(self.progress*order.length));
+    if(k!==stage){stage=k;nail.material.map=design(order[k]);nail.material.needsUpdate=true}
+  }});
   mm.add('(min-width: 901px)',()=>build(true));
   mm.add('(max-width: 900px)',()=>build(false));
 
