@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NAVA KW | Nail Artist, Kuwait</title>
+<meta name="description" content="Concept website for NAVA KW, a nail artist in Kuwait. Preview only.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#050507">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050507;
+  --bg2:#0b0b10;
+  --ink:#f4efe9;
+  --muted:#8e8b95;
+  --line:rgba(244,239,233,.12);
+  --rose:#e9b5c2;
+  --gold:#dcbb92;
+  --ice:#8db6ff;
+  --glass:rgba(16,16,22,.55);
+  --serif:"Cormorant Garamond",Georgia,serif;
+  --sans:"Manrope",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  --pad:clamp(20px,4vw,64px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);color:var(--ink);-webkit-text-size-adjust:100%}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{font-family:var(--sans);font-weight:400;line-height:1.55;background:var(--bg);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+::selection{background:var(--rose);color:#150a0e}
+
+#gl{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.fallback-glow{position:fixed;inset:0;z-index:0;background:
+  radial-gradient(60vmax 40vmax at 50% 40%,rgba(233,181,194,.16),transparent 60%),
+  radial-gradient(50vmax 35vmax at 80% 80%,rgba(141,182,255,.12),transparent 60%);pointer-events:none}
+.grain{position:fixed;inset:-50%;z-index:60;pointer-events:none;opacity:.07;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation:grain 1.2s steps(6) infinite}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}}
+
+/* preloader */
+.pre{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center}
+.pre-inner{text-align:center}
+.pre-mark{font-family:var(--serif);font-size:clamp(48px,9vw,120px);letter-spacing:.04em;font-weight:300;line-height:1}
+.pre-bar{width:min(220px,50vw);height:1px;background:var(--line);margin:22px auto 10px;overflow:hidden}
+.pre-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--rose),var(--gold))}
+.pre-n{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--muted)}
+
+/* cursor */
+.cur{position:fixed;left:0;top:0;width:10px;height:10px;border-radius:50%;background:#fff;mix-blend-mode:difference;z-index:90;pointer-events:none;transform:translate(-50%,-50%);transition:width .25s,height .25s}
+.cur.big{width:56px;height:56px}
+@media (hover:none){.cur{display:none}}
+
+/* nav */
+.nav{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:6px;padding:6px;border-radius:999px;background:var(--glass);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);border:1px solid var(--line)}
+.nav a{font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:10px 16px;border-radius:999px;color:var(--muted);transition:color .3s,background .3s}
+.nav a:hover{color:var(--ink)}
+.nav a.on{background:var(--ink);color:#0a0a0c}
+.nav .brand{font-family:var(--serif);font-size:20px;letter-spacing:.08em;color:var(--ink);padding:6px 16px 6px 14px;text-transform:none}
+.nav .cta{background:linear-gradient(120deg,var(--rose),var(--gold));color:#1a0d12;font-weight:600}
+@media (max-width:760px){.nav a:not(.brand):not(.cta){display:none}.nav{top:12px}}
+
+main{position:relative;z-index:2}
+section{position:relative}
+.wrap{padding-inline:var(--pad);max-width:1500px;margin-inline:auto}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);display:inline-flex;gap:14px;align-items:center}
+.kicker::before{content:"";width:34px;height:1px;background:linear-gradient(90deg,var(--rose),transparent)}
+
+/* hero */
+.hero{min-height:100svh;display:grid;align-content:end;padding-block:120px 7vh}
+.hero h1{font-family:var(--serif);font-weight:300;font-size:clamp(96px,21vw,340px);line-height:.8;letter-spacing:-.02em;
+  background:linear-gradient(180deg,#fff 10%,#cfc7d3 55%,#7d7686 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  mix-blend-mode:normal;margin-left:-.04em}
+.hero .sub{display:flex;flex-wrap:wrap;gap:24px 60px;justify-content:space-between;align-items:flex-end;margin-top:4vh}
+.hero .tag{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(28px,4vw,56px);line-height:1.05;color:var(--rose)}
+.hero .lede{max-width:380px;color:#b9b5bf;font-size:15px;text-shadow:0 2px 18px rgba(0,0,0,.8)}
+.hero .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.btn{display:inline-flex;align-items:center;gap:12px;padding:15px 26px;border-radius:999px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;transition:transform .35s cubic-bezier(.2,.8,.2,1),background .3s,color .3s}
+.btn.solid{background:var(--ink);color:#0a0a0c}
+.btn.solid:hover{background:linear-gradient(120deg,var(--rose),var(--gold))}
+.btn.ghost{border:1px solid var(--line);color:var(--ink);background:var(--glass);backdrop-filter:blur(10px)}
+.btn.ghost:hover{border-color:var(--rose)}
+.btn:hover{transform:translateY(-2px)}
+.btn svg{width:14px;height:14px}
+.scrollhint{position:absolute;right:var(--pad);top:50%;writing-mode:vertical-rl;font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;display:flex;align-items:center;gap:12px}
+.scrollhint::after{content:"";width:1px;height:70px;background:linear-gradient(var(--rose),transparent)}
+@media (max-width:760px){.scrollhint{display:none}}
+
+/* marquee */
+.marq{border-block:1px solid var(--line);background:rgba(5,5,7,.6);backdrop-filter:blur(8px);overflow:hidden;padding:20px 0;transform:rotate(-1.2deg);margin-block:8vh}
+.marq-track{display:flex;width:max-content;animation:mq 34s linear infinite}
+.marq span{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(26px,3.6vw,48px);padding-inline:34px;white-space:nowrap;color:var(--ink)}
+.marq b{color:var(--rose);font-style:normal;font-weight:400;padding-inline:8px}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* statement */
+.state{padding-block:16vh}
+.state p{font-family:var(--serif);font-weight:300;font-size:clamp(34px,6.2vw,104px);line-height:1.02;max-width:17ch;letter-spacing:-.01em}
+.state p em{color:var(--rose)}
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em}
+.w>span{display:inline-block;will-change:transform}
+
+/* services */
+.svc{padding-block:14vh}
+.svc-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap;margin-bottom:6vh}
+.svc-head h2,.h2{font-family:var(--serif);font-weight:300;font-size:clamp(44px,7vw,112px);line-height:.95;letter-spacing:-.015em}
+.svc-list{border-top:1px solid var(--line);max-width:min(100%,820px);margin-left:auto}
+@media (max-width:900px){.svc-list{margin-left:0}}
+.svc-row{display:grid;grid-template-columns:70px 1fr auto;gap:22px;align-items:baseline;padding:34px 8px;border-bottom:1px solid var(--line);position:relative;transition:padding .5s cubic-bezier(.2,.8,.2,1);cursor:default}
+.svc-row::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(233,181,194,.14),transparent 70%);opacity:0;transition:opacity .5s}
+.svc-row:hover{padding-left:26px}
+.svc-row:hover::before{opacity:1}
+.svc-n{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.2em}
+.svc-t{font-family:var(--serif);font-weight:300;font-size:clamp(30px,4.4vw,64px);line-height:1}
+.svc-d{grid-column:2/3;color:var(--muted);max-width:44ch;font-size:15px}
+.svc-a{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--rose);opacity:0;transform:translateX(-10px);transition:.5s}
+.svc-row:hover .svc-a{opacity:1;transform:none}
+@media (max-width:560px){.svc-row{grid-template-columns:42px 1fr}.svc-a{display:none}}
+
+/* hygiene */
+.hyg{padding-block:16vh;text-align:center}
+.hyg .h2{max-width:14ch;margin:26px auto 8vh}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1100px;margin-inline:auto;text-align:left}
+@media (max-width:820px){.steps{grid-template-columns:1fr}}
+.step{padding:34px 30px;border-radius:26px;background:var(--glass);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);border:1px solid var(--line);position:relative;overflow:hidden}
+.step::after{content:"";position:absolute;width:220px;height:220px;right:-90px;top:-90px;background:radial-gradient(circle,rgba(141,182,255,.28),transparent 65%)}
+.step i{font-style:normal;font-family:var(--mono);font-size:11px;letter-spacing:.24em;color:var(--ice)}
+.step h3{font-family:var(--serif);font-weight:400;font-size:34px;margin:18px 0 10px;line-height:1}
+.step p{color:var(--muted);font-size:15px}
+
+/* gallery (pinned) */
+.gal{height:100svh;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:5vh}
+.gal-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.gal-track{display:flex;gap:22px;padding-inline:var(--pad);width:max-content;will-change:transform}
+.tile{width:clamp(240px,26vw,420px);aspect-ratio:3/4;border-radius:28px;position:relative;overflow:hidden;border:1px solid var(--line);flex:none;background:#0d0d12}
+.tile .bg{position:absolute;inset:0;transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
+.tile:hover .bg{transform:scale(1.08)}
+.tile .nail{position:absolute;left:50%;top:46%;width:34%;aspect-ratio:.55;transform:translate(-50%,-50%) rotate(var(--r,0deg));
+  background:var(--ng);filter:drop-shadow(0 22px 30px rgba(0,0,0,.6));
+  border-radius:50% 50% 46% 46%/64% 64% 36% 36%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),inset 0 -22px 40px rgba(0,0,0,.18),inset 12px 18px 30px rgba(255,255,255,.35);overflow:hidden}
+.tile .nail::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.65) 46%,transparent 58%);transform:translateX(-100%);animation:sheen 4.5s ease-in-out infinite}
+@keyframes sheen{55%,100%{transform:translateX(120%)}}
+.tile figcaption{position:absolute;left:22px;bottom:20px;right:22px;display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.tile figcaption b{font-family:var(--serif);font-weight:400;font-size:28px;line-height:1}
+.tile figcaption span{font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--muted)}
+.gal-note{color:var(--muted);font-size:14px;max-width:34ch}
+
+/* proof */
+.proof{padding-block:14vh}
+.proof-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:6vw;align-items:end}
+@media (max-width:860px){.proof-grid{grid-template-columns:1fr}}
+.big{font-family:var(--serif);font-weight:300;font-size:clamp(90px,16vw,260px);line-height:.85;letter-spacing:-.03em;background:linear-gradient(120deg,var(--rose),var(--gold) 60%,#fff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.proof p{color:var(--muted);max-width:40ch;margin-top:18px}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.chips span{padding:10px 18px;border-radius:999px;border:1px solid var(--line);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);background:var(--glass)}
+
+/* book */
+.book{min-height:100svh;display:grid;place-items:center;text-align:center;padding-block:14vh}
+.book .h2{font-size:clamp(54px,10vw,170px);max-width:12ch;margin:26px auto 40px;line-height:.9}
+.book .h2 em{color:var(--rose)}
+.foot{border-top:1px solid var(--line);padding:30px var(--pad) 40px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:12px;color:var(--muted);background:rgba(5,5,7,.7);position:relative;z-index:2}
+.foot b{color:var(--ink);font-weight:500}
+
+@media (max-width:900px){
+  .svc-row{background:rgba(5,5,7,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:14px;margin-top:8px;border-bottom:0}
+  .state p,.hyg .h2,.svc-h2,.proof p,.book .h2{text-shadow:0 2px 26px rgba(0,0,0,.95)}
+}
+.js .rv{opacity:0;transform:translateY(40px)}
+@media (prefers-reduced-motion:reduce){
+  .grain,.marq-track,.tile .nail::after{animation:none}
+  .js .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="pre" id="pre"><div class="pre-inner"><div class="pre-mark">NAVA</div><div class="pre-bar"><i id="preBar"></i></div><div class="pre-n" id="preN">000</div></div></div>
+<div class="cur" id="cur"></div>
+<div class="grain"></div>
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="fallback-glow" id="fb" hidden></div>
+
+<nav class="nav" aria-label="Main">
+  <a class="brand" href="#top">NAVA</a>
+  <a href="#services">Services</a>
+  <a href="#care">Care</a>
+  <a href="#work">Work</a>
+  <a class="cta" href="#book">Book</a>
+</nav>
+
+<main id="top">
+  <section class="hero wrap" id="hero">
+    <div class="kicker rv">Nail artist, Kuwait</div>
+    <h1 class="rv" aria-label="NAVA">NAVA</h1>
+    <div class="sub">
+      <div class="tag rv">Opale.<br>Finesse.</div>
+      <div class="rv">
+        <p class="lede">Precise, clean and quietly luxurious nail work, shaped around your hands and finished with care.</p>
+        <div class="row">
+          <a class="btn solid" href="https://ig.me/m/navanaiils" target="_blank" rel="noopener">Book an appointment
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+          <a class="btn ghost" href="#work">See the work</a>
+        </div>
+      </div>
+    </div>
+    <div class="scrollhint">Scroll</div>
+  </section>
+
+  <div class="marq" aria-hidden="true"><div class="marq-track">
+    <span>Manicure<b>/</b>French<b>/</b>Lift and Laminate<b>/</b>Before and After<b>/</b>Sterilised, every time<b>/</b></span>
+    <span>Manicure<b>/</b>French<b>/</b>Lift and Laminate<b>/</b>Before and After<b>/</b>Sterilised, every time<b>/</b></span>
+    <span>Manicure<b>/</b>French<b>/</b>Lift and Laminate<b>/</b>Before and After<b>/</b>Sterilised, every time<b>/</b></span>
+    <span>Manicure<b>/</b>French<b>/</b>Lift and Laminate<b>/</b>Before and After<b>/</b>Sterilised, every time<b>/</b></span>
+  </div></div>
+
+  <section class="state wrap" id="craft">
+    <div class="kicker rv" style="margin-bottom:34px">The craft</div>
+    <p data-split>The finish is everything. <em>Shaped, refined,</em> perfected, then protected.</p>
+  </section>
+
+  <section class="svc wrap" id="services">
+    <div class="svc-head">
+      <div><div class="kicker rv" style="margin-bottom:22px">Services</div><h2 class="svc-h2" data-split>Four ways to<br>wear it well</h2></div>
+    </div>
+    <div class="svc-list">
+      <div class="svc-row rv"><span class="svc-n">01</span><span class="svc-t">Manicure</span><span class="svc-a">VIEW</span><p class="svc-d">Clean shaping, careful cuticle work and a flawless polish finish.</p></div>
+      <div class="svc-row rv"><span class="svc-n">02</span><span class="svc-t">French</span><span class="svc-a">VIEW</span><p class="svc-d">The classic line, drawn with a steady hand and a modern edge.</p></div>
+      <div class="svc-row rv"><span class="svc-n">03</span><span class="svc-t">Lift and Laminate</span><span class="svc-a">VIEW</span><p class="svc-d">A soft, natural lift that holds its shape and looks effortless.</p></div>
+      <div class="svc-row rv"><span class="svc-n">04</span><span class="svc-t">Before and After</span><span class="svc-a">VIEW</span><p class="svc-d">See the transformation, set by set, from first look to final finish.</p></div>
+    </div>
+  </section>
+
+  <section class="hyg wrap" id="care">
+    <div class="kicker rv" style="justify-content:center">Care</div>
+    <h2 class="h2" data-split>Sterilised. Every client. Every time.</h2>
+    <div class="steps">
+      <div class="step rv"><i>01</i><h3>Tools</h3><p>Every tool is sterilised before it touches your hands.</p></div>
+      <div class="step rv"><i>02</i><h3>Preparation</h3><p>A clean, fresh setup for each appointment, nothing reused.</p></div>
+      <div class="step rv"><i>03</i><h3>Finish</h3><p>Sealed, polished and checked until it is exactly right.</p></div>
+    </div>
+  </section>
+
+  <section class="gal" id="work">
+    <div class="wrap" style="width:100%">
+      <div class="gal-head">
+        <div><div class="kicker" style="margin-bottom:18px">The work</div><h2 class="h2">Set by set</h2></div>
+        <p class="gal-note">A preview of the highlights. Real client sets live on Instagram.</p>
+      </div>
+    </div>
+    <div class="gal-track" id="track">
+      <figure class="tile"><div class="bg" style="background:radial-gradient(80% 60% at 50% 30%,#3a1e2a,#0b0a0f 70%)"></div><div class="nail" style="--ng:linear-gradient(150deg,#fbe6ec,#e9b5c2 55%,#b8788c);--r:-8deg"></div><figcaption><b>Client</b><span>01</span></figcaption></figure>
+      <figure class="tile"><div class="bg" style="background:radial-gradient(80% 60% at 50% 30%,#1c2a44,#08090e 70%)"></div><div class="nail" style="--ng:linear-gradient(150deg,#e7efff,#8db6ff 55%,#4a6fb8);--r:6deg"></div><figcaption><b>New</b><span>02</span></figcaption></figure>
+      <figure class="tile"><div class="bg" style="background:radial-gradient(80% 60% at 50% 30%,#2e2a22,#0a0a0b 70%)"></div><div class="nail" style="--ng:linear-gradient(150deg,#fff6e6,#dcbb92 55%,#a0763e);--r:-4deg"></div><figcaption><b>Before and After</b><span>03</span></figcaption></figure>
+      <figure class="tile"><div class="bg" style="background:radial-gradient(80% 60% at 50% 30%,#2a2230,#0b0a10 70%)"></div><div class="nail" style="--ng:linear-gradient(150deg,#ffffff 0%,#f1e9ee 60%,#d8c8d0 100%);--r:10deg"></div><figcaption><b>French</b><span>04</span></figcaption></figure>
+      <figure class="tile"><div class="bg" style="background:radial-gradient(80% 60% at 50% 30%,#14302f,#07090a 70%)"></div><div class="nail" style="--ng:linear-gradient(150deg,#e3fbf5,#8fd7c4 55%,#3f8f7e);--r:-10deg"></div><figcaption><b>Lift and Laminate</b><span>05</span></figcaption></figure>
+      <figure class="tile"><div class="bg" style="background:radial-gradient(80% 60% at 50% 30%,#3a1a1f,#0b0709 70%)"></div><div class="nail" style="--ng:linear-gradient(150deg,#f3c9cf,#a23a52 55%,#5a1426);--r:5deg"></div><figcaption><b>Manicure</b><span>06</span></figcaption></figure>
+      <a class="tile" href="https://www.instagram.com/navanaiils/" target="_blank" rel="noopener" style="display:grid;place-items:center;text-align:center;background:linear-gradient(140deg,#e9b5c2,#dcbb92);color:#180c11"><div><div style="font-family:var(--serif);font-size:44px;line-height:1">See it all</div><div style="font-family:var(--mono);font-size:11px;letter-spacing:.22em;margin-top:14px">ON INSTAGRAM</div></div></a>
+    </div>
+  </section>
+
+  <section class="proof wrap">
+    <div class="proof-grid">
+      <div><div class="big rv">2.7K</div></div>
+      <div class="rv">
+        <div class="kicker">The community</div>
+        <p>More than 2,700 people already follow the work on Instagram. This page gives every one of them one clear place to see the services, trust the standards and book.</p>
+        <div class="chips"><span>Kuwait</span><span>Nail artist</span><span>Hygiene first</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="book wrap" id="book">
+    <div>
+      <div class="kicker" style="justify-content:center">Book</div>
+      <h2 class="h2" data-split>Ready for your <em>next set?</em></h2>
+      <a class="btn solid" href="https://ig.me/m/navanaiils" target="_blank" rel="noopener">Message to book
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div><b>NAVA KW</b> &nbsp; Nail artist, Kuwait</div>
+  <div>Concept design prepared by Evans Large. Preview only, not yet approved.</div>
+</footer>
+
+<script>document.documentElement.classList.add('js')</script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+import {mergeVertices} from 'three/addons/utils/BufferGeometryUtils.js';
+
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const coarse = matchMedia('(hover: none)').matches;
+gsap.registerPlugin(ScrollTrigger);
+
+/* ---------- smooth scroll ---------- */
+let lenis=null;
+if(!reduce && window.Lenis){
+  lenis=new Lenis({duration:1.15,smoothWheel:true});
+  lenis.on('scroll',ScrollTrigger.update);
+  gsap.ticker.add(t=>lenis.raf(t*1000));
+  gsap.ticker.lagSmoothing(0);
+}
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{
+  const t=document.querySelector(a.getAttribute('href')); if(!t) return;
+  e.preventDefault(); lenis?lenis.scrollTo(t,{offset:0,duration:1.4}):t.scrollIntoView({behavior:'smooth'});
+}));
+
+/* ---------- cursor ---------- */
+const cur=document.getElementById('cur');
+if(!coarse){
+  const cx=gsap.quickTo(cur,'x',{duration:.25,ease:'power3'}), cy=gsap.quickTo(cur,'y',{duration:.25,ease:'power3'});
+  addEventListener('pointermove',e=>{cx(e.clientX);cy(e.clientY)});
+  document.querySelectorAll('a,button,.svc-row,.tile').forEach(el=>{
+    el.addEventListener('pointerenter',()=>cur.classList.add('big'));
+    el.addEventListener('pointerleave',()=>cur.classList.remove('big'));
+  });
+}
+
+/* ---------- split words ---------- */
+document.querySelectorAll('[data-split]').forEach(el=>{
+  const walk=(node)=>{
+    [...node.childNodes].forEach(n=>{
+      if(n.nodeType===3){
+        const frag=document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(tok=>{
+          if(!tok) return;
+          if(/^\s+$/.test(tok)){frag.appendChild(document.createTextNode(' '));return}
+          const w=document.createElement('span');w.className='w';
+          const i=document.createElement('span');i.textContent=tok;w.appendChild(i);frag.appendChild(w);
+        });
+        n.replaceWith(frag);
+      } else if(n.nodeType===1 && n.tagName!=='BR'){ walk(n); }
+    });
+  };
+  walk(el);
+});
+
+/* ---------- 3D scene ---------- */
+const canvas=document.getElementById('gl');
+let scene3d=null;
+try{
+  const VW=()=>Math.max(1,innerWidth), VH=()=>Math.max(1,innerHeight);
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'high-performance'});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));
+  renderer.setSize(VW(),VH(),false);
+  renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=0.9;
+  renderer.setClearColor(0x050507,1);
+
+  const scene=new THREE.Scene();
+  const pm=new THREE.PMREMGenerator(renderer);
+  scene.environment=pm.fromScene(new RoomEnvironment(),0.04).texture;
+  scene.fog=new THREE.FogExp2(0x050507,0.045);
+
+  const camera=new THREE.PerspectiveCamera(34,VW()/VH(),0.1,100);
+  const fit=()=>{ const a=VW()/VH(); camera.aspect=a; camera.position.set(0,0, a<1 ? 9*Math.min(2.1,1.15/a) : 9); camera.updateProjectionMatrix(); };
+  fit();
+
+  /* almond nail geometry */
+  const sh=new THREE.Shape();
+  sh.moveTo(-0.46,-1.0);
+  sh.bezierCurveTo(-0.64,-0.4,-0.58,0.38,-0.17,0.98);
+  sh.quadraticCurveTo(0,1.13,0.17,0.98);
+  sh.bezierCurveTo(0.58,0.38,0.64,-0.4,0.46,-1.0);
+  sh.quadraticCurveTo(0,-1.14,-0.46,-1.0);
+  let geo=new THREE.ExtrudeGeometry(sh,{depth:0.05,bevelEnabled:true,bevelThickness:0.1,bevelSize:0.075,bevelSegments:14,curveSegments:72});
+  geo.deleteAttribute('normal'); geo.deleteAttribute('uv');
+  geo=mergeVertices(geo,1e-4);
+  geo.center();
+  const p=geo.attributes.position;
+  for(let i=0;i<p.count;i++){
+    const x=p.getX(i),y=p.getY(i),z=p.getZ(i);
+    p.setZ(i, z - 0.42*x*x + 0.1*y*y);
+  }
+  geo.computeVertexNormals();
+
+  const mat=(c,iri=1)=>new THREE.MeshPhysicalMaterial({color:c,roughness:0.07,metalness:0.05,clearcoat:1,clearcoatRoughness:0.025,iridescence:iri,iridescenceIOR:1.6,iridescenceThicknessRange:[180,720],sheen:0.8,sheenRoughness:0.3,sheenColor:new THREE.Color(0xffffff),envMapIntensity:1.5});
+
+  const hero=new THREE.Group(); scene.add(hero);
+  const nail=new THREE.Mesh(geo,mat(0xf1cdd7)); nail.scale.setScalar(1.55); hero.add(nail);
+
+  /* halo rings */
+  const ringMat=new THREE.MeshBasicMaterial({color:new THREE.Color(2.4,2.3,2.2),toneMapped:false});
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(2.35,0.016,24,256),ringMat); hero.add(ring);
+  const ring2Mat=new THREE.MeshBasicMaterial({color:new THREE.Color(1.8,0.9,1.1),toneMapped:false,transparent:true,opacity:.65});
+  const ring2=new THREE.Mesh(new THREE.TorusGeometry(2.9,0.008,16,256),ring2Mat); ring2.rotation.x=1.25; hero.add(ring2);
+  const ring3Mat=new THREE.MeshBasicMaterial({color:new THREE.Color(0.7,1.1,2.2),toneMapped:false,transparent:true,opacity:.5});
+  const ring3=new THREE.Mesh(new THREE.TorusGeometry(3.4,0.006,16,256),ring3Mat); ring3.rotation.set(1.2,0.5,0); hero.add(ring3);
+
+  /* glow disc */
+  const gc=document.createElement('canvas'); gc.width=gc.height=256; const g=gc.getContext('2d');
+  const gr=g.createRadialGradient(128,128,0,128,128,128); gr.addColorStop(0,'rgba(255,255,255,.9)'); gr.addColorStop(.35,'rgba(233,181,194,.35)'); gr.addColorStop(1,'rgba(0,0,0,0)');
+  g.fillStyle=gr; g.fillRect(0,0,256,256);
+  const glow=new THREE.Mesh(new THREE.PlaneGeometry(9,9),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(gc),transparent:true,opacity:.2,blending:THREE.AdditiveBlending,depthWrite:false,toneMapped:false}));
+  glow.position.z=-1.6; hero.add(glow);
+
+  /* satellites */
+  const sats=[]; [[0xdcbb92,3.1,0.0,0.55],[0x8db6ff,3.7,2.1,0.42],[0x7a2a40,2.7,4.0,0.36]].forEach(([c,r,ph,s])=>{
+    const m=new THREE.Mesh(geo,mat(c,0.8)); m.scale.setScalar(s); hero.add(m); sats.push({m,r,ph,s});
+  });
+
+  /* dust */
+  const N=520, pos=new Float32Array(N*3);
+  for(let i=0;i<N;i++){const r=3+Math.random()*7,a=Math.random()*Math.PI*2; pos[i*3]=Math.cos(a)*r; pos[i*3+1]=(Math.random()-.5)*9; pos[i*3+2]=Math.sin(a)*r-3}
+  const pg=new THREE.BufferGeometry(); pg.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const dust=new THREE.Points(pg,new THREE.PointsMaterial({color:0xffe8ee,size:0.022,transparent:true,opacity:.7,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false}));
+  scene.add(dust);
+
+  /* lights */
+  scene.add(new THREE.AmbientLight(0xffffff,0.18));
+  const key=new THREE.DirectionalLight(0xffffff,0.9); key.position.set(3,4,6); scene.add(key);
+  const pl1=new THREE.PointLight(0xe9b5c2,22,18,2); scene.add(pl1);
+  const pl2=new THREE.PointLight(0x8db6ff,18,18,2); scene.add(pl2);
+
+  /* post */
+  const composer=new EffectComposer(renderer);
+  composer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+  composer.setSize(VW(),VH());
+  composer.addPass(new RenderPass(scene,camera));
+  const bloom=new UnrealBloomPass(new THREE.Vector2(VW(),VH()),0.42,0.7,0.92);
+  composer.addPass(bloom); composer.addPass(new OutputPass());
+
+  /* state driven by scroll */
+  const S={x:0,y:0,s:1,rot:0,tilt:0,ringS:1,glow:.42};
+  const mouse={x:0,y:0,tx:0,ty:0};
+  addEventListener('pointermove',e=>{mouse.tx=(e.clientX/innerWidth-.5);mouse.ty=(e.clientY/innerHeight-.5)});
+
+  const wide=()=>innerWidth>900;
+  const mm=gsap.matchMedia();
+  const build=(isWide)=>{
+    const tl=gsap.timeline({scrollTrigger:{trigger:'main',start:'top top',end:'bottom bottom',scrub:1.4}});
+    const off=isWide?1:0;
+    tl.to(S,{x:off*2.4,y:isWide?0.1:1.1,s:isWide?0.78:0.7,rot:Math.PI*0.6,tilt:.2,ringS:1.05,duration:1,ease:'power1.inOut'},0)
+      .to(S,{x:off*-2.7,y:isWide?-0.8:1.1,s:isWide?0.62:0.6,rot:Math.PI*1.3,tilt:-.15,ringS:1.15,duration:1,ease:'power1.inOut'})
+      .to(S,{x:off*3.7,y:isWide?0.2:1.2,s:isWide?0.55:0.45,rot:Math.PI*2,tilt:0,ringS:isWide?1.5:1.2,glow:.5,duration:1,ease:'power1.inOut'})
+      .to(S,{x:off*1.3,y:isWide?1.1:1.3,s:isWide?0.4:0.4,rot:Math.PI*2.5,tilt:.1,ringS:1.2,glow:.3,duration:1,ease:'power1.inOut'})
+      .to(S,{x:off*4.3,y:isWide?-0.2:-1.6,s:isWide?0.95:0.7,rot:Math.PI*3.2,tilt:0,ringS:1,glow:.4,duration:1,ease:'power1.inOut'});
+  };
+  mm.add('(min-width: 901px)',()=>build(true));
+  mm.add('(max-width: 900px)',()=>build(false));
+
+  const clock=new THREE.Clock();
+  function frame(){
+    const t=clock.getElapsedTime();
+    mouse.x+=(mouse.tx-mouse.x)*0.05; mouse.y+=(mouse.ty-mouse.y)*0.05;
+    hero.position.set(S.x+mouse.x*0.5, S.y-mouse.y*0.35+Math.sin(t*0.8)*0.08, 0);
+    hero.scale.setScalar(S.s);
+    nail.rotation.set(S.tilt+mouse.y*0.35+Math.sin(t*0.5)*0.06, S.rot+Math.sin(t*0.35)*0.45+mouse.x*0.6, Math.sin(t*0.4)*0.05);
+    ring.scale.setScalar(S.ringS); ring.rotation.z=t*0.05;
+    ring2.scale.setScalar(S.ringS); ring2.rotation.z=t*0.08; ring2.rotation.y=Math.sin(t*0.3)*.3;
+    ring3.scale.setScalar(S.ringS); ring3.rotation.z=-t*0.06; ring3.rotation.x=1.2+Math.sin(t*.25)*.2;
+    glow.material.opacity=S.glow; glow.scale.setScalar(S.ringS*0.9);
+    sats.forEach((o,i)=>{const a=t*(0.22+i*0.07)+o.ph; o.m.position.set(Math.cos(a)*o.r*S.ringS, Math.sin(a*1.3)*0.9, Math.sin(a)*o.r*0.45); o.m.rotation.set(t*0.6+i,t*0.45,t*0.3)});
+    dust.rotation.y=t*0.015; dust.position.y=-(scrollY*0.0009);
+    pl1.position.set(Math.cos(t*0.6)*5,Math.sin(t*0.4)*3,3+Math.sin(t*0.5)*2);
+    pl2.position.set(Math.cos(t*0.5+3)*5,Math.cos(t*0.35)*3,3+Math.cos(t*0.4)*2);
+    composer.render();
+  }
+  renderer.setAnimationLoop(frame);
+
+  addEventListener('resize',()=>{
+    renderer.setSize(VW(),VH(),false); composer.setSize(VW(),VH());
+    fit();
+    ScrollTrigger.refresh();
+  });
+  scene3d=true;
+}catch(err){
+  console.warn('WebGL unavailable, using fallback',err);
+  canvas.style.display='none'; document.getElementById('fb').hidden=false;
+}
+
+/* ---------- content motion ---------- */
+function intro(){
+  gsap.set('#pre',{pointerEvents:'none'});
+  const tl=gsap.timeline();
+  tl.to('#pre',{yPercent:-100,duration:1.1,ease:'power4.inOut'})
+    .from('.nav',{y:-40,opacity:0,duration:.8,ease:'power3.out'},'-=.5')
+    .to('.hero .rv',{opacity:1,y:0,duration:1.1,stagger:.12,ease:'power3.out'},'-=.7');
+}
+
+function setup(){
+  document.querySelectorAll('.rv:not(.hero .rv)').forEach(el=>{
+    gsap.to(el,{opacity:1,y:0,duration:1,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 88%',once:true}});
+  });
+  document.querySelectorAll('[data-split]').forEach(el=>{
+    const spans=el.querySelectorAll('.w>span');
+    gsap.set(spans,{yPercent:115});
+    gsap.to(spans,{yPercent:0,duration:1.1,ease:'power4.out',stagger:.045,scrollTrigger:{trigger:el,start:'top 85%',once:true}});
+  });
+
+  /* pinned horizontal gallery on desktop */
+  const track=document.getElementById('track');
+  ScrollTrigger.matchMedia({
+    '(min-width: 901px)':()=>{
+      const dist=()=>track.scrollWidth-innerWidth+60;
+      gsap.to(track,{x:()=>-dist(),ease:'none',scrollTrigger:{trigger:'#work',start:'top top',end:()=>'+='+dist(),pin:true,scrub:1,invalidateOnRefresh:true}});
+    },
+    '(max-width: 900px)':()=>{
+      document.getElementById('work').style.height='auto';
+      document.getElementById('work').style.padding='10vh 0';
+      track.style.width='100%';track.style.overflowX='auto';track.style.paddingBottom='10px';
+    }
+  });
+
+  /* nav active state */
+  const links=[...document.querySelectorAll('.nav a[href^="#"]')];
+  links.forEach(a=>{
+    const t=document.querySelector(a.getAttribute('href')); if(!t||a.classList.contains('brand')) return;
+    ScrollTrigger.create({trigger:t,start:'top 55%',end:'bottom 55%',onToggle:s=>a.classList.toggle('on',s.isActive&&!a.classList.contains('cta'))});
+  });
+
+  /* big number count up */
+  const big=document.querySelector('.big');
+  if(big){const o={v:0};ScrollTrigger.create({trigger:big,start:'top 85%',once:true,onEnter:()=>gsap.to(o,{v:2.7,duration:1.6,ease:'power2.out',onUpdate:()=>{big.textContent=o.v.toFixed(1)+'K'}})})}
+}
+
+/* preloader count */
+const bar=document.getElementById('preBar'), num=document.getElementById('preN');
+const pc={v:0};
+function ready(){
+  setup();
+  if(reduce){document.getElementById('pre').style.display='none';document.querySelectorAll('.rv').forEach(e=>{e.style.opacity=1;e.style.transform='none'});return}
+  intro();
+}
+gsap.to(pc,{v:100,duration:1.4,ease:'power2.inOut',onUpdate:()=>{bar.style.width=pc.v+'%';num.textContent=String(Math.round(pc.v)).padStart(3,'0')},onComplete:()=>{
+  (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(ready);
+}});
+</script>
+<noscript><style>.js .rv{opacity:1;transform:none}.pre{display:none}</style></noscript>
+</body>
+</html>
