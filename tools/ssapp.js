@@ -709,6 +709,36 @@
     return slides;
   }
 
+  /* ------------------------------------------------------------------ text layout (songs and scripture) */
+  var TSD = { font: '', size: 100, align: 'center', vpos: 'middle', refpos: 'below', bold: true };
+  function tsKey(it) { return it && it.kind === 'song' ? 'song' : it && it.kind === 'bible' ? 'verse' : null; }
+  function tsGet(k) { var all = store('ae_ss_ts') || {}, t = {}, key; for (key in TSD) t[key] = all[k] && all[k][key] != null ? all[k][key] : TSD[key]; return t; }
+  function tsFor(it) { var k = tsKey(it); if (!k) return null; var t = tsGet(k); return Object.keys(TSD).every(function (x) { return t[x] === TSD[x]; }) ? null : t; }
+  var txKind = 'verse';
+  function txSet(patch) { var all = store('ae_ss_ts') || {}; all[txKind] = Object.assign(tsGet(txKind), patch); store('ae_ss_ts', all); txDraw(); resendLive(); }
+  function txDraw() {
+    var t = tsGet(txKind), song = txKind === 'song';
+    $('tx-head').textContent = song ? 'Text layout for songs' : 'Text layout for scripture';
+    [].forEach.call($('tx-for').children, function (b) { b.setAttribute('aria-pressed', b.dataset.v === txKind); });
+    [].forEach.call($('tx-align').children, function (b) { b.setAttribute('aria-pressed', b.dataset.v === t.align); });
+    [].forEach.call($('tx-vpos').children, function (b) { b.setAttribute('aria-pressed', b.dataset.v === t.vpos); });
+    $('tx-font').value = t.font; $('tx-size').value = t.size; $('tx-sizev').textContent = t.size + '%'; $('tx-ref').value = t.refpos; $('tx-bold').checked = t.bold !== false; $('tx-reff').hidden = song;
+    var J = { left: 'start', center: 'center', right: 'end' }, V = { top: 'start', middle: 'center', bottom: 'end' }, abs = !song && t.refpos !== 'below', p = t.refpos.split('-');
+    var ref = song ? '' : '<small style="' + (abs ? 'position:absolute;margin:0;' + p[0] + ':4cqw;' + (p[1] === 'left' ? 'left:4cqw' : p[1] === 'right' ? 'right:4cqw' : 'left:50%;transform:translateX(-50%)') : 'text-align:' + t.align) + '">John 3:16</small>';
+    $('tx-prev').innerHTML = '<div class="sl dark" style="justify-items:' + J[t.align] + ';align-items:' + V[t.vpos] + ';text-align:' + t.align + (t.font ? ';font-family:' + t.font.replace(/"/g, "'") : '') + (t.bold === false ? ';font-weight:500' : '') + '"><div style="font-size:' + (6.4 * t.size / 100) + 'cqw">' + (song ? 'Amazing grace, how sweet\nthe sound' : 'For God so loved the world, that he gave his only Son') + (abs ? '' : ref) + '</div>' + (abs ? ref : '') + '</div>';
+  }
+  function txOpen(k) { txKind = k; txDraw(); openDlg($('dlg-text')); }
+  $('tx-for').onclick = function (e) { var b = e.target.closest('[data-v]'); if (b) { txKind = b.dataset.v; txDraw(); } };
+  $('tx-align').onclick = function (e) { var b = e.target.closest('[data-v]'); if (b) txSet({ align: b.dataset.v }); };
+  $('tx-vpos').onclick = function (e) { var b = e.target.closest('[data-v]'); if (b) txSet({ vpos: b.dataset.v }); };
+  $('tx-font').onchange = function () { txSet({ font: this.value }); };
+  $('tx-ref').onchange = function () { txSet({ refpos: this.value }); };
+  $('tx-bold').onchange = function () { txSet({ bold: this.checked }); };
+  $('tx-size').oninput = function () { txSet({ size: +this.value }); };
+  $('tx-reset').onclick = function () { var all = store('ae_ss_ts') || {}; delete all[txKind]; store('ae_ss_ts', all); txDraw(); resendLive(); };
+  $('song-ts').onclick = function () { txOpen('song'); };
+  $('bb-ts').onclick = function () { txOpen('verse'); };
+
   function songLib() { return store('ae_ss_songs') || []; }
   function songRecItem(s) { return { kind: 'song', name: s.title, slides: s.titleOnly ? [{ label: 'Title', text: s.title }] : parseSong(s.lyrics, s.per != null ? s.per : 4), style: s.style || 'dark' }; }
   function lyricHit(l, q) { var i = l.toLowerCase().indexOf(q); if (i < 0) return ''; var a = Math.max(0, i - 18); return (a ? '...' : '') + l.slice(a, i + q.length + 30).replace(/\s+/g, ' '); }
@@ -744,20 +774,27 @@
   function openEditor(i) {
     var s = i == null ? null : songLib()[i]; editingSong = s ? s.title : null;
     $('sg-head').textContent = s ? 'Edit song' : 'New song';
-    $('sg-title').value = s ? s.title : ''; $('sg-lyrics').value = s ? s.lyrics : ''; $('sg-del').hidden = !s;
+    sgClear(); $('sg-title').value = s ? s.title : ''; $('sg-lyrics').value = s ? s.lyrics : ''; $('sg-del').hidden = !s;
     $('sg-per').value = s && s.per != null ? String(s.per) : '4'; $('sg-style').value = (s && s.style) || 'dark'; $('sg-titleonly').checked = !!(s && s.titleOnly);
     songPreview(); openDlg($('dlg-song')); $('sg-title').focus();
   }
+  function sgClear() { $('sg-err').hidden = true; $('sg-title').classList.remove('bad'); $('sg-lyrics').classList.remove('bad'); }
+  function sgFail(msg, id) { sgClear(); $('sg-err').textContent = msg; $('sg-err').hidden = false; $(id).classList.add('bad'); $(id).focus(); toast(msg, true); return null; }
+  ['sg-title', 'sg-lyrics'].forEach(function (id) { $(id).addEventListener('input', sgClear); });
   function saveSong() {
     var t = $('sg-title').value.trim(), l = $('sg-lyrics').value.trim();
     var to = $('sg-titleonly').checked;
-    if (!t || (!l && !to)) { say('Give the song a title and lyrics before saving.', true); return null; }
-    var lib = songLib().filter(function (s) { return s.title.toLowerCase() !== t.toLowerCase() && s.title !== editingSong; });
+    if (!t) return sgFail('You did not type a title. Type the title of the song first.', 'sg-title');
+    if (!l && !to) return sgFail('You did not type any lyrics. Type the words, or tick "Show only the title on the screen".', 'sg-lyrics');
+    var clash = songLib().some(function (x) { return x.title.toLowerCase() === t.toLowerCase() && x.title !== editingSong; });
+    if (clash) return sgFail('You already have a song called "' + t + '". Change the title, or open that song from the list and edit it.', 'sg-title');
+    sgClear();
+    var lib = songLib().filter(function (s) { return s.title !== editingSong; });
     var rec = { title: t, lyrics: l, per: +$('sg-per').value, style: $('sg-style').value, titleOnly: to };
     lib.push(rec); lib.sort(function (a, b) { return a.title.localeCompare(b.title); });
     store('ae_ss_songs', lib); editingSong = t; renderSongs(); say('"' + t + '" saved to your songs on this computer.'); return rec;
   }
-  $('song-q').addEventListener('input', renderSongs);
+  ['input', 'keyup', 'change', 'paste', 'search', 'cut'].forEach(function (ev) { $('song-q').addEventListener(ev, function () { setTimeout(renderSongs, 0); }); });
   $('song-new').onclick = function () { openEditor(null); };
   $('song-list').addEventListener('click', function (e) {
     var b = e.target.closest('[data-sg]'); if (!b) return; var s = songLib()[+b.dataset.i]; if (!s) return;
@@ -928,10 +965,19 @@
     if ((b.type === 'image' || b.type === 'video') && b.thumb) return '<div class="bgl"><img alt="" src="' + esc(b.thumb) + '"></div>';
     return '<div class="bgl" data-cam="' + esc(b.key || '') + '"></div>';
   }
+  function slStyle(it) {
+    var t = tsFor(it), st = [];
+    if (it.color) st.push('color:' + esc(it.color));
+    if (t) {
+      st.push('justify-items:' + ({ left: 'start', center: 'center', right: 'end' }[t.align] || 'center'), 'align-items:' + ({ top: 'start', middle: 'center', bottom: 'end' }[t.vpos] || 'center'), 'text-align:' + (t.align || 'center'));
+      if (t.font) st.push('font-family:' + t.font.replace(/"/g, "'")); if (t.bold === false) st.push('font-weight:500');
+    }
+    return st.length ? ' style="' + st.join(';') + '"' : '';
+  }
   function slideHtml(it, n) {
     var s = it.slides[n] || it.slides[0];
     if (s.img) return '<div class="pg"><img alt="" src="' + esc(s.thumb) + '"></div>';
-    return '<div class="sl ' + (it.style || 'dark') + (effBg(it) ? ' hasbg' : '') + '"' + (it.color ? ' style="color:' + esc(it.color) + '"' : '') + '>' + bgHtml(it) + '<div>' + esc(s.text) + (s.ref ? '<small>' + esc(s.ref) + '</small>' : '') + '</div></div>';
+    return '<div class="sl ' + (it.style || 'dark') + (effBg(it) ? ' hasbg' : '') + '"' + slStyle(it) + '>' + bgHtml(it) + '<div>' + esc(s.text) + (s.ref ? '<small>' + esc(s.ref) + '</small>' : '') + '</div></div>';
   }
   /* shrink long text until it fits its slide (previews and thumbnails) */
   function fitSlides(root) {
@@ -1090,7 +1136,7 @@
     if (it.slides) {
       var s = it.slides[n] || it.slides[0];
       if (s.img) return { id: it.id + ':' + n, kind: 'image', file: s.img, name: it.name };
-      return { id: it.id + ':' + n + ':' + (s.text || '').length, kind: 'slide', text: s.text, ref: s.ref || '', style: it.style || 'dark', color: it.color || '', bg: bg };
+      var tsx = tsFor(it); return { id: it.id + ':' + n + ':' + (s.text || '').length + (tsx ? ':' + JSON.stringify(tsx) : ''), kind: 'slide', text: s.text, ref: s.ref || '', style: it.style || 'dark', color: it.color || '', bg: bg, ts: tsx };
     }
     if (it.kind === 'timer') return { id: it.id, kind: 'timer', mode: it.mode, end: it.end, label: it.label, endText: it.endText, style: it.style, showTime: !!it.showTime, logo: it.bg === 'logo' && logoFile ? logoFile.file : null };
     if (it.kind === 'camera' || it.kind === 'screen') return { id: it.id, kind: it.kind, key: it.id, name: it.name };
@@ -1964,15 +2010,18 @@
   $('bb-ref').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') { e.preventDefault(); commitPassage(); return; }
     if (e.key === 'Escape') { $('bb-drop').hidden = true; return; }
-    if (e.key !== 'Tab' || e.shiftKey) return;
+    var space = e.key === ' ' && !e.ctrlKey && !e.altKey && !e.metaKey;
+    if (space) { if (this.selectionStart !== this.value.length || this.value.indexOf(':') >= 0) return; }
+    else if (e.key !== 'Tab' || e.shiftKey) return;
     var v = this.value.trim(); if (!v) return;
     var m = v.match(/^(.*?[a-z.])\s*(\d+)(\s*:\s*(\d+(?:\s*-\s*\d+)?)?)?$/i), self = this;
     if (!m) {
-      var bi = exactBook(v) >= 0 ? exactBook(v) : (matchBooks(v)[0] != null ? matchBooks(v)[0] : -1);
+      var bm = matchBooks(v), bi = exactBook(v) >= 0 ? exactBook(v) : (bm[0] != null && (!space || bm.length === 1) ? bm[0] : -1);
       if (bi < 0) return;
       e.preventDefault(); self.value = BOOKS[bi] + ' '; colBk = bi; $('bb-drop').hidden = true; clearPassage(); refHints(); return;
     }
     var bk = findBook(m[1]); if (bk < 0) return;
+    if (space && !/\d$/.test(this.value)) return;
     e.preventDefault(); $('bb-drop').hidden = true;
     if (!m[4]) { var keep = BOOKS[bk] + ' ' + m[2]; self.value = keep; clearTimeout(liveFindT); bibleFind(false).then(function () { self.value = keep + ':'; refGhost(); }); }
     else commitPassage();
@@ -2258,7 +2307,7 @@
     if (DESK || dev) return;
     $('gate').hidden = false;
     try { $('app').inert = true; $('app').setAttribute('aria-hidden', 'true'); } catch (e) {}
-    if (window.PresenterDownload) { var os = window.PresenterDownload.apply($('gate-dl'), 'gate-other'); $('gate-tip').textContent = window.PresenterDownload.tip(os); }
+    if (window.PresenterDownload) { var os = window.PresenterDownload.apply($('gate-dl'), 'gate-other'); $('gate-tip').textContent = window.PresenterDownload.tip(os); $('gate-tip').style.whiteSpace = 'pre-line'; }
   })();
 
   function syncMtabs() { [].forEach.call($('mtabs').children, function (b) { b.setAttribute('aria-selected', b.dataset.view === $('app').dataset.view); }); }

@@ -89,14 +89,31 @@
   function vimeoId(u) { var m = String(u).match(/vimeo\.com\/(?:video\/)?(\d+)/); return m ? m[1] : null; }
   function slidesEmbed(u) { var m = String(u).match(/docs\.google\.com\/presentation\/d\/([A-Za-z0-9_-]+)/); return m ? 'https://docs.google.com/presentation/d/' + m[1] + '/embed?start=false&loop=false' : null; }
 
+  /* text layout chosen in the presenter: font, size, alignment, where the words and the reference sit */
+  function applyTs(sb, inner, mt, rf, t) {
+    if (!t) return;
+    var J = { left: 'start', center: 'center', right: 'end' }, V = { top: 'start', middle: 'center', bottom: 'end' }, F = { left: 'flex-start', center: 'center', right: 'flex-end' };
+    sb.style.justifyItems = J[t.align] || 'center'; sb.style.alignItems = V[t.vpos] || 'center';
+    inner.style.alignItems = F[t.align] || 'center'; mt.style.textAlign = t.align || 'center';
+    if (t.font) { mt.style.fontFamily = t.font; if (rf) rf.style.fontFamily = t.font; }
+    if (t.bold === false) mt.style.fontWeight = '500';
+    sb.dataset.scale = String((t.size || 100) / 100);
+    if (rf && t.refpos && t.refpos !== 'below') {
+      var p = t.refpos.split('-'); rf.style.position = 'absolute'; rf.style.zIndex = 2; rf.style.margin = '0';
+      rf.style[p[0]] = '4vh';
+      if (p[1] === 'left') rf.style.left = '4vw'; else if (p[1] === 'right') rf.style.right = '4vw'; else { rf.style.left = '50%'; rf.style.transform = 'translateX(-50%)'; }
+      rf.dataset.abs = '1'; sb.appendChild(rf);
+    } else if (rf) { rf.style.alignSelf = F[t.align] || 'center'; rf.style.textAlign = t.align || 'center'; }
+  }
   function fitText(box) {
-    var el = box.querySelector('.main') || box.firstChild, ref = box.querySelector('.ref');
+    var el = box.querySelector('.main') || box.firstChild, ref = box.querySelector('.ref'), sc = parseFloat(box.dataset.scale) || 1;
+    if (ref && ref.dataset.abs) ref = null;
     var lo = 10, hi = 400, W = box.clientWidth * 0.84, H = box.clientHeight * 0.8 - (ref ? ref.offsetHeight + box.clientHeight * 0.03 : 0);
     for (var i = 0; i < 14; i++) {
       var mid = (lo + hi) / 2; el.style.fontSize = mid + 'px';
       if (el.scrollWidth <= W + 2 && el.scrollHeight <= H) lo = mid; else hi = mid;
     }
-    el.style.fontSize = lo + 'px';
+    el.style.fontSize = (lo * sc) + 'px';
   }
 
   var countdown = null, urlSink = [];
@@ -153,7 +170,7 @@
       var sb = document.createElement('div'); sb.className = 'txt ' + (item.style || 'dark'); if (item.color) sb.style.color = item.color;
       var inner = document.createElement('div'); inner.className = 'inner';
       var mt = document.createElement('div'); mt.className = 'main'; mt.textContent = item.text || ''; inner.appendChild(mt);
-      if (item.ref) { var rf = document.createElement('div'); rf.className = 'ref'; rf.textContent = item.ref; inner.appendChild(rf); }
+      var rf = null; if (item.ref) { rf = document.createElement('div'); rf.className = 'ref'; rf.textContent = item.ref; inner.appendChild(rf); }
       if (item.bg) {
         sb.classList.add('hasbg');
         var bl = document.createElement('div'); bl.className = 'bgl';
@@ -163,6 +180,7 @@
         sb.appendChild(bl);
       }
       sb.appendChild(inner); back.appendChild(sb);
+      applyTs(sb, inner, mt, rf, item.ts);
       setTimeout(function () { fitText(sb); }, 30);
     } else if (item.kind === 'camera' || item.kind === 'screen') {
       var cv = document.createElement('video'); cv.className = 'cam'; cv.muted = true; cv.autoplay = true; cv.playsInline = true;

@@ -164,6 +164,8 @@ svg.i.lg{width:24px;height:24px}
 .row>input{flex:1;min-width:0}
 .row>input[type=checkbox],.row>input[type=radio]{flex:none;width:auto}
 .row.wrap{flex-wrap:wrap}
+.err{color:#ff7b72!important;font-weight:700}.f input.bad,.f textarea.bad{border-color:#ff7b72!important;outline:2px solid #ff7b72}
+.tsprev{aspect-ratio:16/9;container-type:inline-size;border:1px solid var(--line2);border-radius:8px;overflow:hidden}
 .seg{display:flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden}
 .seg button{flex:1;border:0;background:var(--p2);padding:7px 4px;font-weight:700;font-size:.78rem;color:var(--soft);border-right:1px solid var(--line2)}
 .seg button:last-child{border-right:0}
@@ -557,7 +559,7 @@ body{background:transparent}
       <div class="db">
         <div class="pane" data-pane="songs">
           <div class="row"><div class="gw"><div class="ghost" id="song-ghost" aria-hidden="true"></div><input id="song-q" class="inp" type="text" autocomplete="off" spellcheck="false" placeholder="Search titles and lyrics" aria-label="Search songs by title or lyrics. Press Tab to finish the suggestion."></div></div>
-          <div class="row"><button class="b pri" id="song-new" type="button" style="flex:1"><svg class="i sm"><use href="#i-plus"/></svg>New song</button><button class="b" id="song-bg" type="button" style="flex:1" title="One background for all songs"><svg class="i sm"><use href="#i-image"/></svg>Song background</button></div>
+          <div class="row"><button class="b pri" id="song-new" type="button" style="flex:1"><svg class="i sm"><use href="#i-plus"/></svg>New song</button><button class="b" id="song-bg" type="button" style="flex:1" title="One background for all songs"><svg class="i sm"><use href="#i-image"/></svg>Song background</button><button class="b" id="song-ts" type="button" style="flex:1" title="Font, size and where the words go on the screen"><svg class="i sm"><use href="#i-sliders"/></svg>Text layout</button></div>
           <div class="row"><button class="b sm" id="song-text" type="button" style="flex:1" title="Make many songs at once from a text file">Songs from a text file</button></div>
           <input type="file" id="song-text-file" accept=".txt,text/plain" multiple hidden aria-label="Choose text files with songs">
           <div class="row"><button class="b sm" id="song-hymns" type="button" style="flex:1" title="Adds well known hymns whose words are free to use">Add starter hymns</button></div>
@@ -574,6 +576,7 @@ body{background:transparent}
                 <button class="ib2" type="button" data-set="per" aria-expanded="false" title="Verses per slide" aria-label="Verses per slide"><svg class="i"><use href="#i-rows"/></svg></button>
                 <button class="ib2" type="button" data-set="color" aria-expanded="false" title="Text colour" aria-label="Text colour"><svg class="i"><use href="#i-palette"/></svg></button>
                 <button class="ib2" type="button" data-set="bg" aria-expanded="false" title="Background" aria-label="Background"><svg class="i"><use href="#i-image"/></svg></button>
+                <button class="ib2" type="button" id="bb-ts" title="Font, size, alignment and where the reference goes" aria-label="Text layout"><svg class="i"><use href="#i-sliders"/></svg></button>
               </span>
               <button class="ib flat" id="bb-more" type="button" aria-expanded="false" title="Text colour, verses per slide and background" aria-label="Scripture settings"><svg class="i"><use href="#i-more" transform="rotate(90 12 12)"/></svg></button>
             </div>
@@ -583,7 +586,7 @@ body{background:transparent}
               <button class="b" id="bb-listen" type="button" aria-pressed="false" title="The app listens to the message and picks out the verses the speaker reads or mentions. It works without internet."><svg class="i sm"><use href="#i-mic"/></svg><span>Listen</span></button>
               <button class="ib" id="bb-search" type="button" aria-expanded="false" title="Search the Bible for words" aria-label="Search the Bible for words"><svg class="i"><use href="#i-search"/></svg></button>
               <button class="ib mic" id="bb-mic" type="button" hidden aria-label="Search by voice"><svg class="i"><use href="#i-mic"/></svg></button><button class="b" id="bb-go" type="button" hidden>Find</button></div>
-              <p class="help" style="margin-top:2px">Type a book, press Tab, type the chapter, press Tab, type the verse, press Enter to show it.</p></div>
+              <p class="help" style="margin-top:2px">Type a book and press Space, type the chapter and press Space, type the verse, then press Enter to show it. Tab works the same way.</p></div>
             <div class="f" id="bb-wbox" hidden><label for="bb-words">Search the Bible for words</label><input id="bb-words" class="inp" type="text" autocomplete="off" placeholder="For example: suffereth long" aria-label="Words to search for in the Bible"></div>
             <div class="drop" id="bb-drop" hidden role="listbox" aria-label="Verses that match your words"></div>
             <div class="sug" id="bb-sug" role="listbox"></div>
@@ -709,7 +712,7 @@ body{background:transparent}
 <dialog id="dlg-song"><div class="dlg">
   <div class="dt"><svg class="i"><use href="#i-music"/></svg><span id="sg-head">New song</span><span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
   <div class="dbody">
-    <div class="f"><label for="sg-title">Title</label><input id="sg-title" type="text" autocomplete="off" placeholder="Amazing Grace"></div>
+    <div class="f"><label for="sg-title">Title</label><input id="sg-title" type="text" autocomplete="off" placeholder="Amazing Grace"><p class="help err" id="sg-err" hidden></p></div>
     <div class="f"><label for="sg-lyrics">Lyrics</label><textarea id="sg-lyrics" rows="10" placeholder="Verse 1&#10;Amazing grace, how sweet the sound&#10;That saved a wretch like me&#10;&#10;Chorus&#10;My chains are gone&#10;I have been set free"></textarea>
       <p class="help">Press Enter for a new line. Leave a blank line to start a new slide. Put Verse 1, Chorus or Bridge on its own line to label a section, and type Chorus again later to repeat it.</p></div>
     <label class="row" style="gap:7px;color:var(--soft)"><input type="checkbox" id="sg-titleonly"> Show only the title on the screen (the media team shows the words)</label>
@@ -717,6 +720,22 @@ body{background:transparent}
     <div class="f"><span class="lbl" id="sg-count">Slides</span><div class="slpv" id="sg-slides"></div></div>
   </div>
   <div class="dfoot"><button class="b sm" id="sg-del" type="button" style="margin-right:auto">Delete song</button><button class="b" id="sg-save" type="button">Save song</button><button class="b pri" id="sg-add" type="button">Save and add to service</button></div>
+</div></dialog>
+
+<dialog id="dlg-text"><div class="dlg">
+  <div class="dt"><svg class="i"><use href="#i-sliders"/></svg><span id="tx-head">Text layout</span><span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="dbody">
+    <div class="f"><span class="lbl">Applies to</span><div class="seg" id="tx-for"><button type="button" data-v="song" aria-pressed="false">Songs</button><button type="button" data-v="verse" aria-pressed="false">Scripture</button></div></div>
+    <div class="tsprev" id="tx-prev"></div>
+    <div class="r2"><div class="f"><label for="tx-font">Font</label><select id="tx-font"><option value="">Default</option><option value="Georgia, 'Times New Roman', serif">Georgia (classic)</option><option value="'Palatino Linotype', Palatino, 'Book Antiqua', serif">Palatino (elegant)</option><option value="'Trebuchet MS', 'Segoe UI', sans-serif">Trebuchet (friendly)</option><option value="Verdana, Geneva, sans-serif">Verdana (wide)</option><option value="'Arial Black', Impact, sans-serif">Arial Black (heavy)</option><option value="Impact, 'Arial Narrow', sans-serif">Impact (tall)</option><option value="'Courier New', monospace">Courier (typewriter)</option><option value="'Comic Sans MS', 'Segoe Print', cursive">Handwriting</option></select></div>
+    <div class="f"><label for="tx-size">Text size <b id="tx-sizev"></b></label><input id="tx-size" type="range" min="30" max="100" step="5"></div></div>
+    <div class="f"><span class="lbl">Align the words</span><div class="seg" id="tx-align"><button type="button" data-v="left" aria-pressed="false">Left</button><button type="button" data-v="center" aria-pressed="false">Centre</button><button type="button" data-v="right" aria-pressed="false">Right</button></div></div>
+    <div class="f"><span class="lbl">Where on the screen</span><div class="seg" id="tx-vpos"><button type="button" data-v="top" aria-pressed="false">Top</button><button type="button" data-v="middle" aria-pressed="false">Middle</button><button type="button" data-v="bottom" aria-pressed="false">Bottom</button></div></div>
+    <div class="f" id="tx-reff"><label for="tx-ref">Where the reference goes (for example John 3:16)</label><select id="tx-ref"><option value="below">Under the words</option><option value="top-left">Top left</option><option value="top-center">Top centre</option><option value="top-right">Top right</option><option value="bottom-left">Bottom left</option><option value="bottom-center">Bottom centre</option><option value="bottom-right">Bottom right</option></select></div>
+    <label class="row" style="gap:7px;color:var(--soft)"><input type="checkbox" id="tx-bold"> Bold</label>
+    <p class="help">Size 100 fills the screen as much as the words allow. A smaller number leaves more space around them. Changes show on the screen straight away.</p>
+  </div>
+  <div class="dfoot"><button class="b sm" id="tx-reset" type="button" style="margin-right:auto">Reset</button><button class="b pri" type="button" data-close>Done</button></div>
 </div></dialog>
 
 <dialog id="dlg-sbg"><div class="dlg">
