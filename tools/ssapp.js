@@ -1854,6 +1854,21 @@
 
   /* ------------------------------------------------------------------ phone: live mirror, service control and library (PeerJS: the free PeerJS server only introduces the phone; then it talks directly) */
   var peer = null, conns = [];
+  function linkRoute(c, cb) {
+    /* which road the phone link took: host to host means the same Wi-Fi (fast and local), anything else goes over the internet */
+    var pc = c && c.peerConnection; if (!pc || !pc.getStats) return;
+    pc.getStats().then(function (rep) {
+      var pair = null, all = {}; rep.forEach(function (r) { all[r.id] = r; });
+      rep.forEach(function (r) { if (r.type === 'transport' && r.selectedCandidatePairId) pair = all[r.selectedCandidatePairId]; });
+      if (!pair) rep.forEach(function (r) { if (r.type === 'candidate-pair' && (r.selected || (r.nominated && r.state === 'succeeded'))) pair = r; });
+      if (!pair) return;
+      var a = all[pair.localCandidateId], b = all[pair.remoteCandidateId]; if (!a || !b) return;
+      var priv = function (c) { var ip = String(c.address || c.ip || ''); return /\.local$/i.test(ip) || /^(10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[01])\.|f[cd][0-9a-f]{2}:|fe80:)/i.test(ip); };
+      cb(a.candidateType === 'relay' || b.candidateType === 'relay' ? 'relay' : (a.candidateType === 'host' && b.candidateType === 'host') || (priv(a) && priv(b)) ? 'local' : 'internet');
+    }).catch(function () { /* unknown route */ });
+  }
+  var ROUTE_TEXT = { local: 'same Wi-Fi, fast', internet: 'over the internet', relay: 'over the internet, through a relay' };
+
   function remoteSend(o) { conns.forEach(function (c) { if (c.open) { try { c.send(o); } catch (e) { /* dropped */ } } }); }
   function remoteLib(c) {
     if (!conns.length) return;
@@ -1873,7 +1888,7 @@
     var rid = store('ae_ss_remote_id');
     if (!rid) { rid = 'aess-' + Array.from(crypto.getRandomValues(new Uint8Array(12))).map(function (b) { return b.toString(16).padStart(2, '0'); }).join(''); store('ae_ss_remote_id', rid); }
     remoteStatus('Starting the remote...');
-    peer = new window.Peer(rid, { debug: 0 });
+    peer = new window.Peer(rid, { debug: 0, config: { iceServers: [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302', 'stun:stun.cloudflare.com:3478'] }, { urls: ['turn:openrelay.metered.ca:80', 'turn:openrelay.metered.ca:443', 'turn:openrelay.metered.ca:443?transport=tcp'], username: 'openrelayproject', credential: 'openrelayproject' }], iceCandidatePoolSize: 4 } });
     peer.on('open', function (id) {
       var url = location.origin + BASE + 'remote/#' + id;
       try { var q = window.qrcode(0, 'M'); q.addData(url); q.make(); $('rm-qr').innerHTML = dotQr(q); } catch (e) { $('rm-qr').textContent = ''; }
@@ -1884,6 +1899,7 @@
       c.on('open', function () {
         conns.push(c); remoteStatus(conns.length + (conns.length > 1 ? ' phones connected.' : ' phone connected.'));
         c.send({ type: 'state', state: state() }); remoteLib(c); lastMir = ''; mirrorFrame(); renderStatus(); toast('Phone connected');
+        setTimeout(function () { linkRoute(c, function (r) { remoteStatus(conns.length + (conns.length > 1 ? ' phones connected' : ' phone connected') + ' (' + ROUTE_TEXT[r] + ').'); toast('Phone connected, ' + ROUTE_TEXT[r]); }); }, 1500);
       });
       c.on('data', function (d) {
         if (!d || !d.cmd) return;

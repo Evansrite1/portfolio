@@ -79,3 +79,18 @@ body[data-tool="send-app"]             { --a: #2dd4bf; --tag: 'FILE SHARE'; --pa
   .hero-t .lead { animation: skin-rise .7s .08s cubic-bezier(.2,.7,.2,1) both; }
   @keyframes skin-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 }
+
+/* Presenter: features and comparison */
+.pfeat, .pcmp { max-width: 1100px; margin: 54px auto 0; }
+.pfeat h2, .pcmp h2 { font-size: clamp(1.6rem, 3.4vw, 2.4rem); letter-spacing: -0.035em; margin: 0 0 18px; }
+.pfeat ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+.pfeat li { padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: linear-gradient(160deg, color-mix(in srgb, var(--raised) 92%, var(--a)), var(--raised)); }
+.pfeat li b { display: block; margin-bottom: 4px; letter-spacing: -0.01em; }
+.pfeat li span { color: var(--soft); font-size: .9rem; line-height: 1.45; display: block; }
+.pcmp-w { overflow-x: auto; border: 1px solid var(--line); border-radius: 18px; }
+.pcmp table { width: 100%; min-width: 820px; border-collapse: collapse; font-size: .92rem; }
+.pcmp th, .pcmp td { padding: 13px 14px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+.pcmp thead th { font: 600 .72rem var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--faint); position: sticky; top: 0; background: var(--raised); }
+.pcmp tbody th { color: var(--soft); font-weight: 600; min-width: 190px; }
+.pcmp td.me, .pcmp thead th:nth-child(2) { background: color-mix(in srgb, var(--a) 12%, transparent); color: var(--ink); font-weight: 700; }
+.pcmp tr:last-child th, .pcmp tr:last-child td { border-bottom: 0; }

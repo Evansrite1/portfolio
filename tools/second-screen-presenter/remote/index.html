@@ -168,13 +168,27 @@
     lib.vers.forEach(function (v) { var b = document.createElement('button'); b.type = 'button'; b.textContent = v.abbr; b.setAttribute('aria-pressed', v.id === lib.ver); b.onclick = function () { lib.ver = v.id; drawLib(); cmd({ cmd: 'ver', id: v.id }); if ($('ref').value.trim()) bq(); }; vb.appendChild(b); });
   }
   function tab(which) { $('p-svc').hidden = which !== 'svc'; $('p-lib').hidden = which !== 'lib'; $('t-svc').setAttribute('aria-selected', which === 'svc'); $('t-lib').setAttribute('aria-selected', which === 'lib'); if (which === 'lib') cmd({ cmd: 'lib' }); }
+  function linkRoute(c, cb) {
+    /* which road the phone link took: host to host means the same Wi-Fi (fast and local), anything else goes over the internet */
+    var pc = c && c.peerConnection; if (!pc || !pc.getStats) return;
+    pc.getStats().then(function (rep) {
+      var pair = null, all = {}; rep.forEach(function (r) { all[r.id] = r; });
+      rep.forEach(function (r) { if (r.type === 'transport' && r.selectedCandidatePairId) pair = all[r.selectedCandidatePairId]; });
+      if (!pair) rep.forEach(function (r) { if (r.type === 'candidate-pair' && (r.selected || (r.nominated && r.state === 'succeeded'))) pair = r; });
+      if (!pair) return;
+      var a = all[pair.localCandidateId], b = all[pair.remoteCandidateId]; if (!a || !b) return;
+      var priv = function (c) { var ip = String(c.address || c.ip || ''); return /\.local$/i.test(ip) || /^(10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[01])\.|f[cd][0-9a-f]{2}:|fe80:)/i.test(ip); };
+      cb(a.candidateType === 'relay' || b.candidateType === 'relay' ? 'relay' : (a.candidateType === 'host' && b.candidateType === 'host') || (priv(a) && priv(b)) ? 'local' : 'internet');
+    }).catch(function () { /* unknown route */ });
+  }
+  var ROUTE_TEXT = { local: 'same Wi-Fi, fast', internet: 'over the internet', relay: 'over the internet, through a relay' };
   function connect() {
     if (!target) { status('Open this page by scanning the code on the presenter screen.', false, true); return; }
     if (!window.Peer) { status('The remote could not load. Check your internet connection.', false, true); return; }
-    if (!peer || peer.destroyed) { peer = new window.Peer({ debug: 0 }); peer.on('error', function (e) { status(e && e.type === 'peer-unavailable' ? 'The presenter is not reachable. Keep the presenter page open, then scan again.' : 'Connection problem: ' + (e && e.type ? e.type : e) + '. Retrying...', false, true); retry(); }); }
+    if (!peer || peer.destroyed) { peer = new window.Peer({ debug: 0, config: { iceServers: [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302', 'stun:stun.cloudflare.com:3478'] }, { urls: ['turn:openrelay.metered.ca:80', 'turn:openrelay.metered.ca:443', 'turn:openrelay.metered.ca:443?transport=tcp'], username: 'openrelayproject', credential: 'openrelayproject' }], iceCandidatePoolSize: 4 } }); peer.on('error', function (e) { status(e && e.type === 'peer-unavailable' ? 'The presenter is not reachable. Keep the presenter page open, then scan again.' : 'Connection problem: ' + (e && e.type ? e.type : e) + '. Retrying...', false, true); retry(); }); }
     var go = function () {
       conn = peer.connect(target, { reliable: true });
-      conn.on('open', function () { tries = 0; status('Connected. Showing the TV screen live.', true); });
+      conn.on('open', function () { tries = 0; status('Connected. Showing the TV screen live.', true); setTimeout(function () { linkRoute(conn, function (rt) { status('Connected, ' + ROUTE_TEXT[rt] + '. Showing the TV screen live.', true); }); }, 1500); });
       conn.on('data', function (d) {
         if (!d) return;
         if (d.type === 'state') { st = d.state; draw(); }
