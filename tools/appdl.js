@@ -14,10 +14,11 @@
     return null;
   }
   window.AppDL = function (cfg) {
+    var archKnown = false;
     var arch = 'arm'; /* most Macs since 2020 have an Apple chip; Chrome and Edge can tell us exactly */
     var hasLinux = !!(cfg.files && cfg.files.linux);
     var ready = (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues)
-      ? navigator.userAgentData.getHighEntropyValues(['architecture']).then(function (v) { arch = /x86/i.test(v.architecture || '') ? 'intel' : 'arm'; }).catch(function () {})
+      ? navigator.userAgentData.getHighEntropyValues(['architecture']).then(function (v) { if (v.architecture) { archKnown = true; arch = /x86/i.test(v.architecture) ? 'intel' : 'arm'; } }).catch(function () {})
       : Promise.resolve();
     function link(key) { return cfg.base + cfg.files[key]; }
     function macKey() { return arch === 'intel' ? 'macIntel' : 'macArm'; }
@@ -42,7 +43,8 @@
         } else if (os === 'mac') {
           el.textContent = 'Download for Mac' + (arch === 'intel' ? ' (Intel)' : ' (Apple chip)'); el.href = link(macKey());
           var o = arch === 'intel' ? 'macArm' : 'macIntel';
-          if (other) other.innerHTML = (arch === 'intel' ? 'Apple chip Mac? ' : 'Intel Mac? ') + a(o, 'Download the ' + (arch === 'intel' ? 'Apple chip' : 'Intel') + ' version') + ' | ' + a('win', 'Windows') + linuxLinks();
+          if (other) other.innerHTML = (arch === 'intel' ? 'Apple chip Mac? ' : 'Intel Mac? ') + a(o, 'Download the ' + (arch === 'intel' ? 'Apple chip' : 'Intel') + ' version') + ' | ' + a('win', 'Windows') + linuxLinks()
+            + (archKnown ? '' : '<br>Not sure which Mac you have? Click the Apple menu, then About This Mac. If it says Chip (M1, M2, M3, M4), use Apple chip. If it says Processor Intel, use Intel.');
         } else {
           el.textContent = 'Download for Linux'; el.href = link('linux');
           if (other) other.innerHTML = (cfg.files.linuxAlt ? a('linuxAlt', linuxName('linuxAlt')) + ' | ' : '') + a('win', 'Windows') + ' | ' + a('macArm', 'Mac, Apple chip') + ' | ' + a('macIntel', 'Mac, Intel');

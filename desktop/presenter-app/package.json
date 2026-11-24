@@ -107,6 +107,7 @@
     "dmg": {
       "title": "Presenter"
     },
+    "afterPack": "build/afterPack.js",
     "electronDist": "node_modules/electron/dist",
     "pkg": {
       "installLocation": "/Applications/Evans Large",

@@ -295,7 +295,7 @@ namespace EvansLarge.PresenterSetup
             brand.Children.Add(bt);
             top.Children.Add(brand);
             Border badge = new Border { Width = 84, Height = 84, CornerRadius = new CornerRadius(42), Background = B("#F4EEE0"), BorderBrush = new SolidColorBrush(Color.FromArgb(230, 255, 255, 255)), BorderThickness = new Thickness(3), HorizontalAlignment = HorizontalAlignment.Right, ClipToBounds = true };
-            Image bi = new Image { Source = Img("portrait-sketch.png"), Stretch = Stretch.UniformToFill, Margin = new Thickness(-8, -2, -8, -14) };
+            Image bi = new Image { Source = Img("portrait-face.png"), Stretch = Stretch.UniformToFill };
             badge.Child = bi;
             badge.Clip = new EllipseGeometry(new Point(42, 42), 40, 40);
             top.Children.Add(badge);
