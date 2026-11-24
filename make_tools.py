@@ -428,11 +428,14 @@ def schema_nodes(slug, p):
         {'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': SITE + '/'},
         {'@type': 'ListItem', 'position': 2, 'name': 'Free tools', 'item': SITE + '/tools/'},
         {'@type': 'ListItem', 'position': 3, 'name': p['app'], 'item': url}]}
-    if p.get('minimal'):
-        return [app, crumbs]          # a download page shows no FAQ, so it must not claim one in its schema
-    return [app, faq, crumbs]
+    return [app, crumbs]          # no FAQ on any tool page, so none in the schema either
 
 KEYS_PAGES = ['qr-code-generator', 'qr-code-scanner', 'remove-background', 'wifi-qr-code-generator', 'whatsapp-link-generator', 'color-picker', 'currency-calculator', 'image-converter', 'invoice-receipt-generator', 'pdf-converter', 'screen-recorder', 'video-tools', 'watermark-maker']
+
+def howto_html(slug):
+    steps = HOWTO.get(slug)
+    if not steps: return ''
+    return '<section class="block howto" aria-label="How to use"><ol>%s</ol></section>' % ''.join('<li>%s</li>' % e(x) for x in steps[:3])
 
 def build_page(slug, p):
     h = head(p['title'], p['desc'], '/tools/%s/' % slug, schema_nodes(slug, p), p['vendor'], p['own'])
@@ -445,16 +448,14 @@ def build_page(slug, p):
 </section>
 %s
 %s
-%s
-%s
 </div>
 </main>
 %s
-%s''' % (e(p['h1']), e(p['lead']), p['tool'], '' if p.get('minimal') else p['sections'],
-         '' if p.get('minimal') else faq_html(p['faq']), '' if p.get('minimal') else related_html(p['related']),
+%s''' % (e(p['h1']), e(p['lead']), p['tool'], howto_html(slug),
          FOOTER.replace('Your data stays in your browser.', 'Your files are never uploaded.') if p.get('minimal') else FOOTER, scripts(p['vendor'], p['own'] + (['keys.js'] if slug in KEYS_PAGES else []), p.get('module', ())))
     extra = ''.join('<link rel="stylesheet" href="/tools/css/%s">\n' % c for c in p.get('css', ()))
-    out = (h + body).replace('</head>', extra + '</head>', 1) + '</body>\n</html>\n'
+    extra += '<link rel="stylesheet" href="/tools/css/skin.css">\n'
+    out = (h + body).replace('</head>', extra + '</head>', 1).replace('<body>', '<body data-tool="%s">' % slug, 1) + '</body>\n</html>\n'
     d = os.path.join(ROOT, 'tools', slug)
     os.makedirs(d, exist_ok=True)
     open(os.path.join(d, 'index.html'), 'w', encoding='utf-8', newline='\n').write(out)
@@ -578,7 +579,6 @@ def build_hub():
     nodes = [
         {'@type': 'CollectionPage', '@id': url + '#page', 'url': url, 'name': HUB['title'], 'description': HUB['desc'], 'isPartOf': {'@id': SITE + '/#website'}, 'author': {'@id': SITE + '/#person'}},
         {'@type': 'ItemList', 'itemListElement': [{'@type': 'ListItem', 'position': i + 1, 'name': t, 'url': '%s/tools/%s/' % (SITE, s)} for i, (s, k, t, d, n) in enumerate(CARDS)]},
-        {'@type': 'FAQPage', 'mainEntity': [{'@type': 'Question', 'name': q, 'acceptedAnswer': {'@type': 'Answer', 'text': a}} for q, a in HUB['faq']]},
         {'@type': 'BreadcrumbList', 'itemListElement': [{'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': SITE + '/'}, {'@type': 'ListItem', 'position': 2, 'name': 'Free tools', 'item': url}]},
     ]
     h = head(HUB['title'], HUB['desc'], '/tools/', nodes, [], [])
@@ -590,14 +590,14 @@ def build_hub():
   <p class="lead">I built these so you can get real work done for free, as much as possible. Shrink a video, cut out a background, make a QR code or send an invoice, right here in your browser.</p>
 </section>
 <section class="block" id="tl">%s<div class="tl-grid tl-tiles" id="tl-grid">%s</div><p class="help" id="tl-none" hidden>No tool matches that. Try another word.</p></section>
-<div class="narrow">%s</div>
 </div>
 </main>
 %s
-%s''' % (bar, tiles, faq_html(HUB['faq']), VIEW_SCRIPT, FOOTER)
+%s''' % (bar, tiles, VIEW_SCRIPT, FOOTER)
     d = os.path.join(ROOT, 'tools')
     os.makedirs(d, exist_ok=True)
-    open(os.path.join(d, 'index.html'), 'w', encoding='utf-8', newline='\n').write(h + body + '\n</body>\n</html>\n')
+    page = (h + body).replace('</head>', '<link rel="stylesheet" href="/tools/css/skin.css">\n</head>', 1).replace('<body>', '<body data-tool="hub">', 1)
+    open(os.path.join(d, 'index.html'), 'w', encoding='utf-8', newline='\n').write(page + '\n</body>\n</html>\n')
 
 def update_seo_lists():
     pages = [p for p in make_seo.PUBLIC_PAGES if not p[0].startswith('/tools/')]

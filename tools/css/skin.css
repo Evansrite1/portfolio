@@ -1,0 +1,81 @@
+/* skin.css : the portfolio look for every free tool.
+   One shared base (big Roboto-style headings, mono labels, coral glow, glass cards, pill buttons) plus a custom accent, backdrop and label per tool.
+   Loaded last, so it only restyles; it never changes how a tool works. */
+
+/* ---------- shared base ---------- */
+body { --a: var(--accent); --a2: var(--accent2); --pat: none; --pat-size: 36px; --tag: 'FREE TOOL'; position: relative; font-family: Roboto, var(--sans); }
+body::before { /* the tool's own backdrop: a colour glow from the top and a pattern that fades out */
+  content: ''; position: fixed; inset: 0 0 auto 0; height: 78vh; z-index: -1; pointer-events: none;
+  background: radial-gradient(60% 55% at 50% -8%, color-mix(in srgb, var(--a) 26%, transparent), transparent 70%), var(--pat);
+  background-size: auto, var(--pat-size) var(--pat-size);
+  -webkit-mask-image: linear-gradient(#000 40%, transparent); mask-image: linear-gradient(#000 40%, transparent);
+}
+.th { background: color-mix(in srgb, var(--paper) 72%, transparent); border-bottom-color: color-mix(in srgb, var(--line) 70%, transparent); }
+.th .cta, .btn.primary, button.primary, .btn.pri { background: var(--a); color: #101010; border-color: transparent; border-radius: 999px; font-weight: 700; box-shadow: 0 10px 30px -10px color-mix(in srgb, var(--a) 70%, transparent); transition: transform .2s, box-shadow .2s; }
+.th .cta:hover, .btn.primary:hover, button.primary:hover { transform: translateY(-2px); box-shadow: 0 16px 36px -10px color-mix(in srgb, var(--a) 80%, transparent); }
+a { color: var(--a); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline-color: var(--a); }
+
+.hero-t { padding-top: 64px; }
+.hero-t.center::before { display: block; content: var(--tag); font: 600 0.7rem/1 var(--mono); letter-spacing: .22em; color: var(--a); margin-bottom: 18px; }
+.hero-t h1 { font-weight: 800; letter-spacing: -0.045em; line-height: 1.02; font-size: clamp(2.3rem, 6.2vw, 4.4rem); max-width: 16ch; text-wrap: balance; }
+.hero-t.center h1 { max-width: 18ch; }
+.hero-t .lead { color: var(--soft); font-size: clamp(1rem, 1.6vw, 1.18rem); max-width: 52ch; }
+
+.card, .tool > section, .tool > div { border-radius: 22px; }
+.card { background: linear-gradient(180deg, color-mix(in srgb, var(--raised) 92%, var(--a)) 0%, var(--raised) 60%); border: 1px solid color-mix(in srgb, var(--line) 80%, var(--a)); box-shadow: 0 30px 60px -40px rgba(0,0,0,.7), inset 0 1px 0 color-mix(in srgb, #fff 6%, transparent); }
+input, select, textarea { border-radius: 12px; }
+input:focus, select:focus, textarea:focus { border-color: var(--a); }
+.pills button[aria-pressed="true"], .tabs button[aria-pressed="true"], .tabs [aria-selected="true"], .tl-cats button[aria-pressed="true"], .tl-views button[aria-pressed="true"] { background: var(--a); color: #101010; border-color: transparent; }
+
+/* the only instruction left on a tool page: up to three short lines */
+.howto { margin: 28px auto 8px; max-width: 880px; padding: 0; }
+.howto ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; counter-reset: s; }
+.howto li { counter-increment: s; position: relative; padding: 18px 18px 18px 58px; border: 1px solid var(--line); border-radius: 16px; background: color-mix(in srgb, var(--raised) 80%, transparent); color: var(--soft); font-size: .93rem; line-height: 1.45; }
+.howto li::before { content: counter(s); position: absolute; left: 16px; top: 16px; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font: 700 .8rem var(--mono); color: #101010; background: var(--a); }
+@media (max-width: 760px) { .howto ol { grid-template-columns: 1fr; } }
+/* FAQs, long guides and link lists are gone from every tool page; this keeps any stray one hidden */
+.faq, .related, .block.prose, .narrow { display: none !important; }
+
+/* the tools hub */
+.tl-grid.tl-tiles { gap: 16px; }
+.tile { border-radius: 22px; padding: 22px; background: linear-gradient(160deg, color-mix(in srgb, var(--raised) 94%, var(--a)), var(--raised)); position: relative; overflow: hidden; }
+.tile::after { content: ''; position: absolute; inset: auto -30% -60% auto; width: 70%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--a) 28%, transparent), transparent); opacity: 0; transition: opacity .3s; }
+.tile:hover::after { opacity: 1; }
+.tile b { font-size: 1.12rem; font-weight: 700; letter-spacing: -0.02em; }
+body[data-tool="hub"] .hero-t h1 { max-width: 14ch; }
+
+/* ---------- one look per tool ---------- */
+body[data-tool="hub"]                  { --a: #ff5b52; --a2: #ff8a80; --tag: 'EVANS LARGE / FREE TOOLS'; --pat: radial-gradient(circle, color-mix(in srgb, #fff 9%, transparent) 1px, transparent 1.4px); --pat-size: 26px; }
+body[data-tool="qr-code-generator"]    { --a: #ff5b52; --tag: 'QR CODES'; --pat: radial-gradient(circle, color-mix(in srgb, #fff 11%, transparent) 1.5px, transparent 2px); --pat-size: 22px; }
+body[data-tool="qr-code-scanner"]      { --a: #3ddc84; --tag: 'SCANNER'; --pat: repeating-linear-gradient(0deg, color-mix(in srgb, #3ddc84 14%, transparent) 0 1px, transparent 1px 7px); --pat-size: auto; }
+body[data-tool="remove-background"]    { --a: #a78bfa; --tag: 'BACKGROUND REMOVER'; --pat: conic-gradient(color-mix(in srgb, #fff 7%, transparent) 25%, transparent 0 50%, color-mix(in srgb, #fff 7%, transparent) 0 75%, transparent 0); --pat-size: 28px; }
+body[data-tool="video-tools"]          { --a: #4aa3ff; --tag: 'VIDEO'; --pat: repeating-linear-gradient(90deg, color-mix(in srgb, #4aa3ff 16%, transparent) 0 10px, transparent 10px 40px); --pat-size: auto; }
+body[data-tool="watermark-maker"]      { --a: #f2b134; --tag: 'WATERMARK'; --pat: repeating-linear-gradient(135deg, color-mix(in srgb, #f2b134 13%, transparent) 0 2px, transparent 2px 22px); --pat-size: auto; }
+body[data-tool="image-converter"]      { --a: #2dd4bf; --tag: 'IMAGES'; --pat: linear-gradient(color-mix(in srgb, #2dd4bf 12%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, #2dd4bf 12%, transparent) 1px, transparent 1px); --pat-size: 44px; }
+body[data-tool="pdf-converter"]        { --a: #ff6b6b; --tag: 'PDF'; --pat: repeating-linear-gradient(0deg, color-mix(in srgb, #ff6b6b 13%, transparent) 0 1px, transparent 1px 26px); --pat-size: auto; }
+body[data-tool="color-picker"]         { --a: #f472b6; --tag: 'COLOR'; --pat: conic-gradient(from 90deg at 50% 0%, #ff5b52, #f2b134, #3ddc84, #4aa3ff, #a78bfa, #ff5b52); --pat-size: auto; }
+body[data-tool="color-picker"]::before { opacity: .22; }
+body[data-tool^="currency-calculator"] { --a: #34d399; --tag: 'CURRENCY'; --pat: linear-gradient(color-mix(in srgb, #34d399 11%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, #34d399 11%, transparent) 1px, transparent 1px); --pat-size: 56px; }
+body[data-tool="crypto-prices"]        { --a: #f7931a; --tag: 'CRYPTO'; --pat: repeating-linear-gradient(100deg, color-mix(in srgb, #f7931a 12%, transparent) 0 2px, transparent 2px 30px); --pat-size: auto; }
+body[data-tool="invoice-receipt-generator"] { --a: #818cf8; --tag: 'INVOICES AND RECEIPTS'; --pat: repeating-linear-gradient(0deg, color-mix(in srgb, #818cf8 14%, transparent) 0 1px, transparent 1px 32px); --pat-size: auto; }
+body[data-tool="business-card"]        { --a: #f472b6; --tag: 'BUSINESS CARD'; --pat: radial-gradient(circle at 20% 30%, color-mix(in srgb, #f472b6 16%, transparent), transparent 40%), radial-gradient(circle at 80% 20%, color-mix(in srgb, #a78bfa 16%, transparent), transparent 40%); --pat-size: auto; }
+body[data-tool="audio-mastering"]      { --a: #22d3ee; --tag: 'AUDIO STUDIO'; --pat: repeating-linear-gradient(90deg, color-mix(in srgb, #22d3ee 18%, transparent) 0 3px, transparent 3px 14px); --pat-size: auto; }
+body[data-tool="choir-assistant"]      { --a: #c084fc; --tag: 'CHOIR'; --pat: repeating-linear-gradient(0deg, color-mix(in srgb, #c084fc 16%, transparent) 0 1px, transparent 1px 18px); --pat-size: auto; }
+body[data-tool="screen-recorder"]      { --a: #ff4d4d; --tag: 'SCREEN RECORDER'; --pat: radial-gradient(circle, color-mix(in srgb, #ff4d4d 18%, transparent) 2px, transparent 2.5px); --pat-size: 30px; }
+body[data-tool="weather"]              { --a: #60a5fa; --tag: 'WEATHER'; --pat: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, #60a5fa 20%, transparent), transparent 70%); --pat-size: auto; }
+body[data-tool="snake"]                { --a: #84cc16; --tag: 'GAME'; --pat: linear-gradient(color-mix(in srgb, #84cc16 14%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, #84cc16 14%, transparent) 1px, transparent 1px); --pat-size: 24px; }
+body[data-tool="tic-tac-toe"]          { --a: #fb923c; --tag: 'GAME'; --pat: linear-gradient(color-mix(in srgb, #fb923c 14%, transparent) 2px, transparent 2px), linear-gradient(90deg, color-mix(in srgb, #fb923c 14%, transparent) 2px, transparent 2px); --pat-size: 120px; }
+body[data-tool="second-screen-presenter"], body[data-tool="church-presenter"] { --a: #f2b134; --tag: 'PRESENTER'; --pat: radial-gradient(circle, color-mix(in srgb, #f2b134 14%, transparent) 1.5px, transparent 2px); --pat-size: 28px; }
+body[data-tool="send-app"]             { --a: #2dd4bf; --tag: 'FILE SHARE'; --pat: repeating-linear-gradient(45deg, color-mix(in srgb, #2dd4bf 12%, transparent) 0 2px, transparent 2px 24px); --pat-size: auto; }
+
+@media (prefers-color-scheme: light) {
+  body::before { background: radial-gradient(60% 55% at 50% -8%, color-mix(in srgb, var(--a) 16%, transparent), transparent 70%), var(--pat); background-size: auto, var(--pat-size) var(--pat-size); }
+  .th .cta, .btn.primary { color: #fff; }
+  .howto li::before { color: #fff; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-t h1 { animation: skin-rise .7s cubic-bezier(.2,.7,.2,1) both; }
+  .hero-t .lead { animation: skin-rise .7s .08s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes skin-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+}
