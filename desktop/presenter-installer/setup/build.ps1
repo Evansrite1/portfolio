@@ -24,9 +24,9 @@ if ($Zip) {
   Copy-Item $exe (Join-Path $dir 'Presenter Setup.exe')
   Copy-Item $Installer (Join-Path $dir 'files\Presenter-Installer.exe')
   Copy-Item (Join-Path $PSScriptRoot 'Read me first.txt') (Join-Path $dir 'Read me first.txt')
-  $zip = Join-Path $OutDir 'Presenter-Windows-Setup.zip'
-  if (Test-Path $zip) { Remove-Item -Force $zip }
+  $zipPath = Join-Path $OutDir 'Presenter-Windows-Setup.zip'
+  if (Test-Path $zipPath) { Remove-Item -Force $zipPath }
   Add-Type -AssemblyName System.IO.Compression.FileSystem
-  [System.IO.Compression.ZipFile]::CreateFromDirectory($stage, $zip, [System.IO.Compression.CompressionLevel]::Optimal, $false)
-  Write-Host "Built $zip"
+  [System.IO.Compression.ZipFile]::CreateFromDirectory($stage, $zipPath, [System.IO.Compression.CompressionLevel]::Optimal, $false)
+  Write-Host "Built $zipPath"
 }
