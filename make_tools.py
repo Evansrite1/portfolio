@@ -502,7 +502,7 @@ HOWTO = {
     'video-tools': ['Press Compressor, Converter or Trimmer.', 'Add your video and pick a size, a format or the part to keep.', 'Download the result. Nothing is uploaded.'],
     'qr-code-scanner': ['Open a photo or screenshot of a code, or use your camera.', 'The result appears at once.', 'Copy it or open the link.'],
     'wifi-qr-code-generator': ['Type your network name and password.', 'Pick a style for the sign.', 'Download it and put it on the wall so guests can scan and join.'],
-    'second-screen-presenter': ['Open the presenter and connect a TV or projector set to extend.', 'Add songs, Bible passages, photos, videos and countdowns to your service.', 'Click a song or double-click anything else to show it on the screen.'],
+    'second-screen-presenter': ['Open the presenter and connect a TV or projector set to extend.', 'Add songs, Bible passages, photos, videos and countdowns to your service.', 'Double-click a song or anything else to show it on the screen.'],
     'audio-mastering': ['Open the studio and drop in audio files, or add a MIDI track.', 'Edit, mix and add plugins, or repair noise in the spectral view.', 'Pick a loudness target in Mastering and export WAV or MP3.'],
     'choir-assistant': ['Pick a sound and play the keys with your mouse, finger or computer keyboard.', 'Press Listen to hear a song through the microphone or a tab, or drop in an audio file, to find its key.', 'Drop a song into Song breakdown to see the chords, bass, lead line and sections on a timeline.', 'Press play and follow along. The keyboard lights up with what you hear.'],
     'invoice-receipt-generator': ['Press Invoice or Receipt.', 'Pick a design and fill in your business, customer and items.', 'Download the PDF or PNG, or print it.'],

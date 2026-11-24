@@ -74,3 +74,6 @@ app.whenReady().then(async () => {
 
 app.on('window-all-closed', () => app.quit());
 app.on('activate', () => { if (!win) create(); });
+
+/* in-app updates: asks when a newer version exists (skip twice, then it is required) */
+require('electron').app.whenReady().then(() => { const { app, dialog, shell } = require('electron'); require('./update-gate')({ app, dialog, shell, getWindow: () => win, name: 'Audio by Evans Large', downloadPage: 'https://evansademilua.vercel.app/tools/audio-mastering/', macSigned: false }); });

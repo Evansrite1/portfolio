@@ -36,3 +36,6 @@ app.whenReady().then(() => {
   app.on('activate', () => { if (!BrowserWindow.getAllWindows().length) create(); });
 });
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
+
+/* in-app updates: asks when a newer version exists (skip twice, then it is required) */
+require('electron').app.whenReady().then(() => { const { app, dialog, shell } = require('electron'); require('./update-gate')({ app, dialog, shell, getWindow: () => win, name: 'Video Editor by Evans Large', downloadPage: 'https://evansademilua.vercel.app/tools/video-editor/', macSigned: false }); });

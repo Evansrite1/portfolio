@@ -293,6 +293,35 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
 .toast{position:fixed;left:50%;bottom:60px;transform:translate(-50%,16px);background:#fff;color:#111;font-weight:600;padding:8px 16px;border-radius:99px;opacity:0;pointer-events:none;z-index:200;font-size:.82rem;max-width:90vw;text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
+.drop{display:grid;gap:3px;max-height:240px;overflow:auto;background:var(--h);border:1px solid var(--line2);border-radius:9px;padding:4px;margin-top:-4px}
+.drop .hit{display:block;width:100%}
+.drop mark{background:rgba(255,91,82,.28);color:inherit;border-radius:3px}
+.cols{display:grid;grid-template-columns:1.5fr .8fr .8fr;gap:6px;height:190px}
+.cols .col{overflow:auto;border:1px solid var(--line);border-radius:8px;background:var(--p2);padding:3px;display:grid;gap:2px;align-content:start}
+.cols .col h4{margin:0;position:sticky;top:0;background:var(--p2);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);padding:3px 5px}
+.cols button{border:0;background:transparent;text-align:left;padding:4px 7px;border-radius:5px;font-size:.78rem;color:var(--ink)}
+.cols button:hover{background:var(--line)}
+.cols button[aria-pressed=true]{background:var(--ok);color:#06210f;font-weight:700}
+.cols .col.n button{text-align:center}
+#bb-chw,#bb-vsw{display:none!important}
+.listen{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.listen .b[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#1a0a09}
+.heard{display:grid;gap:5px}
+.heard .hr{display:flex;align-items:center;gap:6px;border:1px solid var(--line2);border-radius:8px;padding:5px 8px;background:var(--p2);font-size:.78rem}
+.heard .hr span{flex:1;min-width:0}
+.qr{border-radius:50%;width:230px;height:230px;padding:30px;display:grid;place-items:center;box-shadow:0 0 0 6px var(--p2)}
+.qr svg{border-radius:0}
+:root[data-theme=light]{--bg:#eef0f3;--p:#ffffff;--h:#e4e7ec;--p2:#f3f4f7;--line:#d6dae1;--line2:#bcc2cc;--ink:#15171c;--soft:#454b57;--faint:#5f6672;--acc:#d93a30;--ok:#168a4d;--blue:#2a63d6}
+:root[data-theme=light] .si:hover{background:#e9ebf0}
+:root[data-theme=light] .si.sel{background:#dcefe3}
+:root[data-theme=light] .si.live{background:#f9dedb}
+:root[data-theme=light] .b.pri,:root[data-theme=light] .ib.on{color:#fff}
+:root[data-theme=light] .autobar{background:#e9efe9}
+:root[data-theme=light] .autobar.on{background:#d5ecdc;color:#0b3a1f}
+:root[data-theme=light] .gate{background:radial-gradient(1200px 600px at 50% -10%,#fbe3e0,#eef0f3 60%)}
+:root[data-theme=light] .menu{box-shadow:0 12px 36px rgba(0,0,0,.18)}
+:root[data-theme=light] dialog::backdrop{background:rgba(20,20,30,.4)}
+.mdet .mpic img{object-fit:contain}
 @media (max-width:1180px){.main{grid-template-columns:310px 230px minmax(0,1fr)}.go{width:74px;height:74px}}
 @media (max-width:900px){
   .main{grid-template-columns:1fr;padding:6px 6px 0}
@@ -348,6 +377,7 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
   <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5 14h6l-1 7 8-11h-6z"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
   <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4"/></symbol>
   <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.4a4.3 4.3 0 0 1 7.5 2.4C19.5 15.4 12 20 12 20z"/></symbol>
 </svg>
 
@@ -373,6 +403,7 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
     <span class="sp"></span>
     <select id="screen" hidden aria-label="Screen to show on"></select>
     <button class="b sm" id="move" type="button" hidden>Move display</button>
+    <button class="ib flat" id="theme" type="button" title="Switch between black and light" aria-label="Switch between black and light"><svg class="i"><use href="#i-sun"/></svg></button>
     <button class="ib flat" id="fs" type="button" title="Full screen" aria-label="Full screen"><svg class="i"><use href="#i-expand"/></svg></button>
     <a class="b sm" id="contact" href="/tools/second-screen-presenter/contact/" target="_blank" rel="noopener" title="Message the builder or buy him a coffee"><svg class="i sm"><use href="#i-heart"/></svg>Contact the builder</a>
   </header>
@@ -391,6 +422,7 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
         <div class="pane" data-pane="songs">
           <div class="row"><input id="song-q" class="inp" type="search" placeholder="Search titles and lyrics" aria-label="Search songs by title or lyrics"></div>
           <div class="row"><button class="b pri" id="song-new" type="button" style="flex:1"><svg class="i sm"><use href="#i-plus"/></svg>New song</button><button class="b" id="song-bg" type="button" style="flex:1" title="One background for all songs"><svg class="i sm"><use href="#i-image"/></svg>Song background</button></div>
+          <div class="row"><button class="b sm" id="song-hymns" type="button" style="flex:1" title="Adds well known hymns whose words are free to use">Add starter hymns</button></div>
           <ul class="list" id="song-list"></ul>
           <div class="row"><button class="b sm" id="song-export" type="button" style="flex:1" title="Save a copy of your songs as a file">Back up songs</button><button class="b sm" id="song-import" type="button" style="flex:1" title="Load songs from a backup file">Restore from backup</button></div>
           <input type="file" id="song-import-file" accept=".json,application/json" hidden aria-label="Choose a songs backup file">
@@ -406,9 +438,13 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
               <button class="ib2" type="button" data-set="bg" aria-expanded="false"><svg class="i"><use href="#i-image"/></svg>Background</button>
             </div>
             <div class="opop" id="bb-pop" hidden></div>
-            <button class="sbtn" id="bb-words" type="button"><svg class="i"><use href="#i-search"/></svg>Search with words</button>
-            <div class="f"><label for="bb-ref">Passage</label><div class="row"><input id="bb-ref" class="inp" type="text" placeholder="Type J, John 3:16, Ps 23, 1 Cor 13" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="bb-sug"><button class="ib mic" id="bb-mic" type="button" title="Say a passage, for example John 3:16" aria-label="Search by voice"><svg class="i"><use href="#i-mic"/></svg></button><button class="b" id="bb-go" type="button">Find</button></div></div>
+            <div class="f"><label for="bb-ref">Passage</label><div class="row"><input id="bb-ref" class="inp" type="text" placeholder="Type a verse, John 3:16, or words like love is patient" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="bb-sug"><button class="ib mic" id="bb-mic" type="button" title="Say a passage, for example John 3:16" aria-label="Search by voice"><svg class="i"><use href="#i-mic"/></svg></button><button class="b" id="bb-go" type="button">Find</button></div>
+              <p class="help" style="margin-top:2px">Tip: type John, press Tab, type 3, press Tab, type 16, press Enter.</p></div>
+            <div class="drop" id="bb-drop" hidden role="listbox" aria-label="Verses that match your words"></div>
             <div class="sug" id="bb-sug" role="listbox"></div>
+            <div class="cols" id="bb-cols" aria-label="Book, chapter and verse"></div>
+            <div class="listen" id="bb-listen-box"><button class="b" id="bb-listen" type="button" aria-pressed="false" title="The app listens to the message and picks out the verses the speaker reads or mentions. It works without internet."><svg class="i sm"><use href="#i-mic"/></svg><span>Listen to the message</span></button><label class="row" style="gap:5px;font-size:.74rem;color:var(--soft)"><input type="checkbox" id="bb-autoshow"> Show on the screen too</label></div>
+            <div class="heard" id="bb-heard" hidden></div>
             <div id="bb-chw" hidden><div class="stepl">Chapter</div><div class="chs" id="bb-ch"></div></div>
             <div id="bb-vsw" hidden><div class="row" style="justify-content:space-between"><div class="stepl">Verses (tap to pick one or more)</div><button class="b sm" id="bb-all" type="button">All</button></div><div class="chs" id="bb-vs"></div></div>
             <p class="help" id="bb-msg" role="status">Start typing a book. Then pick the chapter and the verses.</p>
@@ -470,7 +506,7 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
         <div class="ctrl">
           <div class="grp"><button class="b big" id="prev" type="button">&larr; Back</button><button class="b big pri" id="next" type="button">Next &rarr;</button></div>
           <div class="div"></div>
-          <div class="grp"><button class="b big" id="black" type="button" aria-pressed="false">Black</button><button class="b big" id="logo" type="button" aria-pressed="false">Logo</button></div>
+          <div class="grp"><button class="b big" id="black" type="button" aria-pressed="false">Black</button><button class="b big" id="logo" type="button" aria-pressed="false">Logo</button><button class="b big" id="fit" type="button" aria-pressed="false" hidden title="Photos and videos keep their own shape. Press this to stretch one to fill the whole screen.">Expand to fill</button></div>
           <div class="media" id="media" hidden>
             <button class="b" id="play" type="button">Play</button><button class="ib" id="restart" type="button" title="From the start" aria-label="From the start">&#8634;</button>
             <input type="range" id="seek" min="0" max="1" step="0.1" value="0" aria-label="Position in the video"><span class="t" id="time">0:00 / 0:00</span>
@@ -499,7 +535,7 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
   <footer class="bot">
     <span class="stagebar"><input id="st-msg" type="text" placeholder="Message to the stage display" aria-label="Message to the stage display"><button class="b sm" id="st-send" type="button">Send</button><button class="b sm" id="st-clear" type="button">Clear</button></span>
     <span class="msg" id="msg" role="status"></span>
-    <span class="keys">Arrows: next and back | Enter: go live | B: black | Space: play or pause | Double-click to show anything except a song</span>
+    <span class="keys">Arrows: next and back | Enter: go live | B: black | Space: play or pause | Double-click anything to show it live</span>
   </footer>
 </div>
 
@@ -511,6 +547,7 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
     <div class="f"><label for="sg-title">Title</label><input id="sg-title" type="text" autocomplete="off" placeholder="Amazing Grace"></div>
     <div class="f"><label for="sg-lyrics">Lyrics</label><textarea id="sg-lyrics" rows="10" placeholder="Verse 1&#10;Amazing grace, how sweet the sound&#10;That saved a wretch like me&#10;&#10;Chorus&#10;My chains are gone&#10;I have been set free"></textarea>
       <p class="help">Press Enter for a new line. Leave a blank line to start a new slide. Put Verse 1, Chorus or Bridge on its own line to label a section, and type Chorus again later to repeat it.</p></div>
+    <label class="row" style="gap:7px;color:var(--soft)"><input type="checkbox" id="sg-titleonly"> Show only the title on the screen (the media team shows the words)</label>
     <div class="r2"><div class="f"><label for="sg-per">Lines per slide</label><select id="sg-per"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="0">Whole section</option></select></div><div class="f"><label for="sg-style">Colours</label><select id="sg-style"><option value="dark">White on black</option><option value="light">Black on white</option><option value="coral">Navy and coral</option></select></div></div>
     <div class="f"><span class="lbl" id="sg-count">Slides</span><div class="slpv" id="sg-slides"></div></div>
   </div>
@@ -527,14 +564,6 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
   <div class="dfoot"><button class="b pri" type="button" data-close>Done</button></div>
 </div></dialog>
 
-<dialog id="dlg-words" class="wide"><div class="dlg">
-  <div class="dt"><svg class="i"><use href="#i-search"/></svg>Search the Bible with words<span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
-  <div class="dbody">
-    <div class="row"><input id="bb-q" class="inp" type="search" placeholder="Type words, for example love is patient" autocomplete="off" aria-label="Words to find"><button class="b pri" id="bb-search" type="button">Search</button></div>
-    <p class="help" id="bb-qmsg">Searches the version selected at the bottom of the Scripture tab.</p>
-    <div class="hits" id="bb-res"></div>
-  </div>
-</div></dialog>
 
 <dialog id="dlg-ver"><div class="dlg">
   <div class="dt"><svg class="i"><use href="#i-book"/></svg>Add a Bible version<span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
@@ -542,7 +571,9 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
     <div class="row"><input id="ver-q" class="inp" type="search" placeholder="Search by name or language, for example Yoruba, French, Message" autocomplete="off" aria-label="Search Bible versions"></div>
     <p class="help" id="ver-msg">Loading the list of versions...</p>
     <div class="vlist" id="ver-list"></div>
-    <p class="help">Versions are downloaded once and then kept on this computer. They come from the free Free Use Bible API. Some are public domain; others are free to use with credit. Modern translations such as the NIV and ESV are not available.</p>
+    <p class="help">Versions are downloaded once and then kept on this computer. They come from the free Free Use Bible API. Some are public domain; others are free to use with credit.</p>
+    <div class="vrow"><div class="vi"><b>Import your own Bible file</b><small>For versions your church is licensed to use, such as NIV, NKJV, MSG, Amplified or TPT. Choose a .txt file with one verse per line, like "John 3:16 For God so loved the world...", or a .json file.</small></div><button type="button" class="b sm" id="ver-import">Import</button></div>
+    <input type="file" id="ver-import-file" accept=".txt,.json,text/plain,application/json" hidden aria-label="Choose a Bible file">
   </div>
 </div></dialog>
 
@@ -576,8 +607,8 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
 <dialog id="rm-dialog"><div class="dlg">
   <div class="dt"><svg class="i"><use href="#i-phone"/></svg>Phone remote and live mirror<span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
   <div class="dbody" style="justify-items:center;text-align:center">
-    <p class="help" id="rm-st">Starting...</p><div class="qr" id="rm-qr"></div><a class="lnk" id="rm-link" href="#" target="_blank" rel="noopener"></a>
-    <p class="help">Scan the code with your phone camera. Your phone then shows what is on the TV screen, wherever you sit, and lets you change slides, jump through the service and add songs or Bible passages. Both devices need internet.</p>
+    <p class="help" id="rm-st">Starting...</p><div class="qr" id="rm-qr"></div>
+    <p class="help">Scan the code with your phone camera. Your phone then shows what is on the TV screen and lets you change slides and add songs or Bible passages. Up to 2 phones can connect. Both devices need internet.</p>
   </div>
 </div></dialog>
 

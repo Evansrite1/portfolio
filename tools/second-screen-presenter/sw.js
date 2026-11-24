@@ -12,6 +12,7 @@ self.addEventListener('fetch', function (e) {
   var r = e.request, u = new URL(r.url);
   if (r.method !== 'GET' || u.origin !== self.location.origin || r.headers.has('range')) return;
   if (u.pathname.indexOf('/tools/') !== 0 && u.pathname !== '/favicon.ico') return;
+  if (/^\/tools\/(vendor\/(whisper|transformers)\/|whisper-worker\.js$)/.test(u.pathname)) return; /* the speech files have their own saved copy */
   e.respondWith(
     caches.match(r, { ignoreSearch: r.mode === 'navigate' }).then(function (cached) {
       var net = fetch(r).then(function (res) {

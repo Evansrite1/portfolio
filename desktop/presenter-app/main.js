@@ -1,5 +1,7 @@
 'use strict';
-const { app, BrowserWindow, Menu, screen, session, desktopCapturer, ipcMain, shell, dialog } = require('electron');
+const { app, BrowserWindow, Menu, screen, session, desktopCapturer, ipcMain, shell, dialog, protocol } = require('electron');
+const { Readable } = require('stream');
+const updateGate = require('./update-gate');
 const path = require('path');
 const fs = require('fs');
 const cfg = require('./config.json');
@@ -12,6 +14,31 @@ const TV_URL = SITE + cfg.tvPath;
 const SMOKE = !!process.env.PRESENTER_SMOKE;
 const FAKE = !!process.env.PRESENTER_FAKE_DISPLAY;
 const IS_MAC = process.platform === 'darwin';
+
+/* pmedia://f/<encoded path>: a video or photo is played from where it already sits on the computer, so nothing is copied or uploaded */
+protocol.registerSchemesAsPrivileged([{ scheme: 'pmedia', privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true, bypassCSP: true, corsEnabled: true } }]);
+const MEDIA_TYPES = { mp4: 'video/mp4', m4v: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', mkv: 'video/x-matroska', ogv: 'video/ogg', avi: 'video/x-msvideo', wmv: 'video/x-ms-wmv', mpg: 'video/mpeg', mpeg: 'video/mpeg', ts: 'video/mp2t', '3gp': 'video/3gpp', flv: 'video/x-flv', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', gif: 'image/gif', webp: 'image/webp', avif: 'image/avif', bmp: 'image/bmp', svg: 'image/svg+xml' };
+function mediaResponse(req) {
+  const refOk = !req.referrer || isOurs(req.referrer) || /^pmedia:/.test(req.referrer);
+  let file = '';
+  try { file = decodeURIComponent(new URL(req.url).pathname.replace(/^\//, '')); } catch (e) { return new Response('Bad address', { status: 400 }); }
+  const ext = path.extname(file).slice(1).toLowerCase();
+  if (!refOk || !MEDIA_TYPES[ext]) return new Response('Not allowed', { status: 403 });
+  let size = 0;
+  try { size = fs.statSync(file).size; } catch (e) { return new Response('The file is not there any more', { status: 404 }); }
+  let start = 0, end = Math.max(0, size - 1), status = 200;
+  const range = req.headers.get('range'), m = range && /bytes=(\d*)-(\d*)/.exec(range);
+  if (m) {
+    if (m[1] !== '') { start = +m[1]; if (m[2] !== '') end = Math.min(+m[2], size - 1); }
+    else if (m[2] !== '') { start = Math.max(0, size - +m[2]); }
+    status = 206;
+  }
+  if (start > end) return new Response('Bad range', { status: 416 });
+  const headers = { 'Content-Type': MEDIA_TYPES[ext], 'Accept-Ranges': 'bytes', 'Content-Length': String(size ? end - start + 1 : 0), 'Access-Control-Allow-Origin': '*' };
+  if (status === 206) headers['Content-Range'] = 'bytes ' + start + '-' + end + '/' + size;
+  const body = size ? Readable.toWeb(fs.createReadStream(file, { start, end })) : null;
+  return new Response(body, { status, headers });
+}
 
 let mainWin = null, tvWin = null, quitting = false, tvWindowed = false, picker = null, pickerDone = null;
 
@@ -56,8 +83,9 @@ function createMain() {
   mainWin = new BrowserWindow({
     width: saved.width || 1360, height: saved.height || 860, x: saved.x, y: saved.y,
     minWidth: 900, minHeight: 600, show: false, backgroundColor: '#0e0e10', title: 'Presenter by Evans Large',
-    icon: path.join(__dirname, 'build', 'icon.png'), webPreferences: webPrefs()
+    icon: path.join(__dirname, 'build', 'icon.png'), autoHideMenuBar: true, webPreferences: webPrefs()
   });
+  if (!IS_MAC) mainWin.removeMenu();
   wire(mainWin);
   mainWin.once('ready-to-show', () => { mainWin.show(); });
   mainWin.webContents.on('did-fail-load', (_e, code, _d, _u, isMainFrame) => {
@@ -70,7 +98,7 @@ function createMain() {
   });
   mainWin.on('close', () => { if (!mainWin.isMaximized() && !mainWin.isMinimized()) writePrefs(Object.assign(readPrefs(), { main: mainWin.getBounds() })); });
   mainWin.on('closed', () => { mainWin = null; quitting = true; closeTV(); app.quit(); });
-  mainWin.on('moved', () => { buildMenu(); onDisplaysChanged(); });
+  mainWin.on('moved', () => { onDisplaysChanged(); });
   loadMain();
 }
 
@@ -130,36 +158,9 @@ function notify() { if (mainWin && !mainWin.isDestroyed()) mainWin.webContents.s
 
 /* ------------------------------------------------------------------ menu */
 function buildMenu() {
-  const ctl = controlDisplay(), others = screen.getAllDisplays().filter((d) => d.id !== ctl.id), cur = tvDisplay();
-  const tvItems = others.length ? others.map((d, i) => ({
-    label: 'Show on ' + (d.label || ('screen ' + (i + 2))) + ' (' + d.size.width + ' x ' + d.size.height + ')', type: 'radio', checked: !!cur && cur.id === d.id,
-    click: () => { writePrefs(Object.assign(readPrefs(), { tvDisplay: d.id })); tvWindowed = false; closeTV(); placeTV(); notify(); }
-  })) : [{ label: 'No second screen found', enabled: false }];
-  const t = [];
-  if (IS_MAC) t.push({ role: 'appMenu' });
-  t.push({ label: 'File', submenu: [IS_MAC ? { role: 'close' } : { role: 'quit' }] });
-  t.push({ role: 'editMenu' });
-  t.push({
-    label: 'TV screen',
-    submenu: tvItems.concat([
-      { type: 'separator' },
-      { label: 'Send the TV screen to the second screen', click: () => { tvWindowed = false; closeTV(); placeTV(); notify(); } },
-      { label: 'Close the TV screen', click: () => { closeTV(); notify(); } },
-      { label: 'Show the TV screen in a window (for testing)', click: () => { closeTV(); tvWindowed = true; createTV(controlDisplay()); notify(); } }
-    ])
-  });
-  t.push({ label: 'View', submenu: [{ role: 'reload' }, { role: 'togglefullscreen' }, { role: 'zoomIn' }, { role: 'zoomOut' }, { role: 'resetZoom' }].concat(app.isPackaged ? [] : [{ role: 'toggleDevTools' }]) });
-  t.push({ role: 'windowMenu' });
-  t.push({
-    label: 'Help',
-    submenu: [
-      { label: 'Presenter website', click: () => shell.openExternal(cfg.downloadPage) },
-      { label: 'Contact the builder', click: () => shell.openExternal(SITE + '/tools/second-screen-presenter/contact/') },
-      { type: 'separator' },
-      { label: 'Version ' + app.getVersion(), enabled: false }
-    ]
-  });
-  Menu.setApplicationMenu(Menu.buildFromTemplate(t));
+  /* The app has no menu bar. Screens are chosen inside the app. On a Mac the system keeps a small menu so copy, paste and quit still work. */
+  if (IS_MAC) Menu.setApplicationMenu(Menu.buildFromTemplate([{ role: 'appMenu' }, { role: 'editMenu' }, { role: 'windowMenu' }]));
+  else Menu.setApplicationMenu(null);
 }
 
 /* ------------------------------------------------------------------ camera, microphone and screen share */
@@ -197,19 +198,8 @@ ipcMain.on('picker:choose', (_e, id) => { if (pickerDone) pickerDone(id); });
 
 /* ------------------------------------------------------------------ updates */
 function setupUpdater() {
-  if (!app.isPackaged || SMOKE) return;
-  let autoUpdater;
-  try { autoUpdater = require('electron-updater').autoUpdater; } catch (e) { return; }
-  const canInstall = process.platform !== 'darwin' || cfg.macSigned;
-  autoUpdater.autoDownload = canInstall;
-  autoUpdater.autoInstallOnAppQuit = canInstall;
-  const tell = (o) => { if (mainWin && !mainWin.isDestroyed()) mainWin.webContents.send('presenter:update', o); };
-  autoUpdater.on('update-available', (i) => { tell(canInstall ? { state: 'downloading', version: i.version } : { state: 'manual', version: i.version, url: cfg.downloadPage }); });
-  autoUpdater.on('update-downloaded', (i) => { tell({ state: 'ready', version: i.version }); });
-  autoUpdater.on('error', () => { /* offline or no release yet: try again later */ });
-  const check = () => { autoUpdater.checkForUpdates().catch(() => {}); };
-  setTimeout(check, 8000);
-  setInterval(check, 4 * 60 * 60 * 1000);
+  if (SMOKE) return;
+  updateGate({ app, dialog, shell, getWindow: () => mainWin, name: 'Presenter by Evans Large', downloadPage: cfg.downloadPage, macSigned: cfg.macSigned });
 }
 
 /* ------------------------------------------------------------------ messages from the page */
@@ -218,6 +208,14 @@ ipcMain.handle('presenter:show-tv', () => {
   if (screen.getAllDisplays().length < 2 && !FAKE) return { ok: false, reason: 'one-display' };
   tvWindowed = false; if (!tvAlive()) placeTV(); else positionTV(tvDisplay() || controlDisplay());
   notify(); return { ok: true };
+});
+ipcMain.handle('presenter:list-displays', () => {
+  const ctl = controlDisplay(), cur = tvAlive() ? tvDisplay() : null;
+  return screen.getAllDisplays().map((d, i) => ({ id: d.id, label: d.label || ('Screen ' + (i + 1)), w: d.size.width, h: d.size.height, control: d.id === ctl.id, tv: !!cur && cur.id === d.id }));
+});
+ipcMain.handle('presenter:set-tv', (_e, id) => {
+  if (!screen.getAllDisplays().some((d) => d.id === id)) return { ok: false };
+  writePrefs(Object.assign(readPrefs(), { tvDisplay: id })); tvWindowed = false; closeTV(); placeTV(); notify(); return { ok: true };
 });
 ipcMain.handle('presenter:retry', () => { if (mainWin && !mainWin.isDestroyed() && !/^https?:/.test(mainWin.webContents.getURL())) loadMain(); });
 
@@ -228,6 +226,7 @@ if (!app.requestSingleInstanceLock() && !SMOKE) { app.quit(); } else {
   app.on('window-all-closed', () => { app.quit(); });
   app.whenReady().then(() => {
     setupSession();
+    protocol.handle('pmedia', mediaResponse);
     createMain();
     buildMenu();
     screen.on('display-added', onDisplaysChanged);
@@ -253,6 +252,10 @@ function smoke() {
     out.pill = await mainWin.webContents.executeJavaScript("document.getElementById('p-disp-t') && document.getElementById('p-disp-t').textContent");
     out.gateHidden = await mainWin.webContents.executeJavaScript("!!document.getElementById('gate') && document.getElementById('gate').hidden");
     out.sw = await mainWin.webContents.executeJavaScript("navigator.serviceWorker ? navigator.serviceWorker.getRegistrations().then(function (r) { return r.length; }) : -1");
+    out.displays = await mainWin.webContents.executeJavaScript('window.presenterDesktop.listDisplays().then(function (l) { return l.length + ":" + l.map(function (d) { return d.id + "/" + d.control + "/" + d.tv; }).join(","); })');
+    const tmp = path.join(require('os').tmpdir(), 'presenter-smoke.webm'); fs.writeFileSync(tmp, Buffer.alloc(5000, 7));
+    out.media = await mainWin.webContents.executeJavaScript('fetch("pmedia://f/' + encodeURIComponent(tmp) + '", { headers: { Range: "bytes=100-199" } }).then(function (r) { return r.status + " " + r.headers.get("content-range") + " " + r.headers.get("content-type"); }).catch(function (e) { return "ERR " + e.message; })');
+    out.mediaBad = await mainWin.webContents.executeJavaScript('fetch("pmedia://f/' + encodeURIComponent('C:\Windows\win.ini') + '").then(function (r) { return r.status; }).catch(function (e) { return "ERR " + e.message; })');
     console.log('SMOKE ' + JSON.stringify(out));
     app.exit(out.tvAlive && out.api.indexOf('"d":true') >= 0 ? 0 : 1);
   };

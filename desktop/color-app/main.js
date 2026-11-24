@@ -151,3 +151,6 @@ app.on('before-quit', () => { quitting = true; });
 app.on('will-quit', () => globalShortcut.unregisterAll());
 app.on('window-all-closed', () => { if (!tray) app.quit(); });
 app.on('activate', () => showWindow());
+
+/* in-app updates: asks when a newer version exists (skip twice, then it is required) */
+require('electron').app.whenReady().then(() => { const { app, dialog, shell } = require('electron'); require('./update-gate')({ app, dialog, shell, getWindow: () => win, name: 'Color Picker by Evans Large', downloadPage: 'https://evansademilua.vercel.app/tools/color-picker/', macSigned: false }); });

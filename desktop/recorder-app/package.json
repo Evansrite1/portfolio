@@ -1,7 +1,7 @@
 {
   "name": "screen-recorder-app",
   "productName": "Screen Recorder by Evans Large",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Screen Recorder by Evans Large: record your whole screen or any window, with sound, saved on your computer. Windows and Mac.",
   "author": "Evans Ademilua",
   "homepage": "https://evansademilua.vercel.app/tools/screen-recorder/",
@@ -33,7 +33,8 @@
       "main.js",
       "preload.js",
       "renderer/**",
-      "package.json"
+      "package.json",
+      "update-gate.js"
     ],
     "win": {
       "target": [
@@ -84,6 +85,15 @@
     "pkg": {
       "installLocation": "/Applications/Evans Large",
       "isRelocatable": false
-    }
+    },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "https://github.com/Evansrite1/portfolio/releases/download/rec-latest/"
+      }
+    ]
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.9"
   }
 }

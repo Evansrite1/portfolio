@@ -53,7 +53,7 @@
     }
     function tip(os) {
       if (os === 'win') return 'Open the downloaded Setup file and it installs by itself. If Windows shows "Windows protected your PC", press More info, then Run anyway.';
-      if (os === 'mac') return 'Open the downloaded installer and follow the steps. If your Mac says it cannot be opened, right-click it, press Open, then press Open again.';
+      if (os === 'mac') return 'Open the downloaded installer and follow the steps. Drag the app into Applications. If your Mac says it cannot be opened, right-click the app, press Open, then press Open again, or open System Settings, Privacy and Security and press Open Anyway. If it says the app is damaged, open Terminal, type xattr -cr then a space, drag the app from Applications into the Terminal window and press Enter. Then open it again.';
       if (os === 'linux') return 'Open the downloaded .deb file with your software installer, or run sudo apt install ./file.deb in a terminal. The AppImage needs no install: allow it to run as a program, then double-click it.';
       return '';
     }

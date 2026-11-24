@@ -1,7 +1,7 @@
 {
   "name": "color-picker-app",
   "productName": "Color Picker by Evans Large",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Color Picker by Evans Large: pick the color of any pixel on your screen, in any app or window. Windows and Mac.",
   "author": "Evans Ademilua",
   "homepage": "https://evansademilua.vercel.app/tools/color-picker/",
@@ -33,7 +33,8 @@
       "main.js",
       "preload.js",
       "renderer/**",
-      "package.json"
+      "package.json",
+      "update-gate.js"
     ],
     "win": {
       "target": [
@@ -82,6 +83,15 @@
     "pkg": {
       "installLocation": "/Applications/Evans Large",
       "isRelocatable": false
-    }
+    },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "https://github.com/Evansrite1/portfolio/releases/download/color-latest/"
+      }
+    ]
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.9"
   }
 }

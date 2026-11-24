@@ -13,7 +13,7 @@
   var opts = { fade: true, fit: 'contain', nextOnEnd: false, auto: false, autoSecs: 8, loop: false, volume: 1, studio: false };
   var displays = {}, stages = {}, vstat = null, autoTimer = null, popup = null, screenDetails = null, dragId = null, editingSong = null, bbVer = 'kjv';
   var bibles = {}, bibleIndex = [], media = [], mFilter = 'all', songBg = null, autoRun = false, autoFired = {};
-  var bbBook = null, bbCh = 0, bbVs = null, bbSel = [], bbLast = 0, bbFound = null, bbVers = [], bbCatalogue = null;
+  var colBk = null, bbBook = null, bbCh = 0, bbVs = null, bbSel = [], bbLast = 0, bbFound = null, bbVers = [], bbCatalogue = null;
   var bset = { per: 4, look: 0 };
   var LOOKS = [
     { n: 'White on black', style: 'dark', color: null, sw: 'linear-gradient(135deg,#000 50%,#fff 50%)' },
@@ -163,7 +163,7 @@
     var files = [].slice.call(list || []), bad = [], added = [], work = Promise.resolve();
     files.forEach(function (f) {
       work = work.then(function () {
-        var n = f.name || '', isImg = /^image\//.test(f.type), isVid = /^video\//.test(f.type) || /\.(mp4|mov|m4v|webm|mkv)$/i.test(n), isPdf = f.type === 'application/pdf' || /\.pdf$/i.test(n);
+        var n = f.name || '', isImg = /^image\//.test(f.type) || /\.(jpe?g|png|gif|webp|avif|bmp|svg|ico|tiff?|heic)$/i.test(n), isVid = /^video\//.test(f.type) || /\.(mp4|mov|m4v|webm|mkv)$/i.test(n), isPdf = f.type === 'application/pdf' || /\.pdf$/i.test(n);
         var keep = function (m) { media.push(m); added.push(m); saveMedia(m); renderMedia(); };
         if (isPdf) {
           return readPdf(f).then(function (it) { keep({ id: mid(), kind: 'pdf', name: it.name, slides: it.slides, thumb: it.thumb, added: Date.now() }); }).catch(function (e) { if (window.console) console.error(e); bad.push(n + ' could not be read as a PDF.'); });
@@ -174,7 +174,10 @@
         if (isImg) { m.thumbUrl = URL.createObjectURL(f); keep(m); return; }
         return videoThumb(f).then(function (r) {
           if (r.thumb === null) { bad.push(n + ' is a video this browser cannot play. Try an MP4.'); return; }
-          m.thumb = r.thumb; m.dur = r.dur; keep(m);
+          m.thumb = r.thumb; m.dur = r.dur;
+          var vp = DESK && DESK.pathFor ? DESK.pathFor(f) : '';
+          if (vp) { m.url = 'pmedia://f/' + encodeURIComponent(vp); m.path = vp; delete m.file; } /* played straight from its folder */
+          keep(m);
         });
       });
     });
@@ -182,7 +185,7 @@
       if (added.length) { mSel = added[added.length - 1].id; $('m-addbox').hidden = true; }
       renderMedia();
       if (bad.length) say(bad[0] + (bad.length > 1 ? ' (and ' + (bad.length - 1) + ' more skipped)' : ''), true);
-      else if (added.length) say(added.length + (added.length > 1 ? ' files added to Media.' : ' file added to Media.') + ' Press Add to service below to put it in the service. Your files stay on this computer.');
+      else if (added.length) say(added.length + (added.length > 1 ? ' files added to Media.' : ' file added to Media.') + ' Double click one to show it now, or press Add to service. Your files stay where they are on this computer.');
       return added;
     });
   }
@@ -199,7 +202,7 @@
     if (m.kind === 'pdf') it.slides = m.slides.map(function (s) { return { label: s.label, img: s.img, thumb: s.thumb, text: s.text }; });
     else if (m.kind === 'link') { it.sub = m.sub; it.url = m.url; it.playable = m.playable; }
     else if (m.file) { it.file = m.file; it.dur = m.dur; if (m.kind === 'image') { it.thumbUrl = URL.createObjectURL(m.file); it.thumb = it.thumbUrl; } }
-    else if (m.url) { it.url = m.url; if (m.kind === 'image') it.thumb = m.url; }
+    else if (m.url) { it.url = m.url; if (m.kind === 'image') it.thumb = m.url; else it.dur = m.dur; }
     return it;
   }
   var mSel = null;
@@ -235,7 +238,7 @@
   function pickMedia(t) {
     $('m-addbox').hidden = true;
     if (t === 'link') { $('m-linkrow').hidden = false; $('m-link').setAttribute('aria-pressed', 'true'); $('m-url').focus(); return; }
-    $('m-file').accept = t === 'image' ? 'image/*' : t === 'video' ? 'video/*,.mov,.mkv' : 'application/pdf,.pdf';
+    $('m-file').accept = t === 'image' ? 'image/*' : t === 'video' ? 'video/*,.mov,.mkv,.avi,.wmv,.flv,.3gp,.m4v,.mpg,.mpeg,.ts' : t === 'pdf' ? 'application/pdf,.pdf' : 'image/*,video/*,application/pdf,.pdf,.heic,.tif,.tiff,.bmp,.avif,.mov,.mkv,.avi,.wmv,.flv,.3gp,.m4v,.mpg,.mpeg,.ts';
     $('m-file').click();
   }
   function loadMedia() {
@@ -259,10 +262,12 @@
   function effBg(it) {
     if (!it || it.bg === false) return null;
     if (it.bg) return it.bg;
-    if (it.kind === 'song') return songBg;
+    if (it.kind === 'song') return songBg || defaultBg();
     if (it.kind === 'bible') return bbBg.bg;
     return null;
   }
+  /* the default song background is the logo (when one was chosen), otherwise plain black */
+  function defaultBg() { return logoFile && logoFile.file ? { type: 'image', file: logoFile.file, name: 'Logo', thumb: logoFile.url || '', dflt: true } : null; }
   function bgSig(it) { var b = effBg(it); return (b ? b.type + ':' + (b.name || b.key || '') : '-') + ':' + (it && it.color || ''); }
   function mediaBgs() {
     return media.filter(function (x) { return (x.kind === 'image' && x.file) || (x.kind === 'video' && x.file); }).map(function (x) { return { type: x.kind, file: x.file, name: x.name, thumb: x.kind === 'image' ? (x.thumbUrl || '') : (x.thumb || '') }; });
@@ -385,7 +390,7 @@
   }
 
   var USFM = '1 GEN EXO LEV NUM DEU JOS JDG RUT 1SA 2SA 1KI 2KI 1CH 2CH EZR NEH EST JOB PSA PRO ECC SNG ISA JER LAM EZK DAN HOS JOL AMO OBA JON MIC NAM HAB ZEP HAG ZEC MAL MAT MRK LUK JHN ACT ROM 1CO 2CO GAL EPH PHP COL 1TH 2TH 1TI 2TI TIT PHM HEB JAS 1PE 2PE 1JN 2JN 3JN JUD REV'.split(' ').slice(1);
-  var VER_MAX = 6, API = 'https://bible.helloao.org';
+  var VER_MAX = 12, API = 'https://bible.helloao.org';
   function setMsg(t) { $('bb-msg').textContent = t || ''; }
   function loadBible(id) {
     if (bibles[id]) return Promise.resolve(bibles[id]);
@@ -404,11 +409,11 @@
     return out.join(', ');
   }
   function refText(f) { return BOOKS[f.book] + ' ' + f.ch + ':' + refRanges(f.verses.map(function (v) { return v.n; })); }
-  function clearPassage() { bbBook = null; bbVs = null; bbSel = []; bbFound = null; $('bb-vsw').hidden = true; bbPreview(); }
+  function clearPassage() { bbBook = null; bbVs = null; bbSel = []; bbFound = null; $('bb-vsw').hidden = true; bbPreview(); renderCols(); }
   function updateFound() {
     var nums = bbSel.slice().sort(function (a, b) { return a - b; });
     bbFound = nums.length && bbVs ? { book: bbBook, ch: bbCh, verses: nums.map(function (n) { return { n: n, t: bbVs[n - 1] }; }), tr: (bibles[bbVer] || {}).abbr || bbVer.toUpperCase() } : null;
-    renderVerses(); bbPreview();
+    renderVerses(); bbPreview(); renderCols();
     setMsg(bbFound ? '' : bbBook != null ? 'Tap one verse, or tap several to show them together. Hold Shift to pick a range.' : '');
   }
   function renderVerses() {
@@ -426,7 +431,7 @@
       var chs = d.books[r.book] || [], vs = chs[r.ch - 1];
       if (!vs || !vs.length) { setMsg(chs.length ? BOOKS[r.book] + ' has ' + chs.length + ' chapters.' : BOOKS[r.book] + ' is not in this version.'); clearPassage(); return; }
       if (r.v1 && r.v1 > vs.length) { setMsg(BOOKS[r.book] + ' ' + r.ch + ' has ' + vs.length + ' verses.'); clearPassage(); return; }
-      bbBook = r.book; bbCh = r.ch; bbVs = vs;
+      bbBook = r.book; bbCh = r.ch; bbVs = vs; colBk = r.book;
       if (r.v1) bbSel = range(r.v1, Math.max(r.v1, Math.min(r.v2 || r.v1, vs.length)));
       else bbSel = all === false ? [] : range(1, vs.length);
       bbLast = bbSel[0] || 0;
@@ -490,7 +495,7 @@
     });
   }
   /* as you type: book names, then chapters */
-  function refHints() {
+  function refHints0() {
     var v = $('bb-ref').value, sug = $('bb-sug'), chs = $('bb-ch');
     var m = v.match(/^\s*((?:[123]|first|second|third|1st|2nd|3rd|i{1,3})?\s*[a-z][a-z .]*?)\s*(\d.*)?$/i);
     sug.innerHTML = ''; chs.innerHTML = ''; $('bb-chw').hidden = true;
@@ -505,6 +510,12 @@
     }
     if (list.length) { sug.innerHTML = list.slice(0, 14).map(function (i) { return '<button type="button" role="option" data-bk="' + i + '">' + esc(BOOKS[i]) + '</button>'; }).join(''); $('bb-ref').setAttribute('aria-expanded', 'true'); }
     else sug.innerHTML = '<span class="help">No book starts with that.</span>';
+  }
+  function refHints() {
+    refHints0();
+    var m = $('bb-ref').value.match(/^\s*((?:[123]|first|second|third)?\s*[a-z][a-z .]*?)\s*\d*\s*(?::.*)?$/i);
+    if (m) { var ex = exactBook(m[1]); if (ex >= 0) colBk = ex; }
+    renderCols();
   }
   function setVersion(id) {
     bbVer = id; store('ae_ss_tr', id); renderVers();
@@ -654,14 +665,14 @@
   }
 
   function songLib() { return store('ae_ss_songs') || []; }
-  function songRecItem(s) { return { kind: 'song', name: s.title, slides: parseSong(s.lyrics, s.per != null ? s.per : 4), style: s.style || 'dark' }; }
+  function songRecItem(s) { return { kind: 'song', name: s.title, slides: s.titleOnly ? [{ label: 'Title', text: s.title }] : parseSong(s.lyrics, s.per != null ? s.per : 4), style: s.style || 'dark' }; }
   function lyricHit(l, q) { var i = l.toLowerCase().indexOf(q); if (i < 0) return ''; var a = Math.max(0, i - 18); return (a ? '...' : '') + l.slice(a, i + q.length + 30).replace(/\s+/g, ' '); }
   function renderSongs() {
     var lib = songLib(), q = $('song-q').value.trim().toLowerCase(), box = $('song-list');
     var shown = lib.map(function (s, i) { return { s: s, i: i }; }).filter(function (x) { return !q || x.s.title.toLowerCase().indexOf(q) >= 0 || x.s.lyrics.toLowerCase().indexOf(q) >= 0; });
     box.innerHTML = shown.length ? shown.map(function (x) {
       var hit = q && x.s.title.toLowerCase().indexOf(q) < 0 ? lyricHit(x.s.lyrics, q) : '';
-      return '<li><span data-sg="edit" data-i="' + x.i + '" style="cursor:pointer" title="Edit this song">' + esc(x.s.title) + (hit ? '<small class="help" style="display:block;overflow:hidden;text-overflow:ellipsis">' + esc(hit) + '</small>' : '') + '</span>' +
+      return '<li><span data-sg="pick" data-i="' + x.i + '" style="cursor:pointer" title="Double tap to add to the service">' + esc(x.s.title) + (hit ? '<small class="help" style="display:block;overflow:hidden;text-overflow:ellipsis">' + esc(hit) + '</small>' : '') + '</span>' +
         '<button type="button" class="ib flat" data-sg="edit" data-i="' + x.i + '" aria-label="Edit ' + esc(x.s.title) + '" title="Edit">' + ic('edit', 'sm') + '</button>' +
         '<button type="button" class="b sm" data-sg="use" data-i="' + x.i + '" aria-label="Add ' + esc(x.s.title) + ' to the service">' + ic('plus', 'sm') + 'Add</button></li>';
     }).join('') : '<li style="border:0;background:none"><span class="help" style="white-space:normal">' + (lib.length ? 'No songs match.' : 'No songs yet. Press New song, type the words and save it. Your songs stay on this computer.') + '</span></li>';
@@ -677,14 +688,15 @@
     var s = i == null ? null : songLib()[i]; editingSong = s ? s.title : null;
     $('sg-head').textContent = s ? 'Edit song' : 'New song';
     $('sg-title').value = s ? s.title : ''; $('sg-lyrics').value = s ? s.lyrics : ''; $('sg-del').hidden = !s;
-    $('sg-per').value = s && s.per != null ? String(s.per) : '4'; $('sg-style').value = (s && s.style) || 'dark';
+    $('sg-per').value = s && s.per != null ? String(s.per) : '4'; $('sg-style').value = (s && s.style) || 'dark'; $('sg-titleonly').checked = !!(s && s.titleOnly);
     songPreview(); openDlg($('dlg-song')); $('sg-title').focus();
   }
   function saveSong() {
     var t = $('sg-title').value.trim(), l = $('sg-lyrics').value.trim();
-    if (!t || !l) { say('Give the song a title and lyrics before saving.', true); return null; }
+    var to = $('sg-titleonly').checked;
+    if (!t || (!l && !to)) { say('Give the song a title and lyrics before saving.', true); return null; }
     var lib = songLib().filter(function (s) { return s.title.toLowerCase() !== t.toLowerCase() && s.title !== editingSong; });
-    var rec = { title: t, lyrics: l, per: +$('sg-per').value, style: $('sg-style').value };
+    var rec = { title: t, lyrics: l, per: +$('sg-per').value, style: $('sg-style').value, titleOnly: to };
     lib.push(rec); lib.sort(function (a, b) { return a.title.localeCompare(b.title); });
     store('ae_ss_songs', lib); editingSong = t; renderSongs(); say('"' + t + '" saved to your songs on this computer.'); return rec;
   }
@@ -693,7 +705,9 @@
   $('song-list').addEventListener('click', function (e) {
     var b = e.target.closest('[data-sg]'); if (!b) return; var s = songLib()[+b.dataset.i]; if (!s) return;
     if (b.dataset.sg === 'edit') openEditor(+b.dataset.i);
-    else { var it = songRecItem(s); if (it.slides.length) addItem(it, false); }
+    else if (b.dataset.sg === 'use') { var it = songRecItem(s); if (it.slides.length) addItem(it, false); }
+    else if (isDouble('lib:' + b.dataset.i)) { var it2 = songRecItem(s); if (it2.slides.length) addItem(it2, false); }
+    else toast('Double tap a song to add it to the service. Tap the pen to edit it.');
   });
   ['sg-lyrics', 'sg-per'].forEach(function (id) { $(id).addEventListener('input', songPreview); $(id).addEventListener('change', songPreview); });
   $('sg-save').onclick = function () { if (saveSong()) closeDlg($('dlg-song')); };
@@ -704,6 +718,14 @@
   };
 
 
+  $('song-hymns').onclick = function () {
+    fetch('/tools/second-screen-presenter/hymns.json').then(function (r) { return r.json(); }).then(function (d) {
+      var lib = songLib(), have = {}; lib.forEach(function (x) { have[x.title.toLowerCase()] = true; });
+      var n = 0; d.songs.forEach(function (x) { if (!have[x.title.toLowerCase()]) { lib.push(x); n++; } });
+      lib.sort(function (a, b) { return a.title.localeCompare(b.title); }); store('ae_ss_songs', lib); renderSongs();
+      say(n ? n + ' starter hymns added. They are public domain, so they are free to use.' : 'The starter hymns are already in your songs.');
+    }).catch(function () { say('The hymns could not be loaded. Check your internet connection.', true); });
+  };
   $('song-export').onclick = function () {
     var data = { app: 'presenter', version: 1, savedOn: new Date().toISOString(), songs: songLib(), scripture: bset };
     var a = document.createElement('a'), d = new Date(), pad = function (n) { return (n < 10 ? '0' : '') + n; };
@@ -719,7 +741,7 @@
       var d = JSON.parse(t), inc = d && d.songs;
       if (!Array.isArray(inc)) throw new Error('shape');
       var lib = songLib(), by = {}; lib.forEach(function (x) { by[x.title.toLowerCase()] = x; });
-      var n = 0; inc.forEach(function (x) { if (x && x.title && x.lyrics) { by[String(x.title).toLowerCase()] = { title: String(x.title), lyrics: String(x.lyrics), per: x.per != null ? +x.per : 4, style: x.style || 'dark' }; n++; } });
+      var n = 0; inc.forEach(function (x) { if (x && x.title && (x.lyrics || x.titleOnly)) { by[String(x.title).toLowerCase()] = { title: String(x.title), lyrics: String(x.lyrics || ''), per: x.per != null ? +x.per : 4, style: x.style || 'dark', titleOnly: !!x.titleOnly }; n++; } });
       var out = Object.keys(by).map(function (k) { return by[k]; }).sort(function (a, b) { return a.title.localeCompare(b.title); });
       store('ae_ss_songs', out); renderSongs(); say(n + (n === 1 ? ' song' : ' songs') + ' restored from the backup.');
     }).catch(function () { say('That file is not a Presenter songs backup.', true); });
@@ -927,7 +949,7 @@
   function select(id, n, live) {
     var it = get(id); if (!it) return;
     selId = id; selSlide = Math.max(0, Math.min(n || 0, it.slides ? it.slides.length - 1 : 0));
-    renderSlides(); renderService(); renderMonitors();
+    renderSlides(); renderService(); renderMonitors(); syncFit();
     if (live) goLive(id, selSlide);
   }
   function payload(it, n) {
@@ -944,18 +966,28 @@
     if (it.file) o.file = it.file; if (it.url) o.url = it.url;
     return o;
   }
+  function fitFor(it) { return it && isMedia(it) && it.fill ? 'cover' : 'contain'; }
   function liveOpts() { return { fade: opts.fade, fit: opts.fit, loop: opts.loop, volume: opts.volume }; }
   function goLive(id, n) {
     var it = get(id); if (!it) return;
     if (!Object.keys(alive(displays)).length) say('Open the TV screen first (top right), then press Go live again.', true);
     var same = id === liveId && !logoOn;
     liveId = id; liveSlide = Math.max(0, Math.min(n || 0, it.slides ? it.slides.length - 1 : 0)); selId = id; selSlide = liveSlide; if (!same) vstat = null;
+    if (isMedia(it)) opts.fit = fitFor(it); else if (!same) opts.fit = 'contain';
+    syncFit();
     logoOn = false;
     if (it.kind === 'timer' && it.mode !== 'clock' && !it.end) it.end = timerEnd(it);
     if (black) setBlack(false, true);
     ensureStream(needKey(it));
     send({ type: 'show', item: payload(it, liveSlide), opts: it.slides && same ? { fade: false, fit: opts.fit } : liveOpts() });
     renderSlides(); render(); armAuto(); mirrorSoon();
+  }
+  function fitTarget() { var s = get(selId); return s && isMedia(s) ? s : get(liveId); }
+  function syncFit() {
+    var it = fitTarget(), b = $('fit'); if (!b) return;
+    var can = !!it && isMedia(it) && it.kind !== 'camera' && it.kind !== 'screen' && it.kind !== 'link';
+    b.hidden = !can; b.setAttribute('aria-pressed', !!(it && it.fill));
+    b.textContent = it && it.fill ? 'Original shape' : 'Expand to fill';
   }
   function resendLive() { var it = get(liveId); if (it && !logoOn) { preKey = liveKey = ''; send({ type: 'show', item: payload(it, liveSlide), opts: { fade: false, fit: opts.fit } }); } renderSlides(); render(); mirrorSoon(); }
   function step(dir) {
@@ -1203,8 +1235,7 @@
     if (b && b.dataset.act === 'menu') { menuAt(b, itemEntries(id)); return; }
     if (window.innerWidth <= 900) { $('app').dataset.view = 'show'; syncMtabs(); }
     var dbl = isDouble('s:' + id);
-    if (isSong(it)) select(id, 0, !opts.studio || dbl);
-    else if (dbl) goLive(id, 0);
+    if (dbl) goLive(id, 0);
     else select(id, 0, false);
   });
   $('svc').addEventListener('dblclick', function (e) { var li = e.target.closest('.si'); if (li && !e.target.closest('[data-act]') && !(liveId === li.dataset.id && liveSlide === 0 && !logoOn)) goLive(li.dataset.id, 0); });
@@ -1330,7 +1361,7 @@
   $('logo-pick').onclick = function () { $('logo-file').click(); };
   $('logo-file').onchange = function () {
     var f = this.files[0]; this.value = ''; if (!f || !/^image\//.test(f.type)) return;
-    if (logoFile) URL.revokeObjectURL(logoFile.url); logoFile = { file: f, url: URL.createObjectURL(f) }; $('logo-name').textContent = f.name; say('Logo ready. Press Logo to show it.');
+    if (logoFile) URL.revokeObjectURL(logoFile.url); logoFile = { file: f, url: URL.createObjectURL(f) }; idb.put('logo', { file: f, name: f.name }); $('logo-name').textContent = f.name; bgChanged(); say('Logo ready. Press Logo to show it.');
   };
   $('rec').onclick = toggleRec;
   $('live-btn').onclick = function () { openDlg($('dlg-live')); };
@@ -1559,20 +1590,48 @@
     if (tvWas && !on && tvEl) { toast('The TV screen left full screen. Press the TV screen button to send it back.'); armOpen(); }
     tvWas = on; renderStatus();
   });
-  $('scr-detect').onclick = function () { loadScreens(true).then(function () { showScreens(); }); };
+  $('scr-detect').onclick = function () { if (DESK) { deskScreens(); return; } loadScreens(true).then(function () { showScreens(); }); };
   $('scr-open').onclick = function () { doOpen(false); };
-  $('p-disp').onclick = function () { startTV(); };
+  function deskScreens(note) {
+    if (!DESK || !DESK.listDisplays) { startTV(); return; }
+    DESK.listDisplays().then(function (list) {
+      var h = note ? '<p style="margin:0;color:var(--amber)">' + esc(note) + '</p>' : '';
+      h += '<p style="margin:0"><b>' + (list.length < 2 ? 'Your computer can only see one screen right now.' : 'Choose which screen shows the service to the people.') + '</b></p>';
+      h += '<ul class="list">' + list.map(function (d, i) {
+        return '<li><span>' + esc(d.label || ('Screen ' + (i + 1))) + ' (' + d.w + ' x ' + d.h + ')' + (d.control ? ', the screen with your controls' : '') + (d.tv ? ', the service is showing here' : '') + '</span>' +
+          (d.control ? '' : '<button type="button" class="b sm' + (d.tv ? '' : ' pri') + '" data-tvid="' + d.id + '"' + (d.tv ? ' disabled' : '') + '>' + (d.tv ? 'Showing' : 'Show here') + '</button>') + '</li>';
+      }).join('') + '</ul>';
+      if (list.length < 2) h += '<p class="help" style="margin:0">Plug in the TV, projector or a USB-C or HDMI display. On Windows press the Windows key and P and choose Extend. On a Mac open System Settings, Displays, and turn off mirroring. It appears here by itself.</p>';
+      $('scr-body').innerHTML = h; $('scr-open').hidden = true; openDlg($('dlg-screens'));
+    });
+  }
+  $('scr-body').addEventListener('click', function (e) { var b = e.target.closest('[data-tvid]'); if (b && DESK && DESK.setTV) DESK.setTV(+b.dataset.tvid).then(function () { deskScreens(); say('The service now shows on that screen.'); }); });
+  $('p-disp').onclick = function () { if (DESK) deskScreens(); else startTV(); };
   $('p-stage').onclick = openStage;
   $('move').onclick = function () { if (popup && !popup.closed) say(placePopup(popup) ? 'Moved. Click the display once to make it full screen.' : 'The display could not be moved. Drag it to the screen yourself.'); else say('Open the display screen first.', true); };
   loadScreens(false).then(function () { setTimeout(autoOpen, 900); });
   if (DESK) {
-    DESK.onDisplays(function (i) { renderStatus(); if (i.displays < 2) say('Only one screen found. Connect your TV or projector and set it to extend (not mirror). The show goes there by itself.', true); else if (i.tvOpen) say('The TV screen is on your second screen.'); });
+    DESK.onDisplays(function (i) { renderStatus(); if ($('dlg-screens').open) deskScreens(); if (i.displays < 2) say('Only one screen found. Connect your TV or projector and set it to extend (not mirror). The show goes there by itself.', true); else if (i.tvOpen) say('The TV screen is on your second screen.'); });
     DESK.onUpdate(function (u) {
       if (u.state === 'ready') toast('A new version of the Presenter app is ready. It installs when you close the app.');
       else if (u.state === 'manual') say('A new version of the Presenter app is available. Download it from the Presenter website.');
     });
   }
   if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register(BASE + 'sw.js', { scope: BASE }).catch(function () { /* offline copy is optional */ });
+  /* the speech model is saved on the computer the first time the app is open online, so listening also works without internet */
+  var VOICE_FILES = ['/tools/whisper-worker.js', '/tools/vendor/transformers/transformers.min.js', '/tools/vendor/transformers/ort-wasm-simd-threaded.jsep.mjs', '/tools/vendor/transformers/ort-wasm-simd-threaded.jsep.wasm',
+    '/tools/vendor/whisper/tiny/config.json', '/tools/vendor/whisper/tiny/generation_config.json', '/tools/vendor/whisper/tiny/preprocessor_config.json', '/tools/vendor/whisper/tiny/tokenizer.json', '/tools/vendor/whisper/tiny/tokenizer_config.json',
+    '/tools/vendor/whisper/tiny/onnx/encoder_model_quantized.onnx', '/tools/vendor/whisper/tiny/onnx/decoder_model_merged_quantized.onnx'];
+  function voiceSW() { return 'serviceWorker' in navigator && location.protocol !== 'file:' ? navigator.serviceWorker.register('/tools/voice-sw.js', { scope: '/tools/' }).catch(function () { return null; }) : Promise.resolve(null); }
+  function prefetchVoice() {
+    if (!navigator.onLine || !window.caches || store('ae_ss_voice_ready') === 2) return;
+    voiceSW().then(function () { return caches.open('voice-v1'); }).then(function (c) {
+      var p = Promise.resolve();
+      VOICE_FILES.forEach(function (u) { p = p.then(function () { return c.match(u).then(function (hit) { if (!hit) return c.add(u); }); }); });
+      return p;
+    }).then(function () { store('ae_ss_voice_ready', 2); }).catch(function () { /* tried again next time */ });
+  }
+  setTimeout(prefetchVoice, 25000);
 
 
   function refreshPickers() { bbBg.redraw(); }
@@ -1585,6 +1644,12 @@
     var m = { type: 'lib', songs: songLib().map(function (s, i) { return { i: i, title: s.title }; }), vers: bbVers.map(function (v) { return { id: v.id, abbr: v.abbr }; }), ver: bbVer };
     if (c) { try { c.send(m); } catch (e) { /* dropped */ } } else remoteSend(m);
   }
+  /* the phone code is drawn as round dots on a round white disc */
+  function dotQr(q) {
+    var n = q.getModuleCount(), s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 ' + (n + 2) + ' ' + (n + 2) + '" role="img" aria-label="Code to scan with your phone"><rect x="-1" y="-1" width="' + (n + 2) + '" height="' + (n + 2) + '" fill="#fff"/><g fill="#111">';
+    for (var r = 0; r < n; r++) for (var c = 0; c < n; c++) if (q.isDark(r, c)) s += '<circle cx="' + (c + 0.5) + '" cy="' + (r + 0.5) + '" r="0.48"/>';
+    return s + '</g></svg>';
+  }
   function remoteStatus(t) { $('rm-st').textContent = t; }
   function startRemote() {
     if (peer) return;
@@ -1595,11 +1660,11 @@
     peer = new window.Peer(rid, { debug: 0 });
     peer.on('open', function (id) {
       var url = location.origin + BASE + 'remote/#' + id;
-      $('rm-link').href = url; $('rm-link').textContent = url;
-      try { var q = window.qrcode(0, 'M'); q.addData(url); q.make(); $('rm-qr').innerHTML = q.createSvgTag({ cellSize: 5, margin: 3, scalable: true }); } catch (e) { $('rm-qr').textContent = ''; }
+      try { var q = window.qrcode(0, 'M'); q.addData(url); q.make(); $('rm-qr').innerHTML = dotQr(q); } catch (e) { $('rm-qr').textContent = ''; }
       remoteStatus(conns.length ? conns.length + ' phone connected.' : 'Scan the code with your phone camera.');
     });
     peer.on('connection', function (c) {
+      if (conns.length >= 2) { c.on('open', function () { try { c.send({ type: 'toast', text: 'Two phones are already connected.' }); } catch (e) { /* dropped */ } setTimeout(function () { try { c.close(); } catch (e) { /* closed */ } }, 500); }); return; }
       c.on('open', function () {
         conns.push(c); remoteStatus(conns.length + (conns.length > 1 ? ' phones connected.' : ' phone connected.'));
         c.send({ type: 'state', state: state() }); remoteLib(c); lastMir = ''; mirrorFrame(); renderStatus(); toast('Phone connected');
@@ -1659,8 +1724,14 @@
   });
   $('m-grid').addEventListener('click', function (e) {
     var rm = e.target.closest('[data-rm]'); if (rm) { e.stopPropagation(); if (mSel === rm.dataset.rm) mSel = null; removeMedia(rm.dataset.rm); return; }
-    if (e.target.closest('[data-act="add"]')) { mSel = null; $('m-addbox').hidden = !$('m-addbox').hidden; renderMedia(); return; }
-    var t = e.target.closest('.mt[data-id]'); if (t) { mSel = t.dataset.id; $('m-addbox').hidden = true; renderMedia(); }
+    if (e.target.closest('[data-act="add"]')) { mSel = null; $('m-addbox').hidden = true; pickMedia('any'); return; }
+    var t = e.target.closest('.mt[data-id]');
+    if (t) {
+      var dbl = isDouble('m:' + t.dataset.id);
+      mSel = t.dataset.id; $('m-addbox').hidden = true;
+      if (dbl) { var m = findMedia(mSel); if (m) { addItem(mediaToItem(m), true); } } /* a double click goes straight live (and into the service) */
+      renderMedia();
+    }
   });
   $('m-grid').addEventListener('keydown', function (e) { var t = e.target.closest && e.target.closest('.mt[data-id]'); if (t && (e.key === 'Enter' || e.key === ' ') && e.target === t) { e.preventDefault(); mSel = t.dataset.id; $('m-addbox').hidden = true; renderMedia(); var f = $('m-grid').querySelector('.mt.sel'); if (f) f.focus(); } });
   $('m-det').addEventListener('click', function (e) {
@@ -1694,7 +1765,6 @@
     if (p) { bset.per = +p.dataset.per; store('ae_ss_bset', bset); setPop(null); setPop('per'); if (bbFound) bbPreview(); }
     else if (l) { bset.look = +l.dataset.look; store('ae_ss_bset', bset); setPop(null); setPop('color'); }
   });
-  $('bb-words').onclick = function () { openDlg($('dlg-words')); $('bb-q').focus(); };
   $('bb-vbar').addEventListener('click', function (e) {
     var rm = e.target.closest('[data-rmver]'), v = e.target.closest('[data-ver]');
     if (e.target.closest('#bb-addver')) { openVersions(); return; }
@@ -1704,24 +1774,239 @@
   $('ver-q').addEventListener('input', renderVerList);
   $('ver-list').addEventListener('click', function (e) { var b = e.target.closest('[data-addver]'); if (b && !b.disabled) addVersion(b.dataset.addver, b); });
   $('bb-go').onclick = function () { bibleFind(); };
-  $('bb-ref').addEventListener('input', function () { clearPassage(); refHints(); });
-  $('bb-ref').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); bibleFind(); } });
-  $('bb-sug').addEventListener('click', function (e) { var b = e.target.closest('[data-bk]'); if (!b) return; $('bb-ref').value = BOOKS[+b.dataset.bk] + ' '; $('bb-ref').focus(); refHints(); });
-  $('bb-ch').addEventListener('click', function (e) { var b = e.target.closest('[data-ch]'); if (!b) return; $('bb-ref').value = BOOKS[+b.dataset.bk] + ' ' + b.dataset.ch; bibleFind(false); });
-  $('bb-vs').addEventListener('click', function (e) {
-    var b = e.target.closest('[data-v]'); if (!b || !bbVs) return;
-    var v = +b.dataset.v, i = bbSel.indexOf(v);
-    if (e.shiftKey && bbLast) { var a = Math.min(bbLast, v), z = Math.max(bbLast, v); range(a, z).forEach(function (n) { if (bbSel.indexOf(n) < 0) bbSel.push(n); }); }
+  var liveFindT;
+  $('bb-ref').addEventListener('input', function () {
+    clearPassage(); refHints(); wordDrop();
+    clearTimeout(liveFindT); liveFindT = setTimeout(function () { if (parseRef($('bb-ref').value)) bibleFind(false); }, 260);
+  });
+  $('bb-ref').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); $('bb-drop').hidden = true; bibleFind(); return; }
+    if (e.key === 'Escape') { $('bb-drop').hidden = true; return; }
+    if (e.key !== 'Tab' || e.shiftKey) return;
+    var v = this.value.trim(); if (!v) return;
+    var m = v.match(/^(.*?[a-z.])\s*(\d+)(\s*:\s*(\d+(?:\s*-\s*\d+)?)?)?$/i), self = this;
+    if (!m) {
+      var bi = exactBook(v) >= 0 ? exactBook(v) : (matchBooks(v)[0] != null ? matchBooks(v)[0] : -1);
+      if (bi < 0) return;
+      e.preventDefault(); self.value = BOOKS[bi] + ' '; colBk = bi; $('bb-drop').hidden = true; clearPassage(); refHints(); return;
+    }
+    var bk = findBook(m[1]); if (bk < 0) return;
+    e.preventDefault(); $('bb-drop').hidden = true;
+    if (!m[4]) { var keep = BOOKS[bk] + ' ' + m[2]; self.value = keep; bibleFind(false).then(function () { self.value = keep + ':'; }); }
+    else bibleFind();
+  });
+  /* words typed instead of a verse: the matching verses drop down under the box */
+  var dropT;
+  function hl(t, q) { var i = t.toLowerCase().indexOf(q); if (i < 0) return esc(t); return esc(t.slice(0, i)) + '<mark>' + esc(t.slice(i, i + q.length)) + '</mark>' + esc(t.slice(i + q.length)); }
+  function wordDrop() {
+    var v = $('bb-ref').value.trim(), box = $('bb-drop'); clearTimeout(dropT);
+    if (v.length < 3 || (/\d/.test(v) && parseRef(spokenToRef(v))) || (/^\S+$/.test(v) && matchBooks(v).length) || /^\s*[123]?\s*[a-z. ]+\s+\d/i.test(v)) { box.hidden = true; box.innerHTML = ''; return; }
+    dropT = setTimeout(function () {
+      var q = v.toLowerCase();
+      searchVerses(q).then(function (r) {
+        if ($('bb-ref').value.trim() !== v) return;
+        box.hidden = false; $('bb-sug').innerHTML = '';
+        box.innerHTML = r.list.length ? r.list.map(function (o) { return '<button type="button" class="hit" role="option" data-ref="' + esc(o.r) + '"><b>' + esc(o.r) + '</b> ' + hl(o.t, q) + '</button>'; }).join('') : '<p class="help" style="padding:6px 8px;margin:0">No verse has those words in ' + esc(r.tr || 'this version') + '.</p>';
+      });
+    }, 180);
+  }
+  $('bb-drop').addEventListener('click', function (e) { var h = e.target.closest('[data-ref]'); if (!h) return; $('bb-drop').hidden = true; $('bb-ref').value = h.dataset.ref; refHints(); bibleFind(); });
+  document.addEventListener('mousedown', function (e) { if (!e.target.closest('#bb-drop') && e.target !== $('bb-ref')) $('bb-drop').hidden = true; }, true);
+
+  /* three clickable columns: book, chapter, verse */
+  function renderCols() {
+    var box = $('bb-cols'); if (!box) return;
+    var old = [].map.call(box.querySelectorAll('.col'), function (c) { return c.scrollTop; });
+    var h = '<div class="col"><h4>Book</h4>' + BOOKS.map(function (b, i) { return '<button type="button" data-cb="' + i + '" aria-pressed="' + (i === colBk) + '">' + esc(b) + '</button>'; }).join('') + '</div>';
+    h += '<div class="col n"><h4>Chapter</h4>';
+    if (colBk != null) for (var c = 1; c <= CHAPTERS[colBk]; c++) h += '<button type="button" data-cc="' + c + '" aria-pressed="' + (bbBook === colBk && bbCh === c) + '">' + c + '</button>';
+    h += '</div><div class="col n"><h4>Verse</h4>';
+    if (bbVs && bbBook === colBk) { var set = {}; bbSel.forEach(function (n) { set[n] = true; }); for (var v = 1; v <= bbVs.length; v++) h += '<button type="button" data-cv="' + v + '" aria-pressed="' + (!!set[v]) + '">' + v + '</button>'; }
+    h += '</div>';
+    box.innerHTML = h;
+    [].forEach.call(box.querySelectorAll('.col'), function (col, i) {
+      var s = col.querySelector('[aria-pressed=true]');
+      if (s && i < 2) col.scrollTop = Math.max(0, s.offsetTop - col.clientHeight / 2 + s.offsetHeight / 2 - 12); else col.scrollTop = old[i] || 0;
+    });
+  }
+  function toggleVerse(v, shift) {
+    var i = bbSel.indexOf(v);
+    if (shift && bbLast) { var a = Math.min(bbLast, v), z = Math.max(bbLast, v); range(a, z).forEach(function (n) { if (bbSel.indexOf(n) < 0) bbSel.push(n); }); }
     else if (i >= 0) bbSel.splice(i, 1); else { bbSel.push(v); bbLast = v; }
     updateFound();
+  }
+  $('bb-cols').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-cb]'), c = e.target.closest('[data-cc]'), v = e.target.closest('[data-cv]');
+    if (b) { colBk = +b.dataset.cb; $('bb-drop').hidden = true; $('bb-ref').value = BOOKS[colBk] + ' '; clearPassage(); refHints(); }
+    else if (c && colBk != null) { $('bb-ref').value = BOOKS[colBk] + ' ' + c.dataset.cc; bibleFind(false); }
+    else if (v && bbVs) toggleVerse(+v.dataset.cv, e.shiftKey);
   });
+  $('bb-sug').addEventListener('click', function (e) { var b = e.target.closest('[data-bk]'); if (!b) return; $('bb-ref').value = BOOKS[+b.dataset.bk] + ' '; $('bb-ref').focus(); refHints(); });
+  $('bb-ch').addEventListener('click', function (e) { var b = e.target.closest('[data-ch]'); if (!b) return; $('bb-ref').value = BOOKS[+b.dataset.bk] + ' ' + b.dataset.ch; bibleFind(false); });
+  $('bb-vs').addEventListener('click', function (e) { var b = e.target.closest('[data-v]'); if (b && bbVs) toggleVerse(+b.dataset.v, e.shiftKey); });
   $('bb-all').onclick = function () { if (!bbVs) return; bbSel = bbSel.length === bbVs.length ? [] : range(1, bbVs.length); updateFound(); };
   $('bb-mic').onclick = voiceSearch;
   $('bb-add').onclick = function () { if (bbFound) addItem(bibleItem(), false); };
   $('bb-show').onclick = function () { if (bbFound) addItem(bibleItem(), true); };
-  $('bb-search').onclick = bibleSearch;
-  $('bb-q').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); bibleSearch(); } });
-  $('bb-res').addEventListener('click', function (e) { var h = e.target.closest('[data-ref]'); if (h) { closeDlg($('dlg-words')); setTab('bible'); $('bb-ref').value = h.dataset.ref; bibleFind(); } });
+
+  /* import a Bible the church is licensed to use (a text file with one verse per line, or a json file) */
+  function importBible(file) {
+    var base = (file.name || 'Bible').replace(/\.[^.]+$/, ''), abbr = (base.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 6)) || 'MYBIBL';
+    return file.text().then(function (t) {
+      var d, total = 0, books = USFM.map(function () { return []; });
+      if (/\.json$/i.test(file.name) || /^\s*[\[{]/.test(t)) {
+        var j = JSON.parse(t);
+        if (j && Array.isArray(j.books) && j.books[0] && Array.isArray(j.books[0]) && Array.isArray(j.books[0][0])) { books = j.books; abbr = j.abbr || abbr; base = j.name || base; }
+        else if (j && Array.isArray(j.books) && Array.isArray(j.books[0]) && typeof j.books[0][0] === 'string') { j.books.forEach(function (bk) { var bi = findBook(bk[0]); if (bi >= 0) books[bi] = bk[1]; }); abbr = j.abbr || abbr; base = j.name || base; }
+        else { var cv = convertBible(j, { id: 'x-imp-' + abbr.toLowerCase(), abbr: abbr, name: base }); books = cv.books; }
+      } else {
+        t.replace(/\r/g, '').split('\n').forEach(function (ln) {
+          var m = ln.match(/^\s*((?:[123]|I{1,3})?\s*[A-Za-z][A-Za-z .]*?)\s+(\d+)\s*[:.]\s*(\d+)\s*[\t \-]+(.+?)\s*$/); if (!m) return;
+          var bi = findBook(m[1]); if (bi < 0) return;
+          var chs = books[bi], ci = +m[2] - 1; if (!chs[ci]) chs[ci] = [];
+          chs[ci][+m[3] - 1] = m[4];
+        });
+      }
+      books.forEach(function (chs) { for (var i = 0; i < chs.length; i++) { if (!chs[i]) chs[i] = []; for (var k = 0; k < chs[i].length; k++) { if (chs[i][k] == null) chs[i][k] = ''; else total++; } } });
+      if (total < 100) throw new Error('empty');
+      var id = 'x-imp-' + abbr.toLowerCase();
+      d = { id: id, abbr: abbr, name: base, books: books };
+      bibles[id] = d; idb.put('bible:' + id, d, 'bibles');
+      bbVers = bbVers.filter(function (v) { return v.id !== id; });
+      if (bbVers.length >= VER_MAX) bbVers.pop();
+      bbVers.push({ id: id, abbr: abbr, name: base }); saveVers(); setVersion(id); renderVerList();
+      toast(base + ' imported (' + total.toLocaleString() + ' verses).');
+    });
+  }
+  $('ver-import').onclick = function () { $('ver-import-file').click(); };
+  $('ver-import-file').onchange = function () {
+    var f = this.files[0]; this.value = ''; if (!f) return;
+    importBible(f).catch(function (er) { if (window.console) console.error(er); $('ver-msg').textContent = 'That file could not be read as a Bible. Use one verse per line, like "John 3:16 For God so loved the world..."'; });
+  };
+
+  /* black or light */
+  function setTheme(t) { document.documentElement.setAttribute('data-theme', t); store('ae_ss_theme', t); $('theme').setAttribute('aria-pressed', t === 'light'); $('theme').title = t === 'light' ? 'Switch to black' : 'Switch to light'; }
+  $('theme').onclick = function () { setTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light'); };
+  setTheme(store('ae_ss_theme') === 'light' ? 'light' : 'dark');
+
+  /* photos and videos keep their own shape; this stretches one to fill the screen */
+  $('fit').onclick = function () {
+    var it = fitTarget(); if (!it || !isMedia(it)) return;
+    it.fill = !it.fill;
+    if (it.id === liveId) { opts.fit = fitFor(it); send({ type: 'fit', value: opts.fit }); }
+    syncFit(); render();
+  };
+
+  /* ---- listen to the message: finds verses the speaker reads or names, offline (Whisper runs on this computer) */
+  var heardAt = {}, vl = { on: false, worker: null, busy: false, buf: [], len: 0, tail: null, timer: null, stream: null, ctx: null, proc: null, loaded: false };
+  function normTxt(s) { return ' ' + String(s).toLowerCase().replace(/[^a-z0-9' ]+/g, ' ').replace(/\s+/g, ' ').trim() + ' '; }
+  function verseIndex(id) {
+    var d = bibles[id]; if (!d) return null; if (d._ix) return d._ix;
+    var ix = []; d.books.forEach(function (chs, b) { chs.forEach(function (vs, c) { vs.forEach(function (t, v) { if (t) ix.push({ b: b, c: c + 1, v: v + 1, n: normTxt(t) }); }); }); });
+    Object.defineProperty(d, '_ix', { value: ix, enumerable: false }); return ix;
+  }
+  function numWords(s) {
+    return s.replace(/\b(?:one\s+)?hundred(?:\s+and)?(?:\s+(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety))?(?:[\s-]+(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen))?\b/g, function (m, t, u) { return String(100 + (t ? NUMW[t] : 0) + (u ? NUMW[u] : 0)); });
+  }
+  var BOOK_RX = null, REF_TOK = /^(\d+|chapter|verse|verses|colon|to|through|thru|and|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)$/;
+  function findRefs(text) {
+    if (!BOOK_RX) {
+      var names = BOOKS.map(function (b) { return b.toLowerCase().replace(/^[123] /, ''); }).concat(['psalm', 'revelations', 'song of songs']);
+      names = names.filter(function (n, i) { return names.indexOf(n) === i; }).sort(function (a, b) { return b.length - a.length; });
+      BOOK_RX = new RegExp('\\b(?:(first|second|third|1st|2nd|3rd|1|2|3)\\s+)?(' + names.join('|') + ')\\b', 'g');
+    }
+    var s = String(text).toLowerCase().replace(/[.,;!?]/g, ' '), out = [], m;
+    BOOK_RX.lastIndex = 0;
+    while ((m = BOOK_RX.exec(s))) {
+      var pre = m[1] ? ({ first: 1, second: 2, third: 3, '1st': 1, '2nd': 2, '3rd': 3 }[m[1]] || +m[1]) : '', nm = m[2].replace(/ /g, '');
+      if (nm === 'psalm') nm = 'psalms'; if (nm === 'revelations') nm = 'revelation'; if (nm === 'songofsongs') nm = 'songofsolomon';
+      var bi = NORM.indexOf((pre ? pre : '') + nm); if (bi < 0) bi = NORM.indexOf(nm); if (bi < 0) continue;
+      var tail = numWords(s.slice(BOOK_RX.lastIndex)).trim().split(/\s+/), take = [];
+      for (var k = 0; k < tail.length && k < 11; k++) { if (REF_TOK.test(tail[k])) take.push(tail[k]); else break; }
+      while (take.length && /^(to|through|thru|and)$/.test(take[take.length - 1])) take.pop();
+      if (!take.length) continue;
+      var ref = spokenToRef(BOOKS[bi] + ' ' + take.join(' '));
+      if (parseRef(ref)) out.push(ref);
+    }
+    return out;
+  }
+  function findQuote(text) {
+    var ix = verseIndex(bbVer); if (!ix) return null;
+    var w = normTxt(text).trim().split(' '); if (w.length < 7) return null;
+    var votes = {}, best = null, bv = 0;
+    for (var i = 0; i + 7 <= w.length; i += 2) {
+      var ph = ' ' + w.slice(i, i + 7).join(' ') + ' ', hit = [];
+      for (var k = 0; k < ix.length && hit.length < 4; k++) if (ix[k].n.indexOf(ph) >= 0) hit.push(k);
+      if (!hit.length || hit.length > 3) continue;
+      hit.forEach(function (k2) { votes[k2] = (votes[k2] || 0) + 1 / hit.length; if (votes[k2] > bv) { bv = votes[k2]; best = ix[k2]; } });
+    }
+    return best ? BOOKS[best.b] + ' ' + best.c + ':' + best.v : null;
+  }
+  function addHeard(label, how) {
+    var box = $('bb-heard'); box.hidden = false;
+    var r = document.createElement('div'); r.className = 'hr'; r.innerHTML = '<span><b>' + esc(label) + '</b> <small class="help">' + esc(how) + '</small></span>';
+    box.insertBefore(r, box.firstChild); while (box.children.length > 4) box.removeChild(box.lastChild);
+  }
+  function heard(ref, how) {
+    if (heardAt[ref] && Date.now() - heardAt[ref] < 90000) return; heardAt[ref] = Date.now();
+    lookupRef(ref).then(function (f) {
+      if (!f) return;
+      addItem(bibleItem(f), $('bb-autoshow').checked);
+      addHeard(refText(f) + ' ' + f.tr, how === 'ref' ? 'named by the speaker' : 'read from the Bible');
+    });
+  }
+  function scan(text) {
+    findRefs(text).forEach(function (r) { heard(r, 'ref'); });
+    if (!findRefs(text).length) { var q = findQuote(text); if (q) heard(q, 'quote'); }
+  }
+  function setListenUi(on, msg) {
+    $('bb-listen').setAttribute('aria-pressed', on); $('bb-listen').querySelector('span').textContent = on ? 'Listening. Press to stop' : 'Listen to the message';
+    if (msg) setMsg(msg);
+  }
+  function stopListen() {
+    vl.on = false; clearInterval(vl.timer);
+    try { if (vl.proc) vl.proc.disconnect(); if (vl.stream) vl.stream.getTracks().forEach(function (t) { t.stop(); }); if (vl.ctx) vl.ctx.close(); } catch (e) { /* already closed */ }
+    vl.proc = vl.stream = vl.ctx = null; vl.buf = []; vl.len = 0; setListenUi(false, 'Stopped listening.');
+  }
+  function down16(chunks, len, rate) {
+    var all = new Float32Array(len), o = 0; chunks.forEach(function (c) { all.set(c, o); o += c.length; });
+    var f = rate / 16000, n = Math.floor(all.length / f), out = new Float32Array(n);
+    for (var i = 0; i < n; i++) { var a = Math.floor(i * f), b = Math.max(a + 1, Math.floor((i + 1) * f)), s = 0; for (var k = a; k < b && k < all.length; k++) s += all[k]; out[i] = s / (b - a); }
+    return out;
+  }
+  function startListen() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { say('This computer cannot use a microphone here.', true); return; }
+    loadBible(bbVer).then(function () { verseIndex(bbVer); });
+    voiceSW();
+    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: true, channelCount: 1 } }).then(function (st) {
+      vl.stream = st; vl.on = true; setListenUi(true, vl.loaded ? 'Listening to the message.' : 'Getting the listener ready (first time only)...');
+      var ctx = new (window.AudioContext || window.webkitAudioContext)(); vl.ctx = ctx;
+      var src = ctx.createMediaStreamSource(st), proc = ctx.createScriptProcessor(4096, 1, 1); vl.proc = proc;
+      proc.onaudioprocess = function (e) { if (!vl.on) return; vl.buf.push(new Float32Array(e.inputBuffer.getChannelData(0))); vl.len += 4096; };
+      src.connect(proc); proc.connect(ctx.destination);
+      if (!vl.worker) {
+        vl.worker = new Worker('/tools/whisper-worker.js', { type: 'module' });
+        vl.worker.onmessage = function (e) {
+          var m = e.data || {};
+          if (m.type === 'load' && m.data && m.data.status === 'progress' && m.data.total) setMsg('Getting the listener ready: ' + Math.round(m.data.loaded / m.data.total * 100) + '%');
+          else if (m.type === 'listening') { vl.loaded = true; if (vl.on) setMsg('Listening to the message.'); }
+          else if (m.type === 'done') { vl.busy = false; var t = (m.data && m.data.text) || ''; if (t.trim()) scan(t); }
+          else if (m.type === 'error') { vl.busy = false; setMsg('The listener had a problem: ' + m.data, true); }
+        };
+      }
+      vl.timer = setInterval(function () {
+        if (!vl.on || vl.busy || !vl.len) return;
+        var chunks = vl.buf, len = vl.len; vl.buf = []; vl.len = 0;
+        var a = down16(chunks, len, ctx.sampleRate), rms = 0; for (var i = 0; i < a.length; i += 8) rms += a[i] * a[i]; rms = Math.sqrt(rms / (a.length / 8));
+        if (rms < 0.006) return;
+        var audio = a; if (vl.tail) { audio = new Float32Array(vl.tail.length + a.length); audio.set(vl.tail, 0); audio.set(a, vl.tail.length); }
+        vl.tail = a.slice(Math.max(0, a.length - 24000));
+        vl.busy = true; vl.worker.postMessage({ type: 'run', audio: audio, language: 'en' });
+      }, 6000);
+    }).catch(function () { say('Allow the microphone, then press Listen again.', true); });
+  }
+  $('bb-listen').onclick = function () { if (vl.on) stopListen(); else startListen(); };
+  renderCols();
 
   /* countdown */
   $('tm-add').onclick = function () { var it = timerItem(); if (it) addItem(it, false); };
@@ -1779,9 +2064,10 @@
   }
   idb.get('song-bg').then(function (r) { if (r && r.file) { songBg = { type: r.type, file: r.file, name: r.name, thumb: r.type === 'image' ? URL.createObjectURL(r.file) : (r.thumb || '') }; drawSongBg(); bgChanged(); } });
   idb.get('scripture-bg').then(function (r) { if (r && r.file) { bbBg.set({ type: r.type, file: r.file, name: r.name, thumb: r.type === 'image' ? URL.createObjectURL(r.file) : (r.thumb || '') }); bgChanged(); } });
+  idb.get('logo').then(function (r) { if (r && r.file) { logoFile = { file: r.file, url: URL.createObjectURL(r.file) }; $('logo-name').textContent = r.name || 'Logo'; bgChanged(); } });
   loadMedia().then(restoreService, restoreService);
   if (navigator.storage && navigator.storage.persist) navigator.storage.persist().then(function (ok) { if (ok) $('save-note').textContent = 'Your songs, Media and Bible versions are saved in this browser on this computer and the browser is asked to keep them. Use Back up to keep a copy or move them to another computer.'; }).catch(function () {});
   renderSongs(); renderMedia(); drawSongBg(); renderSlides(); render(); syncMtabs();
-  window.__ss = { items: items, media: media, addFiles: addFiles, addMedia: addMedia, goLive: goLive, step: step, select: select, displays: displays, stages: stages, parseRef: parseRef, spokenToRef: spokenToRef, matchBooks: matchBooks, parseSong: parseSong, linkItem: linkItem, state: state, bibleFind: bibleFind, bibleItem: bibleItem, lookupRef: lookupRef, bibles: bibles, addStreamItem: addStreamItem, refHints: refHints, rtc: rtc, effBg: effBg, setAuto: setAuto, autoTick: autoTick, openEdit: openEdit, setSongBg: setSongBg, convertBible: convertBible, drawLive: drawLive,
+  window.__ss = { findRefs: findRefs, findQuote: findQuote, items: items, media: media, addFiles: addFiles, addMedia: addMedia, goLive: goLive, step: step, select: select, displays: displays, stages: stages, parseRef: parseRef, spokenToRef: spokenToRef, matchBooks: matchBooks, parseSong: parseSong, linkItem: linkItem, state: state, bibleFind: bibleFind, bibleItem: bibleItem, lookupRef: lookupRef, bibles: bibles, addStreamItem: addStreamItem, refHints: refHints, rtc: rtc, effBg: effBg, setAuto: setAuto, autoTick: autoTick, openEdit: openEdit, setSongBg: setSongBg, convertBible: convertBible, drawLive: drawLive,
     get liveId() { return liveId; }, get liveSlide() { return liveSlide; }, get selId() { return selId; }, get selSlide() { return selSlide; }, get vstat() { return vstat; }, get conns() { return conns; }, get peer() { return peer; }, get opId() { return opId; }, get bbFound() { return bbFound; }, get bbSel() { return bbSel; }, get bbVers() { return bbVers; }, get autoRun() { return autoRun; }, get songBg() { return songBg; }, get opts() { return opts; } };
 })();

@@ -61,6 +61,7 @@ jobs:
           name: editor-${{ matrix.label }}
           path: |
             desktop/editor-app/dist/Editor-Setup.exe
+            desktop/editor-app/dist/latest.yml
             desktop/editor-app/dist/Editor-mac-*.dmg
           if-no-files-found: error
 
@@ -80,3 +81,5 @@ jobs:
           ls -la files
           gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --title "Video Editor app" --notes "Video Editor for Windows and Mac." --latest=false
           gh release upload "$TAG" files/* --repo "$GITHUB_REPOSITORY" --clobber
+          gh release view editor-latest --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create editor-latest --repo "$GITHUB_REPOSITORY" --title "Video Editor app (newest version)" --notes "Always the newest Video Editor app." --latest=false
+          gh release upload editor-latest files/* --repo "$GITHUB_REPOSITORY" --clobber

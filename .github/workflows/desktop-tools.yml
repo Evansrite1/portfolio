@@ -112,6 +112,7 @@ jobs:
           name: app-${{ matrix.label }}
           path: |
             desktop/${{ needs.meta.outputs.app }}/dist/*-Setup.exe
+            desktop/${{ needs.meta.outputs.app }}/dist/latest.yml
             desktop/${{ needs.meta.outputs.app }}/dist/*-mac-*.dmg
             desktop/${{ needs.meta.outputs.app }}/dist/*-mac-*.pkg
           if-no-files-found: error

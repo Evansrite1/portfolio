@@ -1,5 +1,5 @@
 'use strict';
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer, webUtils } = require('electron');
 
 const info = ipcRenderer.sendSync('presenter:info');
 let displays = info.displays, tvOpen = info.tvOpen;
@@ -22,5 +22,8 @@ contextBridge.exposeInMainWorld('presenterDesktop', {
   showTV: () => ipcRenderer.invoke('presenter:show-tv'),
   onDisplays: (f) => { subs.displays.push(f); },
   onUpdate: (f) => { subs.update.push(f); },
-  retry: () => ipcRenderer.invoke('presenter:retry')
+  retry: () => ipcRenderer.invoke('presenter:retry'),
+  listDisplays: () => ipcRenderer.invoke('presenter:list-displays'),
+  setTV: (id) => ipcRenderer.invoke('presenter:set-tv', id),
+  pathFor: (file) => { try { return webUtils.getPathForFile(file) || ''; } catch (e) { return ''; } }
 });

@@ -1,7 +1,7 @@
 {
   "name": "editor-app",
   "productName": "Video Editor by Evans Large",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Video Editor by Evans Ademilua: cut, caption and export videos. Works on your computer and nothing is uploaded.",
   "author": "Evans Ademilua",
   "license": "UNLICENSED",
@@ -29,7 +29,8 @@
     "files": [
       "main.js",
       "offline.html",
-      "package.json"
+      "package.json",
+      "update-gate.js"
     ],
     "win": {
       "target": [
@@ -84,6 +85,15 @@
     "pkg": {
       "installLocation": "/Applications/Evans Large",
       "isRelocatable": false
-    }
+    },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "https://github.com/Evansrite1/portfolio/releases/download/editor-latest/"
+      }
+    ]
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.9"
   }
 }
