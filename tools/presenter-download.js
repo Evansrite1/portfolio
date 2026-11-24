@@ -5,11 +5,14 @@
   var dl = window.AppDL({
     name: 'The Presenter app',
     base: 'https://github.com/Evansrite1/portfolio/releases/latest/download/',
-    files: { win: 'Presenter-Setup.exe', macArm: 'Presenter-mac-arm64.dmg', macIntel: 'Presenter-mac-x64.dmg' }
+    files: { win: 'Presenter-Windows-Setup.zip', macArm: 'Presenter-mac-arm64.dmg', macIntel: 'Presenter-mac-x64.dmg' }
   });
   window.PresenterDownload = {
     detect: dl.detect,
     apply: function (el, extraId) { dl.apply(el, extraId); return dl.detect(); },
-    tip: dl.tip
+    tip: function (os) {
+      if (os === 'win') return 'How to install: 1. Open the downloaded zip and press Extract all. 2. Open the new folder and double-click Presenter Setup. 3. If Windows says "Windows protected your PC", press More info, then Run anyway. 4. Press Install Presenter and wait one to two minutes. It opens by itself when it finishes.';
+      return dl.tip(os);
+    }
   };
 })();

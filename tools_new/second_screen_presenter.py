@@ -6,7 +6,7 @@ TOOL = '''<div class="tool" id="ss-tool" style="grid-template-columns:1fr">
   <div class="card" style="text-align:center;padding:34px 20px">
     <h2 style="margin:0 0 8px">Open the presenter</h2>
     <p class="help" style="max-width:58ch;margin:0 auto 20px">A full-screen workspace like the church and streaming programs. Your library on the left, your service next to it, a preview and a live screen, and every slide below them. It opens on its own without the browser around it, and it works on a laptop and on a phone.</p>
-    <a class="btn primary" id="ss-dl" href="https://github.com/Evansrite1/portfolio/releases/latest/download/Presenter-Setup.exe" style="padding:15px 28px;font-size:1rem" download>Download the app</a>
+    <a class="btn primary" id="ss-dl" href="https://github.com/Evansrite1/portfolio/releases/latest/download/Presenter-Windows-Setup.zip" style="padding:15px 28px;font-size:1rem" download>Download the app</a>
     <p class="help" id="ss-dl-other" style="margin-top:10px"></p>
     <p class="help" id="ss-dl-tip" style="max-width:58ch;margin:6px auto 0"></p>
     <p class="help" style="margin-top:16px">The app opens the TV screen on your second screen by itself and updates itself when you are online. Install it once and it opens from your Start menu or Applications folder. Nothing is uploaded. <a href="/tools/second-screen-presenter/contact/">Contact the builder</a></p>
