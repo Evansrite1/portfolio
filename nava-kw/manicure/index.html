@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Manicure | NAVA KW</title>
+<meta name="description" content="Russian manicure by NAVA KW, concept preview.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#050507">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/nava.css">
+</head>
+<body>
+<div class="pre" id="pre">
+  <div class="pre-first" id="preFirst"><div class="pre-mark">NAVA</div></div>
+  <div class="pre-inner"><div class="pre-mark">NAVA</div><div class="pre-bar"><i id="preBar"></i></div><div class="pre-n" id="preN">000</div></div>
+</div>
+<div class="cur" id="cur"></div>
+<div class="grain"></div>
+<canvas id="gl" aria-hidden="true"></canvas>
+<nav class="nav" aria-label="Main">
+  <a class="brand" href="../">NAVA</a>
+  <a href="../#services" class="on">Services</a>
+  <a href="../#care">Care</a>
+  <a href="../#work">Work</a>
+  <a class="cta" href="#book">Book</a>
+</nav>
+<main>
+  <section class="dp-hero wrap">
+    <div class="par" data-depth="10"><a class="back rv" href="../#services">&larr; All services</a></div>
+    <div class="par" data-depth="10"><div class="kicker rv">Russian manicure</div></div>
+    <div class="par" data-depth="26"><h1 class="rv">Manicure</h1></div>
+    <div class="par" data-depth="18"><p class="lead rv">Clean, precise, done the Russian way.</p></div>
+  </section>
+
+  <section class="dp-sec wrap"><div class="dp-cols">
+    <div>
+      <div class="kicker rv">What it is</div>
+      <h2 class="h2 rv" style="margin-top:20px;font-size:clamp(40px,5vw,78px)">A dry technique with a fine finish</h2>
+      <p class="dp-p rv">Russian manicure is a dry technique. Instead of soaking and cutting, the cuticle area is cleaned with a fine electric file and the nail is shaped by hand. The result is a smooth, tidy line around every nail and a clean base for colour.</p>
+      <p class="dp-p rv">Sanaz shows it up close in her Manicure highlight on Instagram, with the tag &ldquo;Russian manicure&rdquo; and the signature Sanaz.nails.art.</p>
+    </div>
+    <div>
+      <div class="kicker rv">How it goes</div>
+      <ul class="dp-list"><li class="rv"><i>01</i><span>The cuticle area is cleaned with a fine electric file.</span></li><li class="rv"><i>02</i><span>The nail is shaped to the length you want, from short almond to long stiletto.</span></li><li class="rv"><i>03</i><span>Colour or a design is added, from nude glaze to cat eye and chrome.</span></li><li class="rv"><i>04</i><span>The finish is sealed, glossy or matte.</span></li></ul>
+    </div>
+  </div></section>
+  <section class="dp-sec wrap"><div class="kicker rv">From her page</div><div class="photos"><figure class="rv"><img src="../img/t5.jpg" alt="Nude glaze manicure" loading="lazy"></figure><figure class="rv"><img src="../img/t1.jpg" alt="Cat eye manicure" loading="lazy"></figure><figure class="rv"><img src="../img/t6.jpg" alt="Midnight manicure" loading="lazy"></figure></div>
+  <p class="dp-p rv" style="margin-top:28px">Every tool is disinfected and sterilised before it touches a client, in the autoclave she shows in her Sterilize highlight.</p></section>
+  <section class="dp-sec wrap"><div class="kicker rv">More services</div><div class="sib"><a href="../french/"><b>French</b><span>Red, orange, pink, chrome</span></a><a href="../lift-and-laminate/"><b>Lift and Laminate</b><span>Brows</span></a><a href="../before-and-after/"><b>Before and After</b><span>The transformation</span></a></div></section>
+  <section class="book wrap" id="book" style="min-height:70svh">
+    <div>
+      <div class="kicker" style="justify-content:center">Book</div>
+      <h2 class="h2" data-split>Book your <em>manicure</em></h2>
+      <div class="row" style="justify-content:center">
+        <a class="btn solid" data-ig href="#">Message on Instagram
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+        <a class="btn ghost" data-email href="#" hidden>Email to book</a>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="foot">
+  <div><b>NAVA KW</b> &nbsp; Nail artist, Kuwait</div>
+  <div>Concept design prepared by Evans Large. Preview only, not yet approved.</div>
+</footer>
+<script>document.documentElement.classList.add('js')</script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+import {bootPage} from '../assets/pageboot.js';
+bootPage({design:'nudeGlaze',shape:'almond',canvasId:'gl'});
+</script>
+<noscript><style>.js .rv{opacity:1;transform:none}.pre{display:none}</style></noscript>
+</body>
+</html>
