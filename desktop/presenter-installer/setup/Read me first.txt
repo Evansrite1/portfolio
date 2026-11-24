@@ -1,0 +1,20 @@
+PRESENTER BY EVANS LARGE - how to install on Windows
+
+1. You have unzipped this folder. If you are reading this inside the zip, close it and
+   right click the zip file, then choose "Extract All", then "Extract".
+   (Opening Presenter Setup from inside the zip will not work.)
+
+2. Open the unzipped folder and double click "Presenter Setup".
+
+3. If Windows says "Windows protected your PC", click "More info", then "Run anyway".
+   This appears because the app is new and not yet from a big publisher. It is safe.
+
+4. Press "Install Presenter". It takes about one to two minutes. Keep the window open.
+
+5. When it says "You are all set", Presenter opens by itself. Next time, open it from the
+   Start menu or the desktop shortcut.
+
+If something goes wrong, open the "files" folder and double click "Presenter-Installer.exe".
+
+Presenter installs for you only. No administrator password is needed.
+Made by Evans Large. https://evansademilua.vercel.app/tools/second-screen-presenter/

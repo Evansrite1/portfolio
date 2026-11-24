@@ -50,3 +50,15 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - name: Build the friendly setup and the zip people download (Windows)
+        if: runner.os == 'Windows' && startsWith(github.ref, 'refs/tags/')
+        shell: pwsh
+        working-directory: desktop/presenter-installer/setup
+        run: ./build.ps1 -Installer ../../presenter-app/dist/Presenter-Setup.exe -Zip -OutDir out
+      - name: Attach the zip to the release
+        if: runner.os == 'Windows' && startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: gh release upload "${{ github.ref_name }}" desktop/presenter-installer/setup/out/Presenter-Windows-Setup.zip --clobber
+        working-directory: .
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
