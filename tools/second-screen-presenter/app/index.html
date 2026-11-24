@@ -47,7 +47,15 @@ svg.i.lg{width:24px;height:24px}
 
 
 /* docks: library | service | show */
-.main{display:grid;grid-template-columns:340px 270px minmax(0,1fr);gap:6px;padding:6px;min-height:0}
+.main{display:grid;--c1:340px;--c2:270px;grid-template-columns:var(--c1) var(--c2) minmax(0,1fr);gap:6px;padding:6px;min-height:0;position:relative}
+.gut{position:absolute;z-index:20;background:transparent;touch-action:none}
+.gut.v{top:6px;bottom:6px;width:10px;cursor:col-resize}
+.gut.v::after{content:"";position:absolute;left:4px;top:40%;bottom:40%;width:2px;border-radius:2px;background:var(--line2);opacity:.0;transition:opacity .15s}
+.gut:hover::after,.gut.on::after{opacity:1}
+.gut.h{left:0;right:0;height:10px;cursor:row-resize}
+.gut.h::after{content:"";position:absolute;top:4px;left:40%;right:40%;height:2px;border-radius:2px;background:var(--line2);opacity:0;transition:opacity .15s}
+#gut1{left:calc(var(--c1) + 6px - 2px)}
+#gut2{left:calc(var(--c1) + var(--c2) + 12px - 2px)}
 .dock{background:var(--p);border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden;position:relative}
 .dh{display:flex;align-items:center;gap:8px;padding:6px 8px 6px 10px;background:var(--h);border-bottom:1px solid var(--line);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);min-height:38px}
 .db{flex:1;overflow:auto;min-height:0}
@@ -68,13 +76,16 @@ svg.i.lg{width:24px;height:24px}
 .si .at{color:var(--ok);font-weight:700}
 .si .ib{width:26px;height:26px}
 .k-song{--c:var(--blue)}.k-bible{--c:var(--ok)}.k-image{--c:var(--amber)}.k-video{--c:var(--purple)}.k-pdf{--c:var(--amber)}.k-link{--c:var(--cyan)}.k-camera,.k-screen{--c:#ff7ad9}.k-timer{--c:var(--acc)}
-.autobar{display:flex;align-items:center;gap:8px;padding:7px 10px;border-bottom:1px solid var(--line);font-size:.74rem;color:var(--soft);background:#1a1d1b}
+.autobar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:7px 10px;border-bottom:1px solid var(--line);font-size:.74rem;color:var(--soft);background:#1a1d1b}
 .autobar.on{background:#14261c;color:#bfeed3}
+.autobar span:not(.sp){min-width:0;flex:1 1 90px}
+.autobar .b{flex:none}
 .autobar i{width:10px;height:10px;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M5 0l5 5-5 5-5-5z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M5 0l5 5-5 5-5-5z'/%3E%3C/svg%3E") center/contain no-repeat;background:#555}
 .autobar.on i{background:var(--ok)}
 
 /* show: preview, live, controls, slides */
-.center{display:grid;grid-template-rows:auto minmax(0,1fr);gap:6px;min-height:0;min-width:0}
+.center{display:grid;grid-template-rows:var(--pv,auto) minmax(0,1fr);gap:6px;min-height:0;min-width:0;position:relative}
+.center>.dock:first-child{overflow:auto}
 .mons{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;padding:8px;align-items:center}
 .mon{min-width:0}
 .mlab{display:flex;justify-content:space-between;align-items:center;font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px;gap:6px}
@@ -95,7 +106,7 @@ svg.i.lg{width:24px;height:24px}
 .sl .bgl::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.4)}
 .sl.hasbg{background:#000;color:#fff}
 .sl.hasbg>div{text-shadow:0 2px 10px rgba(0,0,0,.7)}
-.pg{width:100%;height:100%}
+.pg{width:100%;height:100%;background:#0c0c0e;padding:2%;box-sizing:border-box}
 .pg img{width:100%;height:100%;object-fit:contain}
 .link{position:absolute;inset:auto 0 0 0;background:rgba(0,0,0,.72);color:#fff;padding:2cqw 3cqw;font-size:3cqw;word-break:break-all;text-align:left}
 .gocol{display:grid;gap:8px;justify-items:center}
@@ -107,7 +118,9 @@ svg.i.lg{width:24px;height:24px}
 .ctrl .grp{display:flex;gap:6px;align-items:center}
 .ctrl .div{width:1px;height:22px;background:var(--line2)}
 .ctrl .big{padding:5px 12px;font-size:.8rem}
-.media{display:flex;gap:8px;align-items:center;flex:1 1 280px;min-width:240px}
+.media{display:flex;flex-direction:column;gap:6px;flex:1 1 300px;min-width:260px}
+.media .mrow{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.media .mrow:first-child{justify-content:center}
 .media input[type=range]{flex:1;min-width:60px;accent-color:var(--acc)}
 .media .t{font:600 .74rem ui-monospace,Consolas,monospace;color:var(--soft);white-space:nowrap}
 .rectime{font:700 .74rem ui-monospace,Consolas,monospace;color:var(--acc)}
@@ -134,9 +147,13 @@ svg.i.lg{width:24px;height:24px}
 .tabs button{flex:none;border:0;background:transparent;padding:9px 11px;color:var(--faint);font-size:.76rem;font-weight:700;border-bottom:2px solid transparent}
 .tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--acc)}
 .libdock .db{display:flex;flex-direction:column;overflow:hidden}
+.libdock .pane>*,.libdock .pscroll>*{min-width:0;max-width:100%}
+.libdock .help,.libdock .vi,.libdock .tbig span{overflow-wrap:anywhere}
+.libdock .row.wrap{flex-wrap:wrap}
+.libdock .chips{flex-wrap:wrap}
 .pane{padding:10px;display:grid;gap:9px;align-content:start;flex:1;overflow:auto;min-height:0}
 .pane.col{display:flex;flex-direction:column;padding:0;gap:0;overflow:hidden}
-.pscroll{flex:1;overflow:auto;padding:10px;display:grid;gap:9px;align-content:start;min-height:0}
+.pscroll{flex:1;overflow:auto;padding:10px;display:grid;gap:9px;align-content:start;grid-auto-rows:max-content;min-height:0}
 .f{display:grid;gap:4px}
 .f label,.lbl{font-size:.72rem;color:var(--soft);font-weight:600}
 .f input,.f select,.f textarea,.inp{width:100%;background:var(--p2);border:1px solid var(--line2);border-radius:7px;padding:7px 9px;min-width:0}
@@ -145,6 +162,7 @@ svg.i.lg{width:24px;height:24px}
 .r2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .row{display:flex;gap:6px;align-items:center}
 .row>input{flex:1;min-width:0}
+.row>input[type=checkbox],.row>input[type=radio]{flex:none;width:auto}
 .row.wrap{flex-wrap:wrap}
 .seg{display:flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden}
 .seg button{flex:1;border:0;background:var(--p2);padding:7px 4px;font-weight:700;font-size:.78rem;color:var(--soft);border-right:1px solid var(--line2)}
@@ -212,12 +230,12 @@ svg.i.lg{width:24px;height:24px}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
 .chip{border:1px solid var(--line2);background:var(--p2);border-radius:999px;padding:5px 12px;font-size:.76rem;font-weight:700;color:var(--soft)}
 .chip[aria-pressed=true]{background:var(--ink);color:#111;border-color:var(--ink)}
-.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.mgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .mt{position:relative;aspect-ratio:1;border:1px solid var(--line2);border-radius:10px;overflow:hidden;background:var(--p2);cursor:pointer;display:grid;place-items:center;padding:0;text-align:left}
 .mt:hover{border-color:var(--ink)}
 .mt img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .mt .k{position:absolute;left:5px;top:5px;background:rgba(0,0,0,.65);color:#fff;border-radius:5px;font-size:.58rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;z-index:2}
-.mt .nm{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(0,0,0,.85));color:#fff;font-size:.66rem;padding:14px 6px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:2}
+.mt .nm{position:absolute;left:0;right:0;bottom:0;font-size:.58rem!important;background:linear-gradient(transparent,rgba(0,0,0,.85));color:#fff;font-size:.66rem;padding:14px 6px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:2}
 .mt .rm{position:absolute;right:4px;top:4px;width:20px;height:20px;border-radius:50%;border:0;background:rgba(0,0,0,.7);color:#fff;display:none;place-items:center;padding:0;z-index:3}
 .mt:hover .rm{display:grid}
 .mt.add{border-style:dashed;color:var(--soft)}
@@ -277,7 +295,6 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
 .bot input{background:var(--p);border:1px solid var(--line2);border-radius:6px;padding:4px 8px;width:230px;max-width:100%}
 .msg{color:var(--soft);flex:1 1 200px;min-width:0}
 .msg.err{color:#ff9d96}
-.stagebar{display:flex;gap:6px;align-items:center}
 
 /* start screen */
 .gate{position:fixed;inset:0;z-index:150;background:radial-gradient(1200px 600px at 50% -10%,#2a1c1b,#0e0e10 60%);display:grid;place-items:center;padding:20px}
@@ -293,16 +310,52 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
 .toast{position:fixed;left:50%;bottom:60px;transform:translate(-50%,16px);background:#fff;color:#111;font-weight:600;padding:8px 16px;border-radius:99px;opacity:0;pointer-events:none;z-index:200;font-size:.82rem;max-width:90vw;text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
+.gw{position:relative;flex:1;min-width:0;display:block}
+.gw::before{content:"";position:absolute;inset:0;background:var(--p2);border-radius:7px}
+.gw .ghost{position:absolute;inset:0;padding:7px 9px;border:1px solid transparent;white-space:pre;overflow:hidden;color:var(--faint);pointer-events:none}
+.gw .ghost i{font-style:normal;visibility:hidden}
+.gw .inp{position:relative;background:transparent}
+.hdr .iconrow{display:flex;gap:5px}
+.hdr .iconrow .ib2{width:30px;height:30px;padding:0;display:grid;place-items:center;border-radius:8px}
+.hdr .iconrow .ib2 svg{width:17px;height:17px}
+.hdr .sp{flex:1}
+.tbig{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:13px 14px;border:1px solid var(--line2);border-radius:12px;background:var(--p2);color:var(--ink)}
+.tbig:hover{border-color:var(--ink)}
+.tbig b{display:block;font-size:.9rem}.tbig small{color:var(--faint);font-size:.74rem}
+.skins{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.skin{display:grid;gap:6px;padding:8px;border:2px solid var(--line2);border-radius:12px;background:var(--p2);text-align:left;font-weight:700;font-size:.8rem;color:var(--ink)}
+.skin[aria-pressed=true]{border-color:var(--acc)}
+.skin .sw{height:54px;border-radius:8px;display:grid;grid-template-columns:1fr 2fr;gap:4px;padding:6px;border:1px solid rgba(128,128,128,.35)}
+.skin .sw i{display:block;border-radius:4px}
+.skin small{font-weight:500;color:var(--faint);font-size:.7rem}
+.splitseg{max-width:260px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:2px;width:100%;height:100%;background:#222}
+.two>div{position:relative;overflow:hidden;display:grid;place-items:center;min-width:0;background:#000}
+.two>div img,.two>div video{width:100%;height:100%;object-fit:contain}
+.si.sub{margin-left:14px;border-left-width:3px}
+.sgrp{display:flex;align-items:center;gap:8px;padding:7px 10px 7px 8px;border:1px solid var(--line);border-left:4px solid var(--purple);border-radius:7px;background:var(--p2);cursor:pointer;list-style:none}
+.sgrp:hover{border-color:var(--line2)}
+.sgrp b{font-size:.84rem}
+.sgrp small{color:var(--faint);font-size:.72rem;margin-left:auto}
+.sgrp .n{font:600 .72rem ui-monospace,Consolas,monospace;color:var(--faint);width:16px;text-align:right}
+.sgrp .caret{display:inline-grid;transition:transform .15s}
+.sgrp[aria-expanded=false] .caret{transform:rotate(-90deg)}
+.si.grp{cursor:pointer}
+.si.grp .caret{display:inline-block;transition:transform .15s}
+.si.grp[aria-expanded=false] .caret{transform:rotate(-90deg)}
+.sl.cd .nowt{position:absolute;top:5cqw;right:6cqw;font-size:4.2cqw;opacity:.85;font-variant-numeric:tabular-nums}
 .drop{display:grid;gap:3px;max-height:240px;overflow:auto;background:var(--h);border:1px solid var(--line2);border-radius:9px;padding:4px;margin-top:-4px}
 .drop .hit{display:block;width:100%}
 .drop mark{background:rgba(255,91,82,.28);color:inherit;border-radius:3px}
-.cols{display:grid;grid-template-columns:1.5fr .8fr .8fr;gap:6px;height:190px}
-.cols .col{overflow:auto;border:1px solid var(--line);border-radius:8px;background:var(--p2);padding:3px;display:grid;gap:2px;align-content:start}
-.cols .col h4{margin:0;position:sticky;top:0;background:var(--p2);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);padding:3px 5px}
-.cols button{border:0;background:transparent;text-align:left;padding:4px 7px;border-radius:5px;font-size:.78rem;color:var(--ink)}
-.cols button:hover{background:var(--line)}
-.cols button[aria-pressed=true]{background:var(--ok);color:#06210f;font-weight:700}
-.cols .col.n button{text-align:center}
+.vwin{height:236px;overflow-y:auto;overflow-x:hidden;border:1px solid var(--line2);border-radius:10px;background:var(--p2);padding:3px;display:grid;gap:3px;align-content:start;grid-auto-rows:44px;scroll-snap-type:y proximity}
+.vwin button{display:grid;grid-template-columns:24px minmax(0,1fr);gap:6px;align-items:center;border:0;border-radius:7px;background:transparent;text-align:left;padding:2px 7px;font-size:.78rem;line-height:1.25;color:var(--soft);overflow:hidden}
+.vwin button b{font-size:.72rem;color:var(--faint);text-align:right}
+.vwin button span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-width:0}
+.vwin button:hover{background:var(--line)}
+.vwin button[aria-pressed=true]{background:var(--ok);color:#06210f}
+.vwin button[aria-pressed=true] b{color:#06210f}
+.vwin .none{display:block;padding:12px;color:var(--faint);font-size:.78rem}
+#bb-prev{display:none}
 #bb-chw,#bb-vsw{display:none!important}
 .listen{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .listen .b[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#1a0a09}
@@ -312,6 +365,24 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
 .qr{border-radius:50%;width:230px;height:230px;padding:30px;display:grid;place-items:center;box-shadow:0 0 0 6px var(--p2)}
 .qr svg{border-radius:0}
 :root[data-theme=light]{--bg:#eef0f3;--p:#ffffff;--h:#e4e7ec;--p2:#f3f4f7;--line:#d6dae1;--line2:#bcc2cc;--ink:#15171c;--soft:#454b57;--faint:#5f6672;--acc:#d93a30;--ok:#168a4d;--blue:#2a63d6}
+:root[data-theme=classic]{--bg:#f1e9da;--p:#fbf6ea;--h:#e6dcc7;--p2:#f6efdf;--line:#d4c7ab;--line2:#b9a984;--ink:#2a2118;--soft:#4c4132;--faint:#6b5f4b;--acc:#8a2b2b;--ok:#2f6b4f;--blue:#2a4f8a}
+:root[data-theme=halloween]{--bg:#120a1a;--p:#1b1026;--h:#25142f;--p2:#1f112b;--line:#3a2150;--line2:#533070;--ink:#ffe9d0;--soft:#d9b38c;--faint:#a38466;--acc:#ff7a18;--ok:#8bd450;--blue:#a56bff}
+:root[data-theme=christmas]{--bg:#0b1d12;--p:#102a19;--h:#16391f;--p2:#133220;--line:#27573a;--line2:#3b7a52;--ink:#fff6ee;--soft:#cfe3d3;--faint:#8fb59a;--acc:#e5383b;--ok:#f2c14e;--blue:#6bb6ff}
+:root[data-theme=celebration]{--bg:#190d2d;--p:#231445;--h:#2c1a58;--p2:#271650;--line:#46308a;--line2:#6147b8;--ink:#ffffff;--soft:#e0d4ff;--faint:#a899dc;--acc:#ff4fa3;--ok:#2ee6a6;--blue:#4c8dff}
+:root[data-theme=toys]{--bg:#fff1c1;--p:#ffffff;--h:#ffd93d;--p2:#fff8dc;--line:#ffc21a;--line2:#f48c06;--ink:#1b1b3a;--soft:#3d3d66;--faint:#5e5e86;--acc:#ef476f;--ok:#06a77d;--blue:#118ab2}
+:root[data-theme=ocean]{--bg:#06202d;--p:#0b2f40;--h:#0f3b50;--p2:#0d3547;--line:#1d5670;--line2:#2b7896;--ink:#eaf9ff;--soft:#b6dcea;--faint:#7fb2c5;--acc:#2ec4d6;--ok:#5be3a2;--blue:#6aa8ff}
+:root[data-theme=classic] .b.pri,:root[data-theme=toys] .b.pri,:root[data-theme=classic] .ib.on,:root[data-theme=toys] .ib.on{color:#fff}
+:root[data-theme=halloween] .b.pri,:root[data-theme=celebration] .b.pri,:root[data-theme=ocean] .b.pri{color:#160a05}
+:root[data-theme=halloween] .top{border-bottom:3px solid var(--acc);background:linear-gradient(90deg,#25142f,#3a1a0a)}
+:root[data-theme=christmas] .top{border-bottom:3px solid var(--acc);background:repeating-linear-gradient(135deg,#16391f 0 14px,#1b4527 14px 28px)}
+:root[data-theme=celebration] .top{border-bottom:3px solid transparent;border-image:linear-gradient(90deg,#ff4fa3,#ffb347,#2ee6a6,#4c8dff) 1}
+:root[data-theme=toys] .top{border-bottom:4px solid var(--acc)}
+:root[data-theme=toys] .b,:root[data-theme=toys] .ib,:root[data-theme=toys] .inp,:root[data-theme=toys] .pill,:root[data-theme=toys] .tab,:root[data-theme=toys] .dock{border-radius:14px;border-width:2px}
+:root[data-theme=classic] .top{border-bottom:3px double var(--line2)}
+:root[data-theme=ocean] .top{border-bottom:3px solid var(--acc)}
+:root[data-theme=classic] .si:hover,:root[data-theme=toys] .si:hover{background:var(--line)}
+:root[data-theme=halloween] .si.sel,:root[data-theme=christmas] .si.sel,:root[data-theme=celebration] .si.sel,:root[data-theme=ocean] .si.sel,:root[data-theme=classic] .si.sel,:root[data-theme=toys] .si.sel{background:color-mix(in srgb,var(--ok) 20%,var(--p2))}
+:root[data-theme=halloween] .si.live,:root[data-theme=christmas] .si.live,:root[data-theme=celebration] .si.live,:root[data-theme=ocean] .si.live,:root[data-theme=classic] .si.live,:root[data-theme=toys] .si.live{background:color-mix(in srgb,var(--acc) 22%,var(--p2))}
 :root[data-theme=light] .si:hover{background:#e9ebf0}
 :root[data-theme=light] .si.sel{background:#dcefe3}
 :root[data-theme=light] .si.live{background:#f9dedb}
@@ -322,10 +393,75 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
 :root[data-theme=light] .menu{box-shadow:0 12px 36px rgba(0,0,0,.18)}
 :root[data-theme=light] dialog::backdrop{background:rgba(20,20,30,.4)}
 .mdet .mpic img{object-fit:contain}
-@media (max-width:1180px){.main{grid-template-columns:310px 230px minmax(0,1fr)}.go{width:74px;height:74px}}
+:root[data-theme=space]{--bg:#05060f;--p:#0d0c24;--h:#14123a;--p2:#110f2e;--line:#2a2663;--line2:#4a43a8;--ink:#f1f0ff;--soft:#c3c0f0;--faint:#8884c8;--acc:#8b5cff;--ok:#3de0ff;--blue:#6aa8ff;--purple:#c27bff;--deco:radial-gradient(1px 1px at 20px 30px,#fff,transparent),radial-gradient(1.5px 1.5px at 90px 80px,#cfe8ff,transparent),radial-gradient(1px 1px at 160px 120px,#fff,transparent),radial-gradient(2px 2px at 230px 40px,#9bf,transparent),radial-gradient(1px 1px at 60px 170px,#fff,transparent),radial-gradient(1px 1px at 200px 190px,#ffe9c4,transparent),radial-gradient(60% 50% at 82% 8%,rgba(120,60,255,.40),transparent),radial-gradient(55% 45% at 8% 92%,rgba(0,160,255,.28),transparent);--decosz:250px 220px,250px 220px,250px 220px,250px 220px,250px 220px,250px 220px,auto,auto}
+:root[data-theme=space] .top{background:linear-gradient(90deg,#14123a,#2a1a66,#14123a);border-bottom:2px solid #8b5cff}
+:root[data-theme=contrast]{--bg:#000;--p:#000;--h:#000;--p2:#0a0a0a;--line:#ffffff;--line2:#ffffff;--ink:#ffffff;--soft:#ffffff;--faint:#e6e6e6;--acc:#ffe600;--ok:#00ff7f;--blue:#4dd2ff;--deco:none;--decosz:auto}
+:root[data-theme=contrast] .top{border-bottom:3px solid #ffe600}
+:root[data-theme=aquatic]{--bg:#03283a;--p:#073f55;--h:#0a5570;--p2:#08475f;--line:#16809a;--line2:#27a6c2;--ink:#effcff;--soft:#b9ecf5;--faint:#7fc4d4;--acc:#37e0d0;--ok:#7dffb2;--blue:#59b7ff;--deco:radial-gradient(circle at 15% 80%,rgba(255,255,255,.12) 0 8px,transparent 9px),radial-gradient(circle at 30% 60%,rgba(255,255,255,.10) 0 14px,transparent 15px),radial-gradient(circle at 72% 75%,rgba(255,255,255,.10) 0 10px,transparent 11px),radial-gradient(circle at 88% 40%,rgba(255,255,255,.12) 0 6px,transparent 7px),radial-gradient(80% 60% at 50% -10%,rgba(120,255,240,.30),transparent),linear-gradient(180deg,#05425a,#02202e);--decosz:auto}
+:root[data-theme=aquatic] .top{background:linear-gradient(90deg,#0a5570,#0f7a8c);border-bottom:2px solid #37e0d0}
+:root[data-theme=desert]{--bg:#efd29b;--p:#fbf0d6;--h:#e8c488;--p2:#f6e6c2;--line:#d9b574;--line2:#b98a45;--ink:#3a2410;--soft:#5c3d1e;--faint:#7d5a35;--acc:#b5451b;--ok:#3f7d4e;--blue:#8a4b1f;--deco:radial-gradient(120% 40% at 50% 112%,rgba(181,69,27,.35),transparent),radial-gradient(90% 30% at 20% 108%,rgba(214,150,70,.55),transparent),linear-gradient(180deg,#f7dca6,#e8bd78);--decosz:auto}
+:root[data-theme=desert] .top{background:linear-gradient(90deg,#e8c488,#f0d29c);border-bottom:3px solid #b5451b}
+:root[data-theme=dusk]{--bg:#2a1052;--p:#371866;--h:#4a2178;--p2:#401c70;--line:#6a3a99;--line2:#8e55b8;--ink:#fff3ea;--soft:#f1d2d8;--faint:#c9a0c4;--acc:#ff8e5e;--ok:#ffc36b;--blue:#a98aff;--deco:linear-gradient(180deg,#24104a 0%,#5b2a86 45%,#c0577a 78%,#f59a62 100%);--decosz:auto}
+:root[data-theme=dusk] .top{background:linear-gradient(90deg,#4a2178,#7a3b8f);border-bottom:2px solid #ff8e5e}
+:root[data-theme=nightsky]{--bg:#060a1c;--p:#0c1330;--h:#121c44;--p2:#0f1838;--line:#223067;--line2:#34479a;--ink:#eef2ff;--soft:#bcc7ee;--faint:#7f8dc4;--acc:#ffd86b;--ok:#7be0b5;--blue:#7aa2ff;--deco:radial-gradient(circle at 90% 10%,#fff6d6 0 16px,rgba(255,246,214,.30) 17px 50px,transparent 52px),radial-gradient(1px 1px at 20px 30px,#fff,transparent),radial-gradient(1.5px 1.5px at 90px 80px,#cfe8ff,transparent),radial-gradient(1px 1px at 160px 120px,#fff,transparent),radial-gradient(2px 2px at 230px 40px,#9bf,transparent),radial-gradient(1px 1px at 60px 170px,#fff,transparent),radial-gradient(1px 1px at 200px 190px,#ffe9c4,transparent),linear-gradient(180deg,#050818,#0c1430);--decosz:auto,250px 220px,250px 220px,250px 220px,250px 220px,250px 220px,250px 220px,auto}
+:root[data-theme=nightsky] .top{background:#121c44;border-bottom:2px solid #ffd86b}
+:root[data-theme=planets]{--bg:#080818;--p:#12112e;--h:#1b1840;--p2:#16143a;--line:#2f2b6b;--line2:#4d47a8;--ink:#fff4ea;--soft:#d6cdf3;--faint:#9b92cf;--acc:#ff9f5a;--ok:#5de0c0;--blue:#6aa8ff;--deco:radial-gradient(circle at 6% 94%,#f2a272 0 70px,#b4592f 72px 74px,transparent 76px),radial-gradient(circle at 94% 8%,#5ab0ff 0 46px,#2a63c0 48px,transparent 50px),radial-gradient(ellipse 120px 22px at 94% 8%,transparent 60%,rgba(255,255,255,.35) 62% 66%,transparent 68%),radial-gradient(1px 1px at 20px 30px,#fff,transparent),radial-gradient(1.5px 1.5px at 90px 80px,#cfe8ff,transparent),radial-gradient(1px 1px at 160px 120px,#fff,transparent),radial-gradient(2px 2px at 230px 40px,#9bf,transparent),radial-gradient(1px 1px at 60px 170px,#fff,transparent),radial-gradient(1px 1px at 200px 190px,#ffe9c4,transparent),linear-gradient(180deg,#07071a,#10102e);--decosz:auto,auto,auto,250px 220px,250px 220px,250px 220px,250px 220px,250px 220px,250px 220px,auto}
+:root[data-theme=planets] .top{background:linear-gradient(90deg,#1b1840,#2a2166);border-bottom:2px solid #ff9f5a}
+:root[data-theme=geometry]{--bg:#f3f4fa;--p:#ffffff;--h:#e7e9f5;--p2:#f6f7fc;--line:#d7daea;--line2:#b6bbd6;--ink:#14162b;--soft:#3d4160;--faint:#5d6285;--acc:#ff6b35;--ok:#1aa38f;--blue:#3a6df0;--deco:linear-gradient(135deg,rgba(58,109,240,.10) 25%,transparent 25%) 0 0/60px 60px,linear-gradient(225deg,rgba(255,107,53,.10) 25%,transparent 25%) 0 0/60px 60px,linear-gradient(315deg,rgba(26,163,143,.10) 25%,transparent 25%) 30px 30px/60px 60px;--decosz:auto}
+:root[data-theme=geometry] .top{background:linear-gradient(90deg,#e7e9f5,#fff);border-bottom:4px solid;border-image:linear-gradient(90deg,#ff6b35 0 33%,#3a6df0 33% 66%,#1aa38f 66%) 1}
+:root[data-theme=ninja]{--bg:#0a0a0c;--p:#131316;--h:#1b1b20;--p2:#17171b;--line:#2b2b33;--line2:#44444f;--ink:#f3f3f5;--soft:#b7b7c2;--faint:#7c7c88;--acc:#e01b24;--ok:#9aa0a6;--blue:#8a8f98;--deco:linear-gradient(115deg,transparent 58%,rgba(224,27,36,.16) 58.2%,rgba(224,27,36,.16) 58.8%,transparent 59%),linear-gradient(115deg,transparent 70%,rgba(255,255,255,.05) 70.2%,transparent 70.6%),radial-gradient(70% 60% at 100% 0,rgba(224,27,36,.10),transparent);--decosz:auto}
+:root[data-theme=ninja] .top{background:linear-gradient(100deg,#1b1b20 70%,#3a0c10);border-bottom:2px solid #e01b24}
+:root[data-theme=glow]{--bg:#06060e;--p:#0d0d1e;--h:#141430;--p2:#101026;--line:#1f2a5a;--line2:#00b8c4;--ink:#f4fbff;--soft:#b9e8ff;--faint:#6fb4cf;--acc:#00f0ff;--ok:#ff2bd6;--blue:#7a5cff;--deco:radial-gradient(50% 40% at 15% 0,rgba(0,240,255,.16),transparent),radial-gradient(50% 40% at 90% 100%,rgba(255,43,214,.16),transparent);--decosz:auto}
+:root[data-theme=glow] .top{background:#0d0d1e;border-bottom:2px solid #00f0ff;box-shadow:0 0 18px rgba(0,240,255,.45)}
+:root[data-theme=glow] .dock{box-shadow:0 0 16px rgba(0,240,255,.22)}
+:root[data-theme=mocap]{--bg:#040a0c;--p:#0a1518;--h:#0f2024;--p2:#0c1b1f;--line:#15393f;--line2:#1f6b5a;--ink:#e9fff3;--soft:#a8e8c4;--faint:#5fb08a;--acc:#39ff14;--ok:#19e0ff;--blue:#19e0ff;--deco:linear-gradient(rgba(57,255,20,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(57,255,20,.07) 1px,transparent 1px),radial-gradient(circle at 20% 30%,rgba(57,255,20,.9) 0 2px,transparent 3px),radial-gradient(circle at 70% 70%,rgba(25,224,255,.9) 0 2px,transparent 3px);--decosz:32px 32px,32px 32px,300px 300px,300px 300px}
+:root[data-theme=mocap] .top{background:#0f2024;border-bottom:2px solid #39ff14}
+:root[data-theme=sunrise]{--bg:#ffd8b4;--p:#fff5ea;--h:#ffe0c2;--p2:#fff0df;--line:#f0c3a0;--line2:#d99b74;--ink:#3b1d12;--soft:#6a3a28;--faint:#8a5a45;--acc:#e4572e;--ok:#2c8c5a;--blue:#b5532a;--deco:radial-gradient(circle at 50% 118%,#fff3a8 0 90px,rgba(255,200,90,.55) 91px 220px,transparent 222px),linear-gradient(180deg,#ffc7a3,#ffb3b3 55%,#ffe0b0);--decosz:auto}
+:root[data-theme=sunrise] .top{background:linear-gradient(90deg,#ffe0c2,#ffd0cf);border-bottom:3px solid #e4572e}
+:root[data-theme=cars]{--bg:#121418;--p:#1c1f25;--h:#262a31;--p2:#20242b;--line:#343a44;--line2:#4e5663;--ink:#f6f6f6;--soft:#c9ccd3;--faint:#8c919c;--acc:#e10600;--ok:#ffd100;--blue:#4aa3ff;--deco:repeating-linear-gradient(90deg,transparent 0 118px,rgba(255,255,255,.05) 118px 122px,transparent 122px 240px),linear-gradient(180deg,#14161a,#1b1e24);--decosz:auto}
+:root[data-theme=cars] .top{background:#262a31;border-bottom:0;position:relative}
+:root[data-theme=cars] .top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:7px;background:repeating-conic-gradient(#fff 0 25%,#000 0 50%) 0 0/14px 14px}
+:root[data-theme=sponge]{--bg:#7fd3f3;--p:#fff6b8;--h:#ffe45c;--p2:#fff1a0;--line:#e6c93a;--line2:#c9a516;--ink:#4a2f10;--soft:#6b4719;--faint:#8a6a2c;--acc:#e8590c;--ok:#2f9e44;--blue:#1b7fc0;--deco:radial-gradient(circle at 12% 88%,rgba(255,255,255,.35) 0 10px,transparent 11px),radial-gradient(circle at 86% 70%,rgba(255,255,255,.30) 0 14px,transparent 15px),radial-gradient(circle at 60% 92%,rgba(255,255,255,.28) 0 7px,transparent 8px),linear-gradient(180deg,#9fe0f8,#3aa7da);--decosz:auto}
+:root[data-theme=sponge] .top{background:radial-gradient(circle at 12% 40%,#d9b400 0 3px,transparent 4px),radial-gradient(circle at 40% 60%,#d9b400 0 4px,transparent 5px),radial-gradient(circle at 70% 35%,#d9b400 0 3px,transparent 4px),radial-gradient(circle at 90% 65%,#d9b400 0 4px,transparent 5px),#ffe45c;border-bottom:3px solid #8a5a1f}
+:root[data-theme=desert] .b.pri,:root[data-theme=desert] .ib.on{color:#fff}
+:root[data-theme=geometry] .b.pri,:root[data-theme=geometry] .ib.on{color:#fff}
+:root[data-theme=sunrise] .b.pri,:root[data-theme=sunrise] .ib.on{color:#fff}
+:root[data-theme=sponge] .b.pri,:root[data-theme=sponge] .ib.on{color:#fff}
+:root[data-theme=space] .b.pri,:root[data-theme=space] .ib.on{color:#0b0b10}
+:root[data-theme=contrast] .b.pri,:root[data-theme=contrast] .ib.on{color:#0b0b10}
+:root[data-theme=aquatic] .b.pri,:root[data-theme=aquatic] .ib.on{color:#0b0b10}
+:root[data-theme=dusk] .b.pri,:root[data-theme=dusk] .ib.on{color:#0b0b10}
+:root[data-theme=nightsky] .b.pri,:root[data-theme=nightsky] .ib.on{color:#0b0b10}
+:root[data-theme=planets] .b.pri,:root[data-theme=planets] .ib.on{color:#0b0b10}
+:root[data-theme=ninja] .b.pri,:root[data-theme=ninja] .ib.on{color:#0b0b10}
+:root[data-theme=glow] .b.pri,:root[data-theme=glow] .ib.on{color:#0b0b10}
+:root[data-theme=mocap] .b.pri,:root[data-theme=mocap] .ib.on{color:#0b0b10}
+:root[data-theme=cars] .b.pri,:root[data-theme=cars] .ib.on{color:#0b0b10}
+:root[data-theme]:not([data-theme=dark]):not([data-theme=light]) .dock{background:color-mix(in srgb,var(--p) 88%,transparent);backdrop-filter:blur(5px)}
+:root[data-theme]:not([data-theme=dark]):not([data-theme=light]) .si.sel{background:color-mix(in srgb,var(--ok) 22%,var(--p2))}
+:root[data-theme]:not([data-theme=dark]):not([data-theme=light]) .si.live{background:color-mix(in srgb,var(--acc) 24%,var(--p2))}
+:root[data-theme]:not([data-theme=dark]):not([data-theme=light]) .si:hover{background:color-mix(in srgb,var(--line) 60%,var(--p2))}
+:root[data-theme=contrast] *{border-color:#fff}
+:root[data-theme=contrast] .b.pri{background:#ffe600;color:#000;border-color:#ffe600}
+/* the picture behind a theme */
+html{background-color:var(--bg);background-image:var(--deco,none);background-size:var(--decosz,auto);background-attachment:fixed}
+body{background:transparent}
+/* scroll bars: none in the Library, a slim glowing one elsewhere, never sideways in the Service */
+*{scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--acc) 65%,transparent) transparent}
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,color-mix(in srgb,var(--acc) 80%,transparent),color-mix(in srgb,var(--ok) 70%,transparent));border-radius:99px}
+::-webkit-scrollbar-track{background:transparent}
+.libdock,.libdock *{scrollbar-width:none}
+.libdock *::-webkit-scrollbar,.libdock::-webkit-scrollbar{display:none;width:0;height:0}
+.svcdock .db{overflow-x:hidden}
+.svcdock,.svc{min-width:0}
+/* the desktop layout never gets squeezed below a size where things stop fitting */
+@media (min-width:901px){html,body{overflow:auto}.app{min-width:980px;min-height:620px}}
+@media (max-width:1180px){.main{--c1:310px;--c2:230px}.go{width:74px;height:74px}}
 @media (max-width:900px){
   .main{grid-template-columns:1fr;padding:6px 6px 0}
   .main>.dock,.main>.center{display:none}
+  .gut{display:none}
   .app[data-view=service] .main>.svcdock,.app[data-view=lib] .main>.libdock{display:flex}
   .app[data-view=show] .main>.center{display:grid}
   .mtabs{display:grid;grid-template-columns:repeat(3,1fr);background:var(--h);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
@@ -398,11 +534,11 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
     <a class="back" href="/tools/second-screen-presenter/" aria-label="Back"><svg class="i"><use href="#i-arrow" transform="rotate(180 12 12)"/></svg></a>
     <h1>Presenter</h1>
     <button class="pill" id="p-disp" type="button" title="The TV or projector screen your audience sees. Click to open it."><i></i><span class="t">TV screen</span><span id="p-disp-t">not open</span></button>
-    <button class="pill" id="p-stage" type="button" title="A private screen for the worship leader or speaker. Click to open it."><i></i><span class="t">Stage</span><span id="p-stage-t">off</span></button>
     <button class="pill" id="p-remote" type="button" title="Use your phone as a remote and a live mirror"><i></i><span class="t">Phone</span><span id="p-remote-t">off</span></button>
     <span class="sp"></span>
     <select id="screen" hidden aria-label="Screen to show on"></select>
     <button class="b sm" id="move" type="button" hidden>Move display</button>
+    <button class="ib flat" id="skin" type="button" title="Themes" aria-label="Themes"><svg class="i"><use href="#i-palette"/></svg></button>
     <button class="ib flat" id="theme" type="button" title="Switch between black and light" aria-label="Switch between black and light"><svg class="i"><use href="#i-sun"/></svg></button>
     <button class="ib flat" id="fs" type="button" title="Full screen" aria-label="Full screen"><svg class="i"><use href="#i-expand"/></svg></button>
     <a class="b sm" id="contact" href="/tools/second-screen-presenter/contact/" target="_blank" rel="noopener" title="Message the builder or buy him a coffee"><svg class="i sm"><use href="#i-heart"/></svg>Contact the builder</a>
@@ -420,8 +556,10 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
       </div>
       <div class="db">
         <div class="pane" data-pane="songs">
-          <div class="row"><input id="song-q" class="inp" type="search" placeholder="Search titles and lyrics" aria-label="Search songs by title or lyrics"></div>
+          <div class="row"><div class="gw"><div class="ghost" id="song-ghost" aria-hidden="true"></div><input id="song-q" class="inp" type="text" autocomplete="off" spellcheck="false" placeholder="Search titles and lyrics" aria-label="Search songs by title or lyrics. Press Tab to finish the suggestion."></div></div>
           <div class="row"><button class="b pri" id="song-new" type="button" style="flex:1"><svg class="i sm"><use href="#i-plus"/></svg>New song</button><button class="b" id="song-bg" type="button" style="flex:1" title="One background for all songs"><svg class="i sm"><use href="#i-image"/></svg>Song background</button></div>
+          <div class="row"><button class="b sm" id="song-text" type="button" style="flex:1" title="Make many songs at once from a text file">Songs from a text file</button></div>
+          <input type="file" id="song-text-file" accept=".txt,text/plain" multiple hidden aria-label="Choose text files with songs">
           <div class="row"><button class="b sm" id="song-hymns" type="button" style="flex:1" title="Adds well known hymns whose words are free to use">Add starter hymns</button></div>
           <ul class="list" id="song-list"></ul>
           <div class="row"><button class="b sm" id="song-export" type="button" style="flex:1" title="Save a copy of your songs as a file">Back up songs</button><button class="b sm" id="song-import" type="button" style="flex:1" title="Load songs from a backup file">Restore from backup</button></div>
@@ -431,19 +569,26 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
 
         <div class="pane col" data-pane="bible" hidden>
           <div class="pscroll">
-            <div class="hdr"><span class="hi"><svg class="i"><use href="#i-book"/></svg></span>Holy Bible</div>
-            <div class="iconrow" role="group" aria-label="Scripture settings">
-              <button class="ib2" type="button" data-set="per" aria-expanded="false"><svg class="i"><use href="#i-rows"/></svg>Verses per slide</button>
-              <button class="ib2" type="button" data-set="color" aria-expanded="false"><svg class="i"><use href="#i-palette"/></svg>Text colour</button>
-              <button class="ib2" type="button" data-set="bg" aria-expanded="false"><svg class="i"><use href="#i-image"/></svg>Background</button>
+            <div class="hdr"><span class="hi"><svg class="i"><use href="#i-book"/></svg></span>Holy Bible<span class="sp"></span>
+              <span class="iconrow" id="bb-set" role="group" aria-label="Scripture settings" hidden>
+                <button class="ib2" type="button" data-set="per" aria-expanded="false" title="Verses per slide" aria-label="Verses per slide"><svg class="i"><use href="#i-rows"/></svg></button>
+                <button class="ib2" type="button" data-set="color" aria-expanded="false" title="Text colour" aria-label="Text colour"><svg class="i"><use href="#i-palette"/></svg></button>
+                <button class="ib2" type="button" data-set="bg" aria-expanded="false" title="Background" aria-label="Background"><svg class="i"><use href="#i-image"/></svg></button>
+              </span>
+              <button class="ib flat" id="bb-more" type="button" aria-expanded="false" title="Text colour, verses per slide and background" aria-label="Scripture settings"><svg class="i"><use href="#i-more" transform="rotate(90 12 12)"/></svg></button>
             </div>
             <div class="opop" id="bb-pop" hidden></div>
-            <div class="f"><label for="bb-ref">Passage</label><div class="row"><input id="bb-ref" class="inp" type="text" placeholder="Type a verse, John 3:16, or words like love is patient" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="bb-sug"><button class="ib mic" id="bb-mic" type="button" title="Say a passage, for example John 3:16" aria-label="Search by voice"><svg class="i"><use href="#i-mic"/></svg></button><button class="b" id="bb-go" type="button">Find</button></div>
-              <p class="help" style="margin-top:2px">Tip: type John, press Tab, type 3, press Tab, type 16, press Enter.</p></div>
+            <div class="f"><label for="bb-ref">Passage</label><div class="row">
+              <div class="gw"><div class="ghost" id="bb-ghost" aria-hidden="true"></div><input id="bb-ref" class="inp" type="text" placeholder="John 3:16" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="bb-sug"></div>
+              <button class="b" id="bb-listen" type="button" aria-pressed="false" title="The app listens to the message and picks out the verses the speaker reads or mentions. It works without internet."><svg class="i sm"><use href="#i-mic"/></svg><span>Listen</span></button>
+              <button class="ib" id="bb-search" type="button" aria-expanded="false" title="Search the Bible for words" aria-label="Search the Bible for words"><svg class="i"><use href="#i-search"/></svg></button>
+              <button class="ib mic" id="bb-mic" type="button" hidden aria-label="Search by voice"><svg class="i"><use href="#i-mic"/></svg></button><button class="b" id="bb-go" type="button" hidden>Find</button></div>
+              <p class="help" style="margin-top:2px">Type a book, press Tab, type the chapter, press Tab, type the verse, press Enter to show it.</p></div>
+            <div class="f" id="bb-wbox" hidden><label for="bb-words">Search the Bible for words</label><input id="bb-words" class="inp" type="text" autocomplete="off" placeholder="For example: suffereth long" aria-label="Words to search for in the Bible"></div>
             <div class="drop" id="bb-drop" hidden role="listbox" aria-label="Verses that match your words"></div>
             <div class="sug" id="bb-sug" role="listbox"></div>
-            <div class="cols" id="bb-cols" aria-label="Book, chapter and verse"></div>
-            <div class="listen" id="bb-listen-box"><button class="b" id="bb-listen" type="button" aria-pressed="false" title="The app listens to the message and picks out the verses the speaker reads or mentions. It works without internet."><svg class="i sm"><use href="#i-mic"/></svg><span>Listen to the message</span></button><label class="row" style="gap:5px;font-size:.74rem;color:var(--soft)"><input type="checkbox" id="bb-autoshow"> Show on the screen too</label></div>
+            <div class="vwin" id="bb-cols" role="listbox" aria-label="Verses of this chapter. Scroll to see more. Double tap one to show it."></div>
+            <div class="listen" id="bb-listen-box" hidden><label class="row" style="gap:5px;font-size:.74rem;color:var(--soft)"><input type="checkbox" id="bb-autoshow"> Show on the screen too</label></div>
             <div class="heard" id="bb-heard" hidden></div>
             <div id="bb-chw" hidden><div class="stepl">Chapter</div><div class="chs" id="bb-ch"></div></div>
             <div id="bb-vsw" hidden><div class="row" style="justify-content:space-between"><div class="stepl">Verses (tap to pick one or more)</div><button class="b sm" id="bb-all" type="button">All</button></div><div class="chs" id="bb-vs"></div></div>
@@ -455,37 +600,35 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
         </div>
 
         <div class="pane" data-pane="media" hidden>
-          <div class="chips" id="m-chips" role="group" aria-label="Show"><button class="chip" type="button" data-f="all" aria-pressed="true">All</button><button class="chip" type="button" data-f="image" aria-pressed="false">Photos</button><button class="chip" type="button" data-f="video" aria-pressed="false">Videos</button><button class="chip" type="button" data-f="pdf" aria-pressed="false">PDFs</button><button class="chip" type="button" id="m-link" aria-pressed="false" title="Add a YouTube, Vimeo or Google Slides link"><svg class="i sm"><use href="#i-link"/></svg> Link</button></div>
+          <div class="chips" id="m-chips" role="group" aria-label="Show"><button class="chip" type="button" data-f="all" aria-pressed="true">All</button><button class="chip" type="button" data-f="image" aria-pressed="false">Photos</button><button class="chip" type="button" data-f="video" aria-pressed="false">Videos</button><button class="chip" type="button" data-f="audio" aria-pressed="false">Audio</button><button class="chip" type="button" data-f="pdf" aria-pressed="false">PDFs</button><button class="chip" type="button" id="m-link" aria-pressed="false" title="Add a YouTube, Vimeo or Google Slides link"><svg class="i sm"><use href="#i-link"/></svg> Link</button></div>
           <div class="row" id="m-linkrow" hidden><input id="m-url" class="inp" type="url" inputmode="url" placeholder="YouTube, Vimeo, Google Slides or image link" autocomplete="off"><button class="b" id="m-addurl" type="button">Add</button></div>
           <div class="mgrid" id="m-grid"></div>
           <div class="mdet" id="m-det" hidden></div>
           <div class="mdet" id="m-addbox" hidden>
             <b>Add to Media</b>
             <p class="help">Pick what you want to add. Your files stay on this computer and are never uploaded.</p>
-            <div class="row wrap"><button class="b pri" type="button" data-pick="image">Photos</button><button class="b pri" type="button" data-pick="video">Videos</button><button class="b pri" type="button" data-pick="pdf">PDFs</button><button class="b pri" type="button" data-pick="link">A link</button></div>
+            <div class="row wrap"><button class="b pri" type="button" data-pick="image">Photos</button><button class="b pri" type="button" data-pick="video">Videos</button><button class="b pri" type="button" data-pick="audio">Audio</button><button class="b pri" type="button" data-pick="pdf">PDFs</button><button class="b pri" type="button" data-pick="link">A link</button></div>
             <p class="help">You can also drop files anywhere on this page. PowerPoint, Keynote or Word files must be saved as a PDF first.</p>
           </div>
-          <input type="file" id="m-file" accept="image/*,video/*,application/pdf,.pdf,.mov,.mkv,.ppt,.pptx,.key,.odp,.doc,.docx" multiple hidden aria-label="Choose files">
+          <input type="file" id="m-file" accept="image/*,video/*,audio/*,application/pdf,.pdf,.mov,.mkv,.ppt,.pptx,.key,.odp,.doc,.docx" multiple hidden aria-label="Choose files">
+          <div class="row"><button class="b sm" id="m-starter" type="button" style="flex:1" title="Twelve geometric pictures and three moving backgrounds you can use behind songs and verses">Add starter backgrounds</button></div>
           <p class="help" id="m-help">Everything you add is kept here on this computer and never uploaded. Click one to see it, then press Add to service. PowerPoint, Keynote or Word files must be saved as a PDF first.</p>
           <div class="f"><span class="lbl">Logo for the Logo button</span><div class="row"><button class="b sm" id="logo-pick" type="button">Choose a logo image</button><span class="help" id="logo-name">No logo chosen</span></div><input type="file" id="logo-file" accept="image/*" hidden aria-label="Choose a logo"></div>
         </div>
 
         <div class="pane" data-pane="capture" hidden>
           <p class="help">Show a camera, a capture card (another laptop or a video mixer connected by HDMI) or any screen or window. A running camera can also be the background of a song or Bible passage.</p>
-          <div class="row wrap"><button class="b pri" id="cap-find" type="button"><svg class="i sm"><use href="#i-camera"/></svg>Find cameras</button><button class="b" id="cap-screen" type="button"><svg class="i sm"><use href="#i-monitor"/></svg>Share a screen or window</button></div>
+          <button class="tbig" id="cap-find" type="button"><svg class="i lg"><use href="#i-camera"/></svg><span><b>Find a camera</b><small>A webcam or a capture card</small></span></button>
+          <button class="tbig" id="cap-screen" type="button"><svg class="i lg"><use href="#i-monitor"/></svg><span><b>Share your screen</b><small>The whole screen or one window</small></span></button>
           <ul class="list" id="cap-list"></ul>
           <p class="help" id="cap-msg" role="status"></p>
         </div>
 
         <div class="pane" data-pane="timer" hidden>
-          <label class="row"><input type="radio" name="tm-mode" value="for" checked> Count down for <input type="number" id="tm-min" min="0" max="600" value="5" style="width:60px;flex:none" aria-label="Minutes"> min <input type="number" id="tm-sec" min="0" max="59" value="0" style="width:56px;flex:none" aria-label="Seconds"> sec</label>
-          <label class="row"><input type="radio" name="tm-mode" value="until"> Count down to <input type="time" id="tm-until" value="10:00" style="flex:none" aria-label="Time"></label>
-          <div class="f"><label for="tm-label">Words above the clock</label><input id="tm-label" type="text" value="Service starts in"></div>
-          <div class="f"><label for="tm-end">When it reaches zero</label><input id="tm-end" type="text" value="Welcome"></div>
-          <div class="f"><label for="tm-style">Colours</label><select id="tm-style"><option value="coral" selected>Navy and coral</option><option value="dark">White on black</option><option value="light">Black on white</option></select></div>
+          <p class="help">Pick a countdown. A box opens where you set the details.</p>
+          <button class="tbig" id="tm-for" type="button"><svg class="i lg"><use href="#i-clock"/></svg><span><b>Count down for a length of time</b><small>For example 5 minutes</small></span></button>
+          <button class="tbig" id="tm-to" type="button"><svg class="i lg"><use href="#i-clock"/></svg><span><b>Count down to a time of day</b><small>For example until 10:00</small></span></button>
           <p class="help">A countdown starts counting the moment you add it, even when it is not on the screen.</p>
-          <div class="row wrap"><button class="b" id="tm-add" type="button">Add to service</button><button class="b ok" id="tm-show" type="button">Add and show</button></div>
-          <div class="f" style="margin-top:6px;border-top:1px solid var(--line);padding-top:10px"><label for="tm-clabel">Or show the time of day</label><div class="row"><input id="tm-clabel" type="text" value="The time is" aria-label="Words above the clock"><button class="b" id="tm-clock" type="button">Add clock</button></div></div>
         </div>
       </div>
     </section>
@@ -496,6 +639,8 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
       <div class="db"><ol class="svc" id="svc"></ol><div class="empty" id="svc-empty">Your service is empty.<br>Add songs, Bible passages, media, a camera or a countdown from the Library.</div></div>
     </section>
 
+    <div class="gut v" id="gut1" role="separator" aria-orientation="vertical" title="Drag to make the Library wider or narrower. Double click to reset."></div>
+    <div class="gut v" id="gut2" role="separator" aria-orientation="vertical" title="Drag to make the Service wider or narrower. Double click to reset."></div>
     <section class="center" id="center">
       <div class="dock">
         <div class="mons">
@@ -506,11 +651,11 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
         <div class="ctrl">
           <div class="grp"><button class="b big" id="prev" type="button">&larr; Back</button><button class="b big pri" id="next" type="button">Next &rarr;</button></div>
           <div class="div"></div>
-          <div class="grp"><button class="b big" id="black" type="button" aria-pressed="false">Black</button><button class="b big" id="logo" type="button" aria-pressed="false">Logo</button><button class="b big" id="fit" type="button" aria-pressed="false" hidden title="Photos and videos keep their own shape. Press this to stretch one to fill the whole screen.">Expand to fill</button></div>
+          <div class="grp"><button class="b big" id="black" type="button" aria-pressed="false">Black</button><button class="b big" id="logo" type="button" aria-pressed="false">Logo</button><button class="b big" id="split" type="button" aria-pressed="false" title="Show two things side by side on the screen">Split screen</button><button class="b big" id="fit" type="button" aria-pressed="false" hidden title="Photos and videos keep their own shape. Press this to stretch one to fill the whole screen.">Expand to fill</button></div>
+          <div class="seg splitseg" id="split-seg" role="group" aria-label="Where the next item goes" hidden><button type="button" data-side="0" aria-pressed="true">Next goes left</button><button type="button" data-side="1" aria-pressed="false">Next goes right</button></div>
           <div class="media" id="media" hidden>
-            <button class="b" id="play" type="button">Play</button><button class="ib" id="restart" type="button" title="From the start" aria-label="From the start">&#8634;</button>
-            <input type="range" id="seek" min="0" max="1" step="0.1" value="0" aria-label="Position in the video"><span class="t" id="time">0:00 / 0:00</span>
-            <input type="range" id="vol" min="0" max="100" value="100" style="max-width:90px" aria-label="Volume">
+            <div class="mrow"><button class="b sm" id="b10" type="button" title="Go back 10 seconds">&minus;10s</button><button class="b sm" id="b5" type="button" title="Go back 5 seconds">&minus;5s</button><button class="b pri" id="play" type="button">Play</button><button class="b sm" id="f5" type="button" title="Go forward 5 seconds">+5s</button><button class="b sm" id="f10" type="button" title="Go forward 10 seconds">+10s</button><button class="ib" id="restart" type="button" title="From the start" aria-label="From the start">&#8634;</button></div>
+            <div class="mrow"><span class="t" id="time">0:00 / 0:00</span><input type="range" id="seek" min="0" max="1" step="0.1" value="0" aria-label="Position in the video or song"><input type="range" id="vol" min="0" max="100" value="100" style="max-width:90px" aria-label="Volume"></div>
           </div>
           <span class="sp"></span>
           <span class="rectime" id="rectime" hidden>0:00</span>
@@ -519,6 +664,7 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
           <button class="ib" id="more" type="button" title="More options" aria-label="More options"><svg class="i"><use href="#i-more"/></svg></button>
         </div>
       </div>
+      <div class="gut h" id="gut3" role="separator" aria-orientation="horizontal" title="Drag to make the preview taller or shorter. Double click to reset."></div>
       <div class="dock slides">
         <div class="dh"><span id="sl-title">Slides</span></div>
         <div class="db"><div class="sgrid" id="sgrid"></div><div class="hint" id="sl-hint">Select an item in the service to see its slides.</div></div>
@@ -533,13 +679,32 @@ dialog::backdrop{background:rgba(0,0,0,.66)}
   </nav>
 
   <footer class="bot">
-    <span class="stagebar"><input id="st-msg" type="text" placeholder="Message to the stage display" aria-label="Message to the stage display"><button class="b sm" id="st-send" type="button">Send</button><button class="b sm" id="st-clear" type="button">Clear</button></span>
     <span class="msg" id="msg" role="status"></span>
     <span class="keys">Arrows: next and back | Enter: go live | B: black | Space: play or pause | Double-click anything to show it live</span>
   </footer>
 </div>
 
 <input type="file" id="bg-file" accept="image/*,video/*" hidden aria-label="Choose a background">
+
+<dialog id="dlg-timer"><div class="dlg">
+  <div class="dt"><svg class="i"><use href="#i-clock"/></svg><span id="tm-head">Countdown</span><span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="dbody">
+    <div class="f" id="tm-forbox"><label>Count down for</label><div class="row"><input type="number" id="tm-min" min="0" max="600" value="5" aria-label="Minutes"> min <input type="number" id="tm-sec" min="0" max="59" value="0" aria-label="Seconds"> sec</div></div>
+    <div class="f" id="tm-tobox"><label for="tm-until">Count down to</label><input type="time" id="tm-until" value="10:00"></div>
+    <div class="f"><label for="tm-label">Words above the clock</label><input id="tm-label" type="text" value="Service starts in"></div>
+    <div class="f"><label for="tm-end">When it reaches zero</label><input id="tm-end" type="text" value="Welcome"></div>
+    <div class="f"><span class="lbl">Background</span><div class="seg" id="tm-bgseg" role="group" aria-label="Background"><button type="button" data-bg="black" aria-pressed="true">Black</button><button type="button" data-bg="logo" aria-pressed="false">Logo</button><button type="button" data-bg="color" aria-pressed="false">Colour</button></div></div>
+    <div class="f" id="tm-stylebox" hidden><label for="tm-style">Colours</label><select id="tm-style"><option value="coral" selected>Navy and coral</option><option value="dark">White on black</option><option value="light">Black on white</option></select></div>
+    <label class="row" style="gap:7px;color:var(--soft)"><input type="checkbox" id="tm-clock"> Show the time of day on the screen too</label>
+    <p class="help" id="tm-note">Logo uses the logo you chose in Media. A countdown starts counting the moment you add it.</p>
+  </div>
+  <div class="dfoot"><button class="b" id="tm-add" type="button">Add to service</button><button class="b pri" id="tm-show" type="button">Add and show</button></div>
+</div></dialog>
+
+<dialog id="dlg-skin"><div class="dlg">
+  <div class="dt"><svg class="i"><use href="#i-palette"/></svg>Themes<span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="dbody"><div class="skins" id="skin-list"></div><p class="help">A theme changes how the presenter looks on this computer. What your audience sees on the screen does not change.</p></div>
+</div></dialog>
 
 <dialog id="dlg-song"><div class="dlg">
   <div class="dt"><svg class="i"><use href="#i-music"/></svg><span id="sg-head">New song</span><span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>

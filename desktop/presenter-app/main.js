@@ -17,7 +17,7 @@ const IS_MAC = process.platform === 'darwin';
 
 /* pmedia://f/<encoded path>: a video or photo is played from where it already sits on the computer, so nothing is copied or uploaded */
 protocol.registerSchemesAsPrivileged([{ scheme: 'pmedia', privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true, bypassCSP: true, corsEnabled: true } }]);
-const MEDIA_TYPES = { mp4: 'video/mp4', m4v: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', mkv: 'video/x-matroska', ogv: 'video/ogg', avi: 'video/x-msvideo', wmv: 'video/x-ms-wmv', mpg: 'video/mpeg', mpeg: 'video/mpeg', ts: 'video/mp2t', '3gp': 'video/3gpp', flv: 'video/x-flv', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', gif: 'image/gif', webp: 'image/webp', avif: 'image/avif', bmp: 'image/bmp', svg: 'image/svg+xml' };
+const MEDIA_TYPES = { mp4: 'video/mp4', m4v: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', mkv: 'video/x-matroska', ogv: 'video/ogg', avi: 'video/x-msvideo', wmv: 'video/x-ms-wmv', mpg: 'video/mpeg', mpeg: 'video/mpeg', ts: 'video/mp2t', '3gp': 'video/3gpp', flv: 'video/x-flv', mp3: 'audio/mpeg', m4a: 'audio/mp4', wav: 'audio/wav', ogg: 'audio/ogg', oga: 'audio/ogg', opus: 'audio/ogg', flac: 'audio/flac', aac: 'audio/aac', wma: 'audio/x-ms-wma', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', gif: 'image/gif', webp: 'image/webp', avif: 'image/avif', bmp: 'image/bmp', svg: 'image/svg+xml' };
 function mediaResponse(req) {
   const refOk = !req.referrer || isOurs(req.referrer) || /^pmedia:/.test(req.referrer);
   let file = '';
@@ -82,12 +82,13 @@ function createMain() {
   const saved = readPrefs().main || {};
   mainWin = new BrowserWindow({
     width: saved.width || 1360, height: saved.height || 860, x: saved.x, y: saved.y,
-    minWidth: 900, minHeight: 600, show: false, backgroundColor: '#0e0e10', title: 'Presenter by Evans Large',
+    minWidth: 1000, minHeight: 640, show: false, backgroundColor: '#0e0e10', title: 'Presenter by Evans Large',
     icon: path.join(__dirname, 'build', 'icon.png'), autoHideMenuBar: true, webPreferences: webPrefs()
   });
   if (!IS_MAC) mainWin.removeMenu();
   wire(mainWin);
-  mainWin.once('ready-to-show', () => { mainWin.show(); });
+  mainWin.once('ready-to-show', () => { mainWin.show(); if (!SMOKE && !FAKE) mainWin.setFullScreen(true); }); /* opens full screen; F11 switches it */
+  mainWin.webContents.on('before-input-event', (e, input) => { if (input.type === 'keyDown' && input.key === 'F11') { e.preventDefault(); mainWin.setFullScreen(!mainWin.isFullScreen()); } });
   mainWin.webContents.on('did-fail-load', (_e, code, _d, _u, isMainFrame) => {
     if (!isMainFrame || code === -3) return;
     mainWin.loadFile(path.join(__dirname, 'offline.html'));
