@@ -21,7 +21,7 @@ jobs:
             script: release:win
           - os: macos-latest
             script: release:mac:arm64
-          - os: macos-latest
+          - os: macos-15-intel
             script: release:mac:x64
     runs-on: ${{ matrix.os }}
     defaults:
