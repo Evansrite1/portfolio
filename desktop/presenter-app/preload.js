@@ -23,6 +23,8 @@ contextBridge.exposeInMainWorld('presenterDesktop', {
   onDisplays: (f) => { subs.displays.push(f); },
   onUpdate: (f) => { subs.update.push(f); },
   retry: () => ipcRenderer.invoke('presenter:retry'),
+  checkWebUpdate: () => ipcRenderer.invoke('presenter:web-check'),
+  applyWebUpdate: () => ipcRenderer.invoke('presenter:web-apply'),
   listDisplays: () => ipcRenderer.invoke('presenter:list-displays'),
   setTV: (id) => ipcRenderer.invoke('presenter:set-tv', id),
   pathFor: (file) => { try { return webUtils.getPathForFile(file) || ''; } catch (e) { return ''; } }

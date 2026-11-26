@@ -106,3 +106,4 @@ lead-finder/.pytest_cache/
 mailer-app/tests/__pycache__/
 
 desktop/presenter-installer/setup/out/
+desktop/presenter-app/web/

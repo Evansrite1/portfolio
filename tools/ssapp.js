@@ -573,21 +573,41 @@
   }
   var listening = null;
   function voiceSearch() {
-    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { say('Voice search needs Chrome or Edge. In this browser, type the passage instead.', true); return; }
-    if (listening) { try { listening.stop(); } catch (e) {} return; }
-    var r = new SR(); r.lang = 'en-US'; r.interimResults = false; r.maxAlternatives = 3; listening = r;
-    $('bb-mic').classList.add('on'); setMsg('Listening... say a passage, for example "John 3 16".');
-    r.onresult = function (e) {
-      var alts = []; for (var i = 0; i < e.results[0].length; i++) alts.push(e.results[0][i].transcript);
-      var pick = null, heard = alts[0];
-      for (var k = 0; k < alts.length && !pick; k++) { var ref = spokenToRef(alts[k]); if (parseRef(ref)) pick = ref; }
-      $('bb-ref').value = pick || spokenToRef(heard); refHints();
-      bibleFind().then(function () { if (bbFound) { addItem(bibleItem(), false); setMsg('Heard: "' + heard + '"'); } else setMsg('Heard "' + heard + '" but could not find that passage. Try again.'); });
-    };
-    r.onerror = function (e) { setMsg(e.error === 'not-allowed' ? 'Allow the microphone for this site, then try again.' : e.error === 'no-speech' ? 'I did not hear anything. Try again.' : 'Voice search stopped (' + e.error + ').'); };
-    r.onend = function () { listening = null; $('bb-mic').classList.remove('on'); };
-    try { r.start(); } catch (e) { listening = null; $('bb-mic').classList.remove('on'); }
+    if (listening) { listening.stop(); return; }
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { say('This computer cannot use a microphone here. Type the passage instead.', true); return; }
+    if (typeof vl !== 'undefined' && vl.on) { say('Press Stop on Listen first, then use the microphone to search.', true); return; }
+    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: true, channelCount: 1 } }).then(function (st) {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)(), src = ctx.createMediaStreamSource(st), proc = ctx.createScriptProcessor(4096, 1, 1);
+      var chunks = [], len = 0, spoke = false, quiet = 0, t0 = Date.now(), done = false, rate = ctx.sampleRate;
+      $('bb-mic').classList.add('on'); setMsg('Listening... say a passage, for example "John 3 16".');
+      function finish() {
+        if (done) return; done = true; listening = null;
+        try { proc.disconnect(); st.getTracks().forEach(function (t) { t.stop(); }); ctx.close(); } catch (e) { /* closed */ }
+        $('bb-mic').classList.remove('on');
+        if (!spoke) { setMsg('I did not hear anything. Try again.'); return; }
+        setMsg(vl.loaded ? 'Working out what you said...' : 'Getting the listener ready (first time only)...');
+        var audio = down16(chunks, len, rate); ensureWorker(); vl.busy = true;
+        vl.cb = function (text) {
+          vl.busy = false;
+          if (text == null) { setMsg('Voice search did not work. Type the passage instead.', true); return; }
+          var heardT = String(text).trim(), pick = null, c = [heardT].concat(findRefs(heardT));
+          for (var k = 0; k < c.length && !pick; k++) { var ref = k === 0 ? spokenToRef(c[k]) : c[k]; if (ref && parseRef(ref)) pick = ref; }
+          if (!pick) { setMsg('Heard "' + heardT + '" but could not find that passage. Try again.'); return; }
+          $('bb-ref').value = pick; refHints();
+          bibleFind().then(function () { if (bbFound) { addItem(bibleItem(), false); setMsg('Heard: "' + heardT + '"'); } else setMsg('Heard "' + heardT + '" but could not find that passage. Try again.'); });
+        };
+        vl.worker.postMessage({ type: 'run', audio: audio, language: 'en' });
+      }
+      listening = { stop: finish };
+      proc.onaudioprocess = function (e) {
+        if (done) return;
+        var d = e.inputBuffer.getChannelData(0), sum = 0, i; for (i = 0; i < d.length; i++) sum += d[i] * d[i];
+        chunks.push(new Float32Array(d)); len += d.length;
+        if (Math.sqrt(sum / d.length) > 0.012) { spoke = true; quiet = 0; } else if (spoke) { quiet += d.length / rate; if (quiet > 1.2) finish(); }
+        if (Date.now() - t0 > 9000) finish();
+      };
+      src.connect(proc); proc.connect(ctx.destination);
+    }).catch(function () { say('Allow the microphone, then try again.', true); });
   }
 
   /* Bible versions: the bar at the bottom holds up to six; the plus button searches a free catalogue */
@@ -1829,10 +1849,27 @@
   if (DESK) {
     DESK.onDisplays(function (i) { renderStatus(); if ($('dlg-screens').open) deskScreens(); if (i.displays < 2) say('Only one screen found. Connect your TV or projector and set it to extend (not mirror). The show goes there by itself.', true); else if (i.tvOpen) say('The TV screen is on your second screen.'); });
     DESK.onUpdate(function (u) {
-      if (u.state === 'ready') toast('A new version of the Presenter app is ready. It installs when you close the app.');
+      if (u.state === 'web') updOffer(u);
+      else if (u.state === 'web-progress') { $('upd-bar').hidden = false; $('upd-fill').style.width = Math.round((u.p || 0) * 100) + '%'; }
+      else if (u.state === 'ready') toast('A new version of the Presenter app is ready. It installs when you close the app.');
       else if (u.state === 'manual') say('A new version of the Presenter app is available. Download it from the Presenter website.');
     });
   }
+  /* in-app update: the new pages are downloaded here, inside the app, and it restarts on them; no website, no new installer */
+  function updOffer(u) {
+    if (!DESK || !DESK.applyWebUpdate || $('dlg-upd').open) return;
+    var mb = u.bytes ? Math.max(0.1, u.bytes / 1048576).toFixed(1) + ' MB' : 'a small update';
+    $('upd-msg').textContent = 'A new version of the Presenter is ready (' + mb + '). Press Update now: it installs inside the app in a few seconds, then closes and opens again by itself. Your songs and service are kept.';
+    $('upd-bar').hidden = true; $('upd-fill').style.width = '0'; $('upd-go').disabled = false; $('upd-later').disabled = false; openDlg($('dlg-upd'));
+  }
+  $('upd-later').onclick = function () { closeDlg($('dlg-upd')); };
+  $('upd-go').onclick = function () {
+    this.disabled = true; $('upd-later').disabled = true; $('upd-bar').hidden = false; $('upd-msg').textContent = 'Updating... please keep the app open.';
+    DESK.applyWebUpdate().then(function (r) {
+      if (r && r.ok) { $('upd-msg').textContent = 'Done. The app is closing and opening again...'; return; }
+      $('upd-msg').textContent = 'The update could not finish (' + ((r && r.reason) || 'no connection') + '). Check your internet and try again, or press Later.'; $('upd-go').disabled = false; $('upd-later').disabled = false;
+    });
+  };
   if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register(BASE + 'sw.js', { scope: BASE }).catch(function () { /* offline copy is optional */ });
   /* the speech model is saved on the computer the first time the app is open online, so listening also works without internet */
   var VOICE_FILES = ['/tools/whisper-worker.js', '/tools/vendor/transformers/transformers.min.js', '/tools/vendor/transformers/ort-wasm-simd-threaded.jsep.mjs', '/tools/vendor/transformers/ort-wasm-simd-threaded.jsep.wasm',
@@ -1854,6 +1891,7 @@
 
   /* ------------------------------------------------------------------ phone: live mirror, service control and library (PeerJS: the free PeerJS server only introduces the phone; then it talks directly) */
   var peer = null, conns = [];
+  var ICE_LIST = [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302', 'stun:stun.cloudflare.com:3478'] }, { urls: ['turn:openrelay.metered.ca:80', 'turn:openrelay.metered.ca:443', 'turn:openrelay.metered.ca:443?transport=tcp'], username: 'openrelayproject', credential: 'openrelayproject' }];
   function linkRoute(c, cb) {
     /* which road the phone link took: host to host means the same Wi-Fi (fast and local), anything else goes over the internet */
     var pc = c && c.peerConnection; if (!pc || !pc.getStats) return;
@@ -1938,6 +1976,33 @@
       remoteStatus('Remote problem: ' + (er && er.type ? er.type : er) + '. Check your internet connection and try again.');
     });
   }
+  /* a phone as a wireless camera: scan, press Start camera on the phone, and its picture arrives here (Wi-Fi or internet) */
+  var pcPeer = null, pcN = 0;
+  function startPhoneCam() {
+    if (pcPeer && !pcPeer.destroyed) return;
+    if (!window.Peer) { var sc = document.createElement('script'); sc.src = '/tools/vendor/peerjs/peerjs.min.js'; sc.onload = startPhoneCam; sc.onerror = function () { $('pc-st').textContent = 'Could not load. Check your internet connection.'; }; document.head.appendChild(sc); return; }
+    $('pc-st').textContent = 'Getting the code ready...';
+    var id = 'aeps-cam-' + Array.from(crypto.getRandomValues(new Uint8Array(10))).map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+    pcPeer = new window.Peer(id, { debug: 0, config: { iceServers: ICE_LIST, iceCandidatePoolSize: 4 } });
+    pcPeer.on('open', function (pid) {
+      var url = location.origin + BASE + 'camera/#' + pid; $('pc-qr').dataset.url = url;
+      try { var q = window.qrcode(0, 'M'); q.addData(url); q.make(); $('pc-qr').innerHTML = dotQr(q); } catch (e) { $('pc-qr').textContent = ''; }
+      $('pc-st').textContent = 'Scan the code with your phone camera.';
+    });
+    pcPeer.on('call', function (call) {
+      call.answer();
+      var got = false;
+      call.on('stream', function (st) {
+        if (got) return; got = true; pcN++;
+        addStreamItem(st, 'Phone camera' + (pcN > 1 ? ' ' + pcN : ''), 'camera');
+        $('pc-st').textContent = 'Phone connected. Its camera is in your Capture list.'; toast('Phone camera connected');
+        try { closeDlg($('dlg-pcam')); } catch (e) { /* already closed */ }
+      });
+      call.on('close', function () { toast('Phone camera disconnected'); });
+    });
+    pcPeer.on('error', function (er) { $('pc-st').textContent = 'Problem: ' + (er && er.type ? er.type : er) + '. Check your internet connection and try again.'; try { pcPeer.destroy(); } catch (e) { /* closed */ } pcPeer = null; });
+  }
+  $('cap-phone').onclick = function () { openDlg($('dlg-pcam')); startPhoneCam(); };
   $('p-remote').onclick = function () { openDlg($('rm-dialog')); startRemote(); };
 
   /* ------------------------------------------------------------------ library tabs, media, capture, scripture, countdown */
@@ -2244,11 +2309,32 @@
     if (heardAt[ref] && Date.now() - heardAt[ref] < 90000) return; heardAt[ref] = Date.now();
     lookupRef(ref).then(function (f) {
       if (!f) return;
-      addItem(bibleItem(f), $('bb-autoshow').checked);
+      addItem(bibleItem(f), false);
       addHeard(refText(f) + ' ' + f.tr, how === 'ref' ? 'named by the speaker' : 'read from the Bible');
     });
   }
+  function normW(t) { return ' ' + String(t).toLowerCase().replace(/[^a-z0-9' ]+/g, ' ').replace(/\s+/g, ' ').trim() + ' '; }
+  var songNorm = null, songSig = '', songHeardAt = {};
+  function songIndex() {
+    var lib = songLib(), sig = lib.length + ':' + (lib[0] ? lib[0].title : '');
+    if (songNorm && songSig === sig) return songNorm; songSig = sig;
+    songNorm = lib.map(function (s) {
+      return { s: s, t: normW(s.title), lines: String(s.lyrics || '').split(/\n+/).map(normW).filter(function (l) { return l.trim().split(' ').length >= 5; }) };
+    });
+    return songNorm;
+  }
+  function scanSongs(text) {
+    var n = normW(text); if (n.trim().split(' ').length < 4) return;
+    songIndex().forEach(function (x) {
+      var hit = x.t.trim().split(' ').length >= 2 && n.indexOf(x.t) >= 0;
+      for (var li = 0; li < x.lines.length && !hit; li++) { var w = x.lines[li].trim().split(' '); for (var i = 0; i + 5 <= w.length; i += 2) if (n.indexOf(' ' + w.slice(i, i + 5).join(' ') + ' ') >= 0) { hit = true; break; } }
+      if (!hit || (songHeardAt[x.s.title] && Date.now() - songHeardAt[x.s.title] < 600000)) return;
+      songHeardAt[x.s.title] = Date.now();
+      var it = songRecItem(x.s); if (it.slides.length) { addItem(it, false); addHeard(x.s.title, 'song heard, added to the service'); }
+    });
+  }
   function scan(text) {
+    scanSongs(text);
     findRefs(text).forEach(function (r) { heard(r, 'ref'); });
     if (!findRefs(text).length) { var q = findQuote(text); if (q) heard(q, 'quote'); }
   }
@@ -2267,6 +2353,18 @@
     for (var i = 0; i < n; i++) { var a = Math.floor(i * f), b = Math.max(a + 1, Math.floor((i + 1) * f)), s = 0; for (var k = a; k < b && k < all.length; k++) s += all[k]; out[i] = s / (b - a); }
     return out;
   }
+  function ensureWorker() {
+    if (vl.worker) return vl.worker;
+    vl.worker = new Worker('/tools/whisper-worker.js', { type: 'module' });
+    vl.worker.onmessage = function (e) {
+      var m = e.data || {};
+      if (m.type === 'load' && m.data && m.data.status === 'progress' && m.data.total) setMsg('Getting the listener ready: ' + Math.round(m.data.loaded / m.data.total * 100) + '%');
+      else if (m.type === 'listening') { vl.loaded = true; if (vl.on) setMsg('Listening to the message.'); }
+      else if (m.type === 'done') { vl.busy = false; var t = (m.data && m.data.text) || ''; if (vl.cb) { var f = vl.cb; vl.cb = null; f(t); } else if (t.trim()) scan(t); }
+      else if (m.type === 'error') { vl.busy = false; setMsg('The listener had a problem: ' + m.data, true); if (vl.cb) { var f2 = vl.cb; vl.cb = null; f2(null); } }
+    };
+    return vl.worker;
+  }
   function startListen() {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { say('This computer cannot use a microphone here.', true); return; }
     loadBible(bbVer).then(function () { verseIndex(bbVer); });
@@ -2277,16 +2375,7 @@
       var src = ctx.createMediaStreamSource(st), proc = ctx.createScriptProcessor(4096, 1, 1); vl.proc = proc;
       proc.onaudioprocess = function (e) { if (!vl.on) return; vl.buf.push(new Float32Array(e.inputBuffer.getChannelData(0))); vl.len += 4096; };
       src.connect(proc); proc.connect(ctx.destination);
-      if (!vl.worker) {
-        vl.worker = new Worker('/tools/whisper-worker.js', { type: 'module' });
-        vl.worker.onmessage = function (e) {
-          var m = e.data || {};
-          if (m.type === 'load' && m.data && m.data.status === 'progress' && m.data.total) setMsg('Getting the listener ready: ' + Math.round(m.data.loaded / m.data.total * 100) + '%');
-          else if (m.type === 'listening') { vl.loaded = true; if (vl.on) setMsg('Listening to the message.'); }
-          else if (m.type === 'done') { vl.busy = false; var t = (m.data && m.data.text) || ''; if (t.trim()) scan(t); }
-          else if (m.type === 'error') { vl.busy = false; setMsg('The listener had a problem: ' + m.data, true); }
-        };
-      }
+      ensureWorker();
       vl.timer = setInterval(function () {
         if (!vl.on || vl.busy || !vl.len) return;
         var chunks = vl.buf, len = vl.len; vl.buf = []; vl.len = 0;
@@ -2405,6 +2494,6 @@
   loadMedia().then(function () { restoreService(); if (store('ae_ss_starter') !== 2) addStarter(true); }, restoreService);
   if (navigator.storage && navigator.storage.persist) navigator.storage.persist().then(function (ok) { if (ok) $('save-note').textContent = 'Your songs, Media and Bible versions are saved in this browser on this computer and the browser is asked to keep them. Use Back up to keep a copy or move them to another computer.'; }).catch(function () {});
   renderSongs(); renderMedia(); drawSongBg(); renderSlides(); render(); syncMtabs();
-  window.__ss = { splitState: function () { return { split: split, live2Id: live2Id, live2Slide: live2Slide }; }, svcOrder: svcOrder, refGhost: refGhost, restOf: restOf, commitPassage: commitPassage, findRefs: findRefs, findQuote: findQuote, items: items, media: media, addFiles: addFiles, addMedia: addMedia, goLive: goLive, step: step, select: select, displays: displays, stages: stages, parseRef: parseRef, spokenToRef: spokenToRef, matchBooks: matchBooks, parseSong: parseSong, linkItem: linkItem, state: state, bibleFind: bibleFind, bibleItem: bibleItem, lookupRef: lookupRef, bibles: bibles, addStreamItem: addStreamItem, refHints: refHints, rtc: rtc, effBg: effBg, setAuto: setAuto, autoTick: autoTick, openEdit: openEdit, setSongBg: setSongBg, convertBible: convertBible, drawLive: drawLive,
+  window.__ss = { splitState: function () { return { split: split, live2Id: live2Id, live2Slide: live2Slide }; }, svcOrder: svcOrder, refGhost: refGhost, restOf: restOf, commitPassage: commitPassage, findRefs: findRefs, scan: scan, findQuote: findQuote, items: items, media: media, addFiles: addFiles, addMedia: addMedia, goLive: goLive, step: step, select: select, displays: displays, stages: stages, parseRef: parseRef, spokenToRef: spokenToRef, matchBooks: matchBooks, parseSong: parseSong, linkItem: linkItem, state: state, bibleFind: bibleFind, bibleItem: bibleItem, lookupRef: lookupRef, bibles: bibles, addStreamItem: addStreamItem, refHints: refHints, rtc: rtc, effBg: effBg, setAuto: setAuto, autoTick: autoTick, openEdit: openEdit, setSongBg: setSongBg, convertBible: convertBible, drawLive: drawLive,
     get liveId() { return liveId; }, get liveSlide() { return liveSlide; }, get selId() { return selId; }, get selSlide() { return selSlide; }, get vstat() { return vstat; }, get conns() { return conns; }, get peer() { return peer; }, get opId() { return opId; }, get bbFound() { return bbFound; }, get bbSel() { return bbSel; }, get bbVers() { return bbVers; }, get autoRun() { return autoRun; }, get songBg() { return songBg; }, get opts() { return opts; } };
 })();

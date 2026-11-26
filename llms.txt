@@ -10,7 +10,7 @@
 - [Video editor](https://evansademilua.vercel.app/tools/video-editor/): Cut, auto edit with captions and transitions, add text, music and filters, then export an MP4. Free in the browser, or install the app.
 - [QR code generator](https://evansademilua.vercel.app/tools/qr-code-generator/): Links, text, WiFi, WhatsApp, email, phone, SMS, location and contact cards. Add a logo and colors.
 - [Video compressor, converter and trimmer](https://evansademilua.vercel.app/tools/video-tools/): Three video tools in one: shrink a big video, convert it to MP4, MP3, GIF and more, or cut it in seconds. Nothing is uploaded.
-- [Second screen presenter](https://evansademilua.vercel.app/tools/second-screen-presenter/): Bible verses, lyrics, PDFs, videos, cameras and countdowns on a TV or projector, with a stage display and phone remote.
+- [Presenter by Evans Large](https://evansademilua.vercel.app/tools/second-screen-presenter/): Bible verses, lyrics, videos, PDFs, cameras and countdowns on a TV or projector, run from your laptop or phone. Opens fast and works offline.
 - [File Share by Evans Large](https://evansademilua.vercel.app/tools/send-app/): Send big files and folders between two computers over Wi-Fi. Install it on both. Windows, Mac and Linux.
 - [Background remover](https://evansademilua.vercel.app/tools/remove-background/): Remove the background from any image. Exact for logos, AI cutout for photos. Transparent PNG.
 - [Audio by Evans Large](https://evansademilua.vercel.app/tools/audio-mastering/): A music workstation: unlimited tracks, MIDI, plugins, spectral repair, noise removal and loudness mastering. Free in your browser, or install the app for Windows and Mac.

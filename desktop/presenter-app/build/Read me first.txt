@@ -1,0 +1,38 @@
+PRESENTER BY EVANS LARGE
+How to install on a Mac (Apple chip or Intel)
+==========================================
+
+This takes about two minutes. You only do it once.
+
+STEP 1. Install the app
+  - Open the file that ends in .dmg (it is in this folder).
+  - Drag "Presenter by Evans Large" onto the Applications folder.
+
+STEP 2. Tell your Mac it is safe (needed once)
+  Your Mac shows a warning for apps that do not come from the Apple store.
+  The app is fine. Do this one time:
+  - Press Command and Space, type Terminal, press Enter.
+  - Paste this line and press Enter:
+
+      xattr -cr "/Applications/Presenter by Evans Large.app"
+
+STEP 3. Open it
+  - Open the Applications folder and double-click "Presenter by Evans Large".
+  - If the Mac still says it cannot verify the developer:
+      1. Press Done.
+      2. Open the Apple menu, then System Settings, then Privacy and Security.
+      3. Scroll down and press "Open Anyway" next to Presenter.
+      4. Confirm with your password or Touch ID, then open the app again.
+
+AFTER THAT
+  - It opens like any other app, and it works with no internet.
+  - When the internet is on, it checks for updates by itself and shows an
+    "Update now" button. Press it and the app updates and opens again.
+    You never need to come back to the website.
+
+WHICH DOWNLOAD DID I NEED?
+  Apple menu, then About This Mac.
+    "Chip: Apple M1, M2, M3 or M4"  ->  use the Apple chip download
+    "Processor: Intel"              ->  use the Intel download
+
+Need help? Message Evans on WhatsApp or by email from the Presenter page.

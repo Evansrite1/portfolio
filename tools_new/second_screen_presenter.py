@@ -1,6 +1,7 @@
-INFO = dict(slug='second-screen-presenter', kicker='Present', tile_title='Second screen presenter',
-            tile_desc='Bible verses, lyrics, PDFs, videos, cameras and countdowns on a TV or projector, with a stage display and phone remote.',
-            nav='Screen presenter', pos=1)
+import _presenter_custom as _pc
+INFO = dict(slug='second-screen-presenter', kicker='Present', tile_title='Presenter by Evans Large',
+            tile_desc='Bible verses, lyrics, videos, PDFs, cameras and countdowns on a TV or projector, run from your laptop or phone. Opens fast and works offline.',
+            nav='Presenter', pos=1)
 
 TOOL = '''<div class="tool" id="ss-tool" style="grid-template-columns:1fr">
   <div class="card" style="text-align:center;padding:34px 20px">
@@ -69,11 +70,11 @@ SECTIONS = '''
 </ul></section>'''
 
 PAGE = dict(
-    title='Church Presenter: Bible Verses, Lyrics and Video on a TV',
-    desc='Free presenter for churches and events. Show Bible verses, song lyrics, PDFs, photos, videos, cameras and countdowns on a TV or projector, with a stage display and phone remote.',
-    h1='Second screen presenter', app='Second Screen Presenter',
+    title='Presenter by Evans Large: Bible, Songs, Video and Cameras on a TV',
+    desc='Presenter by Evans Large shows Bible verses, song lyrics, videos, PDFs, cameras and countdowns on a TV or projector, from your laptop or phone. Opens fast and works with no internet.',
+    h1='Presenter by Evans Large', app='Presenter by Evans Large',
     lead='A free presenter for church services and events. Show Bible verses, song lyrics, PDFs, photos, videos, a camera or a countdown on a TV or projector, while you control everything from your laptop or phone.',
-    minimal=True, tool=TOOL, vendor=[], own=['appdl.js', 'presenter-download.js', 'presenter-download-page.js'], module=[], css=[],
+    minimal=True, tool=TOOL, vendor=[], own=['appdl.js', 'presenter-download.js', 'presenter-page.js'], module=[], css=['presenter-page.css'], custom=_pc.build(),
     sections=SECTIONS,
     faq=[
         ('Is this free?', 'Yes. There is no sign-up, no watermark and no limit.'),

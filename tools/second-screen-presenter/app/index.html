@@ -591,7 +591,7 @@ body{background:transparent}
             <div class="drop" id="bb-drop" hidden role="listbox" aria-label="Verses that match your words"></div>
             <div class="sug" id="bb-sug" role="listbox"></div>
             <div class="vwin" id="bb-cols" role="listbox" aria-label="Verses of this chapter. Scroll to see more. Double tap one to show it."></div>
-            <div class="listen" id="bb-listen-box" hidden><label class="row" style="gap:5px;font-size:.74rem;color:var(--soft)"><input type="checkbox" id="bb-autoshow"> Show on the screen too</label></div>
+            <div class="listen" id="bb-listen-box" hidden><span class="help" style="font-size:.74rem">Verses and songs it hears are added to your service. Nothing shows on the screen by itself, so the person running the screen picks what to show.</span></div>
             <div class="heard" id="bb-heard" hidden></div>
             <div id="bb-chw" hidden><div class="stepl">Chapter</div><div class="chs" id="bb-ch"></div></div>
             <div id="bb-vsw" hidden><div class="row" style="justify-content:space-between"><div class="stepl">Verses (tap to pick one or more)</div><button class="b sm" id="bb-all" type="button">All</button></div><div class="chs" id="bb-vs"></div></div>
@@ -622,6 +622,7 @@ body{background:transparent}
         <div class="pane" data-pane="capture" hidden>
           <p class="help">Show a camera, a capture card (another laptop or a video mixer connected by HDMI) or any screen or window. A running camera can also be the background of a song or Bible passage.</p>
           <button class="tbig" id="cap-find" type="button"><svg class="i lg"><use href="#i-camera"/></svg><span><b>Find a camera</b><small>A webcam or a capture card</small></span></button>
+          <button class="tbig" id="cap-phone" type="button"><svg class="i lg"><use href="#i-phone"/></svg><span><b>Use my phone as a camera</b><small>Scan a code and your phone camera shows here</small></span></button>
           <button class="tbig" id="cap-screen" type="button"><svg class="i lg"><use href="#i-monitor"/></svg><span><b>Share your screen</b><small>The whole screen or one window</small></span></button>
           <ul class="list" id="cap-list"></ul>
           <p class="help" id="cap-msg" role="status"></p>
@@ -722,6 +723,12 @@ body{background:transparent}
   <div class="dfoot"><button class="b sm" id="sg-del" type="button" style="margin-right:auto">Delete song</button><button class="b" id="sg-save" type="button">Save song</button><button class="b pri" id="sg-add" type="button">Save and add to service</button></div>
 </div></dialog>
 
+<dialog id="dlg-upd"><div class="dlg">
+  <div class="dt"><svg class="i"><use href="#i-bolt"/></svg>A new version is ready<span class="sp"></span></div>
+  <div class="dbody"><p id="upd-msg">There is an update for the Presenter.</p><div class="bar" id="upd-bar" hidden style="height:8px;border-radius:5px;background:var(--p2);overflow:hidden"><i id="upd-fill" style="display:block;height:100%;width:0;background:var(--acc);transition:width .2s"></i></div></div>
+  <div class="dfoot"><button class="b" id="upd-later" type="button">Later</button><button class="b pri" id="upd-go" type="button">Update now</button></div>
+</div></dialog>
+
 <dialog id="dlg-text"><div class="dlg">
   <div class="dt"><svg class="i"><use href="#i-sliders"/></svg><span id="tx-head">Text layout</span><span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
   <div class="dbody">
@@ -785,6 +792,14 @@ body{background:transparent}
     </ol>
     <div class="plat"><a class="b" href="https://www.youtube.com/live_dashboard" target="_blank" rel="noopener">YouTube Live</a><a class="b" href="https://www.facebook.com/live/producer" target="_blank" rel="noopener">Facebook Live</a><a class="b" href="https://dashboard.twitch.tv/stream-manager" target="_blank" rel="noopener">Twitch</a><a class="b" href="https://livecenter.tiktok.com/" target="_blank" rel="noopener">TikTok LIVE</a><a class="b" href="https://obsproject.com/" target="_blank" rel="noopener">Get OBS</a></div>
     <p class="help">To keep a copy instead, use the red record button. It saves a video of what is on the screen to this computer. Direct streaming from the page itself would need a paid relay service, which can be added later.</p>
+  </div>
+</div></dialog>
+
+<dialog id="dlg-pcam"><div class="dlg">
+  <div class="dt"><svg class="i"><use href="#i-phone"/></svg>Use my phone as a camera<span class="sp"></span><button class="ib flat" type="button" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="dbody" style="justify-items:center;text-align:center">
+    <p class="help" id="pc-st">Starting...</p><div class="qr" id="pc-qr"></div>
+    <p class="help">1. Point your phone camera at this code and open the link. 2. Press Start camera on the phone and allow the camera. 3. The phone picture appears in your Capture list and you can put it on the screen. It works on the same Wi-Fi or over the internet. The phone needs to stay open.</p>
   </div>
 </div></dialog>
 

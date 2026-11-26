@@ -1,7 +1,7 @@
 {
   "name": "presenter-app",
   "productName": "Presenter by Evans Large",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Presenter by Evans Ademilua: Bible verses, song lyrics, photos, videos and countdowns on a TV or projector.",
   "author": "Evans Ademilua",
   "license": "UNLICENSED",
@@ -10,12 +10,12 @@
   "scripts": {
     "start": "electron .",
     "smoke": "electron . --no-sandbox",
-    "dist:win": "electron-builder --win --x64 --publish never",
-    "dist:mac": "electron-builder --mac --x64 --arm64 --publish never",
-    "release:win": "electron-builder --win --x64 --publish always",
-    "release:mac": "electron-builder --mac --x64 --arm64 --publish always",
-    "release:mac:arm64": "electron-builder --mac --arm64 --publish always",
-    "release:mac:x64": "electron-builder --mac --x64 --publish always"
+    "dist:win": "node build-web.js && electron-builder --win --x64 --publish never",
+    "dist:mac": "node build-web.js && electron-builder --mac --x64 --arm64 --publish never",
+    "release:win": "node build-web.js && electron-builder --win --x64 --publish always",
+    "release:mac": "node build-web.js && electron-builder --mac --x64 --arm64 --publish always",
+    "release:mac:arm64": "node build-web.js && electron-builder --mac --arm64 --publish always",
+    "release:mac:x64": "node build-web.js && electron-builder --mac --x64 --publish always"
   },
   "dependencies": {
     "electron-updater": "^6.3.9"
@@ -34,6 +34,7 @@
     },
     "files": [
       "main.js",
+      "webbundle.js",
       "preload.js",
       "update-gate.js",
       "offline.html",
@@ -110,6 +111,7 @@
       "title": "Presenter"
     },
     "afterPack": "build/afterPack.js",
+    "extraResources": [{ "from": "web", "to": "web" }],
     "electronDist": "node_modules/electron/dist",
     "pkg": {
       "installLocation": "/Applications/Evans Large",

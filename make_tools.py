@@ -439,7 +439,10 @@ def howto_html(slug):
 
 def build_page(slug, p):
     h = head(p['title'], p['desc'], '/tools/%s/' % slug, schema_nodes(slug, p), p['vendor'], p['own'])
-    body = header() + '''
+    if p.get('custom'):
+        body = header() + '<main id="main">' + p['custom'] + '</main>\n' + FOOTER + '\n' + scripts(p['vendor'], p['own'] + (['keys.js'] if slug in KEYS_PAGES else []), p.get('module', ()))
+    else:
+      body = header() + '''
 <main id="main">
 <div class="wrap">
 <section class="hero-t center">
@@ -462,9 +465,9 @@ def build_page(slug, p):
     return out
 
 HUB = dict(
-    title='Free Online Tools: Video, PDF, Image, Audio and QR Code Tools',
-    desc='Free online tools by Evans Ademilua: video compressor, video trimmer, screen recorder, audio editor, PDF tools, image tools, QR codes, invoice generator and more. Free, and your files stay in your browser.',
-    app='Free Online Tools',
+    title='Tools by Evans Large: Presenter, Video, Audio, PDF and More',
+    desc='Apps and tools by Evans Ademilua: the Presenter for church and events, video editor, audio studio, PDF tools, QR codes, invoices and more. Built to run fast in your browser.',
+    app='Tools by Evans Large',
     faq=[
         ('Are these tools really free?', 'Yes. They are built so you can get real work done without paying or creating an account.'),
         ('Is my data private?', 'Yes. Everything runs in your browser. The videos, images, PDFs and audio you open are not sent to a server.'),
@@ -516,38 +519,26 @@ HOWTO = {
 
 VIEW_SCRIPT = """<script>
 (function () {
-  var root = document.getElementById('tl'), grid = document.getElementById('tl-grid'), q = document.getElementById('tl-q'), cats = document.getElementById('tl-cats'), none = document.getElementById('tl-none'), cat = 'all';
+  var grid = document.getElementById('tl-grid'), q = document.getElementById('tl-q'), none = document.getElementById('tl-none'), btn = document.getElementById('tl-vbtn'), menu = document.getElementById('tl-vmenu'), nm = document.getElementById('tl-vname');
   function save(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
   function load(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
-  function setView(v) {
-    if (['tiles', 'list', 'detail'].indexOf(v) < 0) v = 'tiles';
-    grid.className = 'tl-grid tl-' + v;
-    [].forEach.call(root.querySelectorAll('[data-view]'), function (b) { b.setAttribute('aria-pressed', b.dataset.view === v); });
-    save('tools_view', v);
-  }
+  var NAMES = { tiles: 'Tiles', list: 'List', detail: 'Details' };
+  function setView(v) { if (!NAMES[v]) v = 'tiles'; grid.className = 'tl-grid tl-' + v; nm.textContent = NAMES[v]; save('tools_view', v); }
   function filter() {
     var t = q.value.trim().toLowerCase(), shown = 0;
-    [].forEach.call(grid.children, function (c) {
-      var ok = (cat === 'all' || c.dataset.k === cat) && (!t || c.dataset.q.indexOf(t) >= 0);
-      c.hidden = !ok; if (ok) shown++;
-    });
+    [].forEach.call(grid.children, function (c) { var ok = !t || c.dataset.q.indexOf(t) >= 0; c.hidden = !ok; if (ok) shown++; });
     none.hidden = shown > 0;
   }
-  root.addEventListener('click', function (e) {
-    var v = e.target.closest('[data-view]'); if (v) { setView(v.dataset.view); return; }
-    var c = e.target.closest('[data-cat]'); if (c) { cat = c.dataset.cat; [].forEach.call(cats.children, function (x) { x.setAttribute('aria-pressed', x === c); }); filter(); }
-  });
+  btn.addEventListener('click', function (e) { e.stopPropagation(); var o = menu.hidden; menu.hidden = !o; btn.setAttribute('aria-expanded', o); });
+  menu.addEventListener('click', function (e) { var b = e.target.closest('[data-view]'); if (b) { setView(b.dataset.view); menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); } });
+  document.addEventListener('click', function () { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); });
   q.addEventListener('input', filter);
   document.addEventListener('keydown', function (e) {
     var t = e.target, typing = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable);
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.key === '/' && !typing) { e.preventDefault(); q.focus(); q.select(); }
     else if (e.key === 'Escape' && t === q) { q.value = ''; filter(); q.blur(); }
-    else if (e.key === 'Enter' && t === q) {
-      var first = [].filter.call(grid.children, function (c) { return !c.hidden; })[0];
-      var a = first && (first.matches('a[href]') ? first : first.querySelector('a[href]'));
-      if (a) location.href = a.getAttribute('href');
-    }
+    else if (e.key === 'Enter' && t === q) { var first = [].filter.call(grid.children, function (c) { return !c.hidden; })[0]; var a = first && (first.matches('a[href]') ? first : first.querySelector('a[href]')); if (a) location.href = a.getAttribute('href'); }
   });
   setView(load('tools_view') || 'tiles');
 })();
@@ -559,6 +550,7 @@ def build_hub():
         if k not in cats:
             cats.append(k)
     def card(s, k, t, d):
+        d = __import__('re').sub(r'[Ff]ree( in )', r'Works', d)
         how = HOWTO.get(s)
         if not how and s in PAGES:
             how = [PAGES[s].get('lead', '')]
@@ -566,28 +558,29 @@ def build_hub():
         return ('<a class="tile" href="/tools/%s/" data-k="%s" data-q="%s"><i>%s</i><b>%s</b><span>%s</span>'
                 '<span class="tl-how"><em>How to use</em><ol>%s</ol><u>Open the tool</u></span></a>') % (
             s, e(k), e((t + ' ' + d + ' ' + k).lower()), e(k), e(t), e(d), steps)
-    tiles = ''.join(card(s, k, t, d) for s, k, t, d, n in CARDS)
+    ordered = sorted(CARDS, key=lambda c: 0 if c[0] == 'second-screen-presenter' else 1)
+    tiles = ''.join(card(s, k, t, d).replace('class="tile"', 'class="tile feat"' if i == 0 else 'class="tile"', 1) for i, (s, k, t, d, n) in enumerate(ordered))
     bar = ('<div class="tl-bar">'
-           '<input type="search" id="tl-q" placeholder="Search the tools (press /)" aria-label="Search the tools, press slash to jump here">'
-           '<div class="tl-views" role="group" aria-label="View">'
-           '<button type="button" data-view="tiles" aria-pressed="true">Tiles</button>'
-           '<button type="button" data-view="list" aria-pressed="false">List</button>'
-           '<button type="button" data-view="detail" aria-pressed="false">Detailed</button></div></div>'
-           '<div class="tl-cats" id="tl-cats" role="group" aria-label="Category"><button type="button" data-cat="all" aria-pressed="true">All</button>%s</div>') % ''.join(
-        '<button type="button" data-cat="%s" aria-pressed="false">%s</button>' % (e(c), e(c)) for c in cats)
+           '<label class="tl-s"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>'
+           '<input type="search" id="tl-q" placeholder="Search the tools" aria-label="Search the tools, press slash to jump here"></label>'
+           '<div class="tl-vw"><button type="button" id="tl-vbtn" aria-haspopup="true" aria-expanded="false">View: <b id="tl-vname">Tiles</b></button>'
+           '<div class="tl-vmenu" id="tl-vmenu" role="menu" hidden>'
+           '<button type="button" role="menuitem" data-view="tiles">Tiles</button>'
+           '<button type="button" role="menuitem" data-view="list">List</button>'
+           '<button type="button" role="menuitem" data-view="detail">Details</button></div></div></div>')
     url = SITE + '/tools/'
     nodes = [
         {'@type': 'CollectionPage', '@id': url + '#page', 'url': url, 'name': HUB['title'], 'description': HUB['desc'], 'isPartOf': {'@id': SITE + '/#website'}, 'author': {'@id': SITE + '/#person'}},
-        {'@type': 'ItemList', 'itemListElement': [{'@type': 'ListItem', 'position': i + 1, 'name': t, 'url': '%s/tools/%s/' % (SITE, s)} for i, (s, k, t, d, n) in enumerate(CARDS)]},
-        {'@type': 'BreadcrumbList', 'itemListElement': [{'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': SITE + '/'}, {'@type': 'ListItem', 'position': 2, 'name': 'Free tools', 'item': url}]},
+        {'@type': 'ItemList', 'itemListElement': [{'@type': 'ListItem', 'position': i + 1, 'name': t, 'url': '%s/tools/%s/' % (SITE, s)} for i, (s, k, t, d, n) in enumerate(sorted(CARDS, key=lambda c: 0 if c[0] == 'second-screen-presenter' else 1))]},
+        {'@type': 'BreadcrumbList', 'itemListElement': [{'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': SITE + '/'}, {'@type': 'ListItem', 'position': 2, 'name': 'Tools', 'item': url}]},
     ]
     h = head(HUB['title'], HUB['desc'], '/tools/', nodes, [], [])
     body = header() + '''
 <main id="main">
 <div class="wrap">
 <section class="hero-t center">
-  <h1>Free tools that work for you</h1>
-  <p class="lead">I built these so you can get real work done for free, as much as possible. Shrink a video, cut out a background, make a QR code or send an invoice, right here in your browser.</p>
+  <h1>Tools by Evans Large</h1>
+  <p class="lead">Apps and tools I built to get real work done, fast. Start with the Presenter, then explore the rest.</p>
 </section>
 <section class="block" id="tl">%s<div class="tl-grid tl-tiles" id="tl-grid">%s</div><p class="help" id="tl-none" hidden>No tool matches that. Try another word.</p></section>
 </div>

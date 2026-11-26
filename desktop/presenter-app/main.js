@@ -2,6 +2,7 @@
 const { app, BrowserWindow, Menu, screen, session, desktopCapturer, ipcMain, shell, dialog, protocol } = require('electron');
 const { Readable } = require('stream');
 const updateGate = require('./update-gate');
+const webBundle = require('./webbundle');
 const path = require('path');
 const fs = require('fs');
 const cfg = require('./config.json');
@@ -198,8 +199,22 @@ function pickSource() {
 ipcMain.on('picker:choose', (_e, id) => { if (pickerDone) pickerDone(id); });
 
 /* ------------------------------------------------------------------ updates */
+let wb = null;
+function tell(u) { if (mainWin && !mainWin.isDestroyed()) mainWin.webContents.send('presenter:update', u); }
+function webCheck() { if (!wb) return Promise.resolve(null); return wb.check().then((u) => { if (u) tell(u); return u; }); }
+ipcMain.handle('presenter:web-check', () => webCheck());
+ipcMain.handle('presenter:web-apply', async () => {
+  try {
+    const r = await wb.apply((p) => tell({ state: 'web-progress', p }));
+    if (r && r.ok) { setTimeout(() => { quitting = true; app.relaunch(); app.exit(0); }, 900); } /* the app closes and opens again by itself on the new version */
+    return r;
+  } catch (e) { return { ok: false, reason: String(e && e.message || e) }; }
+});
 function setupUpdater() {
   if (SMOKE) return;
+  /* the pages update inside the app (no website trip); the installer-level updater is only for Windows and signed Mac builds */
+  setTimeout(webCheck, 8000); setInterval(webCheck, 6 * 3600 * 1000);
+  if (IS_MAC && !cfg.macSigned) return;
   updateGate({ app, dialog, shell, getWindow: () => mainWin, name: 'Presenter by Evans Large', downloadPage: cfg.downloadPage, macSigned: cfg.macSigned });
 }
 
@@ -228,6 +243,7 @@ if (!app.requestSingleInstanceLock() && !SMOKE) { app.quit(); } else {
   app.whenReady().then(() => {
     setupSession();
     protocol.handle('pmedia', mediaResponse);
+    wb = webBundle({ site: SITE, origin: ORIGIN }); wb.install();
     createMain();
     buildMenu();
     screen.on('display-added', onDisplaysChanged);
