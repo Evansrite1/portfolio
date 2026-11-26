@@ -358,6 +358,14 @@
     else if (songBg.type === 'image' || songBg.thumb) p.innerHTML = '<img alt="" src="' + esc(songBg.thumb) + '">';
     else p.innerHTML = '<span>' + esc(songBg.name || 'Video') + '</span>';
     $('song-bg').classList.toggle('on', !!songBg);
+    drawSongGal();
+  }
+  /* every picture and moving background that is in the app, shown in a grid: tap one to use it behind all songs */
+  function drawSongGal() {
+    var gal = mediaBgs(), box = $('sbg-gal'); if (!box) return;
+    $('sbg-gl').hidden = !gal.length;
+    box.innerHTML = gal.map(function (x, i) { return '<button type="button" data-gal="' + i + '" aria-pressed="' + !!(songBg && songBg.name === x.name) + '" title="' + esc(x.name) + '">' + (x.thumb ? '<img alt="" src="' + esc(x.thumb) + '">' : '<span>' + esc(x.name) + '</span>') + '</button>'; }).join('');
+    box.onclick = function (e) { var b = e.target.closest('[data-gal]'); if (b) setSongBg(gal[+b.dataset.gal]); };
   }
   function setSongBg(bg) {
     songBg = bg; drawSongBg();

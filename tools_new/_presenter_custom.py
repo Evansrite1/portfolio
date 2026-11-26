@@ -53,21 +53,19 @@ FEATURES = [
  ('user', 'No account', 'No sign-up and nothing is uploaded.'),
  ('monitor', 'Windows and Mac', 'Apple chip and Intel Macs, and Windows.'),
 ]
-CHIPS = ['Scripture', 'Songs', 'Media', 'PDFs', 'Cameras', 'Phone camera', 'Countdown', 'Split screen', 'Listen', 'Themes']
+CHIPS = ['Scripture', 'Songs', 'Videos', 'PDFs', 'YouTube', 'Cameras', 'Phone camera', 'Countdown', 'Split screen', 'Listen to the preacher', 'Voice search', 'Themes', 'Backgrounds', 'Works offline']
 
-COLS = ['Presenter by Evans Large', 'EasyWorship', 'ProPresenter', 'Proclaim', 'FreeShow', 'OpenLP']
+COLS = ['Presenter by Evans Large', 'EasyWorship', 'ProPresenter', 'Proclaim', 'FreeShow', 'OpenLP', 'OBS Studio', 'vMix']
 Y, N, NF = 'Yes', 'No', 'Not found'
 ROWS = [
- ('Price', 'Free for now', 'From about $18 to $21 a month', 'From about $29 a month', 'From about $25 to $27 a month', 'Free', 'Free'),
- ('Opens fast', 'About 1 second (measured)', 'Not measured', 'Not measured', 'Not measured', 'Not measured', 'Not measured'),
- ('Listens to the speaker and queues the verses and songs, offline', Y, NF, NF, NF, NF, NF),
- ('Your phone as a wireless camera, set up with a QR code', Y, NF, NF, NF, NF, NF),
- ('Updates itself inside the app, no website visit', Y, NF, NF, NF, NF, NF),
- ('Works with no internet from the first launch', Y, Y, Y, Y, Y, Y),
- ('No account or licence needed', Y, N, N, N, Y, Y),
- ('Phone remote that shows the screen live', Y, Y, Y, Y, Y, Y),
- ('Type a passage with Space from book to chapter to verse', Y, NF, NF, NF, NF, NF),
- ('Text layout for songs and scripture', Y, Y, Y, Y, Y, Y),
+ ('Price', 'Free for now', 'From about $18 to $21 a month', 'From about $29 a month', 'From about $25 to $27 a month', 'Free', 'Free', 'Free', 'Free basic, paid versions'),
+ ('Bible, songs and countdowns built in', Y, Y, Y, Y, Y, Y, N, N),
+ ('Listens to the speaker and queues verses and songs, offline', Y, NF, NF, NF, NF, NF, NF, NF),
+ ('Your phone as a wireless camera, set up with a QR code', Y, NF, NF, NF, NF, NF, NF, NF),
+ ('Updates itself inside the app', Y, NF, NF, NF, NF, NF, NF, NF),
+ ('No account or licence needed', Y, N, N, N, Y, Y, Y, N),
+ ('Works with no internet', Y, Y, Y, Y, Y, Y, Y, Y),
+ ('Phone remote built in', Y, Y, Y, Y, Y, Y, N, NF),
 ]
 
 
@@ -137,23 +135,12 @@ def build():
   </div>
 </section>
 
-<section class="pf" id="features">
-  <div class="pw">
-    <h2>Everything it does</h2>
-    <ul class="pf-grid">%(feats)s</ul>
-  </div>
-</section>
-
 <section class="pcmp2" id="compare">
   <div class="pw">
     <h2>How it compares</h2>
-    <div class="edge">
-      <div><b>About 1s</b><span>to open, measured with no internet</span></div>
-      <div><b>0</b><span>accounts or sign-ups</span></div>
-      <div><b>3</b><span>things the others do not list: listening, a phone camera and in-app updates</span></div>
-    </div>
+    
     <div class="pcmp-w"><table><thead><tr><th scope="col"></th>%(th)s</tr></thead><tbody>%(tr)s</tbody></table></div>
-    <p class="help">Based on public listings in November 2026. Prices change, and "Not found" means I could not find that feature listed, not that it is missing. The paid programs do more in some areas: ProPresenter is stronger for broadcast and multi-screen production, and Proclaim for planning with a team. "About 1 second" was measured on one Windows laptop with no internet.</p>
+    <p class="help">Based on public listings in November 2026. Prices change, and "Not found" means I could not find that feature listed, not that it is missing. The paid programs do more in some areas: ProPresenter is stronger for broadcast and multi-screen production, and Proclaim for planning with a team. </p>
   </div>
 </section>
-''' % dict(vlayers=vlayers, chips=chips, feats=feats, th=th, tr=tr)
+''' % dict(vlayers=vlayers, chips=chips, th=th, tr=tr)

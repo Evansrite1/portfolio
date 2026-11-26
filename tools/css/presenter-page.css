@@ -68,3 +68,23 @@ body[data-tool="second-screen-presenter"] main { color: #efeaf5; }
 @media (max-width: 900px) { .ph-in { grid-template-columns: 1fr; } .ph { padding-top: 100px; } .pf-grid { grid-template-columns: repeat(4, 1fr); } .edge { grid-template-columns: 1fr; } }
 @media (max-width: 560px) { .pf-grid { grid-template-columns: repeat(3, 1fr); } .pf-grid li { padding: 6px; } .pf-grid li b { font-size: .74rem; } .pf-grid li svg { width: 28px; height: 28px; } .dl-tabs button { font-size: .74rem; padding: 10px 4px; } }
 @media (prefers-reduced-motion: reduce) { .ph-bg .bgv.on, .ph-grid, .ph-stars { animation: none; } .ph-bg .bgv { transition: none; } }
+
+/* the hero fits the screen, with moving geometric shapes behind it */
+.ph { min-height: 100svh; padding: 86px 0 34px; }
+.ph-geo { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+.ph-h { font-size: clamp(2.6rem, min(7vw, 11.5vh), 6rem); margin-bottom: 18px; }
+.ph-lead { font-size: clamp(1rem, min(1.7vw, 2.4vh), 1.2rem); margin-bottom: 18px; }
+.ph-chips { margin-bottom: 14px; gap: 7px; }
+.ph-chips li { padding: 7px 13px; font-size: .82rem; }
+.ph-dl { padding: clamp(16px, 2vw, 26px); }
+.dl-tabs { margin-bottom: 14px; }
+.dl-btn { padding: 15px 18px; font-size: 1rem; }
+.dl-steps { margin: 14px 0 4px; gap: 8px; }
+.dl-steps li { font-size: .88rem; line-height: 1.38; padding-left: 34px; }
+.dl-steps li::before { width: 24px; height: 24px; font-size: .74rem; }
+.dl-steps code { font-size: .72rem; padding: 7px 9px; margin-top: 5px; }
+.dl-net { margin-top: 12px; padding-top: 12px; font-size: .8rem; }
+.pcmp2 table { min-width: 1120px; font-size: .86rem; }
+.pcmp2 tbody th { min-width: 210px; }
+@media (max-height: 760px) and (min-width: 901px) { .ph { padding-top: 76px; } .ph-h { font-size: clamp(2.4rem, min(6vw, 10vh), 5rem); } .dl-steps li { font-size: .84rem; } .dl-steps { gap: 6px; } }
+@media (max-width: 900px) { .ph { padding-bottom: 50px; } }

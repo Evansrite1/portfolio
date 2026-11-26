@@ -119,24 +119,19 @@ var CONFIG = {
   $$('.orb').forEach(function (o) { var s = parseFloat(o.dataset.speed || 0.2); gsap.to(o, { y: function () { return -s * 300; }, ease: 'none', scrollTrigger: { trigger: o.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } }); });
   gsap.to('.hero-art .arch img', { yPercent: 5, ease: 'none', scrollTrigger: { trigger: '.hero-art', start: 'top bottom', end: 'bottom top', scrub: true } });
 
-  /* the messy week: the cards tremble as they come together, then settle */
-  var cards = $$('.mess'), shks = $$('.shk'), spots = [{ x: -60, y: 40, r: -9 }, { x: 50, y: -30, r: 7 }, { x: -30, y: 70, r: 6 }, { x: 60, y: -20, r: -8 }];
+  /* the messy week: the cards fall into order as you scroll, smooth and quick */
+  var cards = $$('.mess'), shks = [], spots = [{ x: -60, y: 40, r: -9 }, { x: 50, y: -30, r: 7 }, { x: -30, y: 70, r: 6 }, { x: 60, y: -20, r: -8 }];
   function scatter(k) { cards.forEach(function (c, i) { var s = spots[i]; gsap.set(c, { x: s.x * k * (i % 2 ? -1 : 1), y: s.y * k, rotate: s.r * 1.4, scale: .95 }); }); }
-  function tremble(p) {   /* p is the progress from 0 (a mess) to 1 (in order): a shake that fades as the cards settle */
-    var amp = (p > .985 || p <= 0) ? 0 : Math.pow(1 - p, .8) * 7 + 1.2;
-    shks.forEach(function (s) { gsap.set(s, { x: (Math.random() - .5) * amp, y: (Math.random() - .5) * amp, rotate: (Math.random() - .5) * amp * .35 }); });
-  }
-  function settle() { shks.forEach(function (s) { gsap.to(s, { x: 0, y: 0, rotate: 0, duration: .4, ease: 'elastic.out(1,.4)' }); }); }
   var mm = gsap.matchMedia();
   mm.add('(min-width: 821px)', function () {
     scatter(3.2);
-    var tl = gsap.timeline({ scrollTrigger: { trigger: '#pin', start: 'top top', end: '+=1500', scrub: .7, pin: true, anticipatePin: 1, onUpdate: function (self) { tremble(self.progress); }, onLeave: settle } });
+    var tl = gsap.timeline({ scrollTrigger: { trigger: '#pin', start: 'top top', end: '+=900', scrub: .25, pin: true, anticipatePin: 1 } });
     tl.to(cards, { x: 0, y: 0, rotate: 0, scale: 1, duration: 1, stagger: .1, ease: 'power3.inOut' }).to('#closer', { opacity: 1, y: 0, duration: .6 }, '-=.05');
     return function () { gsap.set(cards, { clearProps: 'all' }); gsap.set(shks, { clearProps: 'all' }); };
   });
   mm.add('(max-width: 820px)', function () {
     scatter(.9);
-    gsap.timeline({ scrollTrigger: { trigger: '.chaos', start: 'top 88%', end: 'bottom 55%', scrub: .6, onUpdate: function (self) { tremble(self.progress); }, onLeave: settle } })
+    gsap.timeline({ scrollTrigger: { trigger: '.chaos', start: 'top 88%', end: 'bottom 60%', scrub: .25 } })
       .to(cards, { x: 0, y: 0, rotate: 0, scale: 1, duration: 1, stagger: .12, ease: 'power3.inOut' });
     gsap.to('#closer', { opacity: 1, duration: .8, scrollTrigger: { trigger: '#closer', start: 'top 92%' } });
     return function () { gsap.set(cards, { clearProps: 'all' }); gsap.set(shks, { clearProps: 'all' }); };

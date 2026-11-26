@@ -130,3 +130,18 @@ body[data-tool="hub"] .tile.feat i { position: relative; z-index: 1; margin-bott
 
 body[data-tool="hub"] .tile.feat { text-align: left; align-items: flex-start; }
 body[data-tool="hub"] .tile.feat i { align-self: flex-start; }
+
+/* hub: tiles only, no numbers, no labels, a slow moving background */
+body[data-tool="hub"] .tile::before { display: none !important; }
+body[data-tool="hub"] .hero-t.center::before { display: none !important; }
+body[data-tool="hub"] .hero-t.center { padding-top: 70px; }
+body[data-tool="hub"]::before { animation: hubDrift 22s ease-in-out infinite alternate; will-change: transform; }
+@keyframes hubDrift { 0% { transform: translate3d(0, 0, 0) scale(1); } 50% { transform: translate3d(-4%, 3%, 0) scale(1.12); } 100% { transform: translate3d(3%, -2%, 0) scale(1.05); } }
+body[data-tool="hub"] .tile { animation: hubFloat 9s ease-in-out infinite; }
+body[data-tool="hub"] .tile:nth-child(2n) { animation-delay: -3s; } body[data-tool="hub"] .tile:nth-child(3n) { animation-delay: -6s; } body[data-tool="hub"] .tile.feat { animation: none; }
+@keyframes hubFloat { 50% { transform: translateY(-4px); } }
+body[data-tool="hub"] .tile:hover { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { body[data-tool="hub"]::before, body[data-tool="hub"] .tile { animation: none; } }
+
+body[data-tool="hub"] .tile { text-align: left; align-items: flex-start; }
+body[data-tool="hub"] .tile b { text-align: left; }

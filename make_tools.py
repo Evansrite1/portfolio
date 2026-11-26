@@ -519,19 +519,13 @@ HOWTO = {
 
 VIEW_SCRIPT = """<script>
 (function () {
-  var grid = document.getElementById('tl-grid'), q = document.getElementById('tl-q'), none = document.getElementById('tl-none'), btn = document.getElementById('tl-vbtn'), menu = document.getElementById('tl-vmenu'), nm = document.getElementById('tl-vname');
-  function save(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
-  function load(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
-  var NAMES = { tiles: 'Tiles', list: 'List', detail: 'Details' };
-  function setView(v) { if (!NAMES[v]) v = 'tiles'; grid.className = 'tl-grid tl-' + v; nm.textContent = NAMES[v]; save('tools_view', v); }
+  var grid = document.getElementById('tl-grid'), q = document.getElementById('tl-q'), none = document.getElementById('tl-none');
+  grid.className = 'tl-grid tl-tiles';
   function filter() {
     var t = q.value.trim().toLowerCase(), shown = 0;
     [].forEach.call(grid.children, function (c) { var ok = !t || c.dataset.q.indexOf(t) >= 0; c.hidden = !ok; if (ok) shown++; });
     none.hidden = shown > 0;
   }
-  btn.addEventListener('click', function (e) { e.stopPropagation(); var o = menu.hidden; menu.hidden = !o; btn.setAttribute('aria-expanded', o); });
-  menu.addEventListener('click', function (e) { var b = e.target.closest('[data-view]'); if (b) { setView(b.dataset.view); menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); } });
-  document.addEventListener('click', function () { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); });
   q.addEventListener('input', filter);
   document.addEventListener('keydown', function (e) {
     var t = e.target, typing = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable);
@@ -540,7 +534,6 @@ VIEW_SCRIPT = """<script>
     else if (e.key === 'Escape' && t === q) { q.value = ''; filter(); q.blur(); }
     else if (e.key === 'Enter' && t === q) { var first = [].filter.call(grid.children, function (c) { return !c.hidden; })[0]; var a = first && (first.matches('a[href]') ? first : first.querySelector('a[href]')); if (a) location.href = a.getAttribute('href'); }
   });
-  setView(load('tools_view') || 'tiles');
 })();
 </script>"""
 
@@ -555,19 +548,13 @@ def build_hub():
         if not how and s in PAGES:
             how = [PAGES[s].get('lead', '')]
         steps = ''.join('<li>%s</li>' % e(x) for x in (how or []))
-        return ('<a class="tile" href="/tools/%s/" data-k="%s" data-q="%s"><i>%s</i><b>%s</b><span>%s</span>'
-                '<span class="tl-how"><em>How to use</em><ol>%s</ol><u>Open the tool</u></span></a>') % (
-            s, e(k), e((t + ' ' + d + ' ' + k).lower()), e(k), e(t), e(d), steps)
+        return ('<a class="tile" href="/tools/%s/" data-k="%s" data-q="%s"><b>%s</b><span>%s</span></a>') % (
+            s, e(k), e((t + ' ' + d + ' ' + k).lower()), e(t), e(d))
     ordered = sorted(CARDS, key=lambda c: 0 if c[0] == 'second-screen-presenter' else 1)
     tiles = ''.join(card(s, k, t, d).replace('class="tile"', 'class="tile feat"' if i == 0 else 'class="tile"', 1) for i, (s, k, t, d, n) in enumerate(ordered))
     bar = ('<div class="tl-bar">'
            '<label class="tl-s"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>'
-           '<input type="search" id="tl-q" placeholder="Search the tools" aria-label="Search the tools, press slash to jump here"></label>'
-           '<div class="tl-vw"><button type="button" id="tl-vbtn" aria-haspopup="true" aria-expanded="false">View: <b id="tl-vname">Tiles</b></button>'
-           '<div class="tl-vmenu" id="tl-vmenu" role="menu" hidden>'
-           '<button type="button" role="menuitem" data-view="tiles">Tiles</button>'
-           '<button type="button" role="menuitem" data-view="list">List</button>'
-           '<button type="button" role="menuitem" data-view="detail">Details</button></div></div></div>')
+           '<input type="search" id="tl-q" placeholder="Search the tools" aria-label="Search the tools, press slash to jump here"></label></div>')
     url = SITE + '/tools/'
     nodes = [
         {'@type': 'CollectionPage', '@id': url + '#page', 'url': url, 'name': HUB['title'], 'description': HUB['desc'], 'isPartOf': {'@id': SITE + '/#website'}, 'author': {'@id': SITE + '/#person'}},
